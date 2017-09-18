@@ -88,7 +88,11 @@ namespace Test
         private void BrowseButton_Click(object sender, EventArgs e)
         {
             OpenFileDialog Openfile = new OpenFileDialog() {
-                Filter = "File|*.*", 
+                /*
+                 * TODO
+                 *  add more extensions
+                 */
+                Filter = "PNG file|.png|JPG file|.jpg|MP4 file|.mp4",
                 InitialDirectory = "C:\\"
             };
             if (Openfile.ShowDialog() == DialogResult.OK)
