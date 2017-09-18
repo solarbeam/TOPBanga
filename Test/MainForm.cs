@@ -11,9 +11,10 @@ namespace Test
 {
     public partial class MainForm : Form
     {
-        private const int min_radius = 5;
-        private const int max_radius = 150;
-        private const double resolution = 0.0001f;
+        private double min_dist = 40.0;
+        private int min_radius = 8;
+        private int max_radius = 150;
+        private double resolution = 0.0001f;
         private IImage image;
         private Tesseract t;
         private VideoCapture video;
@@ -23,21 +24,25 @@ namespace Test
         public MainForm()
         {
             InitializeComponent();
+            this.textBox1.Text = "" + resolution.ToString("0.00000") ;
+            this.textBox2.Text = "" + min_dist;
+            this.textBox3.Text = "" + min_radius;
+            this.textBox4.Text = "" + max_radius;
             t = new Tesseract("", "eng", OcrEngineMode.Default);
         }
-
         private void MainForm_Load(object sender, EventArgs e)
         {
-            //MessageBox.Show("Loaded");
         }
-
         private void MainForm_Resize(object sender, EventArgs e)
         {
-            //MessageBox.Show("Resize", "Event");
         }
-        private void Image()
+        private void calcImage()
         {
             Image<Bgr, Byte> img = new Image<Bgr, byte>(image.Bitmap);
+            /*
+             * This part, surprisingly, helps!
+             */
+            CvInvoke.MedianBlur(img, img, 3);
             Image<Gray, Byte> gray = img.Convert<Gray, Byte>();
             Gray cannyThreshold = new Gray(canny);
             Gray cannyThresholdLinking = new Gray(120);
@@ -46,7 +51,7 @@ namespace Test
                 cannyThreshold,
                 circleAccumulatorThreshold,
                 resolution, //Resolution of the accumulator used to detect centers of the circles
-                50.0, //min distance 
+                min_dist, //min distance 
                 min_radius, //min radius
                 max_radius //max radius
                 )[0]; //Get the circles from the first channel
@@ -57,8 +62,7 @@ namespace Test
             System.GC.Collect();
         }
 
-        private void frame(Object stateInfo) {
-            //video.Grab().ToString();
+        private void calcFrame(Object stateInfo) {
             Image<Bgr, Byte> img = new Image<Bgr, Byte>(video.QueryFrame().Bitmap);
             Image<Gray, Byte> gray = img.Convert<Gray,Byte>();
             Gray cannyThreshold = new Gray(canny);
@@ -68,7 +72,7 @@ namespace Test
                 cannyThreshold,
                 circleAccumulatorThreshold,
                 resolution, //Resolution of the accumulator used to detect centers of the circles
-                50.0, //min distance 
+                min_dist, //min distance 
                 min_radius, //min radius
                 max_radius //max radius
                 )[0]; //Get the circles from the first channel
@@ -76,6 +80,10 @@ namespace Test
                 img.Draw(circles[i], new Bgr(), 1, LineType.EightConnected, 0);
 
             Picture.Image = img.ToBitmap();
+            /*
+             * Collect garbage after each calcFrame call
+             */
+            System.GC.Collect();
         } 
         private void BrowseButton_Click(object sender, EventArgs e)
         {
@@ -89,36 +97,47 @@ namespace Test
                 if ( extension.Contains("png") || extension.Contains("jpg") )
                 {
                     image = new Image<Bgr, Byte>(Openfile.FileName);
-                    Image();
+                    calcImage();
                     return;
                 }
 
                 video = new VideoCapture(Openfile.FileName);
-                timer = new System.Threading.Timer(this.frame, null, 0, 100);
+                timer = new System.Threading.Timer(this.calcFrame, null, 0, 100);
             }
-        }
-
-        private void BarValueChange(object sender, EventArgs e)
-        {
-            //resolution = trackBar1.Value / 4.0;
-            textBox1.Text = "Resolution: " + resolution.ToString();
-        }
-
-        private void trackBar2_ValueChanged(object sender, EventArgs e)
-        {
-            //canny = trackBar2.Value;
-            textBox2.Text = "Canny: " + canny.ToString();
-        }
-
-        private void trackBar3_ValueChanged(object sender, EventArgs e)
-        {
-            //accumulator = trackBar3.Value;
-            textBox3.Text = "Accumulator: " + accumulator.ToString();
         }
 
         private void button1_Click(object sender, EventArgs e)
         {
-            if (image != null) Image();
+            if (image != null) calcImage();
+        }
+
+        private void Picture_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void button3_Click(object sender, EventArgs e)
+        {
+            min_dist = int.Parse(textBox2.Text);
+            if (image != null) calcImage();
+        }
+
+        private void changeResolution_Click(object sender, EventArgs e)
+        {
+            resolution = Double.Parse(textBox1.Text);
+            if (image != null) calcImage();
+        }
+
+        private void changeMinRadius_Click(object sender, EventArgs e)
+        {
+            min_radius = int.Parse(textBox3.Text);
+            if (image != null) calcImage();
+        }
+
+        private void changeMaxRadius_Click(object sender, EventArgs e)
+        {
+            max_radius = int.Parse(textBox4.Text);
+            if (image != null) calcImage();
         }
     }
 }
