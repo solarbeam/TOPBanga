@@ -122,25 +122,25 @@ namespace Test
 
         private void button3_Click(object sender, EventArgs e)
         {
-            min_dist = int.Parse(textBox2.Text);
+            min_dist = int.Parse(MinDistValue.Text);
             if (image != null) calcImage();
         }
 
         private void changeResolution_Click(object sender, EventArgs e)
         {
-            resolution = Double.Parse(textBox1.Text);
+            resolution = Double.Parse(Resolution.Text);
             if (image != null) calcImage();
         }
 
         private void changeMinRadius_Click(object sender, EventArgs e)
         {
-            min_radius = int.Parse(textBox3.Text);
+            min_radius = int.Parse(MinRadValue.Text);
             if (image != null) calcImage();
         }
 
         private void changeMaxRadius_Click(object sender, EventArgs e)
         {
-            max_radius = int.Parse(textBox4.Text);
+            max_radius = int.Parse(MaxRadValue.Text);
             if (image != null) calcImage();
         }
     }
