@@ -92,7 +92,7 @@ namespace Test
                  * TODO
                  *  add more extensions
                  */
-                Filter = "PNG file|.png|JPG file|.jpg|MP4 file|.mp4",
+                Filter = "PNG file|*.png|JPG file|*.jpg|MP4 file|*.mp4|File|*.*",
                 InitialDirectory = "C:\\"
             };
             if (Openfile.ShowDialog() == DialogResult.OK)
