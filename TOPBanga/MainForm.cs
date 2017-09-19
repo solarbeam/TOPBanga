@@ -110,7 +110,7 @@ namespace Test
             }
         }
 
-        private void button1_Click(object sender, EventArgs e)
+        private void Refresh_Button_Click(object sender, EventArgs e)
         {
             if (image != null) calcImage();
         }
@@ -120,7 +120,7 @@ namespace Test
 
         }
 
-        private void button3_Click(object sender, EventArgs e)
+        private void minDist_Click(object sender, EventArgs e)
         {
             min_dist = int.Parse(MinDistValue.Text);
             if (image != null) calcImage();
@@ -143,5 +143,6 @@ namespace Test
             max_radius = int.Parse(MaxRadValue.Text);
             if (image != null) calcImage();
         }
+
     }
 }

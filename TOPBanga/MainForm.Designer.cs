@@ -30,7 +30,7 @@
         {
             this.BrowseButton = new System.Windows.Forms.Button();
             this.Picture = new System.Windows.Forms.PictureBox();
-            this.button1 = new System.Windows.Forms.Button();
+            this.RefreshButton = new System.Windows.Forms.Button();
             this.Resolution = new System.Windows.Forms.TextBox();
             this.MinDistValue = new System.Windows.Forms.TextBox();
             this.MinRadValue = new System.Windows.Forms.TextBox();
@@ -61,35 +61,35 @@
             this.Picture.TabStop = false;
             this.Picture.Click += new System.EventHandler(this.Picture_Click);
             // 
-            // button1
+            // RefreshButton
             // 
-            this.button1.Location = new System.Drawing.Point(947, 56);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(175, 55);
-            this.button1.TabIndex = 8;
-            this.button1.Text = "Refresh";
-            this.button1.UseVisualStyleBackColor = true;
-            this.button1.Click += new System.EventHandler(this.button1_Click);
+            this.RefreshButton.Location = new System.Drawing.Point(947, 56);
+            this.RefreshButton.Name = "RefreshButton";
+            this.RefreshButton.Size = new System.Drawing.Size(175, 55);
+            this.RefreshButton.TabIndex = 8;
+            this.RefreshButton.Text = "Refresh";
+            this.RefreshButton.UseVisualStyleBackColor = true;
+            this.RefreshButton.Click += new System.EventHandler(this.Refresh_Button_Click);
             // 
             // Resolution
             // 
             this.Resolution.Location = new System.Drawing.Point(947, 140);
             this.Resolution.Name = "Resolution";
-            this.Resolution.Size = new System.Drawing.Size(175, 21);
+            this.Resolution.Size = new System.Drawing.Size(175, 27);
             this.Resolution.TabIndex = 9;
             // 
             // MinDistValue
             // 
             this.MinDistValue.Location = new System.Drawing.Point(947, 167);
             this.MinDistValue.Name = "MinDistValue";
-            this.MinDistValue.Size = new System.Drawing.Size(175, 21);
+            this.MinDistValue.Size = new System.Drawing.Size(175, 27);
             this.MinDistValue.TabIndex = 10;
             // 
             // MinRadValue
             // 
             this.MinRadValue.Location = new System.Drawing.Point(947, 194);
             this.MinRadValue.Name = "MinRadValue";
-            this.MinRadValue.Size = new System.Drawing.Size(175, 21);
+            this.MinRadValue.Size = new System.Drawing.Size(175, 27);
             this.MinRadValue.TabIndex = 11;
             // 
             // changeResolution
@@ -106,7 +106,7 @@
             // 
             this.MaxRadValue.Location = new System.Drawing.Point(947, 221);
             this.MaxRadValue.Name = "MaxRadValue";
-            this.MaxRadValue.Size = new System.Drawing.Size(175, 21);
+            this.MaxRadValue.Size = new System.Drawing.Size(175, 27);
             this.MaxRadValue.TabIndex = 13;
             // 
             // minDist
@@ -117,7 +117,7 @@
             this.minDist.TabIndex = 14;
             this.minDist.Text = "Change Min. distance";
             this.minDist.UseVisualStyleBackColor = true;
-            this.minDist.Click += new System.EventHandler(this.button3_Click);
+            this.minDist.Click += new System.EventHandler(this.minDist_Click);
             // 
             // changeMinRadius
             // 
@@ -141,7 +141,7 @@
             // 
             // MainForm
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 21F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1397, 738);
             this.Controls.Add(this.changeMaxRadius);
@@ -152,7 +152,7 @@
             this.Controls.Add(this.MinRadValue);
             this.Controls.Add(this.MinDistValue);
             this.Controls.Add(this.Resolution);
-            this.Controls.Add(this.button1);
+            this.Controls.Add(this.RefreshButton);
             this.Controls.Add(this.Picture);
             this.Controls.Add(this.BrowseButton);
             this.Font = new System.Drawing.Font("Tahoma", 8.25F);
@@ -169,7 +169,7 @@
 
         private System.Windows.Forms.Button BrowseButton;
         private System.Windows.Forms.PictureBox Picture;
-        private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.Button RefreshButton;
         private System.Windows.Forms.TextBox Resolution;
         private System.Windows.Forms.TextBox MinDistValue;
         private System.Windows.Forms.TextBox MinRadValue;
