@@ -24,10 +24,10 @@ namespace Test
         public MainForm()
         {
             InitializeComponent();
-            this.textBox1.Text = "" + resolution.ToString("0.00000") ;
-            this.textBox2.Text = "" + min_dist;
-            this.textBox3.Text = "" + min_radius;
-            this.textBox4.Text = "" + max_radius;
+            this.Resolution.Text = "" + resolution.ToString("0.00000") ;
+            this.MinDistValue.Text = "" + min_dist;
+            this.MinRadValue.Text = "" + min_radius;
+            this.MaxRadValue.Text = "" + max_radius;
             t = new Tesseract("", "eng", OcrEngineMode.Default);
         }
         private void MainForm_Load(object sender, EventArgs e)
