@@ -4,6 +4,7 @@ using Emgu.CV.CvEnum;
 using Emgu.CV.OCR;
 using Emgu.CV.Structure;
 using System.Linq;
+using System.Drawing;
 
 namespace Detection
 {
@@ -19,7 +20,7 @@ namespace Detection
         {
 
         }
-        public Image<Bgr,Byte> CalcImage( Image<Bgr,Byte> img )
+        public Image<Bgr,Byte> CalcImage( Image<Bgr,Byte> img , Point point )
         {
             CvInvoke.MedianBlur(img, img, 3);
             Image<Gray, Byte> gray = img.Convert<Gray, Byte>();
