@@ -23,16 +23,16 @@ namespace Detection
         private System.Threading.Timer timer;
         public DetectionMain( String videoFileName )
         {
-            tracker = new Tracker("MIL");
+            tracker = new Tracker("KCF");
             video = new VideoCapture(videoFileName);
             video.Grab();
             frame = video.QueryFrame();
-            Init(new Point(580,550));
-            timer = new System.Threading.Timer(this.CalcImage, null, 0, 33);
+            Init(new Point(580,520));
+            timer = new System.Threading.Timer(this.CalcImage, null, 0, 60);
         }
         public void Init(Point point)
         {
-            boundingBox = new Rectangle(point, new Size(50, 50));
+            boundingBox = new Rectangle(point, new Size(100, 100));
             
             tracker.Init(frame, boundingBox);
             isInit = true;
