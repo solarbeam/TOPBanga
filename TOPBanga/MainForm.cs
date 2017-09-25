@@ -15,16 +15,11 @@ namespace Test
     public partial class MainForm : Form
     {
         private Boolean clicked = false;
-        private Tesseract t;
         private VideoCapture video;
-        private System.Threading.Timer timer;
-        private Mat template;
         private DetectionMain detect;
         public MainForm()
         {
             InitializeComponent();
-            t = new Tesseract("", "eng", OcrEngineMode.Default);
-            
         }
         private void MainForm_Load(object sender, EventArgs e)
         {
@@ -41,11 +36,15 @@ namespace Test
             if (Openfile.ShowDialog() == DialogResult.OK)
             {
                 String extension = Openfile.FileName;
-
-                video = new VideoCapture(Openfile.FileName);
-                Picture.Image = video.QueryFrame().Bitmap;
                 detect = new DetectionMain(Openfile.FileName);
+                detect.FrameChange += new EventHandler(this.frameChange);
             }
+        }
+
+        public void frameChange (object sender, EventArgs e)
+        {
+            Console.WriteLine("AAA");
+            Picture.Image = DetectionMain.frame.Bitmap;
         }
 
         private void Refresh_Button_Click(object sender, EventArgs e)
@@ -75,11 +74,6 @@ namespace Test
         private void changeMaxRadius_Click(object sender, EventArgs e)
         {
             
-        }
-
-        public void setImage ( Image image)
-        {
-            Picture.Image = image;
         }
     }
 }
