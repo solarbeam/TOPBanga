@@ -5,6 +5,7 @@ using Emgu.CV.Structure;
 using System;
 using System.Linq;
 using System.Threading;
+using Emgu.CV.Tracking;
 using System.Windows.Forms;
 using Detection;
 using System.Drawing;
@@ -17,12 +18,12 @@ namespace Test
         private Tesseract t;
         private VideoCapture video;
         private System.Threading.Timer timer;
-        private Image<Bgr,Byte> image;
+        private Mat template;
+        private DetectionMain detect;
         public MainForm()
         {
             InitializeComponent();
             t = new Tesseract("", "eng", OcrEngineMode.Default);
-            DetectionMain test = new DetectionMain();
             
         }
         private void MainForm_Load(object sender, EventArgs e)
@@ -40,12 +41,10 @@ namespace Test
             if (Openfile.ShowDialog() == DialogResult.OK)
             {
                 String extension = Openfile.FileName;
-                if ( extension.Contains("png") || extension.Contains("jpg") )
-                {
-                    image = new Image<Bgr, Byte>(Openfile.FileName);
-                    Picture.Image = image.ToBitmap();
-                    return;
-                }
+
+                video = new VideoCapture(Openfile.FileName);
+                Picture.Image = video.QueryFrame().Bitmap;
+                detect = new DetectionMain(Openfile.FileName);
             }
         }
 
@@ -56,14 +55,6 @@ namespace Test
 
         private void Picture_Click(object sender, EventArgs e)
         {
-            if (clicked == true) return;
-            Picture.Image = null;
-            MouseEventArgs test = (MouseEventArgs)e;
-            Point testLocation = test.Location;
-            MessageBox.Show(testLocation.ToString());
-            DetectionMain testDetection = new DetectionMain();
-            Picture.Image = testDetection.CalcImage(image, testLocation).ToBitmap();
-            clicked = true;
         }
 
         private void minDist_Click(object sender, EventArgs e)
@@ -86,5 +77,9 @@ namespace Test
             
         }
 
+        public void setImage ( Image image)
+        {
+            Picture.Image = image;
+        }
     }
 }
