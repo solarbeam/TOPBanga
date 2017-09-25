@@ -14,6 +14,7 @@ namespace Detection
 {
     class DetectionMain
     {
+        public event EventHandler FrameChange;
         private Tracker tracker;
         private VideoCapture video;
         private Rectangle boundingBox;
@@ -37,11 +38,26 @@ namespace Detection
             tracker.Init(video.QueryFrame(), boundingBox);
             isInit = true;
         }
+        public System.Threading.Timer Start()
+        {
+            /*
+             * Starts the Timer thread with the
+             * calculated sleep time between
+             * the individual frames
+             */
+            System.Threading.Timer timer = new System.Threading.Timer(this.CalcImage, null, 0, sleep);
+            return timer;
+        }
+        protected virtual void OnFrameChange(EventArgs e)
+        {
+            FrameChange?.Invoke(this, e);
+        }
         public void CalcImage(Object stateInfo)
         {
             video.Read(frame);
             tracker.Update(video.QueryFrame(),out boundingBox);
             CvInvoke.Rectangle(frame, boundingBox, new MCvScalar(255, 0, 0), 2);
+            OnFrameChange(EventArgs.Empty);
         }
     }
 }
