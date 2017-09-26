@@ -34,7 +34,7 @@ namespace Test
             capture = new VideoCapture();
             target = capture.QueryFrame();
             timer = new System.Timers.Timer() {
-                Interval = 200
+                Interval = 1000
                 
             };
             timer.Elapsed += new System.Timers.ElapsedEventHandler(Tick);
