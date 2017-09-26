@@ -39,7 +39,10 @@
             this.minDist = new System.Windows.Forms.Button();
             this.changeMinRadius = new System.Windows.Forms.Button();
             this.changeMaxRadius = new System.Windows.Forms.Button();
+            this.Capture = new System.Windows.Forms.Button();
+            this.pictureBox1 = new System.Windows.Forms.PictureBox();
             ((System.ComponentModel.ISupportInitialize)(this.Picture)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.SuspendLayout();
             // 
             // BrowseButton
@@ -57,6 +60,7 @@
             this.Picture.Location = new System.Drawing.Point(1, 0);
             this.Picture.Name = "Picture";
             this.Picture.Size = new System.Drawing.Size(940, 679);
+            this.Picture.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
             this.Picture.TabIndex = 1;
             this.Picture.TabStop = false;
             this.Picture.Click += new System.EventHandler(this.Picture_Click);
@@ -139,11 +143,32 @@
             this.changeMaxRadius.UseVisualStyleBackColor = true;
             this.changeMaxRadius.Click += new System.EventHandler(this.changeMaxRadius_Click);
             // 
+            // Capture
+            // 
+            this.Capture.Location = new System.Drawing.Point(1002, 307);
+            this.Capture.Name = "Capture";
+            this.Capture.Size = new System.Drawing.Size(174, 74);
+            this.Capture.TabIndex = 17;
+            this.Capture.Text = "Capture";
+            this.Capture.UseVisualStyleBackColor = true;
+            this.Capture.Click += new System.EventHandler(this.Capture_Click);
+            // 
+            // pictureBox1
+            // 
+            this.pictureBox1.Location = new System.Drawing.Point(984, 415);
+            this.pictureBox1.Name = "pictureBox1";
+            this.pictureBox1.Size = new System.Drawing.Size(335, 235);
+            this.pictureBox1.TabIndex = 18;
+            this.pictureBox1.TabStop = false;
+            this.pictureBox1.Click += new System.EventHandler(this.pictureBox1_Click);
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 21F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1397, 738);
+            this.Controls.Add(this.pictureBox1);
+            this.Controls.Add(this.Capture);
             this.Controls.Add(this.changeMaxRadius);
             this.Controls.Add(this.changeMinRadius);
             this.Controls.Add(this.minDist);
@@ -160,6 +185,7 @@
             this.Load += new System.EventHandler(this.MainForm_Load);
             this.Resize += new System.EventHandler(this.MainForm_Resize);
             ((System.ComponentModel.ISupportInitialize)(this.Picture)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -178,6 +204,8 @@
         private System.Windows.Forms.Button minDist;
         private System.Windows.Forms.Button changeMinRadius;
         private System.Windows.Forms.Button changeMaxRadius;
+        private System.Windows.Forms.Button Capture;
+        private System.Windows.Forms.PictureBox pictureBox1;
     }
 }
 
