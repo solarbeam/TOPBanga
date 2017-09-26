@@ -43,7 +43,6 @@ namespace Test
 
         public void frameChange (object sender, EventArgs e)
         {
-            Console.WriteLine("AAA");
             Picture.Image = DetectionMain.frame.Bitmap;
         }
 
