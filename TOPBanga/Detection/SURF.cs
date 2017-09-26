@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Drawing;
-using System.Runtime.InteropServices;
+﻿using System.Diagnostics;
 using Emgu.CV;
 using Emgu.CV.CvEnum;
 using Emgu.CV.Features2D;
@@ -17,7 +13,9 @@ namespace TOPBanga.Detection
 {
     public static class DrawMatches
     {
-        public static void FindMatch(Mat modelImage, Mat observedImage, out long matchTime, out VectorOfKeyPoint modelKeyPoints, out VectorOfKeyPoint observedKeyPoints, VectorOfVectorOfDMatch matches, out Mat mask, out Mat homography)
+
+        // A function that is used by the Draw function
+        private static void FindMatch(Mat modelImage, Mat observedImage, out long matchTime, out VectorOfKeyPoint modelKeyPoints, out VectorOfKeyPoint observedKeyPoints, VectorOfVectorOfDMatch matches, out Mat mask, out Mat homography)
         {
             int k = 2;
             double uniquenessThreshold = 0.8;
@@ -46,8 +44,6 @@ namespace TOPBanga.Detection
                     using (GpuMat gpuObservedImage = new GpuMat(observedImage))
                     using (GpuMat gpuObservedKeyPoints = surfCuda.DetectKeyPointsRaw(gpuObservedImage, null))
                     using (GpuMat gpuObservedDescriptors = surfCuda.ComputeDescriptorsRaw(gpuObservedImage, null, gpuObservedKeyPoints))
-                    //using (GpuMat tmp = new GpuMat())
-                    //using (Stream stream = new Stream())
                     {
                         matcher.KnnMatch(gpuObservedDescriptors, gpuModelDescriptors, matches, k);
 
@@ -128,36 +124,7 @@ namespace TOPBanga.Detection
                 FindMatch(modelImage, observedImage, out matchTime, out modelKeyPoints, out observedKeyPoints, matches,
                    out mask, out homography);
 
-                //Draw the matched keypoints
                 Mat result = observedImage;
-                //Features2DToolbox.DrawMatches(modelImage, modelKeyPoints, observedImage, observedKeyPoints,
-                //   matches, result, new MCvScalar(255, 255, 255), new MCvScalar(255, 255, 255), mask);
-
-                #region draw the projected region on the image
-
-                if (homography != null)
-                {
-                    //draw a rectangle along the projected model
-                    Rectangle rect = new Rectangle(Point.Empty, modelImage.Size);
-                    PointF[] pts = new PointF[]
-                    {
-                  new PointF(rect.Left, rect.Bottom),
-                  new PointF(rect.Right, rect.Bottom),
-                  new PointF(rect.Right, rect.Top),
-                  new PointF(rect.Left, rect.Top)
-                    };
-                    pts = CvInvoke.PerspectiveTransform(pts, homography);
-
-                    Point[] points = Array.ConvertAll<PointF, Point>(pts, Point.Round);
-                    using (VectorOfPoint vp = new VectorOfPoint(points))
-                    {
-                        CvInvoke.Polylines(result, vp, true, new MCvScalar(255, 0, 0, 255), 5);
-                    }
-
-                }
-
-                #endregion
-
                 return result;
 
             }

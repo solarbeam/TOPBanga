@@ -78,7 +78,6 @@
 
         #endregion
 
-        private System.Windows.Forms.Button button1;
         private System.Windows.Forms.Button Capture_Button;
         private System.Windows.Forms.PictureBox Webcam_Picture;
         private System.Windows.Forms.PictureBox Capture_Picture;

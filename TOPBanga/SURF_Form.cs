@@ -25,11 +25,11 @@ namespace TOPBanga
             this.webcam = new VideoCapture();
             this.webcam_frame_timer = new System.Timers.Timer();
             this.webcam_frame_timer.Interval = 30;
-            this.webcam_frame_timer.Elapsed += new ElapsedEventHandler(frame_tick);
+            this.webcam_frame_timer.Elapsed += new ElapsedEventHandler(Frame_Tick);
             this.webcam_frame_timer.Start();
         }
 
-        public void frame_tick(object o, EventArgs e)
+        public void Frame_Tick(object o, EventArgs e)
         {
             if(!this.track)
                 this.Webcam_Picture.Image = this.webcam.QueryFrame().Bitmap;
