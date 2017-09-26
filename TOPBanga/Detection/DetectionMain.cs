@@ -27,11 +27,24 @@ namespace Detection
             video = new VideoCapture(videoFileName);
             video.Grab();
             frame = video.QueryFrame();
+            /**
+             * Initialize a rectangle at coordinates
+             * x - 580, y - 520
+             * These coordinates give the position
+             * of roughly where the ball can be found
+             * at the starting frame of the test video
+             * 720p.mp4
+             */
             Init(new Point(580,520));
             timer = new System.Threading.Timer(this.CalcImage, null, 0, 60);
         }
         public void Init(Point point)
         {
+            /**
+             * Create a rectangle of size
+             * width - 100 pixels
+             * height - 100 pixels
+             */
             boundingBox = new Rectangle(point, new Size(100, 100));
             
             tracker.Init(frame, boundingBox);
