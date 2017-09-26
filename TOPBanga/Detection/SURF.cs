@@ -14,7 +14,9 @@ namespace TOPBanga.Detection
     public static class DrawMatches
     {
 
-        // A function that is used by the Draw function
+        // A function that is used by the Draw method
+        // Finds attributes on observedImage, and compares them to modelImage
+        // Returns (through "out") the time the method to do its job, and the points it found on the images
         private static void FindMatch(Mat modelImage, Mat observedImage, out long matchTime, out VectorOfKeyPoint modelKeyPoints, out VectorOfKeyPoint observedKeyPoints, VectorOfVectorOfDMatch matches, out Mat mask, out Mat homography)
         {
             int k = 2;
