@@ -32,9 +32,7 @@ namespace Test
             InitializeComponent();
             t = new Tesseract("", "eng", OcrEngineMode.Default);
             capture = new VideoCapture();
-            Mat m1 = new Mat("C:/Users/Liutauras/Desktop/a.png");
-            Mat m2 = new Mat("C:/Users/Liutauras/Desktop/b.png");
-            target = new Mat("C:/Users/Liutauras/Desktop/b.png");
+            target = capture.QueryFrame();
             timer = new System.Timers.Timer() {
                 Interval = 200
                 
