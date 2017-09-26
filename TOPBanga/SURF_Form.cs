@@ -46,5 +46,11 @@ namespace TOPBanga
             this.Capture_Picture.Image = this.target.Bitmap;
             this.track = true;
         }
+
+        private void FPS_Change_Button_Click(object sender, EventArgs e)
+        {
+            if (Int32.TryParse(FPSTextBox.Text, out int result))
+                this.webcam_frame_timer.Interval = result;
+        }
     }
 }

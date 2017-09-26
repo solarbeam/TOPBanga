@@ -31,6 +31,8 @@
             this.Capture_Button = new System.Windows.Forms.Button();
             this.Webcam_Picture = new System.Windows.Forms.PictureBox();
             this.Capture_Picture = new System.Windows.Forms.PictureBox();
+            this.FPSTextBox = new System.Windows.Forms.TextBox();
+            this.FPS_Change_Button = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.Webcam_Picture)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.Capture_Picture)).BeginInit();
             this.SuspendLayout();
@@ -62,9 +64,29 @@
             this.Capture_Picture.TabIndex = 2;
             this.Capture_Picture.TabStop = false;
             // 
+            // FPSTextBox
+            // 
+            this.FPSTextBox.Location = new System.Drawing.Point(573, 385);
+            this.FPSTextBox.Name = "FPSTextBox";
+            this.FPSTextBox.Size = new System.Drawing.Size(82, 26);
+            this.FPSTextBox.TabIndex = 3;
+            this.FPSTextBox.Text = "30";
+            // 
+            // FPS_Change_Button
+            // 
+            this.FPS_Change_Button.Location = new System.Drawing.Point(675, 372);
+            this.FPS_Change_Button.Name = "FPS_Change_Button";
+            this.FPS_Change_Button.Size = new System.Drawing.Size(139, 60);
+            this.FPS_Change_Button.TabIndex = 4;
+            this.FPS_Change_Button.Text = "Change mills/frame";
+            this.FPS_Change_Button.UseVisualStyleBackColor = true;
+            this.FPS_Change_Button.Click += new System.EventHandler(this.FPS_Change_Button_Click);
+            // 
             // SURF_Form
             // 
             this.ClientSize = new System.Drawing.Size(978, 444);
+            this.Controls.Add(this.FPS_Change_Button);
+            this.Controls.Add(this.FPSTextBox);
             this.Controls.Add(this.Capture_Picture);
             this.Controls.Add(this.Webcam_Picture);
             this.Controls.Add(this.Capture_Button);
@@ -73,6 +95,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.Webcam_Picture)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.Capture_Picture)).EndInit();
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
 
@@ -81,5 +104,7 @@
         private System.Windows.Forms.Button Capture_Button;
         private System.Windows.Forms.PictureBox Webcam_Picture;
         private System.Windows.Forms.PictureBox Capture_Picture;
+        private System.Windows.Forms.TextBox FPSTextBox;
+        private System.Windows.Forms.Button FPS_Change_Button;
     }
 }
