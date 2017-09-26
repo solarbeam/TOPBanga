@@ -36,7 +36,7 @@ namespace Test
             if (Openfile.ShowDialog() == DialogResult.OK)
             {
                 String extension = Openfile.FileName;
-                detect = new DetectionMain(Openfile.FileName);
+                this.detect = new DetectionMain(Openfile.FileName);
                 detect.FrameChange += new EventHandler(this.frameChange);
             }
         }
