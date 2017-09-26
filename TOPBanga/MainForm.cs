@@ -30,8 +30,8 @@ namespace Test
         private void BrowseButton_Click(object sender, EventArgs e)
         {
             OpenFileDialog Openfile = new OpenFileDialog() {
-                Filter = "PNG file|*.png|JPG file|*.jpg|MP4 file|*.mp4|File|*.*",
-                InitialDirectory = "C:\\"
+                Filter = "MP4 file|*.mp4|File|*.*",
+                InitialDirectory = "./"
             };
             if (Openfile.ShowDialog() == DialogResult.OK)
             {
