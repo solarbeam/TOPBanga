@@ -24,7 +24,7 @@ namespace TOPBanga
         {
             this.webcam = new VideoCapture();
             this.webcam_frame_timer = new System.Timers.Timer();
-            this.webcam_frame_timer.Interval = 30;
+            this.webcam_frame_timer.Interval = 80;
             this.webcam_frame_timer.Elapsed += new ElapsedEventHandler(Frame_Tick);
             this.webcam_frame_timer.Start();
         }

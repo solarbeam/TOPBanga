@@ -4,6 +4,7 @@ using Emgu.CV.CvEnum;
 using Emgu.CV.Features2D;
 using Emgu.CV.Structure;
 using Emgu.CV.Util;
+using System.Drawing;
 #if !__IOS__
 using Emgu.CV.Cuda;
 #endif
@@ -13,7 +14,7 @@ namespace TOPBanga.Detection
 {
     public static class DrawMatches
     {
-
+        public static Point objectPos;
         // A function that is used by the Draw method
         // Finds attributes on observedImage, and compares them to modelImage
         // Returns (through "out") the time the method to do its job, and the points it found on the images
@@ -127,6 +128,7 @@ namespace TOPBanga.Detection
                    out mask, out homography);
 
                 Mat result = observedImage;
+                objectPos = Point.Round(modelKeyPoints.ToArray()[0].Point);
                 return result;
 
             }
