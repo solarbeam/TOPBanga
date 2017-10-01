@@ -128,7 +128,10 @@ namespace TOPBanga.Detection
                    out mask, out homography);
 
                 Mat result = observedImage;
-                objectPos = Point.Round(modelKeyPoints.ToArray()[0].Point);
+                /**
+                 * Grab one of the points for tracking statistics
+                 */
+                objectPos = Point.Round(observedKeyPoints.ToArray()[0].Point);
                 return result;
 
             }

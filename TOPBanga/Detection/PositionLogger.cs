@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 
 namespace TOPBanga.Detection
 {
@@ -21,15 +22,38 @@ namespace TOPBanga.Detection
          * positions. Will be used for statistics ( Speed and etc. )
          **/
         private int delta;
-        public PositionLogger()
+        private int previous_delta;
+        private SURF_Form form;
+        public PositionLogger(SURF_Form form)
         {
-
+            this.form = form;
         }
-        public void Update ( object o, EventArgs e)
+        /**
+         * Add this function to an Event for best results
+         */
+        public void Update(object o, EventArgs e)
         {
-            delta = Math.Abs((this.posX - DrawMatches.objectPos.X)^2 + (this.posY - DrawMatches.objectPos.Y)^2);
+            this.previous_delta = this.delta;
+            this.delta = Math.Abs((this.posX - DrawMatches.objectPos.X) ^ 2 + (this.posY - DrawMatches.objectPos.Y) ^ 2);
+            form.Invoke(new MethodInvoker(delegate { form.setDeltaText("Relative delta: " + this.delta); }));
             this.posX = DrawMatches.objectPos.X;
             this.posY = DrawMatches.objectPos.Y;
+            if (this.delta == 0)
+            {
+                switch (this.previous_delta)
+                {
+                    case 0:
+                        {
+                            //Object lost
+                            break;
+                        }
+                    default:
+                        {
+                            //Continue to search
+                            break;
+                        }
+                }
+            }
         }
     }
 }

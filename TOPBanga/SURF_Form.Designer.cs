@@ -33,6 +33,7 @@
             this.Capture_Picture = new System.Windows.Forms.PictureBox();
             this.FPSTextBox = new System.Windows.Forms.TextBox();
             this.FPS_Change_Button = new System.Windows.Forms.Button();
+            this.relativeDelta = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.Webcam_Picture)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.Capture_Picture)).BeginInit();
             this.SuspendLayout();
@@ -59,7 +60,7 @@
             // 
             this.Capture_Picture.Location = new System.Drawing.Point(572, 12);
             this.Capture_Picture.Name = "Capture_Picture";
-            this.Capture_Picture.Size = new System.Drawing.Size(394, 354);
+            this.Capture_Picture.Size = new System.Drawing.Size(394, 299);
             this.Capture_Picture.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
             this.Capture_Picture.TabIndex = 2;
             this.Capture_Picture.TabStop = false;
@@ -68,7 +69,7 @@
             // 
             this.FPSTextBox.Location = new System.Drawing.Point(573, 385);
             this.FPSTextBox.Name = "FPSTextBox";
-            this.FPSTextBox.Size = new System.Drawing.Size(82, 26);
+            this.FPSTextBox.Size = new System.Drawing.Size(82, 20);
             this.FPSTextBox.TabIndex = 3;
             this.FPSTextBox.Text = "30";
             // 
@@ -82,9 +83,19 @@
             this.FPS_Change_Button.UseVisualStyleBackColor = true;
             this.FPS_Change_Button.Click += new System.EventHandler(this.FPS_Change_Button_Click);
             // 
+            // relativeDelta
+            // 
+            this.relativeDelta.AutoSize = true;
+            this.relativeDelta.Location = new System.Drawing.Point(572, 318);
+            this.relativeDelta.Name = "relativeDelta";
+            this.relativeDelta.Size = new System.Drawing.Size(35, 13);
+            this.relativeDelta.TabIndex = 5;
+            this.relativeDelta.Text = "label1";
+            // 
             // SURF_Form
             // 
             this.ClientSize = new System.Drawing.Size(978, 444);
+            this.Controls.Add(this.relativeDelta);
             this.Controls.Add(this.FPS_Change_Button);
             this.Controls.Add(this.FPSTextBox);
             this.Controls.Add(this.Capture_Picture);
@@ -106,5 +117,6 @@
         private System.Windows.Forms.PictureBox Capture_Picture;
         private System.Windows.Forms.TextBox FPSTextBox;
         private System.Windows.Forms.Button FPS_Change_Button;
+        private System.Windows.Forms.Label relativeDelta;
     }
 }

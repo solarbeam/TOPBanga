@@ -24,9 +24,14 @@ namespace TOPBanga
         {
             this.webcam = new VideoCapture();
             this.webcam_frame_timer = new System.Timers.Timer();
-            this.webcam_frame_timer.Interval = 80;
+            this.webcam_frame_timer.Interval = 50;
             this.webcam_frame_timer.Elapsed += new ElapsedEventHandler(Frame_Tick);
             this.webcam_frame_timer.Start();
+            PositionLogger logger = new PositionLogger(this);
+            System.Timers.Timer positionLogger = new System.Timers.Timer();
+            positionLogger.Interval = 500;
+            positionLogger.Elapsed += new ElapsedEventHandler(logger.Update);
+            positionLogger.Start();
         }
 
         public void Frame_Tick(object o, EventArgs e)
@@ -51,6 +56,10 @@ namespace TOPBanga
         {
             if (Int32.TryParse(FPSTextBox.Text, out int result))
                 this.webcam_frame_timer.Interval = result;
+        }
+        public void setDeltaText(String text)
+        {
+            this.relativeDelta.Text = text;
         }
     }
 }
