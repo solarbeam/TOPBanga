@@ -1,5 +1,6 @@
 ﻿using Emgu.CV;
 using System;
+using System.Drawing;
 using System.Timers;
 using System.Windows.Forms;
 using TOPBanga.Detection;
@@ -11,6 +12,9 @@ namespace TOPBanga
 
         private VideoCapture webcam; // video stream to webcam
         private Mat target; // target image to track
+        private PositionLogger logger;
+
+        private Point objectPos;
 
         private bool track = false;
 
@@ -27,10 +31,10 @@ namespace TOPBanga
             this.webcam_frame_timer.Interval = 50;
             this.webcam_frame_timer.Elapsed += new ElapsedEventHandler(Frame_Tick);
             this.webcam_frame_timer.Start();
-            PositionLogger logger = new PositionLogger(this);
+            this.logger = new PositionLogger(this);
             System.Timers.Timer positionLogger = new System.Timers.Timer();
             positionLogger.Interval = 500;
-            positionLogger.Elapsed += new ElapsedEventHandler(logger.Update);
+            positionLogger.Elapsed += new ElapsedEventHandler(this.logger.Update);
             positionLogger.Start();
         }
 
@@ -41,7 +45,7 @@ namespace TOPBanga
             else
             {
                 Mat img = this.webcam.QueryFrame();
-                this.Webcam_Picture.Image = DrawMatches.Draw(target, img, out long took_time).Bitmap;
+                this.Webcam_Picture.Image = DrawMatches.Draw(target, img, out long took_time, out logger.lastPos).Bitmap;
             }
         }
 

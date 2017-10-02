@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -24,6 +25,7 @@ namespace TOPBanga.Detection
         private int delta;
         private int previous_delta;
         private SURF_Form form;
+        public Point lastPos;
         public PositionLogger(SURF_Form form)
         {
             this.form = form;
@@ -34,10 +36,10 @@ namespace TOPBanga.Detection
         public void Update(object o, EventArgs e)
         {
             this.previous_delta = this.delta;
-            this.delta = Math.Abs((this.posX - DrawMatches.objectPos.X) ^ 2 + (this.posY - DrawMatches.objectPos.Y) ^ 2);
+            this.delta = Math.Abs((this.posX - lastPos.X) ^ 2 + (this.posY - lastPos.Y) ^ 2);
             form.Invoke(new MethodInvoker(delegate { form.setDeltaText("Relative delta: " + this.delta); }));
-            this.posX = DrawMatches.objectPos.X;
-            this.posY = DrawMatches.objectPos.Y;
+            this.posX = lastPos.X;
+            this.posY = lastPos.Y;
             if (this.delta == 0)
             {
                 switch (this.previous_delta)
