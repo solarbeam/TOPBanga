@@ -67,6 +67,7 @@
     <Compile Include="SURF_Form.Designer.cs">
       <DependentUpon>SURF_Form.cs</DependentUpon>
     </Compile>
+    <Compile Include="Util\EventLog.cs" />
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>

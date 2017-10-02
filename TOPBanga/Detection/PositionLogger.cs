@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using TOPBanga.Util;
 
 namespace TOPBanga.Detection
 {
@@ -26,9 +28,12 @@ namespace TOPBanga.Detection
         private int previous_delta;
         private SURF_Form form;
         public Point lastPos;
+        private EventLog eventLog;
         public PositionLogger(SURF_Form form)
         {
             this.form = form;
+            Console.WriteLine(Directory.GetCurrentDirectory());
+            this.eventLog = new EventLog(Directory.GetCurrentDirectory() + "/event.log");
         }
         /**
          * Add this function to an Event for best results
@@ -38,6 +43,7 @@ namespace TOPBanga.Detection
             this.previous_delta = this.delta;
             this.delta = Math.Abs((this.posX - lastPos.X) ^ 2 + (this.posY - lastPos.Y) ^ 2);
             form.Invoke(new MethodInvoker(delegate { form.setDeltaText("Relative delta: " + this.delta); }));
+            eventLog.WriteEvent("Relative delta: " + this.delta);
             this.posX = lastPos.X;
             this.posY = lastPos.Y;
             if (this.delta == 0)
@@ -46,12 +52,12 @@ namespace TOPBanga.Detection
                 {
                     case 0:
                         {
-                            //Object lost
+                            eventLog.WriteEvent("Object lost!");
                             break;
                         }
                     default:
                         {
-                            //Continue to search
+                            eventLog.WriteEvent("Continuing to search");
                             break;
                         }
                 }

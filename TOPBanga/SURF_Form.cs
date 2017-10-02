@@ -16,7 +16,8 @@ namespace TOPBanga
 
         private bool track = false;
 
-        System.Timers.Timer webcam_frame_timer;
+        private System.Timers.Timer webcam_frame_timer;
+        private System.Timers.Timer logger_timer;
         public SURF_Form()
         {
             InitializeComponent();
@@ -30,10 +31,10 @@ namespace TOPBanga
             this.webcam_frame_timer.Elapsed += new ElapsedEventHandler(Frame_Tick);
             this.webcam_frame_timer.Start();
             this.logger = new PositionLogger(this);
-            System.Timers.Timer positionLogger = new System.Timers.Timer();
-            positionLogger.Interval = 500;
-            positionLogger.Elapsed += new ElapsedEventHandler(this.logger.Update);
-            positionLogger.Start();
+            logger_timer = new System.Timers.Timer();
+            logger_timer.Interval = 500;
+            logger_timer.Elapsed += new ElapsedEventHandler(this.logger.Update);
+            logger_timer.Start();
         }
 
         public void Frame_Tick(object o, EventArgs e)
@@ -57,7 +58,10 @@ namespace TOPBanga
         private void FPS_Change_Button_Click(object sender, EventArgs e)
         {
             if (Int32.TryParse(FPSTextBox.Text, out int result))
+            {
                 this.webcam_frame_timer.Interval = result;
+                this.logger_timer.Interval = result * 10;
+            }
         }
         public void setDeltaText(String text)
         {
