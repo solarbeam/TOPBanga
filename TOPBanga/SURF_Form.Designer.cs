@@ -91,6 +91,8 @@
             this.Controls.Add(this.Webcam_Picture);
             this.Controls.Add(this.Capture_Button);
             this.Name = "SURF_Form";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.SURF_Form_FormClosing);
+            this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.SURF_Form_FormClosed);
             this.Load += new System.EventHandler(this.SURF_Form_Load);
             ((System.ComponentModel.ISupportInitialize)(this.Webcam_Picture)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.Capture_Picture)).EndInit();
