@@ -5,6 +5,7 @@ using Emgu.CV.Features2D;
 using Emgu.CV.Structure;
 using Emgu.CV.Util;
 using System.Drawing;
+using System;
 #if !__IOS__
 using Emgu.CV.Cuda;
 #endif
@@ -128,6 +129,22 @@ namespace TOPBanga.Detection
                    out mask, out homography);
 
                 Mat result = observedImage;
+
+                Rectangle rect = new Rectangle(Point.Empty, modelImage.Size);
+                PointF[] pts = new PointF[]
+                {
+                  new PointF(rect.Left, rect.Bottom),
+                  new PointF(rect.Right, rect.Bottom),
+                  new PointF(rect.Right, rect.Top),
+                  new PointF(rect.Left, rect.Top)
+                };
+                pts = CvInvoke.PerspectiveTransform(pts, homography);
+
+                Point[] points = Array.ConvertAll<PointF, Point>(pts, Point.Round);
+                using (VectorOfPoint vp = new VectorOfPoint(points))
+                {
+                    CvInvoke.Polylines(result, vp, true, new MCvScalar(255, 0, 0, 255), 5);
+                }
                 /**
                  * Grab one of the points for tracking statistics
                  */
