@@ -14,8 +14,6 @@ namespace TOPBanga
         private Mat target; // target image to track
         private PositionLogger logger;
 
-        private Point objectPos;
-
         private bool track = false;
 
         System.Timers.Timer webcam_frame_timer;
