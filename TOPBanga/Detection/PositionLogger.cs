@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using TOPBanga.Interface;
 using TOPBanga.Util;
 
 namespace TOPBanga.Detection
@@ -15,11 +16,11 @@ namespace TOPBanga.Detection
         /**
          * Defines the object's position on the x axis
          **/
-        private int posX;
+        public int posX { get; private set; }
         /**
          * Defines the object's position on the y axis
          **/
-        private int posY;
+        public int posY { get; private set; }
         /**
          * Defines the relative delta between two different
          * positions. Will be used for statistics ( Speed and etc. )
@@ -28,7 +29,7 @@ namespace TOPBanga.Detection
         private int previous_delta;
         private SURF_Form form;
         public Point lastPos;
-        private EventLog eventLog;
+        private IWrite eventLog;
         public PositionLogger(SURF_Form form)
         {
             this.form = form;
@@ -43,7 +44,7 @@ namespace TOPBanga.Detection
             this.previous_delta = this.delta;
             this.delta = Math.Abs((this.posX - lastPos.X) ^ 2 + (this.posY - lastPos.Y) ^ 2);
             form.Invoke(new MethodInvoker(delegate { form.setDeltaText("Relative delta: " + this.delta); }));
-            eventLog.WriteEvent("Relative delta: " + this.delta);
+            eventLog.Write("Relative delta: " + this.delta);
             this.posX = lastPos.X;
             this.posY = lastPos.Y;
             if (this.delta == 0)
@@ -52,24 +53,16 @@ namespace TOPBanga.Detection
                 {
                     case 0:
                         {
-                            eventLog.WriteEvent("Object lost!");
+                            eventLog.Write("Object lost!");
                             break;
                         }
                     default:
                         {
-                            eventLog.WriteEvent("Continuing to search");
+                            eventLog.Write("Continuing to search");
                             break;
                         }
                 }
             }
-        }
-        public int getPosX()
-        {
-            return this.posX;
-        }
-        public int getPosY()
-        {
-            return this.posY;
         }
     }
 }

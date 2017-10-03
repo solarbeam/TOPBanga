@@ -59,6 +59,7 @@
   <ItemGroup>
     <Compile Include="Detection\PositionLogger.cs" />
     <Compile Include="Detection\SURF.cs" />
+    <Compile Include="Interface\IWrite.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SURF_Form.cs">

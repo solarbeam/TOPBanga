@@ -4,10 +4,11 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using TOPBanga.Interface;
 
 namespace TOPBanga.Util
 {
-    class EventLog
+    public class EventLog : IWrite
     {
         private StreamWriter file;
         public EventLog(String fileName)
@@ -16,12 +17,12 @@ namespace TOPBanga.Util
             this.file.WriteLine("Start of Event Log");
             this.file.Flush();
         }
-        public void WriteEvent(String ev)
+        public void Write(String ev)
         {
             this.file.WriteLine(DateTime.Now.ToString() + ": " + ev);
             this.file.Flush();
         }
-        public void CloseFile()
+        public void Close()
         {
             this.file.Close();
         }
