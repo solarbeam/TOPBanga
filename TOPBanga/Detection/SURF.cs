@@ -127,6 +127,13 @@ namespace TOPBanga.Detection
                 FindMatch(modelImage, observedImage, out matchTime, out modelKeyPoints, out observedKeyPoints, matches,
                    out mask, out homography);
 
+                if (homography == null)
+                {
+                    matchTime = 0;
+                    objectPos = new Point(-1 ,-1);
+                    return observedImage;
+                }
+
                 Mat result = observedImage;
 
                 Rectangle rect = new Rectangle(Point.Empty, modelImage.Size);
