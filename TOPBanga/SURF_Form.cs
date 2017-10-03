@@ -45,8 +45,7 @@ namespace TOPBanga
             else
             {
                 Mat img = this.webcam.QueryFrame();
-                this.Webcam_Picture.Image = DrawMatches.Draw(target, img, out long took_time, out logger.lastPos).Bitmap;
-                this.lastImage = DrawMatches.Draw(target, img, out long took_time);
+                this.lastImage = DrawMatches.Draw(target, img, out long took_time, out Point objectPos);
                 this.Webcam_Picture.Image = this.lastImage.Bitmap;
             }
         }
