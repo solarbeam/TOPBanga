@@ -13,6 +13,7 @@ namespace TOPBanga
         private VideoCapture webcam; // video stream to webcam
         private Mat target; // target image to track
         private PositionLogger logger;
+        private Mat lastImage;
 
         private bool track = false;
 
@@ -45,6 +46,8 @@ namespace TOPBanga
             {
                 Mat img = this.webcam.QueryFrame();
                 this.Webcam_Picture.Image = DrawMatches.Draw(target, img, out long took_time, out logger.lastPos).Bitmap;
+                this.lastImage = DrawMatches.Draw(target, img, out long took_time);
+                this.Webcam_Picture.Image = this.lastImage.Bitmap;
             }
         }
 
