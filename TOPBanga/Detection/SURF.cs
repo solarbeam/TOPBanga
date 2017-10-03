@@ -117,12 +117,6 @@ namespace TOPBanga.Detection
         /// <returns>The model image and observed image, the matched features and homography projection.</returns>
         public static Mat Draw(Mat modelImage, Mat observedImage, out long matchTime)
         {
-            if (observedImage == null)
-            {
-                System.Console.WriteLine("observedImage = null");
-                matchTime = -1;
-                return modelImage;
-            }
             Mat homography;
             VectorOfKeyPoint modelKeyPoints;
             VectorOfKeyPoint observedKeyPoints;

@@ -15,8 +15,6 @@ namespace TOPBanga
         private bool track = false;
 
         System.Timers.Timer webcam_frame_timer;
-
-        private Mat lastImage;
         public SURF_Form()
         {
             InitializeComponent();
@@ -24,7 +22,6 @@ namespace TOPBanga
 
         private void SURF_Form_Load(object sender, EventArgs e)
         {
-            
             this.webcam = new VideoCapture();
             this.webcam_frame_timer = new System.Timers.Timer();
             this.webcam_frame_timer.Interval = 30;
@@ -34,16 +31,12 @@ namespace TOPBanga
 
         public void Frame_Tick(object o, EventArgs e)
         {
-            if (this.webcam == null) {
-                return;
-            }
             if(!this.track)
                 this.Webcam_Picture.Image = this.webcam.QueryFrame().Bitmap;
             else
             {
                 Mat img = this.webcam.QueryFrame();
-                this.lastImage = DrawMatches.Draw(target, img, out long took_time);
-                this.Webcam_Picture.Image = this.lastImage.Bitmap;
+                this.Webcam_Picture.Image = DrawMatches.Draw(target, img, out long took_time).Bitmap;
             }
         }
 
@@ -58,19 +51,6 @@ namespace TOPBanga
         {
             if (Int32.TryParse(FPSTextBox.Text, out int result))
                 this.webcam_frame_timer.Interval = result;
-        }
-
-        private void SURF_Form_FormClosed(object sender, FormClosedEventArgs e)
-        {
-            
-            this.webcam.Dispose();
-            this.webcam = null;
-        }
-
-        private void SURF_Form_FormClosing(object sender, FormClosingEventArgs e)
-        {
-            this.webcam_frame_timer.Stop();
-            System.Threading.Thread.Yield();
         }
     }
 }
