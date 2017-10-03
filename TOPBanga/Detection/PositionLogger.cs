@@ -43,6 +43,11 @@ namespace TOPBanga.Detection
         {
             this.previous_delta = this.delta;
             this.delta = Math.Abs((this.posX - lastPos.X) ^ 2 + (this.posY - lastPos.Y) ^ 2);
+            /**
+            * Invoke function later so that
+            * safe access is insured when coming
+            * from a thread
+            */
             form.Invoke(new MethodInvoker(delegate { form.setDeltaText("Relative delta: " + this.delta); }));
             eventLog.Write("Relative delta: " + this.delta);
             this.posX = lastPos.X;
