@@ -5,6 +5,11 @@ VisualStudioVersion = 15.0.26730.12
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TOPBanga", "TOPBanga\TOPBanga.csproj", "{8B0BFC6D-13EF-48EA-A0C1-489F94B458CD}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TOPBanga.UnitTests", "TOPBanga.UnitTests\TOPBanga.UnitTests.csproj", "{B70B949A-0C5A-4278-8390-8560492B4AAC}"
+	ProjectSection(ProjectDependencies) = postProject
+		{8B0BFC6D-13EF-48EA-A0C1-489F94B458CD} = {8B0BFC6D-13EF-48EA-A0C1-489F94B458CD}
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +20,10 @@ Global
 		{8B0BFC6D-13EF-48EA-A0C1-489F94B458CD}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8B0BFC6D-13EF-48EA-A0C1-489F94B458CD}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8B0BFC6D-13EF-48EA-A0C1-489F94B458CD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B70B949A-0C5A-4278-8390-8560492B4AAC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B70B949A-0C5A-4278-8390-8560492B4AAC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B70B949A-0C5A-4278-8390-8560492B4AAC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B70B949A-0C5A-4278-8390-8560492B4AAC}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -4,6 +4,8 @@ using Emgu.CV.CvEnum;
 using Emgu.CV.Features2D;
 using Emgu.CV.Structure;
 using Emgu.CV.Util;
+using System.Drawing;
+using System;
 #if !__IOS__
 using Emgu.CV.Cuda;
 #endif
@@ -13,7 +15,6 @@ namespace TOPBanga.Detection
 {
     public static class DrawMatches
     {
-
         // A function that is used by the Draw method
         // Finds attributes on observedImage, and compares them to modelImage
         // Returns (through "out") the time the method to do its job, and the points it found on the images
@@ -115,7 +116,7 @@ namespace TOPBanga.Detection
         /// <param name="observedImage">The observed image</param>
         /// <param name="matchTime">The output total time for computing the homography matrix.</param>
         /// <returns>The model image and observed image, the matched features and homography projection.</returns>
-        public static Mat Draw(Mat modelImage, Mat observedImage, out long matchTime)
+        public static Mat Draw(Mat modelImage, Mat observedImage, out long matchTime, out Point objectPos)
         {
             Mat homography;
             VectorOfKeyPoint modelKeyPoints;
@@ -127,6 +128,26 @@ namespace TOPBanga.Detection
                    out mask, out homography);
 
                 Mat result = observedImage;
+
+                Rectangle rect = new Rectangle(Point.Empty, modelImage.Size);
+                PointF[] pts = new PointF[]
+                {
+                  new PointF(rect.Left, rect.Bottom),
+                  new PointF(rect.Right, rect.Bottom),
+                  new PointF(rect.Right, rect.Top),
+                  new PointF(rect.Left, rect.Top)
+                };
+                pts = CvInvoke.PerspectiveTransform(pts, homography);
+
+                Point[] points = Array.ConvertAll<PointF, Point>(pts, Point.Round);
+                using (VectorOfPoint vp = new VectorOfPoint(points))
+                {
+                    CvInvoke.Polylines(result, vp, true, new MCvScalar(255, 0, 0, 255), 5);
+                }
+                /**
+                 * Grab one of the points for tracking statistics
+                 */
+                objectPos = Point.Round(observedKeyPoints.ToArray()[0].Point);
                 return result;
 
             }
