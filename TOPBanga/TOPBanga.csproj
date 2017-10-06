@@ -57,6 +57,8 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Detection\ColorDetector.cs" />
+    <Compile Include="Interface\IDetector.cs" />
     <Compile Include="Detection\PositionLogger.cs" />
     <Compile Include="Detection\SURF.cs" />
     <Compile Include="Interface\IWrite.cs" />
@@ -69,6 +71,12 @@
       <DependentUpon>SURF_Form.cs</DependentUpon>
     </Compile>
     <Compile Include="Util\EventLog.cs" />
+    <Compile Include="VideoFromFile.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="VideoFromFile.Designer.cs">
+      <DependentUpon>VideoFromFile.cs</DependentUpon>
+    </Compile>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
@@ -81,6 +89,9 @@
     </Compile>
     <EmbeddedResource Include="SURF_Form.resx">
       <DependentUpon>SURF_Form.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="VideoFromFile.resx">
+      <DependentUpon>VideoFromFile.cs</DependentUpon>
     </EmbeddedResource>
     <None Include="eng.traineddata">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
