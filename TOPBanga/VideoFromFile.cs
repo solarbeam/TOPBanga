@@ -9,6 +9,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using TOPBanga.Detection;
 
 namespace TOPBanga
 {
@@ -18,6 +19,8 @@ namespace TOPBanga
         ColorDetector colorDetector;
         VideoCapture video;
         Mat currentFrame;
+        private PositionLogger logger;
+        public Point lastPos;
 
         public VideoFromFile()
         {
@@ -37,6 +40,7 @@ namespace TOPBanga
                 this.video = new VideoCapture(openFileDialog.FileName);
                 this.currentFrame = this.video.QueryFrame();
                 this.Picture.Image = this.currentFrame.Bitmap;
+                this.logger = new PositionLogger(this);
                 this.colorDetector = new ColorDetector(this.currentFrame.ToImage<Hsv, byte>());
             }
         }
@@ -58,6 +62,11 @@ namespace TOPBanga
                 this.colorDetector.image = this.currentFrame.ToImage<Hsv, byte>();
                 this.Picture.Image = this.colorDetector.img();
             });
+            Application.Idle += new EventHandler(logger.Update);
+        }
+        public void setDeltaText(String text)
+        {
+            this.label1.Text = text;
         }
     }
 }

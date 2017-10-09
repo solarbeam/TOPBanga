@@ -38,10 +38,12 @@ namespace TOPBanga
 
         public bool DetectBall(out float x, out float y, out float radius)
         {
-            
 
-            x = 0;
-            y = 0;
+            Hsv lowerLimit = new Hsv(ballHsv.Hue - 25, ballHsv.Satuation - 25, ballHsv.Value - 25);
+            Hsv upperLimit = new Hsv(ballHsv.Hue + 25, ballHsv.Satuation + 25, ballHsv.Value + 25);
+
+            x = CvInvoke.HoughCircles(this.image.InRange(lowerLimit, upperLimit), Emgu.CV.CvEnum.HoughType.Gradient, 1, 10)[0].Center.X;
+            y = CvInvoke.HoughCircles(this.image.InRange(lowerLimit, upperLimit), Emgu.CV.CvEnum.HoughType.Gradient, 1, 10)[0].Center.Y;
             radius = 0;
             return true;
         }
