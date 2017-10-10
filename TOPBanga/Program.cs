@@ -17,7 +17,7 @@ namespace Test
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new SURF_Form());
+            Application.Run(new VideoFromFile(new ColorDetector()));
         }
     }
 }

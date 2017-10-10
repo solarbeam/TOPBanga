@@ -1,40 +1,36 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
-using TOPBanga.Interface;
 using TOPBanga.Util;
 
-namespace TOPBanga.Detection
+namespace TOPBanga
 {
     class PositionLogger
     {
         /**
          * Defines the object's position on the x axis
          **/
-        public int posX { get; private set; }
+        public float posX { get; private set; }
         /**
          * Defines the object's position on the y axis
          **/
-        public int posY { get; private set; }
+        public float posY { get; private set; }
         /**
          * Defines the relative delta between two different
          * positions. Will be used for statistics ( Speed and etc. )
          **/
         private int delta;
         private int previous_delta;
-        private SURF_Form form;
+        private VideoFromFile colorForm;
         public Point lastPos;
         private IWrite eventLog;
-        public PositionLogger(SURF_Form form)
+        private IDetector detector;
+        public PositionLogger(VideoFromFile form,IDetector detector)
         {
-            this.form = form;
-            Console.WriteLine(Directory.GetCurrentDirectory());
-            this.eventLog = new EventLog(Directory.GetCurrentDirectory() + "/event.log");
+            this.colorForm = form;
+            this.detector = detector;
+            this.eventLog = new EventLog(Directory.GetCurrentDirectory() + "event.log");
         }
         /**
          * Add this function to an Event for best results
@@ -42,16 +38,23 @@ namespace TOPBanga.Detection
         public void Update(object o, EventArgs e)
         {
             this.previous_delta = this.delta;
-            this.delta = Math.Abs((this.posX - lastPos.X) ^ 2 + (this.posY - lastPos.Y) ^ 2);
+            this.delta = (int)Math.Abs((this.posX - this.lastPos.X)*(this.posX - this.lastPos.X) + (this.posY - this.lastPos.Y)*(this.posY - this.lastPos.Y));
             /**
             * Invoke function later so that
             * safe access is insured when coming
             * from a thread
             */
-            form.Invoke(new MethodInvoker(delegate { form.setDeltaText("Relative delta: " + this.delta); }));
+                colorForm.Invoke(new MethodInvoker(delegate { colorForm.setDeltaText("Relative delta: " + this.delta); }));
             eventLog.Write("Relative delta: " + this.delta);
             this.posX = lastPos.X;
             this.posY = lastPos.Y;
+
+            float x, y, radius;
+            //detector.DetectBall(out x, out y, out radius);
+
+            //this.posX = x;
+            //this.posY = y;
+
             if (this.delta == 0)
             {
                 switch (this.previous_delta)
