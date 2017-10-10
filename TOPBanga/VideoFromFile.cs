@@ -11,18 +11,16 @@ namespace TOPBanga
     {
 
         IDetector detector;
-        IGameTracker logger;
         VideoCapture video;
         Mat currentFrame;
         System.Timers.Timer videoTickTimer;
 
 
-        public VideoFromFile(IDetector detector, IGameTracker logger)
+        public VideoFromFile(IDetector detector)
         {
             InitializeComponent();
 
             this.detector = detector;
-            this.logger = logger;
 
             videoTickTimer = new System.Timers.Timer();
         }
@@ -36,7 +34,7 @@ namespace TOPBanga
         {
             OpenFileDialog openFileDialog = new OpenFileDialog();
             openFileDialog.Filter = "MP4 file|*.mp4";
-            if (openFileDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            if (openFileDialog.ShowDialog() == DialogResult.OK)
             {
                 this.video = new VideoCapture(openFileDialog.FileName);
                 this.currentFrame = this.video.QueryFrame();

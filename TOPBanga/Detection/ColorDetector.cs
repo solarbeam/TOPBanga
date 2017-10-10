@@ -11,7 +11,6 @@ namespace TOPBanga
 {
     class ColorDetector : IDetector
     {
-
         public Image<Bgr, byte> image { get; set; }
 
         public Hsv ballHsv {  get; set; }
@@ -65,6 +64,8 @@ namespace TOPBanga
         {
             Image<Hsv, byte> hsvImage = this.image.Convert<Hsv, byte>();
             this.ballHsv = new Hsv(hsvImage.Data[y, x, 0], hsvImage.Data[y, x, 1], hsvImage.Data[y, x, 2]);
+
+          
         }
     }
 }

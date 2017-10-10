@@ -18,7 +18,7 @@ namespace TOPBanga
 
         public void AddCoords(float x, float y)
         {
-            this.points.Enqueue(new Point(x, y));
+            //this.points.Enqueue(new Point(x, y));
         }
 
         public void DefineGoal(Point[] p)

@@ -11,11 +11,11 @@ namespace TOPBanga
         /**
          * Defines the object's position on the x axis
          **/
-        public int posX { get; private set; }
+        public float posX { get; private set; }
         /**
          * Defines the object's position on the y axis
          **/
-        public int posY { get; private set; }
+        public float posY { get; private set; }
         /**
          * Defines the relative delta between two different
          * positions. Will be used for statistics ( Speed and etc. )
@@ -26,14 +26,16 @@ namespace TOPBanga
         private VideoFromFile colorForm;
         public Point lastPos;
         private IWrite eventLog;
+        private IDetector detector;
         public PositionLogger(SURF_Form form)
         {
             this.form = form;
             this.eventLog = new EventLog(Directory.GetCurrentDirectory() + "/event.log");
         }
-        public PositionLogger(VideoFromFile form)
+        public PositionLogger(VideoFromFile form,IDetector detector)
         {
             this.colorForm = form;
+            this.detector = detector;
             this.eventLog = new EventLog(Directory.GetCurrentDirectory() + "event.log");
         }
         /**
@@ -42,7 +44,7 @@ namespace TOPBanga
         public void Update(object o, EventArgs e)
         {
             this.previous_delta = this.delta;
-            this.delta = Math.Abs((this.posX - lastPos.X) ^ 2 + (this.posY - lastPos.Y) ^ 2);
+            this.delta = (int)Math.Abs((this.posX - this.lastPos.X)*(this.posX - this.lastPos.X) + (this.posY - this.lastPos.Y)*(this.posY - this.lastPos.Y));
             /**
             * Invoke function later so that
             * safe access is insured when coming
@@ -59,6 +61,13 @@ namespace TOPBanga
             eventLog.Write("Relative delta: " + this.delta);
             this.posX = lastPos.X;
             this.posY = lastPos.Y;
+
+            float x, y, radius;
+            //detector.DetectBall(out x, out y, out radius);
+
+            //this.posX = x;
+            //this.posY = y;
+
             if (this.delta == 0)
             {
                 switch (this.previous_delta)
