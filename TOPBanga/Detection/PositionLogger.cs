@@ -22,16 +22,10 @@ namespace TOPBanga
          **/
         private int delta;
         private int previous_delta;
-        private SURF_Form form;
         private VideoFromFile colorForm;
         public Point lastPos;
         private IWrite eventLog;
         private IDetector detector;
-        public PositionLogger(SURF_Form form)
-        {
-            this.form = form;
-            this.eventLog = new EventLog(Directory.GetCurrentDirectory() + "/event.log");
-        }
         public PositionLogger(VideoFromFile form,IDetector detector)
         {
             this.colorForm = form;
@@ -50,14 +44,7 @@ namespace TOPBanga
             * safe access is insured when coming
             * from a thread
             */
-            if ( form != null )
-            {
-                form.Invoke(new MethodInvoker(delegate { form.setDeltaText("Relative delta: " + this.delta); }));
-            }
-            else
-            {
                 colorForm.Invoke(new MethodInvoker(delegate { colorForm.setDeltaText("Relative delta: " + this.delta); }));
-            }
             eventLog.Write("Relative delta: " + this.delta);
             this.posX = lastPos.X;
             this.posY = lastPos.Y;
