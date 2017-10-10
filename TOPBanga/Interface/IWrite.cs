@@ -1,12 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace TOPBanga.Interface
+namespace TOPBanga
 {
-    interface IWrite
+    public interface IWrite
     {
         void Write(String ev);
         void Close();

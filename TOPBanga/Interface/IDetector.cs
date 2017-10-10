@@ -1,13 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Emgu.CV;
+using Emgu.CV.Structure;
+using System.Drawing;
 
 namespace TOPBanga
 {
-    interface IDetector
+    public interface IDetector
     {
-        bool DetectBall(out float x, out float y, out float radius);
+        Image<Bgr, byte> image { get; set; }
+        bool DetectBall(out float x, out float y, out float radius, out Bitmap b);
+        void SetBallColorHSV(int h, int s, int v);
+        void SetBallColorHSVFromCoords(int x, int y);
     }
 }

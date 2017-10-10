@@ -1,30 +1,30 @@
 ﻿using Emgu.CV;
 using Emgu.CV.Structure;
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
-using TOPBanga.Detection;
+using System.Timers;
 
 namespace TOPBanga
 {
     public partial class VideoFromFile : Form
     {
 
-        ColorDetector colorDetector;
+        IDetector detector;
+        IGameTracker logger;
         VideoCapture video;
         Mat currentFrame;
-        private PositionLogger logger;
-        public Point lastPos;
+        System.Timers.Timer videoTickTimer;
 
-        public VideoFromFile()
+
+        public VideoFromFile(IDetector detector, IGameTracker logger)
         {
             InitializeComponent();
+
+            this.detector = detector;
+            this.logger = logger;
+
+            videoTickTimer = new System.Timers.Timer();
         }
 
         private void VideoFromFile_Load(object sender, EventArgs e)
@@ -35,13 +35,14 @@ namespace TOPBanga
         private void BrowseButton_Click(object sender, EventArgs e)
         {
             OpenFileDialog openFileDialog = new OpenFileDialog();
+            openFileDialog.Filter = "MP4 file|*.mp4";
             if (openFileDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
             {
                 this.video = new VideoCapture(openFileDialog.FileName);
                 this.currentFrame = this.video.QueryFrame();
                 this.Picture.Image = this.currentFrame.Bitmap;
-                this.logger = new PositionLogger(this);
-                this.colorDetector = new ColorDetector(this.currentFrame.ToImage<Hsv, byte>());
+                Image<Bgr, byte> currentImage = this.currentFrame.ToImage<Bgr, byte>();
+                this.detector.image = currentImage;
             }
         }
 
@@ -50,19 +51,29 @@ namespace TOPBanga
             MouseEventArgs mouseEventArgs = (MouseEventArgs)e;
             int x = mouseEventArgs.X;
             int y = mouseEventArgs.Y;
-            this.colorDetector.ballHsv = new Hsv(this.colorDetector.image.Data[y, x, 0],
-                                                this.colorDetector.image.Data[y, x, 1],
-                                                this.colorDetector.image.Data[y, x, 2]);
+            this.detector.SetBallColorHSVFromCoords(x, y);
         }
 
         private void button1_Click(object sender, EventArgs e)
         {
-            Application.Idle += new EventHandler(delegate (object o, EventArgs args) {
+            this.videoTickTimer.Stop();
+            this.videoTickTimer = new System.Timers.Timer();
+            this.videoTickTimer.Interval = 30;
+            this.videoTickTimer.Elapsed += new ElapsedEventHandler(delegate (object o, ElapsedEventArgs args) {
                 this.currentFrame = this.video.QueryFrame();
-                this.colorDetector.image = this.currentFrame.ToImage<Hsv, byte>();
-                this.Picture.Image = this.colorDetector.img();
+                if(this.currentFrame == null)
+                {
+                    this.videoTickTimer.Stop();
+                    return;
+                }
+                Image<Bgr, byte> currentImage = this.currentFrame.ToImage<Bgr, byte>();
+                this.detector.image = currentImage;
+                if (this.detector.DetectBall(out float x, out float y, out float radius, out Bitmap bitmap))
+                    this.Picture.Image = bitmap;
+                else
+                    this.Picture.Image = currentImage.Bitmap;
             });
-            Application.Idle += new EventHandler(logger.Update);
+            this.videoTickTimer.Start();
         }
         public void setDeltaText(String text)
         {

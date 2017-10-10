@@ -12,40 +12,59 @@ namespace TOPBanga
     class ColorDetector : IDetector
     {
 
-        public Image<Hsv, byte> image { get; set; }
+        public Image<Bgr, byte> image { get; set; }
 
-        public Hsv ballHsv { private get; set; }
+        public Hsv ballHsv {  get; set; }
 
-        public ColorDetector(string path) {
-            this.image = new Image<Hsv, byte>(path);
+        public int threshold { get; set; }
+
+        public ColorDetector()
+        {
+            this.threshold = 35;
         }
 
-        public ColorDetector(Image<Hsv, byte> image)
+        public void SetBallColorHSV(int h, int s, int v)
         {
-            this.image = image;
+            this.ballHsv = new Hsv(h, s, v);
         }
 
-        public Bitmap img()
+        public bool DetectBall(out float x, out float y, out float radius, out Bitmap bitmap)
         {
-            Hsv lowerLimit = new Hsv(ballHsv.Hue - 25, ballHsv.Satuation - 25, ballHsv.Value - 25);
-            Hsv upperLimit = new Hsv(ballHsv.Hue + 25, ballHsv.Satuation + 25, ballHsv.Value + 25);
-
-            Image<Gray, byte> imageHSVDest = this.image.InRange(lowerLimit, upperLimit);
-
-            return imageHSVDest.Bitmap;
-        }
-
-
-        public bool DetectBall(out float x, out float y, out float radius)
-        {
-
-            Hsv lowerLimit = new Hsv(ballHsv.Hue - 25, ballHsv.Satuation - 25, ballHsv.Value - 25);
-            Hsv upperLimit = new Hsv(ballHsv.Hue + 25, ballHsv.Satuation + 25, ballHsv.Value + 25);
-
-            x = CvInvoke.HoughCircles(this.image.InRange(lowerLimit, upperLimit), Emgu.CV.CvEnum.HoughType.Gradient, 1, 10)[0].Center.X;
-            y = CvInvoke.HoughCircles(this.image.InRange(lowerLimit, upperLimit), Emgu.CV.CvEnum.HoughType.Gradient, 1, 10)[0].Center.Y;
+            bool success = false;
+            x = 0;
+            y = 0;
             radius = 0;
-            return true;
+            bitmap = null;
+            Image<Hsv, byte> hsvImg = this.image.Convert<Hsv, byte>();
+
+            Hsv lowerLimit = new Hsv(ballHsv.Hue - this.threshold, ballHsv.Satuation - this.threshold, ballHsv.Value - this.threshold);
+            Hsv upperLimit = new Hsv(ballHsv.Hue + this.threshold, ballHsv.Satuation + this.threshold, ballHsv.Value + this.threshold);
+
+            Image<Gray, byte> imgFiltered = hsvImg.InRange(lowerLimit, upperLimit);
+
+            CircleF[] circles = imgFiltered.HoughCircles(new Gray(12), new Gray(26), 1.9, 10, 0, 0)[0];
+
+            foreach (CircleF c in circles)
+            {
+                this.image.Draw(c, new Bgr(1, 1, 255), 1);
+                success = true;
+                x = c.Center.X;
+                y = c.Center.Y;
+                radius = c.Radius;
+            }
+
+            if (success)
+            {
+                bitmap = this.image.Bitmap;
+            }
+
+            return success;
+        }
+
+        public void SetBallColorHSVFromCoords(int x, int y)
+        {
+            Image<Hsv, byte> hsvImage = this.image.Convert<Hsv, byte>();
+            this.ballHsv = new Hsv(hsvImage.Data[y, x, 0], hsvImage.Data[y, x, 1], hsvImage.Data[y, x, 2]);
         }
     }
 }
