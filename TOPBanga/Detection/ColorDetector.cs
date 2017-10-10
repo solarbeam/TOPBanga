@@ -13,7 +13,7 @@ namespace TOPBanga
     {
         public Image<Bgr, byte> image { get; set; }
 
-        public Hsv ballHsv {  get; set; }
+        public Hsv ballHsv { get; set; }
 
         public int threshold { get; set; }
 

@@ -10,10 +10,11 @@ namespace TOPBanga
     public partial class VideoFromFile : Form
     {
 
-        IDetector detector;
-        VideoCapture video;
-        Mat currentFrame;
-        System.Timers.Timer videoTickTimer;
+        private IDetector detector;
+        private VideoCapture video;
+        private Mat currentFrame;
+        private System.Timers.Timer videoTickTimer;
+        private bool videoLoaded;
 
 
         public VideoFromFile(IDetector detector)
@@ -36,6 +37,7 @@ namespace TOPBanga
             openFileDialog.Filter = "MP4 file|*.mp4";
             if (openFileDialog.ShowDialog() == DialogResult.OK)
             {
+                this.videoLoaded = true;
                 this.video = new VideoCapture(openFileDialog.FileName);
                 this.currentFrame = this.video.QueryFrame();
                 this.Picture.Image = this.currentFrame.Bitmap;
@@ -50,16 +52,25 @@ namespace TOPBanga
             int x = mouseEventArgs.X;
             int y = mouseEventArgs.Y;
             this.detector.SetBallColorHSVFromCoords(x, y);
+            Image<Hsv, byte> colorImage = new Image<Hsv, byte>(25, 25, this.detector.ballHsv);
+            this.ColorBox.Image = colorImage.Bitmap;
         }
 
-        private void button1_Click(object sender, EventArgs e)
+        public void setDeltaText(String text)
         {
+            this.label1.Text = text;
+        }
+
+        private void DetectionButton_Click(object sender, EventArgs e)
+        {
+            if (!videoLoaded)
+                return;
             this.videoTickTimer.Stop();
             this.videoTickTimer = new System.Timers.Timer();
             this.videoTickTimer.Interval = 30;
             this.videoTickTimer.Elapsed += new ElapsedEventHandler(delegate (object o, ElapsedEventArgs args) {
                 this.currentFrame = this.video.QueryFrame();
-                if(this.currentFrame == null)
+                if (this.currentFrame == null)
                 {
                     this.videoTickTimer.Stop();
                     return;
@@ -72,10 +83,6 @@ namespace TOPBanga
                     this.Picture.Image = currentImage.Bitmap;
             });
             this.videoTickTimer.Start();
-        }
-        public void setDeltaText(String text)
-        {
-            this.label1.Text = text;
         }
     }
 }

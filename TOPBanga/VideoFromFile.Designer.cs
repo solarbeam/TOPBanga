@@ -30,66 +30,77 @@
         {
             this.Picture = new System.Windows.Forms.PictureBox();
             this.BrowseButton = new System.Windows.Forms.Button();
-            this.button1 = new System.Windows.Forms.Button();
+            this.DetectionButton = new System.Windows.Forms.Button();
             this.label1 = new System.Windows.Forms.Label();
+            this.ColorBox = new System.Windows.Forms.PictureBox();
             ((System.ComponentModel.ISupportInitialize)(this.Picture)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.ColorBox)).BeginInit();
             this.SuspendLayout();
             // 
             // Picture
             // 
-            this.Picture.Location = new System.Drawing.Point(1, 0);
-            this.Picture.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.Picture.Location = new System.Drawing.Point(2, 0);
             this.Picture.Name = "Picture";
-            this.Picture.Size = new System.Drawing.Size(659, 387);
+            this.Picture.Size = new System.Drawing.Size(795, 595);
             this.Picture.TabIndex = 0;
             this.Picture.TabStop = false;
             this.Picture.Click += new System.EventHandler(this.Picture_Click);
             // 
             // BrowseButton
             // 
-            this.BrowseButton.Location = new System.Drawing.Point(677, 434);
-            this.BrowseButton.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.BrowseButton.Location = new System.Drawing.Point(872, 66);
             this.BrowseButton.Name = "BrowseButton";
-            this.BrowseButton.Size = new System.Drawing.Size(220, 31);
+            this.BrowseButton.Size = new System.Drawing.Size(330, 48);
             this.BrowseButton.TabIndex = 1;
             this.BrowseButton.Text = "Browse";
             this.BrowseButton.UseVisualStyleBackColor = true;
             this.BrowseButton.Click += new System.EventHandler(this.BrowseButton_Click);
             // 
-            // button1
+            // DetectionButton
             // 
-            this.button1.Location = new System.Drawing.Point(677, 399);
-            this.button1.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(220, 31);
-            this.button1.TabIndex = 2;
-            this.button1.Text = "button1";
-            this.button1.UseVisualStyleBackColor = true;
-            this.button1.Click += new System.EventHandler(this.button1_Click);
+            this.DetectionButton.Location = new System.Drawing.Point(872, 12);
+            this.DetectionButton.Name = "DetectionButton";
+            this.DetectionButton.Size = new System.Drawing.Size(330, 48);
+            this.DetectionButton.TabIndex = 2;
+            this.DetectionButton.Text = "Start Detection";
+            this.DetectionButton.UseVisualStyleBackColor = true;
+            this.DetectionButton.Click += new System.EventHandler(this.DetectionButton_Click);
             // 
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(674, 325);
+            this.label1.Location = new System.Drawing.Point(1011, 500);
+            this.label1.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(35, 13);
+            this.label1.Size = new System.Drawing.Size(51, 20);
             this.label1.TabIndex = 3;
             this.label1.Text = "label1";
+            this.label1.Visible = false;
+            // 
+            // ColorBox
+            // 
+            this.ColorBox.Location = new System.Drawing.Point(803, 12);
+            this.ColorBox.Name = "ColorBox";
+            this.ColorBox.Size = new System.Drawing.Size(63, 102);
+            this.ColorBox.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+            this.ColorBox.TabIndex = 4;
+            this.ColorBox.TabStop = false;
             // 
             // VideoFromFile
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(905, 473);
+            this.ClientSize = new System.Drawing.Size(1214, 798);
+            this.Controls.Add(this.ColorBox);
             this.Controls.Add(this.label1);
-            this.Controls.Add(this.button1);
+            this.Controls.Add(this.DetectionButton);
             this.Controls.Add(this.BrowseButton);
             this.Controls.Add(this.Picture);
-            this.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.Name = "VideoFromFile";
             this.Text = "VideoFromFile";
             this.Load += new System.EventHandler(this.VideoFromFile_Load);
             ((System.ComponentModel.ISupportInitialize)(this.Picture)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.ColorBox)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -99,7 +110,8 @@
 
         private System.Windows.Forms.PictureBox Picture;
         private System.Windows.Forms.Button BrowseButton;
-        private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.Button DetectionButton;
         private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.PictureBox ColorBox;
     }
 }
