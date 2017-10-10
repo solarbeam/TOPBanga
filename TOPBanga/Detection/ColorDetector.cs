@@ -11,7 +11,6 @@ namespace TOPBanga
 {
     class ColorDetector : IDetector
     {
-
         public Image<Hsv, byte> image { get; set; }
 
         public Hsv ballHsv { private get; set; }
@@ -42,10 +41,22 @@ namespace TOPBanga
             Hsv lowerLimit = new Hsv(ballHsv.Hue - 25, ballHsv.Satuation - 25, ballHsv.Value - 25);
             Hsv upperLimit = new Hsv(ballHsv.Hue + 25, ballHsv.Satuation + 25, ballHsv.Value + 25);
 
-            x = CvInvoke.HoughCircles(this.image.InRange(lowerLimit, upperLimit), Emgu.CV.CvEnum.HoughType.Gradient, 1, 10)[0].Center.X;
-            y = CvInvoke.HoughCircles(this.image.InRange(lowerLimit, upperLimit), Emgu.CV.CvEnum.HoughType.Gradient, 1, 10)[0].Center.Y;
-            radius = 0;
-            return true;
+            CircleF[] circle = CvInvoke.HoughCircles(this.image.InRange(lowerLimit, upperLimit), Emgu.CV.CvEnum.HoughType.Gradient, 1, 10);
+
+            if (circle.Length != 0)
+            {
+                x = circle[0].Center.X;
+                y = circle[0].Center.Y;
+                radius = circle[0].Radius;
+                return true;
+            }
+            else
+            {
+                x = 0;
+                y = 0;
+                radius = 0;
+                return false;
+            }
         }
     }
 }

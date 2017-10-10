@@ -40,8 +40,8 @@ namespace TOPBanga
                 this.video = new VideoCapture(openFileDialog.FileName);
                 this.currentFrame = this.video.QueryFrame();
                 this.Picture.Image = this.currentFrame.Bitmap;
-                this.logger = new PositionLogger(this);
                 this.colorDetector = new ColorDetector(this.currentFrame.ToImage<Hsv, byte>());
+                this.logger = new PositionLogger(this,this.colorDetector);
             }
         }
 
