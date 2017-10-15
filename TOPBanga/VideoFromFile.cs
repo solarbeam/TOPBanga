@@ -84,6 +84,5 @@ namespace TOPBanga
             });
             this.videoTickTimer.Start();
         }
-
     }
 }
