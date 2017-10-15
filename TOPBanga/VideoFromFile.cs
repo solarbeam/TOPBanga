@@ -1,4 +1,5 @@
 ﻿using Emgu.CV;
+using Emgu.CV.UI;
 using Emgu.CV.Structure;
 using System;
 using System.Drawing;
@@ -15,8 +16,8 @@ namespace TOPBanga
         private Mat currentFrame;
         private System.Timers.Timer videoTickTimer;
         private bool videoLoaded;
-
-
+        private VideoCapture webcam;
+        private bool webcamOn;
         public VideoFromFile(IDetector detector)
         {
             InitializeComponent();
@@ -37,7 +38,9 @@ namespace TOPBanga
             openFileDialog.Filter = "MP4 file|*.mp4";
             if (openFileDialog.ShowDialog() == DialogResult.OK)
             {
+                this.webcamOn = false;
                 this.videoLoaded = true;
+                this.videoTickTimer.Interval = 30;
                 this.video = new VideoCapture(openFileDialog.FileName);
                 this.currentFrame = this.video.QueryFrame();
                 this.Picture.Image = this.currentFrame.Bitmap;
@@ -63,13 +66,15 @@ namespace TOPBanga
 
         private void DetectionButton_Click(object sender, EventArgs e)
         {
-            if (!videoLoaded)
-                return;
             this.videoTickTimer.Stop();
             this.videoTickTimer = new System.Timers.Timer();
-            this.videoTickTimer.Interval = 30;
+                          
             this.videoTickTimer.Elapsed += new ElapsedEventHandler(delegate (object o, ElapsedEventArgs args) {
-                this.currentFrame = this.video.QueryFrame();
+                if (this.videoLoaded)
+                   this.currentFrame = this.video.QueryFrame();
+                else if (this.webcamOn)
+                   this.currentFrame = this.webcam.QueryFrame();
+       
                 if (this.currentFrame == null)
                 {
                     this.videoTickTimer.Stop();
@@ -83,6 +88,33 @@ namespace TOPBanga
                     this.Picture.Image = currentImage.Bitmap;
             });
             this.videoTickTimer.Start();
+            
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            //a
+            this.videoTickTimer.Interval = 80;
+            if (this.videoLoaded)
+            {
+                this.videoTickTimer.Stop();
+                this.videoLoaded = false;
+            }
+            this.webcamOn = true;
+            if (webcam == null)
+            {
+               this.webcamOn = true;
+               this.webcam = new VideoCapture(0); //0 is default camera
+            }
+            this.currentFrame = this.webcam.QueryFrame();
+            this.Picture.Image = this.currentFrame.Bitmap;
+            Image<Bgr, byte> currentImage = this.currentFrame.ToImage<Bgr, byte>();
+            this.detector.image = currentImage;
+        }
+
+        private void ColorBox_Click(object sender, EventArgs e)
+        {
+
         }
     }
 }
