@@ -15,8 +15,20 @@ namespace TOPBanga.Detection.GameUtil
         const double toAdd = 1 / iterations;
         static Boolean Check(GoalZone zone,Coordinates ballPos)
         {
+            /**
+             * The zone can be of any specific shape
+             * These Booleans will help us catch the 
+             *      extreme cases
+             */
+            Boolean left = false;
+            Boolean right = false;
+            Boolean bottom = false;
+            Boolean top = false;
+
             double allowedDiff;
+
             Coordinates toCheck;
+
             /**
              * Start by checking the bottom edge
              */
@@ -28,6 +40,7 @@ namespace TOPBanga.Detection.GameUtil
                 {
                     if (ballPos.Y > toCheck.Y)
                     {
+                        bottom = true;
                         break;
                     }
                     else
@@ -47,6 +60,7 @@ namespace TOPBanga.Detection.GameUtil
                 {
                     if (ballPos.X > toCheck.X)
                     {
+                        left = true;
                         break;
                     }
                     else
@@ -66,6 +80,7 @@ namespace TOPBanga.Detection.GameUtil
                 {
                     if (ballPos.Y < toCheck.Y)
                     {
+                        top = true;
                         break;
                     }
                     else
@@ -75,7 +90,7 @@ namespace TOPBanga.Detection.GameUtil
                     continue;
             }
             /**
-             * Finally, check the left edge
+             * Finally, check the right edge
              */
             allowedDiff = (zone.topRight.Y + zone.bottomRight.Y) / iterations;
             for (double i = 0; i < 1; i += toAdd)
@@ -85,7 +100,8 @@ namespace TOPBanga.Detection.GameUtil
                 {
                     if (ballPos.X > toCheck.X)
                     {
-                        return true;
+                        right = true;
+                        break;
                     }
                     else
                         return false;
@@ -93,7 +109,28 @@ namespace TOPBanga.Detection.GameUtil
                 else
                     continue;
             }
-            return false;
+            
+            /**
+             * Check if all cases were met
+             */
+            if ( top && bottom && left && right )
+            {
+                return true;
+            }
+
+            /**
+             * Check if it's one of the more extreme cases
+             */
+            int value = 0;
+
+            if (bottom) value++;
+            if (left) value++;
+            if (top) value++;
+            if (right) value++;
+
+            if (value >= 2) return true;
+            else
+                return false;
         }
         private static Coordinates getHalfwayPoint(Coordinates one, Coordinates two, double coefficient)
         {

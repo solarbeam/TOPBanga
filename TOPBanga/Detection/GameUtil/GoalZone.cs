@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace TOPBanga.Detection.GameUtil
 {
-    public enum goalSide { Left , Right };
+    enum goalSide { Left , Right };
     class GoalZone
     {
         public Coordinates topLeft { get; private set; }
