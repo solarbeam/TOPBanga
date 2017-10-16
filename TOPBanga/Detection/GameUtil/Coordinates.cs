@@ -10,7 +10,7 @@ namespace TOPBanga.Detection.GameUtil
      * For now it's a class, but we really should
      * convert this class to a struct
      */
-    class Coordinates
+    struct Coordinates
     {
         public double X { get; private set; }
         public double Y { get; private set; }
