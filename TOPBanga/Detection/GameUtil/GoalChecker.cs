@@ -134,7 +134,7 @@ namespace TOPBanga.Detection.GameUtil
         }
         private static Coordinates getHalfwayPoint(Coordinates one, Coordinates two, float coefficient)
         {
-            double x, y;
+            float x, y;
 
             x = (1 - coefficient) * one.X + coefficient * two.X;
             y = (1 - coefficient) * one.Y + coefficient * two.Y;

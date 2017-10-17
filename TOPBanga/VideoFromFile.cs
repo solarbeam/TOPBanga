@@ -16,6 +16,8 @@ namespace TOPBanga
         private System.Timers.Timer videoTickTimer;
         private bool videoLoaded;
 
+        private const int videoInterval = 30;
+
 
         public VideoFromFile(IDetector detector)
         {
@@ -52,7 +54,7 @@ namespace TOPBanga
             int x = mouseEventArgs.X;
             int y = mouseEventArgs.Y;
             this.detector.SetBallColorHSVFromCoords(x, y);
-            Image<Hsv, byte> colorImage = new Image<Hsv, byte>(25, 25, this.detector.ballHsv);
+            Image<Hsv, byte> colorImage = new Image<Hsv, byte>(this.ColorBox.Width, this.ColorBox.Height, this.detector.ballHsv);
             this.ColorBox.Image = colorImage.Bitmap;
         }
 
@@ -67,7 +69,7 @@ namespace TOPBanga
                 return;
             this.videoTickTimer.Stop();
             this.videoTickTimer = new System.Timers.Timer();
-            this.videoTickTimer.Interval = 30;
+            this.videoTickTimer.Interval = videoInterval;
             this.videoTickTimer.Elapsed += new ElapsedEventHandler(delegate (object o, ElapsedEventArgs args) {
                 this.currentFrame = this.video.QueryFrame();
                 if (this.currentFrame == null)
