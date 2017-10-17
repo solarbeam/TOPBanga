@@ -28,7 +28,7 @@ namespace TOPBanga
             this.ballHsv = new Hsv(h, s, v);
         }
 
-        public bool DetectBall(out float x, out float y, out float radius, out Bitmap bitmap)
+        public bool DetectBall(out float x, out float y, out float radius, out Bitmap bitmap, int minRadius = 1)
         {
             bool success = false;
             x = 0;
@@ -46,7 +46,7 @@ namespace TOPBanga
 
             IEnumerable < CircleF > circlesFiltered =
                 from circle in circles
-                where circle.Radius > 1
+                where circle.Radius > minRadius
                 select circle;
 
             foreach (CircleF c in circlesFiltered)
