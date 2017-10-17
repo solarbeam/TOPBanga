@@ -93,6 +93,7 @@ namespace TOPBanga.Detection.GameUtil
                                                 Side side,float allowedDiff,
                                                 float toAdd)
         {
+            Coordinates toCheck;
             for (float i = 0; i <= 1; i += toAdd)
             {
                 if ( side == Side.left )
@@ -133,6 +134,7 @@ namespace TOPBanga.Detection.GameUtil
                                                 Side side,float allowedDiff,
                                                 float toAdd)
         {
+            Coordinates toCheck;
             for (float i = 0; i <= 1; i += toAdd)
             {
                 if ( side == Side.top )
@@ -140,7 +142,7 @@ namespace TOPBanga.Detection.GameUtil
                     toCheck = getHalfwayPoint(zone.topLeft, zone.topRight, i);
                 }
                 else
-                    toCheck = getHalfwayPoint(zone.bottomLeft, zone.BottomRight, i);
+                    toCheck = getHalfwayPoint(zone.bottomLeft, zone.bottomRight, i);
                 
                 if (getDiff(ballPos.X, toCheck.X) <= allowedDiff)
                 {
