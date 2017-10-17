@@ -90,7 +90,7 @@ namespace TOPBanga
 
         private void switchCam_Click(object sender, EventArgs e)
         {
-            this.videoTickTimer.Interval = 80;
+            this.videoTickTimer.Interval = 80; //magic number
             if (this.videoLoaded)
             {
                 this.videoTickTimer.Stop();
