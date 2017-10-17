@@ -80,7 +80,7 @@ namespace TOPBanga.Detection.GameUtil
                                                     Coordinates ballPos,Side side,
                                                     float allowedDiff, float toAdd)
         {
-            if ( side = Side.bottom || side == Side.top )
+            if ( side == Side.bottom || side == Side.top )
             {
                 return InterpolationTB(zone,ballPos,side,allowedDiff,toAdd);
             }
@@ -95,7 +95,7 @@ namespace TOPBanga.Detection.GameUtil
         {
             for (float i = 0; i <= 1; i += toAdd)
             {
-                if ( side = Side.left )
+                if ( side == Side.left )
                 {
                     toCheck = getHalfwayPoint(zone.bottomLeft, zone.topLeft, i);
                 }
@@ -127,6 +127,7 @@ namespace TOPBanga.Detection.GameUtil
                 else
                     continue;
             }
+            return false;
         }
         private static Boolean InterpolationTB(GoalZone zone, Coordinates ballPos,
                                                 Side side,float allowedDiff,
@@ -165,6 +166,7 @@ namespace TOPBanga.Detection.GameUtil
                 else
                     continue;
             }
+            return false;
         }
         private static Coordinates getHalfwayPoint(Coordinates one, Coordinates two, float coefficient)
         {
