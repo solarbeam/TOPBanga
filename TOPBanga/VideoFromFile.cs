@@ -9,8 +9,7 @@ namespace TOPBanga
 {
     public partial class VideoFromFile : Form
     {
-        private const int fileInterval = 30;
-        private const int webcamInterval = 80;
+
         private IDetector detector;
         private VideoCapture video;
         private Mat currentFrame;
@@ -41,7 +40,7 @@ namespace TOPBanga
                 this.webcam = null;
                 this.webcamOn = false;
                 this.videoLoaded = true;
-                this.videoTickTimer.Interval = fileInterval;
+                this.videoTickTimer.Interval = 30;
                 this.video = new VideoCapture(openFileDialog.FileName);
                 this.currentFrame = this.video.QueryFrame();
                 this.Picture.Image = this.currentFrame.Bitmap;
@@ -68,12 +67,12 @@ namespace TOPBanga
         private void DetectionButton_Click(object sender, EventArgs e)
         {
             this.videoTickTimer.Stop();
-            this.videoTickTimer = new System.Timers.Timer();             
+            this.videoTickTimer = new System.Timers.Timer();
             this.videoTickTimer.Elapsed += new ElapsedEventHandler(delegate (object o, ElapsedEventArgs args) {
                 if (this.videoLoaded)
-                   this.currentFrame = this.video.QueryFrame();
+                    this.currentFrame = this.video.QueryFrame();
                 else if (this.webcamOn)
-                   this.currentFrame = this.webcam.QueryFrame();
+                    this.currentFrame = this.webcam.QueryFrame();
                 if (this.currentFrame == null)
                 {
                     this.videoTickTimer.Stop();
@@ -86,12 +85,12 @@ namespace TOPBanga
                 else
                     this.Picture.Image = currentImage.Bitmap;
             });
-            this.videoTickTimer.Start();  
+            this.videoTickTimer.Start();
         }
 
         private void switchCam_Click(object sender, EventArgs e)
         {
-            this.videoTickTimer.Interval = webcamInterval;
+            this.videoTickTimer.Interval = 80; //magic number
             if (this.videoLoaded)
             {
                 this.videoTickTimer.Stop();
