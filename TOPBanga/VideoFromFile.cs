@@ -93,6 +93,7 @@ namespace TOPBanga
 
         private void button1_Click(object sender, EventArgs e)
         {
+            //a
             this.videoTickTimer.Interval = 80;
             if (this.videoLoaded)
             {
