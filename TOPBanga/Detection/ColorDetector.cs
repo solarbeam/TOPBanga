@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Emgu.CV;
 using Emgu.CV.Structure;
 using System.Drawing;
+using System.Collections;
 
 namespace TOPBanga
 {
@@ -27,7 +28,7 @@ namespace TOPBanga
             this.ballHsv = new Hsv(h, s, v);
         }
 
-        public bool DetectBall(out float x, out float y, out float radius, out Bitmap bitmap)
+        public bool DetectBall(out float x, out float y, out float radius, out Bitmap bitmap, int minRadius = 1)
         {
             bool success = false;
             x = 0;
@@ -43,7 +44,12 @@ namespace TOPBanga
 
             CircleF[] circles = imgFiltered.HoughCircles(new Gray(12), new Gray(26), 1.9, 10, 0, 0)[0];
 
-            foreach (CircleF c in circles)
+            IEnumerable < CircleF > circlesFiltered =
+                from circle in circles
+                where circle.Radius > minRadius
+                select circle;
+
+            foreach (CircleF c in circlesFiltered)
             {
                 this.image.Draw(c, new Bgr(1, 1, 255), 1);
                 success = true;

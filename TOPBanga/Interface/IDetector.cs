@@ -8,7 +8,7 @@ namespace TOPBanga
     {
         Image<Bgr, byte> image { get; set; }
         Hsv ballHsv { get; set; }
-        bool DetectBall(out float x, out float y, out float radius, out Bitmap b);
+        bool DetectBall(out float x, out float y, out float radius, out Bitmap b, int minRadius = 1);
         void SetBallColorHSV(int h, int s, int v);
         void SetBallColorHSVFromCoords(int x, int y);
     }
