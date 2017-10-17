@@ -23,9 +23,9 @@ namespace TOPBanga.Detection.GameUtil
             /**
             * Used to define the goal checking accuracy
             */
-            double toAdd = 1 / iterations;
+            float toAdd = 1 / iterations;
 
-            double allowedDiff;
+            float allowedDiff;
 
             Coordinates toCheck;
 
@@ -33,7 +33,7 @@ namespace TOPBanga.Detection.GameUtil
              * Start by checking the bottom edge
              */
             allowedDiff = (zone.bottomLeft.X + zone.bottomRight.X) / iterations;
-            for (double i = 0; i <= 1; i += toAdd)
+            for (float i = 0; i <= 1; i += toAdd)
             {
                 toCheck = getHalfwayPoint(zone.bottomLeft, zone.bottomRight, i);
                 if (getDiff(ballPos.X, toCheck.X) <= allowedDiff)
@@ -53,7 +53,7 @@ namespace TOPBanga.Detection.GameUtil
              * Check left edge
              */
             allowedDiff = (zone.bottomLeft.Y + zone.topLeft.Y) / iterations;
-            for (double i = 0; i <= 1; i += toAdd)
+            for (float i = 0; i <= 1; i += toAdd)
             {
                 toCheck = getHalfwayPoint(zone.bottomLeft, zone.topLeft, i);
                 if (getDiff(ballPos.Y, toCheck.Y) <= allowedDiff)
@@ -73,7 +73,7 @@ namespace TOPBanga.Detection.GameUtil
              * Check top edge
              */
             allowedDiff = (zone.topLeft.X + zone.topRight.X) / iterations;
-            for (double i = 0; i <= 1; i += toAdd)
+            for (float i = 0; i <= 1; i += toAdd)
             {
                 toCheck = getHalfwayPoint(zone.topLeft, zone.topRight, i);
                 if (getDiff(ballPos.X, toCheck.X) <= allowedDiff)
@@ -93,7 +93,7 @@ namespace TOPBanga.Detection.GameUtil
              * Finally, check the right edge
              */
             allowedDiff = (zone.topRight.Y + zone.bottomRight.Y) / iterations;
-            for (double i = 0; i <= 1; i += toAdd)
+            for (float i = 0; i <= 1; i += toAdd)
             {
                 toCheck = getHalfwayPoint(zone.topRight, zone.bottomRight, i);
                 if (getDiff(ballPos.Y, toCheck.Y) <= allowedDiff)
@@ -132,7 +132,7 @@ namespace TOPBanga.Detection.GameUtil
             else
                 return false;
         }
-        private static Coordinates getHalfwayPoint(Coordinates one, Coordinates two, double coefficient)
+        private static Coordinates getHalfwayPoint(Coordinates one, Coordinates two, float coefficient)
         {
             double x, y;
 
@@ -141,7 +141,7 @@ namespace TOPBanga.Detection.GameUtil
 
             return new Coordinates(x, y);
         }
-        private static double getDiff(double one, double two)
+        private static float getDiff(float one, float two)
         {
             if (one > two)
             {
