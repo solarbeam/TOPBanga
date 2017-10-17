@@ -9,8 +9,8 @@ namespace TOPBanga
 {
     public partial class VideoFromFile : Form
     {
-        private int fileInterval = 30;
-        private int webcamInterval = 80;
+        private const int fileInterval = 30;
+        private const int webcamInterval = 80;
         private IDetector detector;
         private VideoCapture video;
         private Mat currentFrame;
@@ -41,7 +41,7 @@ namespace TOPBanga
                 this.webcam = null;
                 this.webcamOn = false;
                 this.videoLoaded = true;
-                this.videoTickTimer.Interval = this.fileInterval;
+                this.videoTickTimer.Interval = fileInterval;
                 this.video = new VideoCapture(openFileDialog.FileName);
                 this.currentFrame = this.video.QueryFrame();
                 this.Picture.Image = this.currentFrame.Bitmap;
@@ -91,7 +91,7 @@ namespace TOPBanga
 
         private void switchCam_Click(object sender, EventArgs e)
         {
-            this.videoTickTimer.Interval = this.webcamInterval;
+            this.videoTickTimer.Interval = webcamInterval;
             if (this.videoLoaded)
             {
                 this.videoTickTimer.Stop();
