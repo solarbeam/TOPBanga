@@ -8,12 +8,7 @@ namespace TOPBanga.Detection.GameUtil
 {
     class GoalChecker
     {
-        /**
-         * Used to define the goal checking accuracy
-         */
-        const uint iterations = 10;
-        const double toAdd = 1 / iterations;
-        static Boolean Check(GoalZone zone,Coordinates ballPos)
+        static Boolean Check(GoalZone zone,Coordinates ballPos,uint iterations = 10)
         {
             /**
              * The zone can be of any specific shape
@@ -25,6 +20,11 @@ namespace TOPBanga.Detection.GameUtil
             Boolean bottom = false;
             Boolean top = false;
 
+            /**
+            * Used to define the goal checking accuracy
+            */
+            double toAdd = 1 / iterations;
+
             double allowedDiff;
 
             Coordinates toCheck;
@@ -33,7 +33,7 @@ namespace TOPBanga.Detection.GameUtil
              * Start by checking the bottom edge
              */
             allowedDiff = (zone.bottomLeft.X + zone.bottomRight.X) / iterations;
-            for (double i = 0; i < 1; i += toAdd)
+            for (double i = 0; i <= 1; i += toAdd)
             {
                 toCheck = getHalfwayPoint(zone.bottomLeft, zone.bottomRight, i);
                 if (getDiff(ballPos.X, toCheck.X) <= allowedDiff)
@@ -53,7 +53,7 @@ namespace TOPBanga.Detection.GameUtil
              * Check left edge
              */
             allowedDiff = (zone.bottomLeft.Y + zone.topLeft.Y) / iterations;
-            for (double i = 0; i < 1; i += toAdd)
+            for (double i = 0; i <= 1; i += toAdd)
             {
                 toCheck = getHalfwayPoint(zone.bottomLeft, zone.topLeft, i);
                 if (getDiff(ballPos.Y, toCheck.Y) <= allowedDiff)
@@ -73,7 +73,7 @@ namespace TOPBanga.Detection.GameUtil
              * Check top edge
              */
             allowedDiff = (zone.topLeft.X + zone.topRight.X) / iterations;
-            for (double i = 0; i < 1; i += toAdd)
+            for (double i = 0; i <= 1; i += toAdd)
             {
                 toCheck = getHalfwayPoint(zone.topLeft, zone.topRight, i);
                 if (getDiff(ballPos.X, toCheck.X) <= allowedDiff)
@@ -93,7 +93,7 @@ namespace TOPBanga.Detection.GameUtil
              * Finally, check the right edge
              */
             allowedDiff = (zone.topRight.Y + zone.bottomRight.Y) / iterations;
-            for (double i = 0; i < 1; i += toAdd)
+            for (double i = 0; i <= 1; i += toAdd)
             {
                 toCheck = getHalfwayPoint(zone.topRight, zone.bottomRight, i);
                 if (getDiff(ballPos.Y, toCheck.Y) <= allowedDiff)
