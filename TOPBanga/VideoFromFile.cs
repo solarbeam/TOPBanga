@@ -38,7 +38,10 @@ namespace TOPBanga
             openFileDialog.Filter = "MP4 file|*.mp4";
             if (openFileDialog.ShowDialog() == DialogResult.OK)
             {
-                this.webcamOn = false;
+                if (this.webcamOn){
+                    this.webcam = null;
+                    this.webcamOn = false;
+                }
                 this.videoLoaded = true;
                 this.videoTickTimer.Interval = 30;
                 this.video = new VideoCapture(openFileDialog.FileName);
