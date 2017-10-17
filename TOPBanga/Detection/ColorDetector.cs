@@ -18,9 +18,21 @@ namespace TOPBanga
 
         public int threshold { get; set; }
 
+        public Bgr circleColor { get; set; }
+
+        public int circleWidth { get; set; }
+
+
         public ColorDetector()
         {
-            this.threshold = 35;
+            this.threshold = 35; // default threshold
+            this.circleColor = new Bgr(1, 1, 255); // the default circle draw color is red
+            this.circleWidth = 1;
+        }
+
+        public ColorDetector(int threshold)
+        {
+            this.threshold = threshold;
         }
 
         public void SetBallColorHSV(int h, int s, int v)
@@ -28,8 +40,10 @@ namespace TOPBanga
             this.ballHsv = new Hsv(h, s, v);
         }
 
-        public bool DetectBall(out float x, out float y, out float radius, out Bitmap bitmap, int minRadius = 1)
+        public bool DetectBall(out float x, out float y, out float radius, out Bitmap bitmap, int minRadius = 1,
+            int cannyThreshold = 12, int accumulatorThreshold = 26, double resolution = 1.9, double minDist = 10, int HoughMinRadius = 0, int HoughMaxRadius = 0)
         {
+            //default returns
             bool success = false;
             x = 0;
             y = 0;
@@ -42,7 +56,7 @@ namespace TOPBanga
 
             Image<Gray, byte> imgFiltered = hsvImg.InRange(lowerLimit, upperLimit);
 
-            CircleF[] circles = imgFiltered.HoughCircles(new Gray(12), new Gray(26), 1.9, 10, 0, 0)[0];
+            CircleF[] circles = imgFiltered.HoughCircles(new Gray(cannyThreshold), new Gray(accumulatorThreshold), resolution, minDist, HoughMinRadius, HoughMaxRadius)[0];
 
             IEnumerable < CircleF > circlesFiltered =
                 from circle in circles
@@ -51,7 +65,7 @@ namespace TOPBanga
 
             foreach (CircleF c in circlesFiltered)
             {
-                this.image.Draw(c, new Bgr(1, 1, 255), 1);
+                this.image.Draw(c, this.circleColor, circleWidth);
                 success = true;
                 x = c.Center.X;
                 y = c.Center.Y;
