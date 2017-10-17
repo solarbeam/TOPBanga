@@ -1,5 +1,4 @@
 ﻿using Emgu.CV;
-using Emgu.CV.UI;
 using Emgu.CV.Structure;
 using System;
 using System.Drawing;
@@ -38,10 +37,8 @@ namespace TOPBanga
             openFileDialog.Filter = "MP4 file|*.mp4";
             if (openFileDialog.ShowDialog() == DialogResult.OK)
             {
-                if (this.webcamOn){
-                    this.webcam = null;
-                    this.webcamOn = false;
-                }
+                this.webcam = null;
+                this.webcamOn = false;
                 this.videoLoaded = true;
                 this.videoTickTimer.Interval = 30;
                 this.video = new VideoCapture(openFileDialog.FileName);
@@ -70,14 +67,12 @@ namespace TOPBanga
         private void DetectionButton_Click(object sender, EventArgs e)
         {
             this.videoTickTimer.Stop();
-            this.videoTickTimer = new System.Timers.Timer();
-                          
+            this.videoTickTimer = new System.Timers.Timer();             
             this.videoTickTimer.Elapsed += new ElapsedEventHandler(delegate (object o, ElapsedEventArgs args) {
                 if (this.videoLoaded)
                    this.currentFrame = this.video.QueryFrame();
                 else if (this.webcamOn)
                    this.currentFrame = this.webcam.QueryFrame();
-       
                 if (this.currentFrame == null)
                 {
                     this.videoTickTimer.Stop();
@@ -90,8 +85,7 @@ namespace TOPBanga
                 else
                     this.Picture.Image = currentImage.Bitmap;
             });
-            this.videoTickTimer.Start();
-            
+            this.videoTickTimer.Start();  
         }
 
         private void switchCam_Click(object sender, EventArgs e)
@@ -102,21 +96,15 @@ namespace TOPBanga
                 this.videoTickTimer.Stop();
                 this.videoLoaded = false;
             }
-            this.webcamOn = true;
             if (webcam == null)
             {
-               this.webcamOn = true;
-               this.webcam = new VideoCapture(0); //0 is default camera
+                this.webcamOn = true;
+                this.webcam = new VideoCapture(0); //0 is default camera
             }
             this.currentFrame = this.webcam.QueryFrame();
             this.Picture.Image = this.currentFrame.Bitmap;
             Image<Bgr, byte> currentImage = this.currentFrame.ToImage<Bgr, byte>();
             this.detector.image = currentImage;
-        }
-
-        private void ColorBox_Click(object sender, EventArgs e)
-        {
-
         }
     }
 }

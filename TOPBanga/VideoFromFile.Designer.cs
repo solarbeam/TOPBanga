@@ -79,7 +79,6 @@
             this.ColorBox.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
             this.ColorBox.TabIndex = 4;
             this.ColorBox.TabStop = false;
-            this.ColorBox.Click += new System.EventHandler(this.ColorBox_Click);
             // 
             // switchCam
             // 
