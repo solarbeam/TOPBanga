@@ -90,7 +90,7 @@
             this.switchCam.TabIndex = 5;
             this.switchCam.Text = "Switch to Webcam";
             this.switchCam.UseVisualStyleBackColor = true;
-            this.switchCam.Click += new System.EventHandler(this.button1_Click);
+            this.switchCam.Click += new System.EventHandler(this.switchCam_Click);
             // 
             // label1
             // 
