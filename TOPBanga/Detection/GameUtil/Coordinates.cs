@@ -6,15 +6,11 @@ using System.Threading.Tasks;
 
 namespace TOPBanga.Detection.GameUtil
 {
-    /**
-     * For now it's a class, but we really should
-     * convert this class to a struct
-     */
     struct Coordinates
     {
-        public double X { get; private set; }
-        public double Y { get; private set; }
-        public Coordinates(double X, double Y)
+        public float X { get; private set; }
+        public float Y { get; private set; }
+        public Coordinates(float X, float Y)
         {
             this.X = X;
             this.Y = Y;

@@ -7,14 +7,11 @@ using System.Threading.Tasks;
 
 namespace TOPBanga.Detection
 {
-    /**
-     * To be renamed
-     */
-    class Colors
+    class ColorContainer
     {
         public List<Hsv> list { get; private set; }
 
-        public Colors()
+        public ColorContainer()
         {
             this.list = new List<Hsv>();
         }
