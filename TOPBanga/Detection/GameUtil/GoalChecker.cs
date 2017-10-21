@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace TOPBanga.Detection.GameUtil
 {
-    enum Side { bottom , top , left , right }
+    enum GoalSide { Bottom , Top , Left , Right }
     class GoalChecker
     {
         static Boolean Check(GoalZone zone,Coordinates ballPos,uint iterations = 10)
@@ -28,31 +28,29 @@ namespace TOPBanga.Detection.GameUtil
 
             float allowedDiff;
 
-            Coordinates toCheck;
-
             /**
              * Start by checking the bottom edge
              */
             allowedDiff = (zone.bottomLeft.X + zone.bottomRight.X) / iterations;
-            bottom = LinearInterpolation(zone,ballPos,Side.bottom,allowedDiff,toAdd);
+            bottom = LinearInterpolation(zone,ballPos,GoalSide.Bottom,allowedDiff,toAdd);
 
             /**
              * Check left edge
              */
             allowedDiff = (zone.bottomLeft.Y + zone.topLeft.Y) / iterations;
-            left = LinearInterpolation(zone,ballPos,Side.left,allowedDiff,toAdd);
+            left = LinearInterpolation(zone,ballPos,GoalSide.Left,allowedDiff,toAdd);
 
             /**
              * Check top edge
              */
             allowedDiff = (zone.topLeft.X + zone.topRight.X) / iterations;
-            top = LinearInterpolation(zone,ballPos,Side.top,allowedDiff,toAdd);
+            top = LinearInterpolation(zone,ballPos,GoalSide.Top,allowedDiff,toAdd);
 
             /**
              * Finally, check the right edge
              */
             allowedDiff = (zone.topRight.Y + zone.bottomRight.Y) / iterations;
-            right = LinearInterpolation(zone,ballPos,Side.right,allowedDiff,toAdd);
+            right = LinearInterpolation(zone,ballPos,GoalSide.Right,allowedDiff,toAdd);
             
             /**
              * Check if all cases were met
@@ -77,10 +75,10 @@ namespace TOPBanga.Detection.GameUtil
                 return false;
         }
         private static Boolean LinearInterpolation(GoalZone zone,
-                                                    Coordinates ballPos,Side side,
+                                                    Coordinates ballPos,GoalSide side,
                                                     float allowedDiff, float toAdd)
         {
-            if ( side == Side.bottom || side == Side.top )
+            if ( side == GoalSide.Bottom || side == GoalSide.Top )
             {
                 return InterpolationTB(zone,ballPos,side,allowedDiff,toAdd);
             }
@@ -90,13 +88,13 @@ namespace TOPBanga.Detection.GameUtil
             }
         }
         private static Boolean InterpolationLF(GoalZone zone, Coordinates ballPos,
-                                                Side side,float allowedDiff,
+                                                GoalSide side,float allowedDiff,
                                                 float toAdd)
         {
             Coordinates toCheck;
             for (float i = 0; i <= 1; i += toAdd)
             {
-                if ( side == Side.left )
+                if ( side == GoalSide.Left )
                 {
                     toCheck = getHalfwayPoint(zone.bottomLeft, zone.topLeft, i);
                 }
@@ -106,7 +104,7 @@ namespace TOPBanga.Detection.GameUtil
                 toCheck = getHalfwayPoint(zone.bottomLeft, zone.bottomRight, i);
                 if (getDiff(ballPos.X, toCheck.X) <= allowedDiff)
                 {
-                    if ( side == Side.left )
+                    if ( side == GoalSide.Left )
                     {
                         if ( ballPos.X > toCheck.X )
                         {
@@ -131,13 +129,13 @@ namespace TOPBanga.Detection.GameUtil
             return false;
         }
         private static Boolean InterpolationTB(GoalZone zone, Coordinates ballPos,
-                                                Side side,float allowedDiff,
+                                                GoalSide side,float allowedDiff,
                                                 float toAdd)
         {
             Coordinates toCheck;
             for (float i = 0; i <= 1; i += toAdd)
             {
-                if ( side == Side.top )
+                if ( side == GoalSide.Top )
                 {
                     toCheck = getHalfwayPoint(zone.topLeft, zone.topRight, i);
                 }
@@ -146,7 +144,7 @@ namespace TOPBanga.Detection.GameUtil
                 
                 if (getDiff(ballPos.X, toCheck.X) <= allowedDiff)
                 {
-                    if ( side == Side.top )
+                    if ( side == GoalSide.Top )
                     {
                         if ( ballPos.Y < toCheck.Y )
                         {
