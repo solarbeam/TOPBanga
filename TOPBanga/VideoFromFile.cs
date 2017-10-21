@@ -4,6 +4,7 @@ using System;
 using System.Drawing;
 using System.Windows.Forms;
 using System.Timers;
+using TOPBanga.Detection;
 
 namespace TOPBanga
 {
@@ -18,6 +19,7 @@ namespace TOPBanga
 
         private const int videoInterval = 30;
 
+        private ColorContainer colorContainer = new ColorContainer();
 
         public VideoFromFile(IDetector detector)
         {
@@ -53,8 +55,8 @@ namespace TOPBanga
             MouseEventArgs mouseEventArgs = (MouseEventArgs)e;
             int x = mouseEventArgs.X;
             int y = mouseEventArgs.Y;
-            this.detector.SetBallColorHSVFromCoords(x, y);
-            Image<Hsv, byte> colorImage = new Image<Hsv, byte>(this.ColorBox.Width, this.ColorBox.Height, this.detector.ballHsv);
+            colorContainer.Add(this.detector.GetBallColorHSVFromCoords(x, y));
+            Image<Hsv, byte> colorImage = new Image<Hsv, byte>(this.ColorBox.Width, this.ColorBox.Height, colorContainer.list[0]);
             this.ColorBox.Image = colorImage.Bitmap;
         }
 
@@ -71,6 +73,7 @@ namespace TOPBanga
             this.videoTickTimer = new System.Timers.Timer();
             this.videoTickTimer.Interval = videoInterval;
             this.videoTickTimer.Elapsed += new ElapsedEventHandler(delegate (object o, ElapsedEventArgs args) {
+                bool circleFound = false;
                 this.currentFrame = this.video.QueryFrame();
                 if (this.currentFrame == null)
                 {
@@ -79,10 +82,23 @@ namespace TOPBanga
                 }
                 Image<Bgr, byte> currentImage = this.currentFrame.ToImage<Bgr, byte>();
                 this.detector.image = currentImage;
-                if (this.detector.DetectBall(out float x, out float y, out float radius, out Bitmap bitmap))
-                    this.Picture.Image = bitmap;
-                else
-                    this.Picture.Image = currentImage.Bitmap;
+                foreach(Hsv i in colorContainer.list)
+                {
+                    if (this.detector.DetectBall(out float x, out float y, out float radius, out Bitmap bitmap,i))
+                    {
+                        this.Picture.Image = bitmap;
+                        circleFound = true;
+                        break;
+                    }
+                }
+                if ( !circleFound )
+                {
+                    /**
+                     * TODO
+                     * 
+                     * Pause the video and ask the user to select the ball
+                     */
+                }
             });
             this.videoTickTimer.Start();
         }

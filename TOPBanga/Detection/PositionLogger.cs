@@ -4,7 +4,7 @@ using System.IO;
 using System.Windows.Forms;
 using TOPBanga.Util;
 
-namespace TOPBanga
+namespace TOPBanga.Detection
 {
     class PositionLogger
     {

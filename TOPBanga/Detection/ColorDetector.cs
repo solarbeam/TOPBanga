@@ -7,14 +7,13 @@ using Emgu.CV;
 using Emgu.CV.Structure;
 using System.Drawing;
 using System.Collections;
+using System.Windows.Forms;
 
-namespace TOPBanga
+namespace TOPBanga.Detection
 {
     class ColorDetector : IDetector
     {
         public Image<Bgr, byte> image { get; set; }
-
-        public Hsv ballHsv { get; set; }
 
         public int threshold { get; set; }
 
@@ -35,12 +34,7 @@ namespace TOPBanga
             this.threshold = threshold;
         }
 
-        public void SetBallColorHSV(int h, int s, int v)
-        {
-            this.ballHsv = new Hsv(h, s, v);
-        }
-
-        public bool DetectBall(out float x, out float y, out float radius, out Bitmap bitmap, int minRadius = 1,
+        public bool DetectBall(out float x, out float y, out float radius, out Bitmap bitmap, Hsv ballHsv, int minRadius = 1,
             int cannyThreshold = 12, int accumulatorThreshold = 26, double resolution = 1.9, double minDist = 10, int HoughMinRadius = 0, int HoughMaxRadius = 0)
         {
             //default returns
@@ -80,12 +74,10 @@ namespace TOPBanga
             return success;
         }
 
-        public void SetBallColorHSVFromCoords(int x, int y)
+        public Hsv GetBallColorHSVFromCoords(int x, int y)
         {
             Image<Hsv, byte> hsvImage = this.image.Convert<Hsv, byte>();
-            this.ballHsv = new Hsv(hsvImage.Data[y, x, 0], hsvImage.Data[y, x, 1], hsvImage.Data[y, x, 2]);
-
-          
+            return new Hsv(hsvImage.Data[y, x, 0], hsvImage.Data[y, x, 1], hsvImage.Data[y, x, 2]);
         }
     }
 }
