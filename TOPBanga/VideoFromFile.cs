@@ -70,7 +70,7 @@ namespace TOPBanga
             this.videoTickTimer.Elapsed += new ElapsedEventHandler(delegate (object o, ElapsedEventArgs args) {
                 if (this.videoLoaded)
                     this.currentFrame = this.video.QueryFrame();
-                else if (webcam == null)
+                else if (this.webcam != null)
                     this.currentFrame = this.webcam.QueryFrame();
                 if (this.currentFrame == null)
                 {
@@ -95,7 +95,7 @@ namespace TOPBanga
                 this.videoTickTimer.Stop();
                 this.videoLoaded = false;
             }
-            if (webcam == null)
+            if (this.webcam == null)
             {
                 this.webcam = new VideoCapture(); 
             }
