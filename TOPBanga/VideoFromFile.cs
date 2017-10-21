@@ -17,7 +17,6 @@ namespace TOPBanga
         private System.Timers.Timer videoTickTimer;
         private bool videoLoaded;
         private VideoCapture webcam;
-        private bool webcamOn;
         public VideoFromFile(IDetector detector)
         {
             InitializeComponent();
@@ -39,7 +38,6 @@ namespace TOPBanga
             if (openFileDialog.ShowDialog() == DialogResult.OK)
             {
                 this.webcam = null;
-                this.webcamOn = false;
                 this.videoLoaded = true;
                 this.videoTickTimer.Interval = videoInterval;
                 this.video = new VideoCapture(openFileDialog.FileName);
@@ -72,7 +70,7 @@ namespace TOPBanga
             this.videoTickTimer.Elapsed += new ElapsedEventHandler(delegate (object o, ElapsedEventArgs args) {
                 if (this.videoLoaded)
                     this.currentFrame = this.video.QueryFrame();
-                else if (this.webcamOn)
+                else if (webcam == null)
                     this.currentFrame = this.webcam.QueryFrame();
                 if (this.currentFrame == null)
                 {
@@ -91,7 +89,7 @@ namespace TOPBanga
 
         private void switchCam_Click(object sender, EventArgs e)
         {
-            this.videoTickTimer.Interval = webcamInterval; //magic number
+            this.videoTickTimer.Interval = webcamInterval;
             if (this.videoLoaded)
             {
                 this.videoTickTimer.Stop();
@@ -99,8 +97,7 @@ namespace TOPBanga
             }
             if (webcam == null)
             {
-                this.webcamOn = true;
-                this.webcam = new VideoCapture(0); //0 is default camera
+                this.webcam = new VideoCapture(); 
             }
             this.currentFrame = this.webcam.QueryFrame();
             this.Picture.Image = this.currentFrame.Bitmap;
