@@ -16,6 +16,7 @@ namespace TOPBanga
         private Mat currentFrame;
         private System.Timers.Timer videoTickTimer;
         private bool videoLoaded;
+        private bool colorNeeded = false;
 
         private const int videoInterval = 30;
 
@@ -47,17 +48,22 @@ namespace TOPBanga
                 this.Picture.Image = this.currentFrame.Bitmap;
                 Image<Bgr, byte> currentImage = this.currentFrame.ToImage<Bgr, byte>();
                 this.detector.image = currentImage;
+                this.colorNeeded = true;
             }
         }
 
         private void Picture_Click(object sender, EventArgs e)
         {
-            MouseEventArgs mouseEventArgs = (MouseEventArgs)e;
-            int x = mouseEventArgs.X;
-            int y = mouseEventArgs.Y;
-            colorContainer.Add(this.detector.GetBallColorHSVFromCoords(x, y));
-            Image<Hsv, byte> colorImage = new Image<Hsv, byte>(this.ColorBox.Width, this.ColorBox.Height, colorContainer.list[0]);
-            this.ColorBox.Image = colorImage.Bitmap;
+            if (this.colorNeeded)
+            {
+                MouseEventArgs mouseEventArgs = (MouseEventArgs)e;
+                int x = mouseEventArgs.X;
+                int y = mouseEventArgs.Y;
+                colorContainer.Add(this.detector.GetBallColorHSVFromCoords(x, y));
+                Image<Hsv, byte> colorImage = new Image<Hsv, byte>(this.ColorBox.Width, this.ColorBox.Height, colorContainer.list[0]);
+                this.ColorBox.Image = colorImage.Bitmap;
+                this.colorNeeded = false;
+            }
         }
 
         public void setDeltaText(String text)
@@ -98,6 +104,9 @@ namespace TOPBanga
                      * 
                      * Pause the video and ask the user to select the ball
                      */
+                    this.videoTickTimer.Stop();
+                    MessageBox.Show("Please select the ball and press Start Detection");
+                    this.colorNeeded = true;
                 }
             });
             this.videoTickTimer.Start();

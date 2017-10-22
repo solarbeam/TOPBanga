@@ -24,7 +24,7 @@ namespace TOPBanga.Detection
 
         public ColorDetector()
         {
-            this.threshold = 35; // default threshold
+            this.threshold = 18; // default threshold
             this.circleColor = new Bgr(1, 1, 255); // the default circle draw color is red
             this.circleWidth = 1;
         }
@@ -43,6 +43,7 @@ namespace TOPBanga.Detection
             y = 0;
             radius = 0;
             bitmap = null;
+            int maxRadius = 20;
             Image<Hsv, byte> hsvImg = this.image.Convert<Hsv, byte>();
 
             Hsv lowerLimit = new Hsv(ballHsv.Hue - this.threshold, ballHsv.Satuation - this.threshold, ballHsv.Value - this.threshold);
@@ -55,6 +56,7 @@ namespace TOPBanga.Detection
             IEnumerable < CircleF > circlesFiltered =
                 from circle in circles
                 where circle.Radius > minRadius
+                     && circle.Radius < maxRadius
                 select circle;
 
             foreach (CircleF c in circlesFiltered)
