@@ -61,6 +61,7 @@
     <Compile Include="Detection\ColorDetector.cs" />
     <Compile Include="Detection\Colors.cs" />
     <Compile Include="Detection\GameUtil\Coordinates.cs" />
+    <Compile Include="Detection\GameUtil\GameController.cs" />
     <Compile Include="Detection\GameUtil\GoalChecker.cs" />
     <Compile Include="Detection\GameUtil\GoalZone.cs" />
     <Compile Include="GameTracker.cs" />

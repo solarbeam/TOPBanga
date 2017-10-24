@@ -19,8 +19,8 @@ namespace TOPBanga
         private System.Timers.Timer videoTickTimer;
         private bool videoLoaded;
         private VideoCapture webcam;
-        private List<GoalZone> goals = new List<GoalZone>();
-        private List<Coordinates> tempCoords = new List<Coordinates>();
+        private GameController gameController;
+        private List<PointF> tempCoords = new List<PointF>();
         private bool markingMode = false;
 
         public VideoFromFile(IDetector detector)
@@ -30,6 +30,7 @@ namespace TOPBanga
             this.detector = detector;
 
             videoTickTimer = new System.Timers.Timer();
+            this.gameController = new GameController();
         }
 
         private void VideoFromFile_Load(object sender, EventArgs e)
@@ -67,14 +68,13 @@ namespace TOPBanga
             }
             else
             {
-                this.tempCoords.Add(new Coordinates(x, y));
+                this.tempCoords.Add(new PointF(x, y));
                 if (this.tempCoords.Count == 4)
                 {
                     this.markingMode = false;
                     this.Toggle_Buttons_Except_Mark_Goals();
-                    this.goals.Add(new GoalZone(this.tempCoords[0], this.tempCoords[1],
-                        this.tempCoords[2], this.tempCoords[3], goalSide.Right));
-                    this.tempCoords = new List<Coordinates>();
+                    this.gameController.AddGoal(this.tempCoords.ToArray());
+                    this.tempCoords = new List<PointF>();
 
                 }
             }
@@ -98,12 +98,8 @@ namespace TOPBanga
                 this.detector.image = currentImage;
                 if (this.detector.DetectBall(out float x, out float y, out float radius, out Bitmap bitmap))
                 {
-                    Coordinates ballCoordinates = new Coordinates(x, y);
-                    foreach(GoalZone zone in this.goals)
-                    {
-                        bitmap = GoalChecker.PaintGoalOn(bitmap, zone);
-                        //bool hit = GoalChecker.Check(zone, ballCoordinates);
-                    }
+                    this.gameController.lastBallCoordinates = new PointF(x, y);
+                    bitmap = this.gameController.PaintGoals(bitmap);
                         
                     this.Picture.Image = bitmap;
 
@@ -145,7 +141,10 @@ namespace TOPBanga
             if (!this.markingMode)
                 this.markingMode = true;
             else
+            {
                 this.markingMode = false;
+            }
+                
         }
     }
 }

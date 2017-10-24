@@ -39,7 +39,7 @@ namespace TOPBanga.Detection.GameUtil
             /**
             * Used to define the goal checking accuracy
             */
-            float toAdd = 1 / iterations;
+            float toAdd = (float )1 / iterations;
 
             float allowedDiff;
 
