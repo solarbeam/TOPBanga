@@ -1,14 +1,30 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace TOPBanga.Detection.GameUtil
 {
-    class GoalChecker
+    public static class GoalChecker
     {
-        static Boolean Check(GoalZone zone,Coordinates ballPos,uint iterations = 10)
+
+        public static Bitmap PaintGoalOn(Bitmap bitmap, GoalZone goalZone, bool colorRed = false) {
+            Graphics graphics = Graphics.FromImage(bitmap);
+            Pen pen;
+            if (!colorRed)
+                pen = new Pen(Color.Blue);
+            else
+                pen = new Pen(Color.Red);
+            graphics.DrawLine(pen, goalZone.topLeft.X, goalZone.topLeft.Y, goalZone.topRight.X, goalZone.topRight.Y);
+            graphics.DrawLine(pen, goalZone.bottomRight.X, goalZone.bottomRight.Y, goalZone.bottomLeft.X, goalZone.bottomLeft.Y);
+            graphics.DrawLine(pen, goalZone.topLeft.X, goalZone.topLeft.Y, goalZone.bottomLeft.X, goalZone.bottomLeft.Y);
+            graphics.DrawLine(pen, goalZone.topRight.X, goalZone.topRight.Y, goalZone.bottomRight.X, goalZone.bottomRight.Y);
+            graphics.Dispose();
+            return bitmap;
+        }
+        public static Boolean Check(GoalZone zone,Coordinates ballPos,uint iterations = 10)
         {
             /**
              * The zone can be of any specific shape
@@ -134,7 +150,7 @@ namespace TOPBanga.Detection.GameUtil
         }
         private static Coordinates getHalfwayPoint(Coordinates one, Coordinates two, float coefficient)
         {
-            double x, y;
+            float x, y;
 
             x = (1 - coefficient) * one.X + coefficient * two.X;
             y = (1 - coefficient) * one.Y + coefficient * two.Y;

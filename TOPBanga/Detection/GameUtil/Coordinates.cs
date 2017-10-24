@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace TOPBanga.Detection.GameUtil
 {
-    struct Coordinates
+    public struct Coordinates
     {
         public float X { get; private set; }
         public float Y { get; private set; }
