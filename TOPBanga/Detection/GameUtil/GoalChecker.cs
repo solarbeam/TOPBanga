@@ -6,7 +6,14 @@ using System.Threading.Tasks;
 
 namespace TOPBanga.Detection.GameUtil
 {
-    enum Side { bottom , top , left , right }
+    enum GoalSide { Bottom, Top, Left, Right }
+    [Flags]
+    enum SidePass {
+        Bottom = 1,
+        Top = 2,
+        Left = 4,
+        Right = 8
+    }
     class GoalChecker
     {
         static Boolean Check(GoalZone zone,Coordinates ballPos,uint iterations = 10)
@@ -16,48 +23,44 @@ namespace TOPBanga.Detection.GameUtil
              * These Booleans will help us catch the 
              *      extreme cases
              */
-            Boolean left = false;
-            Boolean right = false;
-            Boolean bottom = false;
-            Boolean top = false;
+            SidePass flags = 0;
 
             /**
             * Used to define the goal checking accuracy
             */
-            float toAdd = (float) 1 / iterations;
+            float toAdd = 1 / iterations;
 
             float allowedDiff;
-
-            Coordinates toCheck;
 
             /**
              * Start by checking the bottom edge
              */
             allowedDiff = (zone.bottomLeft.X + zone.bottomRight.X) / iterations;
-            bottom = LinearInterpolation(zone,ballPos,Side.bottom,allowedDiff,toAdd);
+            LinearInterpolation(zone,ballPos,GoalSide.Bottom,allowedDiff,toAdd, ref flags);
 
             /**
              * Check left edge
              */
             allowedDiff = (zone.bottomLeft.Y + zone.topLeft.Y) / iterations;
-            left = LinearInterpolation(zone,ballPos,Side.left,allowedDiff,toAdd);
+            LinearInterpolation(zone,ballPos,GoalSide.Left,allowedDiff,toAdd,ref flags);
 
             /**
              * Check top edge
              */
             allowedDiff = (zone.topLeft.X + zone.topRight.X) / iterations;
-            top = LinearInterpolation(zone,ballPos,Side.top,allowedDiff,toAdd);
+            LinearInterpolation(zone,ballPos,GoalSide.Top,allowedDiff,toAdd, ref flags);
 
             /**
              * Finally, check the right edge
              */
             allowedDiff = (zone.topRight.Y + zone.bottomRight.Y) / iterations;
-            right = LinearInterpolation(zone,ballPos,Side.right,allowedDiff,toAdd);
+            LinearInterpolation(zone,ballPos,GoalSide.Right,allowedDiff,toAdd, ref flags);
             
             /**
              * Check if all cases were met
              */
-            if ( top && bottom && left && right )
+            if ( flags.HasFlag(SidePass.Top) && flags.HasFlag(SidePass.Bottom)
+                && flags.HasFlag(SidePass.Left) && flags.HasFlag(SidePass.Right) )
             {
                 return true;
             }
@@ -67,35 +70,36 @@ namespace TOPBanga.Detection.GameUtil
              */
             int value = 0;
 
-            if (bottom) value++;
-            if (left) value++;
-            if (top) value++;
-            if (right) value++;
+            if (flags.HasFlag(SidePass.Top)) value++;
+            if (flags.HasFlag(SidePass.Bottom)) value++;
+            if (flags.HasFlag(SidePass.Left)) value++;
+            if (flags.HasFlag(SidePass.Right)) value++;
 
             if (value >= 2) return true;
             else
                 return false;
         }
-        private static Boolean LinearInterpolation(GoalZone zone,
-                                                    Coordinates ballPos,Side side,
-                                                    float allowedDiff, float toAdd)
+        private static void LinearInterpolation(GoalZone zone,
+                                                    Coordinates ballPos,GoalSide side,
+                                                    float allowedDiff, float toAdd,ref SidePass flags)
         {
-            if ( side == Side.bottom || side == Side.top )
+            if ( side == GoalSide.Bottom || side == GoalSide.Top )
             {
-                return InterpolationTB(zone,ballPos,side,allowedDiff,toAdd);
+                InterpolationTB(zone,ballPos,side,allowedDiff,toAdd,ref flags);
             }
             else
             {
-                return InterpolationLF(zone,ballPos,side,allowedDiff,toAdd);
+                InterpolationLF(zone,ballPos,side,allowedDiff,toAdd, ref flags);
             }
         }
-        private static Boolean InterpolationLF(GoalZone zone, Coordinates ballPos,
-                                                Side side,float allowedDiff,
-                                                float toAdd)
+        private static void InterpolationLF(GoalZone zone, Coordinates ballPos,
+                                                GoalSide side,float allowedDiff,
+                                                float toAdd,ref SidePass flags)
         {
+            Coordinates toCheck;
             for (float i = 0; i <= 1; i += toAdd)
             {
-                if ( side == Side.left )
+                if ( side == GoalSide.Left )
                 {
                     toCheck = getHalfwayPoint(zone.bottomLeft, zone.topLeft, i);
                 }
@@ -105,68 +109,73 @@ namespace TOPBanga.Detection.GameUtil
                 toCheck = getHalfwayPoint(zone.bottomLeft, zone.bottomRight, i);
                 if (getDiff(ballPos.X, toCheck.X) <= allowedDiff)
                 {
-                    if ( side == Side.left )
+                    if ( side == GoalSide.Left )
                     {
-                        if ( ballPos.X > toCheck.X )
+                        if (ballPos.X > toCheck.X)
                         {
-                            return true;
+                            flags |= SidePass.Left;
+                            return;
                         }
                         else
-                            return false;
+                            return;
                     }
                     else
                     {
                         if ( ballPos.X < toCheck.X )
                         {
-                            return true;
+                            flags |= SidePass.Right;
+                            return;
                         }
                         else
-                            return false;
+                            return;
                     }
                 }
                 else
                     continue;
             }
-            return false;
+            return;
         }
-        private static Boolean InterpolationTB(GoalZone zone, Coordinates ballPos,
-                                                Side side,float allowedDiff,
-                                                float toAdd)
+        private static void InterpolationTB(GoalZone zone, Coordinates ballPos,
+                                                GoalSide side,float allowedDiff,
+                                                float toAdd,ref SidePass flags)
         {
+            Coordinates toCheck;
             for (float i = 0; i <= 1; i += toAdd)
             {
-                if ( side == Side.top )
+                if ( side == GoalSide.Top )
                 {
                     toCheck = getHalfwayPoint(zone.topLeft, zone.topRight, i);
                 }
                 else
-                    toCheck = getHalfwayPoint(zone.bottomLeft, zone.BottomRight, i);
+                    toCheck = getHalfwayPoint(zone.bottomLeft, zone.bottomRight, i);
                 
                 if (getDiff(ballPos.X, toCheck.X) <= allowedDiff)
                 {
-                    if ( side == Side.top )
+                    if ( side == GoalSide.Top )
                     {
                         if ( ballPos.Y < toCheck.Y )
                         {
-                            return true;
+                            flags |= SidePass.Top;
+                            return;
                         }
                         else
-                            return false;
+                            return;
                     }
                     else
                     {
                         if ( ballPos.Y > toCheck.Y )
                         {
-                            return true;
+                            flags |= SidePass.Bottom;
+                            return;
                         }
                         else
-                            return false;
+                            return;
                     }
                 }
                 else
                     continue;
             }
-            return false;
+            return;
         }
         private static Coordinates getHalfwayPoint(Coordinates one, Coordinates two, float coefficient)
         {
