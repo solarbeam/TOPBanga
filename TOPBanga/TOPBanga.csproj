@@ -58,6 +58,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Delegates.cs" />
+    <Compile Include="Detection\BlobDetector.cs" />
     <Compile Include="Detection\ColorDetector.cs" />
     <Compile Include="Detection\ColorContainer.cs" />
     <Compile Include="Detection\GameUtil\Coordinates.cs" />

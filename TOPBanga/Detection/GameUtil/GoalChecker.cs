@@ -16,7 +16,7 @@ namespace TOPBanga.Detection.GameUtil
     }
     class GoalChecker
     {
-        static Boolean Check(GoalZone zone,Coordinates ballPos,uint iterations = 10)
+        public static Boolean Check(GoalZone zone,Coordinates ballPos,uint iterations = 10)
         {
             /**
              * The zone can be of any specific shape
@@ -28,34 +28,46 @@ namespace TOPBanga.Detection.GameUtil
             /**
             * Used to define the goal checking accuracy
             */
-            float toAdd = 1 / iterations;
+            float toAdd = (float) 1 / iterations;
 
             float allowedDiff;
 
             /**
              * Start by checking the bottom edge
              */
-            allowedDiff = (zone.bottomLeft.X + zone.bottomRight.X) / iterations;
+            allowedDiff = (float) (zone.bottomLeft.X + zone.bottomRight.X) / iterations;
             LinearInterpolation(zone,ballPos,GoalSide.Bottom,allowedDiff,toAdd, ref flags);
+
+            System.Console.Write("Bottom: ");
+            System.Console.WriteLine(flags.HasFlag(SidePass.Bottom));
 
             /**
              * Check left edge
              */
-            allowedDiff = (zone.bottomLeft.Y + zone.topLeft.Y) / iterations;
+            allowedDiff = (float) (zone.bottomLeft.Y + zone.topLeft.Y) / iterations;
             LinearInterpolation(zone,ballPos,GoalSide.Left,allowedDiff,toAdd,ref flags);
+
+            System.Console.Write("Left: ");
+            System.Console.WriteLine(flags.HasFlag(SidePass.Left));
 
             /**
              * Check top edge
              */
-            allowedDiff = (zone.topLeft.X + zone.topRight.X) / iterations;
+            allowedDiff = (float) (zone.topLeft.X + zone.topRight.X) / iterations;
             LinearInterpolation(zone,ballPos,GoalSide.Top,allowedDiff,toAdd, ref flags);
+
+            System.Console.Write("Top: ");
+            System.Console.WriteLine(flags.HasFlag(SidePass.Top));
 
             /**
              * Finally, check the right edge
              */
-            allowedDiff = (zone.topRight.Y + zone.bottomRight.Y) / iterations;
+            allowedDiff = (float) (zone.topRight.Y + zone.bottomRight.Y) / iterations;
             LinearInterpolation(zone,ballPos,GoalSide.Right,allowedDiff,toAdd, ref flags);
-            
+
+            System.Console.Write("Right: ");
+            System.Console.WriteLine(flags.HasFlag(SidePass.Right));
+
             /**
              * Check if all cases were met
              */
@@ -107,6 +119,7 @@ namespace TOPBanga.Detection.GameUtil
                     toCheck = getHalfwayPoint(zone.bottomRight, zone.topRight, i);
                 
                 toCheck = getHalfwayPoint(zone.bottomLeft, zone.bottomRight, i);
+
                 if (getDiff(ballPos.X, toCheck.X) <= allowedDiff)
                 {
                     if ( side == GoalSide.Left )
