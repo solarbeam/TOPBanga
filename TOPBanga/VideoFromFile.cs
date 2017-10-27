@@ -39,12 +39,13 @@ namespace TOPBanga
         private void BrowseButton_Click(object sender, EventArgs e)
         {
             OpenFileDialog openFileDialog = new OpenFileDialog();
-            openFileDialog.Filter = "MP4 file|*.mp4";
+            openFileDialog.Filter = "MP4 file|*.mp4|AVI file|*.avi";
             if (openFileDialog.ShowDialog() == DialogResult.OK)
             {
                 this.videoLoaded = true;
                 this.video = new VideoCapture(openFileDialog.FileName);
                 this.currentFrame = this.video.QueryFrame();
+                CvInvoke.Resize(this.currentFrame, this.currentFrame, new Size(Picture.Width, Picture.Height));
                 this.Picture.Image = this.currentFrame.Bitmap;
                 Image<Bgr, byte> currentImage = this.currentFrame.ToImage<Bgr, byte>();
                 this.detector.image = currentImage;
@@ -73,7 +74,7 @@ namespace TOPBanga
 
         private void DetectionButton_Click(object sender, EventArgs e)
         {
-            if (!videoLoaded)
+            if (!videoLoaded || colorNeeded)
                 return;
             this.videoTickTimer.Stop();
             this.videoTickTimer = new System.Timers.Timer();
@@ -81,6 +82,7 @@ namespace TOPBanga
             this.videoTickTimer.Elapsed += new ElapsedEventHandler(delegate (object o, ElapsedEventArgs args) {
                 bool circleFound = false;
                 this.currentFrame = this.video.QueryFrame();
+                CvInvoke.Resize(this.currentFrame, this.currentFrame, new Size(Picture.Width,Picture.Height));
                 if (this.currentFrame == null)
                 {
                     this.videoTickTimer.Stop();
@@ -110,6 +112,14 @@ namespace TOPBanga
                 }
             });
             this.videoTickTimer.Start();
+        }
+
+        private void skipFrame_Click(object sender, EventArgs e)
+        {
+            Mat temp = video.QueryFrame();
+            CvInvoke.Resize(temp, temp, new Size(this.Picture.Width, this.Picture.Height));
+            this.Picture.Image = temp.Bitmap;
+            this.detector.image = temp.ToImage<Bgr, byte>();
         }
     }
 }

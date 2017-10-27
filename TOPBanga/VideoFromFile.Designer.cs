@@ -33,6 +33,7 @@
             this.DetectionButton = new System.Windows.Forms.Button();
             this.label1 = new System.Windows.Forms.Label();
             this.ColorBox = new System.Windows.Forms.PictureBox();
+            this.skipFrame = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.Picture)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.ColorBox)).BeginInit();
             this.SuspendLayout();
@@ -40,9 +41,9 @@
             // Picture
             // 
             this.Picture.Location = new System.Drawing.Point(1, 0);
-            this.Picture.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.Picture.Margin = new System.Windows.Forms.Padding(2);
             this.Picture.Name = "Picture";
-            this.Picture.Size = new System.Drawing.Size(1022, 612);
+            this.Picture.Size = new System.Drawing.Size(530, 405);
             this.Picture.TabIndex = 0;
             this.Picture.TabStop = false;
             this.Picture.Click += new System.EventHandler(this.Picture_Click);
@@ -50,7 +51,7 @@
             // BrowseButton
             // 
             this.BrowseButton.Location = new System.Drawing.Point(581, 43);
-            this.BrowseButton.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.BrowseButton.Margin = new System.Windows.Forms.Padding(2);
             this.BrowseButton.Name = "BrowseButton";
             this.BrowseButton.Size = new System.Drawing.Size(220, 31);
             this.BrowseButton.TabIndex = 1;
@@ -61,7 +62,7 @@
             // DetectionButton
             // 
             this.DetectionButton.Location = new System.Drawing.Point(581, 8);
-            this.DetectionButton.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.DetectionButton.Margin = new System.Windows.Forms.Padding(2);
             this.DetectionButton.Name = "DetectionButton";
             this.DetectionButton.Size = new System.Drawing.Size(220, 31);
             this.DetectionButton.TabIndex = 2;
@@ -82,24 +83,35 @@
             // ColorBox
             // 
             this.ColorBox.Location = new System.Drawing.Point(535, 8);
-            this.ColorBox.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.ColorBox.Margin = new System.Windows.Forms.Padding(2);
             this.ColorBox.Name = "ColorBox";
             this.ColorBox.Size = new System.Drawing.Size(42, 66);
             this.ColorBox.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
             this.ColorBox.TabIndex = 4;
             this.ColorBox.TabStop = false;
             // 
+            // skipFrame
+            // 
+            this.skipFrame.Location = new System.Drawing.Point(581, 80);
+            this.skipFrame.Name = "skipFrame";
+            this.skipFrame.Size = new System.Drawing.Size(220, 40);
+            this.skipFrame.TabIndex = 5;
+            this.skipFrame.Text = "Skip frame";
+            this.skipFrame.UseVisualStyleBackColor = true;
+            this.skipFrame.Click += new System.EventHandler(this.skipFrame_Click);
+            // 
             // VideoFromFile
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1075, 638);
+            this.ClientSize = new System.Drawing.Size(828, 425);
+            this.Controls.Add(this.skipFrame);
             this.Controls.Add(this.ColorBox);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.DetectionButton);
             this.Controls.Add(this.BrowseButton);
             this.Controls.Add(this.Picture);
-            this.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.Margin = new System.Windows.Forms.Padding(2);
             this.Name = "VideoFromFile";
             this.Text = "VideoFromFile";
             this.Load += new System.EventHandler(this.VideoFromFile_Load);
@@ -117,5 +129,6 @@
         private System.Windows.Forms.Button DetectionButton;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.PictureBox ColorBox;
+        private System.Windows.Forms.Button skipFrame;
     }
 }

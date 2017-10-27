@@ -25,7 +25,7 @@ namespace TOPBanga.Detection
 
         public ColorDetector()
         {
-            this.threshold = 5; // default threshold
+            this.threshold = 35; // default threshold
             this.circleColor = new Bgr(1, 1, 255); // the default circle draw color is red
             this.circleWidth = 1;
         }
@@ -49,7 +49,7 @@ namespace TOPBanga.Detection
             /*
              * Switch this bool to enable blob detection
              */
-            bool blobTest = false;
+            bool blobTest = true;
 
             Hsv lowerLimit = new Hsv(ballHsv.Hue - this.threshold, ballHsv.Satuation - this.threshold, ballHsv.Value - this.threshold);
             Hsv upperLimit = new Hsv(ballHsv.Hue + this.threshold, ballHsv.Satuation + this.threshold, ballHsv.Value + this.threshold);
@@ -64,10 +64,15 @@ namespace TOPBanga.Detection
 
                 count = detector.GetBlobs(imgFiltered, points);
 
-                /**
-                 * Write out how many blobs have been detected
-                 */
-                System.Console.WriteLine(count);
+                if (count == 0)
+                {
+                    /**
+                     * Will change this in the future
+                     */
+                    success = true;
+                    bitmap = this.image.Bitmap;
+                    return true;
+                }
 
                 /**
                  * Sort blobs by the amount of pixels in them
@@ -79,7 +84,7 @@ namespace TOPBanga.Detection
                     /**
                      * Paint the blob with the highest area
                      */
-                    this.image.Draw(points[1].BoundingBox, new Bgr(255, 255, 255), 2);
+                    this.image.Draw(points[1].BoundingBox, new Bgr(255,255,255), 2);
                     success = true;
                 }
             }
