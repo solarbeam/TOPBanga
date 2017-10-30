@@ -5,6 +5,7 @@ using System.Drawing;
 using System.Windows.Forms;
 using System.Timers;
 using TOPBanga.Detection;
+using System.Threading;
 
 namespace TOPBanga
 {
@@ -117,6 +118,7 @@ namespace TOPBanga
                 MessageBox.Show("Please select the ball and press Start Detection");
                 this.colorNeeded = true;
             }
+            Thread.Sleep((int) video.GetCaptureProperty(Emgu.CV.CvEnum.CapProp.Fps));
         }
 
         private void skipFrame_Click(object sender, EventArgs e)
