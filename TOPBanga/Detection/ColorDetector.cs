@@ -35,8 +35,7 @@ namespace TOPBanga.Detection
             this.threshold = threshold;
         }
 
-        public bool DetectBall(out float x, out float y, out float radius, out Bitmap bitmap, Hsv ballHsv, int minRadius = 1,
-            int cannyThreshold = 12, int accumulatorThreshold = 26, double resolution = 1.9, double minDist = 10, int HoughMinRadius = 0, int HoughMaxRadius = 0)
+        public bool DetectBall(out float x, out float y, out float radius, out Bitmap bitmap, Hsv ballHsv)
         {
             //default returns
             bool success = false;
