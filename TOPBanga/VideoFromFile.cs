@@ -4,6 +4,8 @@ using System;
 using System.Drawing;
 using System.Windows.Forms;
 using System.Timers;
+using TOPBanga.Detection.GameUtil;
+using System.Collections.Generic;
 
 namespace TOPBanga
 {
@@ -17,6 +19,10 @@ namespace TOPBanga
         private System.Timers.Timer videoTickTimer;
         private bool videoLoaded;
         private VideoCapture webcam;
+        private GameController gameController;
+        private List<PointF> tempCoords = new List<PointF>();
+        private bool markingMode = false;
+
         public VideoFromFile(IDetector detector)
         {
             InitializeComponent();
@@ -24,6 +30,7 @@ namespace TOPBanga
             this.detector = detector;
 
             videoTickTimer = new System.Timers.Timer();
+            this.gameController = new GameController();
         }
 
         private void VideoFromFile_Load(object sender, EventArgs e)
@@ -53,14 +60,24 @@ namespace TOPBanga
             MouseEventArgs mouseEventArgs = (MouseEventArgs)e;
             int x = mouseEventArgs.X;
             int y = mouseEventArgs.Y;
-            this.detector.SetBallColorHSVFromCoords(x, y);
-            Image<Hsv, byte> colorImage = new Image<Hsv, byte>(25, 25, this.detector.ballHsv);
-            this.ColorBox.Image = colorImage.Bitmap;
-        }
+            if (!markingMode)
+            {
+                this.detector.SetBallColorHSVFromCoords(x, y);
+                Image<Hsv, byte> colorImage = new Image<Hsv, byte>(25, 25, this.detector.ballHsv);
+                this.ColorBox.Image = colorImage.Bitmap;
+            }
+            else
+            {
+                this.tempCoords.Add(new PointF(x, y));
+                if (this.tempCoords.Count == 4)
+                {
+                    this.markingMode = false;
+                    this.Toggle_Buttons_Except_Mark_Goals();
+                    this.gameController.AddGoal(this.tempCoords.ToArray());
+                    this.tempCoords = new List<PointF>();
 
-        public void setDeltaText(String text)
-        {
-            this.label1.Text = text;
+                }
+            }
         }
 
         private void DetectionButton_Click(object sender, EventArgs e)
@@ -80,7 +97,13 @@ namespace TOPBanga
                 Image<Bgr, byte> currentImage = this.currentFrame.ToImage<Bgr, byte>();
                 this.detector.image = currentImage;
                 if (this.detector.DetectBall(out float x, out float y, out float radius, out Bitmap bitmap))
+                {
+                    this.gameController.lastBallCoordinates = new PointF(x, y);
+                    bitmap = this.gameController.PaintGoals(bitmap);
+                        
                     this.Picture.Image = bitmap;
+
+                }
                 else
                     this.Picture.Image = currentImage.Bitmap;
             });
@@ -103,6 +126,25 @@ namespace TOPBanga
             this.Picture.Image = this.currentFrame.Bitmap;
             Image<Bgr, byte> currentImage = this.currentFrame.ToImage<Bgr, byte>();
             this.detector.image = currentImage;
+        }
+
+        private void Toggle_Buttons_Except_Mark_Goals()
+        {
+            this.DetectionButton.Enabled = !this.DetectionButton.Enabled;
+            this.BrowseButton.Enabled = !this.BrowseButton.Enabled;
+            this.switchCam.Enabled = !this.switchCam.Enabled;
+        }
+
+        private void Mark_Goals_Button_Click(object sender, EventArgs e)
+        {
+            this.Toggle_Buttons_Except_Mark_Goals();
+            if (!this.markingMode)
+                this.markingMode = true;
+            else
+            {
+                this.markingMode = false;
+            }
+                
         }
     }
 }
