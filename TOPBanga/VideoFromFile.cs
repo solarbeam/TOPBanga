@@ -6,26 +6,29 @@ using System.Windows.Forms;
 using System.Timers;
 using TOPBanga.Detection;
 using System.Threading;
+using System.Collections.Generic;
+using TOPBanga.Detection.GameUtil;
 
 namespace TOPBanga
 {
     public partial class VideoFromFile : Form
     {
-
+        private const int videoInterval = 30;
+        private const int webcamInterval = 80;
         private IDetector detector;
         private VideoCapture video;
         private Mat currentFrame;
         private System.Timers.Timer videoTickTimer;
         private bool videoLoaded;
-        private bool added = false;
         private bool colorNeeded = false;
         private bool colorNeededFromThread = false;
-
-        private Hsv initialHsv;
-
-        private const int videoInterval = 30;
-
         private ColorContainer colorContainer = new ColorContainer();
+        private VideoCapture webcam;
+        private GameController gameController;
+        private List<PointF> tempCoords = new List<PointF>();
+        private Hsv initialHsv;
+        private bool markingMode = false;
+        private bool added = false;
 
         public VideoFromFile(IDetector detector)
         {
@@ -34,6 +37,7 @@ namespace TOPBanga
             this.detector = detector;
 
             videoTickTimer = new System.Timers.Timer();
+            this.gameController = new GameController();
         }
 
         private void VideoFromFile_Load(object sender, EventArgs e)
@@ -51,7 +55,9 @@ namespace TOPBanga
                 {
                     this.video.Dispose();
                 }
+                this.webcam = null;
                 this.videoLoaded = true;
+                this.videoTickTimer.Interval = videoInterval;
                 this.video = new VideoCapture(openFileDialog.FileName);
                 this.currentFrame = this.video.QueryFrame();
                 CvInvoke.Resize(this.currentFrame, this.currentFrame, new Size(Picture.Width, Picture.Height));
@@ -64,20 +70,31 @@ namespace TOPBanga
 
         private void Picture_Click(object sender, EventArgs e)
         {
-            if (this.colorNeeded || this.colorNeededFromThread)
+            MouseEventArgs mouseEventArgs = (MouseEventArgs)e;
+            int x = mouseEventArgs.X;
+            int y = mouseEventArgs.Y;
+            if (!markingMode)
             {
-                MouseEventArgs mouseEventArgs = (MouseEventArgs)e;
-                int x = mouseEventArgs.X;
-                int y = mouseEventArgs.Y;
-                this.initialHsv = this.detector.GetBallColorHSVFromCoords(x, y);
-                Image<Hsv, byte> colorImage = new Image<Hsv, byte>(this.ColorBox.Width, this.ColorBox.Height, initialHsv);
-                this.ColorBox.Image = colorImage.Bitmap;
+                if (this.colorNeeded || this.colorNeeded)
+                {
+                    colorContainer.Add(this.detector.GetBallColorHSVFromCoords(x, y));
+                    Image<Hsv, byte> colorImage = new Image<Hsv, byte>(this.ColorBox.Width, this.ColorBox.Height, colorContainer.list[0]);
+                    this.ColorBox.Image = colorImage.Bitmap;
+                    this.colorNeeded = false;
+                }
             }
-        }
+            else
+            {
+                this.tempCoords.Add(new PointF(x, y));
+                if (this.tempCoords.Count == 4)
+                {
+                    this.markingMode = false;
+                    this.Toggle_Buttons_Except_Mark_Goals();
+                    this.gameController.AddGoal(this.tempCoords.ToArray());
+                    this.tempCoords = new List<PointF>();
 
-        public void setDeltaText(String text)
-        {
-            this.label1.Text = text;
+                }
+            }
         }
 
         private void DetectionButton_Click(object sender, EventArgs e)
@@ -103,8 +120,12 @@ namespace TOPBanga
         private void ImageGrabbed(object o, EventArgs e)
         {
             bool circleFound = false;
-            this.video.Retrieve(this.currentFrame);
-            CvInvoke.Resize(this.currentFrame, this.currentFrame, new Size(Picture.Width, Picture.Height));
+            if (this.videoLoaded)
+                this.video.Retrieve(this.currentFrame);
+            if (this.webcam != null)
+                this.currentFrame = this.webcam.QueryFrame();
+            if (this.currentFrame != null)
+                CvInvoke.Resize(this.currentFrame, this.currentFrame, new Size(Picture.Width, Picture.Height));
             if (this.currentFrame == null)
             {
                 this.videoTickTimer.Stop();
@@ -116,9 +137,10 @@ namespace TOPBanga
             {
                 if (this.detector.DetectBall(out float x, out float y, out float radius, out Bitmap bitmap, i))
                 {
+                    this.gameController.lastBallCoordinates = new PointF(x, y);
+                    bitmap = this.gameController.PaintGoals(bitmap);
                     this.Picture.Image = bitmap;
                     circleFound = true;
-                    break;
                 }
             }
             if (!circleFound)
@@ -144,6 +166,43 @@ namespace TOPBanga
                 this.Picture.Image = temp.Bitmap;
                 this.detector.image = temp.ToImage<Bgr, byte>();
             }
+        }
+
+        private void switchCam_Click(object sender, EventArgs e)
+        {
+            this.videoTickTimer.Interval = webcamInterval;
+            if (this.videoLoaded)
+            {
+                this.videoTickTimer.Stop();
+                this.videoLoaded = false;
+            }
+            if (this.webcam == null)
+            {
+                this.webcam = new VideoCapture(); 
+            }
+            this.currentFrame = this.webcam.QueryFrame();
+            this.Picture.Image = this.currentFrame.Bitmap;
+            Image<Bgr, byte> currentImage = this.currentFrame.ToImage<Bgr, byte>();
+            this.detector.image = currentImage;
+        }
+
+        private void Toggle_Buttons_Except_Mark_Goals()
+        {
+            this.DetectionButton.Enabled = !this.DetectionButton.Enabled;
+            this.BrowseButton.Enabled = !this.BrowseButton.Enabled;
+            this.switchCam.Enabled = !this.switchCam.Enabled;
+        }
+
+        private void Mark_Goals_Button_Click(object sender, EventArgs e)
+        {
+            this.Toggle_Buttons_Except_Mark_Goals();
+            if (!this.markingMode)
+                this.markingMode = true;
+            else
+            {
+                this.markingMode = false;
+            }
+
         }
     }
 }

@@ -61,10 +61,7 @@
     <Compile Include="Detection\BlobDetector.cs" />
     <Compile Include="Detection\ColorDetector.cs" />
     <Compile Include="Detection\ColorContainer.cs" />
-    <Compile Include="Detection\GameUtil\Coordinates.cs" />
-    <Compile Include="Detection\GameUtil\GoalChecker.cs" />
-    <Compile Include="Detection\GameUtil\GoalZone.cs" />
-    <Compile Include="GameTracker.cs" />
+    <Compile Include="Detection\GameUtil\GameController.cs" />
     <Compile Include="Interface\IDetector.cs" />
     <Compile Include="Detection\SURF.cs" />
     <Compile Include="Interface\IGameTracker.cs" />
