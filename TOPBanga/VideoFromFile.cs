@@ -84,6 +84,7 @@ namespace TOPBanga
         {
             this.videoTickTimer.Stop();
             this.videoTickTimer = new System.Timers.Timer();
+            this.videoTickTimer.Interval = videoInterval;
             this.videoTickTimer.Elapsed += new ElapsedEventHandler(delegate (object o, ElapsedEventArgs args) {
                 if (this.videoLoaded)
                     this.currentFrame = this.video.QueryFrame();
