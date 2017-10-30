@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using TOPBanga;
+using TOPBanga.Detection;
 
 namespace Test
 {

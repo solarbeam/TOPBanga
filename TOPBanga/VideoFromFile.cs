@@ -4,6 +4,7 @@ using System;
 using System.Drawing;
 using System.Windows.Forms;
 using System.Timers;
+using TOPBanga.Detection;
 using TOPBanga.Detection.GameUtil;
 using System.Collections.Generic;
 
@@ -18,6 +19,8 @@ namespace TOPBanga
         private Mat currentFrame;
         private System.Timers.Timer videoTickTimer;
         private bool videoLoaded;
+        private bool colorNeeded = false;
+        private ColorContainer colorContainer = new ColorContainer();
         private VideoCapture webcam;
         private GameController gameController;
         private List<PointF> tempCoords = new List<PointF>();
@@ -52,6 +55,7 @@ namespace TOPBanga
                 this.Picture.Image = this.currentFrame.Bitmap;
                 Image<Bgr, byte> currentImage = this.currentFrame.ToImage<Bgr, byte>();
                 this.detector.image = currentImage;
+                this.colorNeeded = true;
             }
         }
 
@@ -62,9 +66,13 @@ namespace TOPBanga
             int y = mouseEventArgs.Y;
             if (!markingMode)
             {
-                this.detector.SetBallColorHSVFromCoords(x, y);
-                Image<Hsv, byte> colorImage = new Image<Hsv, byte>(25, 25, this.detector.ballHsv);
-                this.ColorBox.Image = colorImage.Bitmap;
+                if (this.colorNeeded)
+                {
+                    colorContainer.Add(this.detector.GetBallColorHSVFromCoords(x, y));
+                    Image<Hsv, byte> colorImage = new Image<Hsv, byte>(this.ColorBox.Width, this.ColorBox.Height, colorContainer.list[0]);
+                    this.ColorBox.Image = colorImage.Bitmap;
+                    this.colorNeeded = false;
+                }
             }
             else
             {
@@ -86,6 +94,7 @@ namespace TOPBanga
             this.videoTickTimer = new System.Timers.Timer();
             this.videoTickTimer.Interval = videoInterval;
             this.videoTickTimer.Elapsed += new ElapsedEventHandler(delegate (object o, ElapsedEventArgs args) {
+                bool circleFound = false;
                 if (this.videoLoaded)
                     this.currentFrame = this.video.QueryFrame();
                 else if (this.webcam != null)
@@ -97,16 +106,28 @@ namespace TOPBanga
                 }
                 Image<Bgr, byte> currentImage = this.currentFrame.ToImage<Bgr, byte>();
                 this.detector.image = currentImage;
-                if (this.detector.DetectBall(out float x, out float y, out float radius, out Bitmap bitmap))
+                foreach(Hsv i in colorContainer.list)
                 {
-                    this.gameController.lastBallCoordinates = new PointF(x, y);
-                    bitmap = this.gameController.PaintGoals(bitmap);
-                        
-                    this.Picture.Image = bitmap;
+                    if (this.detector.DetectBall(out float x, out float y, out float radius, out Bitmap bitmap, i))
+                    {
+                        this.gameController.lastBallCoordinates = new PointF(x, y);
+                        bitmap = this.gameController.PaintGoals(bitmap);
+                        this.Picture.Image = bitmap;
+                        circleFound = true;
 
+                    }
                 }
-                else
-                    this.Picture.Image = currentImage.Bitmap;
+                if ( !circleFound )
+                {
+                    /**
+                     * TODO
+                     * 
+                     * Pause the video and ask the user to select the ball
+                     */
+                    //this.videoTickTimer.Stop();
+                    //MessageBox.Show("Please select the ball and press Start Detection");
+                    //this.colorNeeded = true;
+                }
             });
             this.videoTickTimer.Start();
         }
