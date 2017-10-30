@@ -61,9 +61,7 @@
     <Compile Include="Detection\ColorDetector.cs" />
     <Compile Include="Detection\Colors.cs" />
     <Compile Include="Detection\GameUtil\GameController.cs" />
-    <Compile Include="GameTracker.cs" />
     <Compile Include="Interface\IDetector.cs" />
-    <Compile Include="Detection\SURF.cs" />
     <Compile Include="Interface\IGameTracker.cs" />
     <Compile Include="Interface\IWrite.cs" />
     <Compile Include="Detection\PositionLogger.cs" />
