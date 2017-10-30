@@ -76,42 +76,42 @@ namespace TOPBanga
         {
             if (!videoLoaded || colorNeeded)
                 return;
-            this.videoTickTimer.Stop();
-            this.videoTickTimer = new System.Timers.Timer();
-            this.videoTickTimer.Interval = videoInterval;
-            this.videoTickTimer.Elapsed += new ElapsedEventHandler(delegate (object o, ElapsedEventArgs args) {
-                bool circleFound = false;
-                this.currentFrame = this.video.QueryFrame();
-                CvInvoke.Resize(this.currentFrame, this.currentFrame, new Size(Picture.Width,Picture.Height));
-                if (this.currentFrame == null)
+            this.video.ImageGrabbed += ImageGrabbed;
+            this.video.Start();
+        }
+
+        private void ImageGrabbed(object o, EventArgs e)
+        {
+            bool circleFound = false;
+            this.video.Retrieve(this.currentFrame);
+            CvInvoke.Resize(this.currentFrame, this.currentFrame, new Size(Picture.Width, Picture.Height));
+            if (this.currentFrame == null)
+            {
+                this.videoTickTimer.Stop();
+                return;
+            }
+            Image<Bgr, byte> currentImage = this.currentFrame.ToImage<Bgr, byte>();
+            this.detector.image = currentImage;
+            foreach (Hsv i in colorContainer.list)
+            {
+                if (this.detector.DetectBall(out float x, out float y, out float radius, out Bitmap bitmap, i))
                 {
-                    this.videoTickTimer.Stop();
-                    return;
+                    this.Picture.Image = bitmap;
+                    circleFound = true;
+                    break;
                 }
-                Image<Bgr, byte> currentImage = this.currentFrame.ToImage<Bgr, byte>();
-                this.detector.image = currentImage;
-                foreach(Hsv i in colorContainer.list)
-                {
-                    if (this.detector.DetectBall(out float x, out float y, out float radius, out Bitmap bitmap,i))
-                    {
-                        this.Picture.Image = bitmap;
-                        circleFound = true;
-                        break;
-                    }
-                }
-                if ( !circleFound )
-                {
-                    /**
-                     * TODO
-                     * 
-                     * Pause the video and ask the user to select the ball
-                     */
-                    this.videoTickTimer.Stop();
-                    MessageBox.Show("Please select the ball and press Start Detection");
-                    this.colorNeeded = true;
-                }
-            });
-            this.videoTickTimer.Start();
+            }
+            if (!circleFound)
+            {
+                /**
+                 * TODO
+                 * 
+                 * Pause the video and ask the user to select the ball
+                 */
+                this.videoTickTimer.Stop();
+                MessageBox.Show("Please select the ball and press Start Detection");
+                this.colorNeeded = true;
+            }
         }
 
         private void skipFrame_Click(object sender, EventArgs e)
