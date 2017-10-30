@@ -63,9 +63,9 @@ namespace TOPBanga.Detection
                 /**
                  * Will change this in the future
                  */
-                success = true;
+                success = false;
                 bitmap = this.image.Bitmap;
-                return true;
+                return false;
             }
 
             /**

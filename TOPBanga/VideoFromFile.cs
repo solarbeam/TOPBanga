@@ -17,7 +17,11 @@ namespace TOPBanga
         private Mat currentFrame;
         private System.Timers.Timer videoTickTimer;
         private bool videoLoaded;
+        private bool added = false;
         private bool colorNeeded = false;
+        private bool colorNeededFromThread = false;
+
+        private Hsv initialHsv;
 
         private const int videoInterval = 30;
 
@@ -60,15 +64,14 @@ namespace TOPBanga
 
         private void Picture_Click(object sender, EventArgs e)
         {
-            if (this.colorNeeded)
+            if (this.colorNeeded || this.colorNeededFromThread)
             {
                 MouseEventArgs mouseEventArgs = (MouseEventArgs)e;
                 int x = mouseEventArgs.X;
                 int y = mouseEventArgs.Y;
-                colorContainer.Add(this.detector.GetBallColorHSVFromCoords(x, y));
-                Image<Hsv, byte> colorImage = new Image<Hsv, byte>(this.ColorBox.Width, this.ColorBox.Height, colorContainer.list[0]);
+                this.initialHsv = this.detector.GetBallColorHSVFromCoords(x, y);
+                Image<Hsv, byte> colorImage = new Image<Hsv, byte>(this.ColorBox.Width, this.ColorBox.Height, initialHsv);
                 this.ColorBox.Image = colorImage.Bitmap;
-                this.colorNeeded = false;
             }
         }
 
@@ -79,9 +82,21 @@ namespace TOPBanga
 
         private void DetectionButton_Click(object sender, EventArgs e)
         {
-            if (!videoLoaded || colorNeeded)
+            if (!videoLoaded || this.ColorBox.Image == null)
                 return;
-            this.video.ImageGrabbed += ImageGrabbed;
+
+            if (this.colorNeededFromThread)
+            {
+                this.detector.image.Dispose();
+                this.colorContainer.Add(initialHsv);
+            }
+            this.colorNeeded = false;
+            this.colorContainer.Add(initialHsv);
+            if ( !added )
+            {
+                this.video.ImageGrabbed += ImageGrabbed;
+                added = true;
+            }
             this.video.Start();
         }
 
@@ -106,7 +121,6 @@ namespace TOPBanga
                     break;
                 }
             }
-            currentImage.Dispose();
             if (!circleFound)
             {
                 /**
@@ -114,7 +128,7 @@ namespace TOPBanga
                  * 
                  * Pause the video and ask the user to select the ball
                  */
-                this.videoTickTimer.Stop();
+                this.video.Pause();
                 MessageBox.Show("Please select the ball and press Start Detection");
                 this.colorNeeded = true;
             }
@@ -123,10 +137,13 @@ namespace TOPBanga
 
         private void skipFrame_Click(object sender, EventArgs e)
         {
-            Mat temp = video.QueryFrame();
-            CvInvoke.Resize(temp, temp, new Size(this.Picture.Width, this.Picture.Height));
-            this.Picture.Image = temp.Bitmap;
-            this.detector.image = temp.ToImage<Bgr, byte>();
+            if ( this.videoLoaded )
+            {
+                Mat temp = video.QueryFrame();
+                CvInvoke.Resize(temp, temp, new Size(this.Picture.Width, this.Picture.Height));
+                this.Picture.Image = temp.Bitmap;
+                this.detector.image = temp.ToImage<Bgr, byte>();
+            }
         }
     }
 }
