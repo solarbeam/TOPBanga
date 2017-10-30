@@ -42,6 +42,10 @@ namespace TOPBanga
             openFileDialog.Filter = "MP4 file|*.mp4|AVI file|*.avi";
             if (openFileDialog.ShowDialog() == DialogResult.OK)
             {
+                if ( this.video != null )
+                {
+                    this.video.Dispose();
+                }
                 this.videoLoaded = true;
                 this.video = new VideoCapture(openFileDialog.FileName);
                 this.currentFrame = this.video.QueryFrame();
@@ -101,6 +105,7 @@ namespace TOPBanga
                     break;
                 }
             }
+            currentImage.Dispose();
             if (!circleFound)
             {
                 /**
