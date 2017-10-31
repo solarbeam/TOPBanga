@@ -70,7 +70,7 @@ namespace TOPBanga.Detection
             /**
              * Sort blobs by the amount of pixels in them
              */
-            points.OrderBy(b => b.Value.Area);
+            points.OrderByDescending(b => b.Value.Area);
 
             if (points.Count != 0)
             {
