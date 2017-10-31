@@ -8,6 +8,7 @@ using Emgu.CV.Structure;
 using System.Drawing;
 using System.Collections;
 using System.Windows.Forms;
+using Emgu.CV.Cvb;
 
 namespace TOPBanga.Detection
 {
@@ -24,7 +25,7 @@ namespace TOPBanga.Detection
 
         public ColorDetector()
         {
-            this.threshold = 18; // default threshold
+            this.threshold = 35; // default threshold
             this.circleColor = new Bgr(1, 1, 255); // the default circle draw color is red
             this.circleWidth = 1;
         }
@@ -34,8 +35,7 @@ namespace TOPBanga.Detection
             this.threshold = threshold;
         }
 
-        public bool DetectBall(out float x, out float y, out float radius, out Bitmap bitmap, Hsv ballHsv, int minRadius = 1,
-            int cannyThreshold = 12, int accumulatorThreshold = 26, double resolution = 1.9, double minDist = 10, int HoughMinRadius = 0, int HoughMaxRadius = 0)
+        public bool DetectBall(out float x, out float y, out float radius, out Bitmap bitmap, Hsv ballHsv)
         {
             //default returns
             bool success = false;
@@ -51,22 +51,37 @@ namespace TOPBanga.Detection
 
             Image<Gray, byte> imgFiltered = hsvImg.InRange(lowerLimit, upperLimit);
 
-            CircleF[] circles = imgFiltered.HoughCircles(new Gray(cannyThreshold), new Gray(accumulatorThreshold), resolution, minDist, HoughMinRadius, HoughMaxRadius)[0];
+            BlobDetector detector = new BlobDetector();
+            CvBlobs points = new CvBlobs();
+            uint count;
 
-            IEnumerable < CircleF > circlesFiltered =
-                from circle in circles
-                where circle.Radius > minRadius
-                     && circle.Radius < maxRadius
-                select circle;
+            count = detector.GetBlobs(imgFiltered, points);
 
-            foreach (CircleF c in circlesFiltered)
+            if (count == 0)
             {
-                this.image.Draw(c, this.circleColor, circleWidth);
-                success = true;
-                x = c.Center.X;
-                y = c.Center.Y;
-                radius = c.Radius;
+                /**
+                 * Will change this in the future
+                 */
+                success = false;
+                bitmap = this.image.Bitmap;
+                return false;
             }
+
+            /**
+             * Sort blobs by the amount of pixels in them
+             */
+            points.OrderByDescending(b => b.Value.Area);
+
+            if (points.Count != 0)
+            {
+                /**
+                 * Paint the blob with the highest area
+                 */
+                this.image.Draw(points[1].BoundingBox, new Bgr(255,255,255), 2);
+                x = points[1].Centroid.X;
+                y = points[1].Centroid.Y;
+                success = true;
+            }  
 
             if (success)
             {

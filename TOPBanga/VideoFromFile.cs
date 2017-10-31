@@ -1,30 +1,30 @@
-﻿using Emgu.CV;
+using Emgu.CV;
 using Emgu.CV.Structure;
 using System;
 using System.Drawing;
 using System.Windows.Forms;
-using System.Timers;
 using TOPBanga.Detection;
-using TOPBanga.Detection.GameUtil;
+using System.Threading;
 using System.Collections.Generic;
+using TOPBanga.Detection.GameUtil;
 
 namespace TOPBanga
 {
     public partial class VideoFromFile : Form
     {
-        private const int videoInterval = 30;
-        private const int webcamInterval = 80;
         private IDetector detector;
         private VideoCapture video;
         private Mat currentFrame;
-        private System.Timers.Timer videoTickTimer;
         private bool videoLoaded;
         private bool colorNeeded = false;
+        private bool colorNeededFromThread = false;
         private ColorContainer colorContainer = new ColorContainer();
         private VideoCapture webcam;
         private GameController gameController;
         private List<PointF> tempCoords = new List<PointF>();
+        private Hsv initialHsv;
         private bool markingMode = false;
+        private bool added = false;
 
         public VideoFromFile(IDetector detector)
         {
@@ -32,7 +32,6 @@ namespace TOPBanga
 
             this.detector = detector;
 
-            videoTickTimer = new System.Timers.Timer();
             this.gameController = new GameController();
         }
 
@@ -44,14 +43,18 @@ namespace TOPBanga
         private void BrowseButton_Click(object sender, EventArgs e)
         {
             OpenFileDialog openFileDialog = new OpenFileDialog();
-            openFileDialog.Filter = "MP4 file|*.mp4";
+            openFileDialog.Filter = "MP4 file|*.mp4|AVI file|*.avi";
             if (openFileDialog.ShowDialog() == DialogResult.OK)
             {
+                if (this.video != null)
+                {
+                    this.video.Dispose();
+                }
                 this.webcam = null;
                 this.videoLoaded = true;
-                this.videoTickTimer.Interval = videoInterval;
                 this.video = new VideoCapture(openFileDialog.FileName);
                 this.currentFrame = this.video.QueryFrame();
+                CvInvoke.Resize(this.currentFrame, this.currentFrame, new Size(Picture.Width, Picture.Height));
                 this.Picture.Image = this.currentFrame.Bitmap;
                 Image<Bgr, byte> currentImage = this.currentFrame.ToImage<Bgr, byte>();
                 this.detector.image = currentImage;
@@ -66,7 +69,7 @@ namespace TOPBanga
             int y = mouseEventArgs.Y;
             if (!markingMode)
             {
-                if (this.colorNeeded)
+                if (this.colorNeeded || this.colorNeededFromThread)
                 {
                     colorContainer.Add(this.detector.GetBallColorHSVFromCoords(x, y));
                     Image<Hsv, byte> colorImage = new Image<Hsv, byte>(this.ColorBox.Width, this.ColorBox.Height, colorContainer.list[0]);
@@ -90,59 +93,89 @@ namespace TOPBanga
 
         private void DetectionButton_Click(object sender, EventArgs e)
         {
-            this.videoTickTimer.Stop();
-            this.videoTickTimer = new System.Timers.Timer();
-            this.videoTickTimer.Interval = videoInterval;
-            this.videoTickTimer.Elapsed += new ElapsedEventHandler(delegate (object o, ElapsedEventArgs args) {
-                bool circleFound = false;
-                if (this.videoLoaded)
-                    this.currentFrame = this.video.QueryFrame();
-                else if (this.webcam != null)
-                    this.currentFrame = this.webcam.QueryFrame();
-                if (this.currentFrame == null)
-                {
-                    this.videoTickTimer.Stop();
-                    return;
-                }
-                Image<Bgr, byte> currentImage = this.currentFrame.ToImage<Bgr, byte>();
-                this.detector.image = currentImage;
-                foreach(Hsv i in colorContainer.list)
-                {
-                    if (this.detector.DetectBall(out float x, out float y, out float radius, out Bitmap bitmap, i))
-                    {
-                        this.gameController.lastBallCoordinates = new PointF(x, y);
-                        bitmap = this.gameController.PaintGoals(bitmap);
-                        this.Picture.Image = bitmap;
-                        circleFound = true;
+            if (!videoLoaded || this.ColorBox.Image == null)
+                return;
 
-                    }
-                }
-                if ( !circleFound )
-                {
-                    /**
-                     * TODO
-                     * 
-                     * Pause the video and ask the user to select the ball
-                     */
-                    //this.videoTickTimer.Stop();
-                    //MessageBox.Show("Please select the ball and press Start Detection");
-                    //this.colorNeeded = true;
-                }
-            });
-            this.videoTickTimer.Start();
+            if (this.colorNeededFromThread)
+            {
+                this.detector.image.Dispose();
+                this.colorContainer.Add(initialHsv);
+                this.colorNeededFromThread = false;
+            }
+            this.colorNeeded = false;
+            this.colorContainer.Add(initialHsv);
+            if (!added)
+            {
+                this.video.ImageGrabbed += ImageGrabbed;
+                added = true;
+            }
+            this.video.Start();
         }
 
-        private void switchCam_Click(object sender, EventArgs e)
+        private void ImageGrabbed(object o, EventArgs e)
         {
-            this.videoTickTimer.Interval = webcamInterval;
+            bool circleFound = false;
+            if (this.videoLoaded)
+                this.video.Retrieve(this.currentFrame);
+            if (this.webcam != null)
+                this.currentFrame = this.webcam.QueryFrame();
+            if (this.currentFrame != null)
+                CvInvoke.Resize(this.currentFrame, this.currentFrame, new Size(Picture.Width, Picture.Height));
+            if (this.currentFrame == null)
+            {
+                //this.videoTickTimer.Stop();
+                return;
+            }
+            Image<Bgr, byte> currentImage = this.currentFrame.ToImage<Bgr, byte>();
+            this.detector.image = currentImage;
+            foreach (Hsv i in colorContainer.list)
+            {
+                if (this.detector.DetectBall(out float x, out float y, out float radius, out Bitmap bitmap, i))
+                {
+                    this.gameController.lastBallCoordinates = new PointF(x, y);
+                    bitmap = this.gameController.PaintGoals(bitmap);
+                    this.Picture.Image = bitmap;
+                    circleFound = true;
+                    break;
+                }
+            }
+            currentImage.Dispose();
+            if (!circleFound)
+            {
+                /**
+                    * TODO
+                    * 
+                    * Pause the video and ask the user to select the ball
+                    */
+               // this.video.Pause();
+               // MessageBox.Show("Please select the ball and press Start Detection");
+                //this.colorNeeded = true;
+            }
+            Thread.Sleep((int)video.GetCaptureProperty(Emgu.CV.CvEnum.CapProp.Fps));
+        }
+
+        private void skipFrame_Click(object sender, EventArgs e)
+        {
             if (this.videoLoaded)
             {
-                this.videoTickTimer.Stop();
+                Mat temp = video.QueryFrame();
+                CvInvoke.Resize(temp, temp, new Size(this.Picture.Width, this.Picture.Height));
+                this.Picture.Image = temp.Bitmap;
+                this.detector.image = temp.ToImage<Bgr, byte>();
+                temp.Dispose();
+            }
+        }
+        [System.Obsolete("Will be moved elsewhere shortly")]
+        private void switchCam_Click(object sender, EventArgs e)
+        {
+            if (this.videoLoaded)
+            {
+                //this.videoTickTimer.Stop();
                 this.videoLoaded = false;
             }
             if (this.webcam == null)
             {
-                this.webcam = new VideoCapture(); 
+                this.webcam = new VideoCapture();
             }
             this.currentFrame = this.webcam.QueryFrame();
             this.Picture.Image = this.currentFrame.Bitmap;
@@ -166,7 +199,9 @@ namespace TOPBanga
             {
                 this.markingMode = false;
             }
-                
+
         }
     }
 }
+
+

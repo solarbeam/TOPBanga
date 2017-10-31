@@ -44,7 +44,6 @@ namespace TOPBanga.Detection
             * safe access is insured when coming
             * from a thread
             */
-                colorForm.Invoke(new MethodInvoker(delegate { colorForm.setDeltaText("Relative delta: " + this.delta); }));
             eventLog.Write("Relative delta: " + this.delta);
             this.posX = lastPos.X;
             this.posY = lastPos.Y;

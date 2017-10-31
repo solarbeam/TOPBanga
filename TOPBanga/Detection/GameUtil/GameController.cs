@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Drawing2D;
@@ -18,7 +18,7 @@ namespace TOPBanga.Detection.GameUtil
 
         public GameController()
         {
-            lastBallCoordinates = new PointF(0 , 0);
+            lastBallCoordinates = new PointF(0, 0);
         }
 
         public Bitmap PaintGoals(Bitmap bitmap)
@@ -26,7 +26,7 @@ namespace TOPBanga.Detection.GameUtil
             Graphics graphics = Graphics.FromImage(bitmap);
             Pen bluePen = new Pen(Color.Blue);
             Pen redPen = new Pen(Color.Red);
-            foreach(GraphicsPath path in goals)
+            foreach (GraphicsPath path in goals)
             {
                 if (path.IsVisible(this.lastBallCoordinates))
                     graphics.DrawPath(redPen, path);

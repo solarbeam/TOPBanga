@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using TOPBanga;
 using TOPBanga.Detection;
+using TOPBanga.Detection.GameUtil;
 
 namespace Test
 {

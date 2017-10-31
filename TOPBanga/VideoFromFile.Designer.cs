@@ -1,4 +1,4 @@
-﻿namespace TOPBanga
+namespace TOPBanga
 {
     partial class VideoFromFile
     {
@@ -34,26 +34,27 @@
             this.ColorBox = new System.Windows.Forms.PictureBox();
             this.switchCam = new System.Windows.Forms.Button();
             this.Mark_Goals_Button = new System.Windows.Forms.Button();
+            this.skipFrame = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.Picture)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.ColorBox)).BeginInit();
             this.SuspendLayout();
             // 
             // Picture
             // 
-            this.Picture.Location = new System.Drawing.Point(2, 0);
-            this.Picture.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.Picture.Location = new System.Drawing.Point(1, 0);
+            this.Picture.Margin = new System.Windows.Forms.Padding(2, 1, 2, 1);
             this.Picture.Name = "Picture";
-            this.Picture.Size = new System.Drawing.Size(720, 450);
+            this.Picture.Size = new System.Drawing.Size(693, 640);
             this.Picture.TabIndex = 0;
             this.Picture.TabStop = false;
             this.Picture.Click += new System.EventHandler(this.Picture_Click);
             // 
             // BrowseButton
             // 
-            this.BrowseButton.Location = new System.Drawing.Point(809, 66);
-            this.BrowseButton.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.BrowseButton.Location = new System.Drawing.Point(698, 60);
+            this.BrowseButton.Margin = new System.Windows.Forms.Padding(2, 1, 2, 1);
             this.BrowseButton.Name = "BrowseButton";
-            this.BrowseButton.Size = new System.Drawing.Size(330, 48);
+            this.BrowseButton.Size = new System.Drawing.Size(293, 48);
             this.BrowseButton.TabIndex = 1;
             this.BrowseButton.Text = "Browse";
             this.BrowseButton.UseVisualStyleBackColor = true;
@@ -61,10 +62,10 @@
             // 
             // DetectionButton
             // 
-            this.DetectionButton.Location = new System.Drawing.Point(809, 14);
-            this.DetectionButton.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.DetectionButton.Location = new System.Drawing.Point(698, 10);
+            this.DetectionButton.Margin = new System.Windows.Forms.Padding(2, 1, 2, 1);
             this.DetectionButton.Name = "DetectionButton";
-            this.DetectionButton.Size = new System.Drawing.Size(330, 48);
+            this.DetectionButton.Size = new System.Drawing.Size(293, 48);
             this.DetectionButton.TabIndex = 2;
             this.DetectionButton.Text = "Start Detection";
             this.DetectionButton.UseVisualStyleBackColor = true;
@@ -72,10 +73,10 @@
             // 
             // ColorBox
             // 
-            this.ColorBox.Location = new System.Drawing.Point(739, 14);
-            this.ColorBox.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.ColorBox.Location = new System.Drawing.Point(699, 286);
+            this.ColorBox.Margin = new System.Windows.Forms.Padding(2, 1, 2, 1);
             this.ColorBox.Name = "ColorBox";
-            this.ColorBox.Size = new System.Drawing.Size(63, 102);
+            this.ColorBox.Size = new System.Drawing.Size(63, 95);
             this.ColorBox.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
             this.ColorBox.TabIndex = 4;
             this.ColorBox.TabStop = false;
@@ -83,10 +84,11 @@
             // switchCam
             // 
             this.switchCam.AccessibleName = "";
-            this.switchCam.Location = new System.Drawing.Point(809, 120);
-            this.switchCam.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.switchCam.Enabled = false;
+            this.switchCam.Location = new System.Drawing.Point(698, 112);
+            this.switchCam.Margin = new System.Windows.Forms.Padding(2, 3, 2, 3);
             this.switchCam.Name = "switchCam";
-            this.switchCam.Size = new System.Drawing.Size(330, 56);
+            this.switchCam.Size = new System.Drawing.Size(293, 48);
             this.switchCam.TabIndex = 5;
             this.switchCam.Text = "Switch to Webcam";
             this.switchCam.UseVisualStyleBackColor = true;
@@ -94,30 +96,46 @@
             // 
             // Mark_Goals_Button
             // 
-            this.Mark_Goals_Button.Location = new System.Drawing.Point(809, 183);
+            this.Mark_Goals_Button.Location = new System.Drawing.Point(698, 165);
+            this.Mark_Goals_Button.Margin = new System.Windows.Forms.Padding(2);
             this.Mark_Goals_Button.Name = "Mark_Goals_Button";
-            this.Mark_Goals_Button.Size = new System.Drawing.Size(330, 56);
+            this.Mark_Goals_Button.Size = new System.Drawing.Size(293, 51);
             this.Mark_Goals_Button.TabIndex = 7;
             this.Mark_Goals_Button.Text = "Mark Goals";
             this.Mark_Goals_Button.UseVisualStyleBackColor = true;
             this.Mark_Goals_Button.Click += new System.EventHandler(this.Mark_Goals_Button_Click);
             // 
+            // skipFrame
+            // 
+            this.skipFrame.Location = new System.Drawing.Point(699, 221);
+            this.skipFrame.Name = "skipFrame";
+            this.skipFrame.Size = new System.Drawing.Size(293, 51);
+            this.skipFrame.TabIndex = 8;
+            this.skipFrame.Text = "Skip frame";
+            this.skipFrame.UseVisualStyleBackColor = true;
+            this.skipFrame.Click += new System.EventHandler(this.skipFrame_Click);
+            // 
             // VideoFromFile
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1155, 641);
+            this.ClientSize = new System.Drawing.Size(1002, 700);
+            this.Controls.Add(this.skipFrame);
             this.Controls.Add(this.Mark_Goals_Button);
             this.Controls.Add(this.switchCam);
             this.Controls.Add(this.ColorBox);
             this.Controls.Add(this.DetectionButton);
             this.Controls.Add(this.BrowseButton);
             this.Controls.Add(this.Picture);
-            this.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
+            this.Margin = new System.Windows.Forms.Padding(2, 1, 2, 1);
+            this.MaximizeBox = false;
+            this.MaximumSize = new System.Drawing.Size(1024, 756);
+            this.MinimizeBox = false;
+            this.MinimumSize = new System.Drawing.Size(1024, 756);
             this.Name = "VideoFromFile";
             this.StartPosition = System.Windows.Forms.FormStartPosition.Manual;
             this.Text = "VideoFromFile";
-            this.WindowState = System.Windows.Forms.FormWindowState.Minimized;
             this.Load += new System.EventHandler(this.VideoFromFile_Load);
             ((System.ComponentModel.ISupportInitialize)(this.Picture)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.ColorBox)).EndInit();
@@ -133,5 +151,6 @@
         private System.Windows.Forms.PictureBox ColorBox;
         private System.Windows.Forms.Button switchCam;
         private System.Windows.Forms.Button Mark_Goals_Button;
+        private System.Windows.Forms.Button skipFrame;
     }
 }
