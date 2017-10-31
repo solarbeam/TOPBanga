@@ -1,4 +1,4 @@
-﻿namespace TOPBanga
+namespace TOPBanga
 {
     partial class VideoFromFile
     {
