@@ -73,7 +73,7 @@ namespace TOPBanga
             // 
             // ColorBox
             // 
-            this.ColorBox.Location = new System.Drawing.Point(698, 222);
+            this.ColorBox.Location = new System.Drawing.Point(699, 286);
             this.ColorBox.Margin = new System.Windows.Forms.Padding(2, 1, 2, 1);
             this.ColorBox.Name = "ColorBox";
             this.ColorBox.Size = new System.Drawing.Size(63, 95);
@@ -95,7 +95,7 @@ namespace TOPBanga
             // 
             // Mark_Goals_Button
             // 
-            this.Mark_Goals_Button.Location = new System.Drawing.Point(698, 111);
+            this.Mark_Goals_Button.Location = new System.Drawing.Point(698, 165);
             this.Mark_Goals_Button.Margin = new System.Windows.Forms.Padding(2);
             this.Mark_Goals_Button.Name = "Mark_Goals_Button";
             this.Mark_Goals_Button.Size = new System.Drawing.Size(293, 51);
@@ -106,7 +106,7 @@ namespace TOPBanga
             // 
             // skipFrame
             // 
-            this.skipFrame.Location = new System.Drawing.Point(697, 167);
+            this.skipFrame.Location = new System.Drawing.Point(699, 221);
             this.skipFrame.Name = "skipFrame";
             this.skipFrame.Size = new System.Drawing.Size(293, 51);
             this.skipFrame.TabIndex = 8;
@@ -121,6 +121,7 @@ namespace TOPBanga
             this.ClientSize = new System.Drawing.Size(1002, 700);
             this.Controls.Add(this.skipFrame);
             this.Controls.Add(this.Mark_Goals_Button);
+            this.Controls.Add(this.switchCam);
             this.Controls.Add(this.ColorBox);
             this.Controls.Add(this.DetectionButton);
             this.Controls.Add(this.BrowseButton);

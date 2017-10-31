@@ -20,6 +20,7 @@ namespace TOPBanga
         private IDetector detector;
         private VideoCapture video;
         private Mat currentFrame;
+        private System.Timers.Timer videoTickTimer;
         private bool videoLoaded;
         private bool colorNeeded = false;
         private bool colorNeededFromThread = false;
@@ -37,6 +38,7 @@ namespace TOPBanga
 
             this.detector = detector;
 
+            videoTickTimer = new System.Timers.Timer();
             this.gameController = new GameController();
         }
 
@@ -57,6 +59,7 @@ namespace TOPBanga
                 }
                 this.webcam = null;
                 this.videoLoaded = true;
+                this.videoTickTimer.Interval = videoInterval;
                 this.video = new VideoCapture(openFileDialog.FileName);
                 this.currentFrame = this.video.QueryFrame();
                 CvInvoke.Resize(this.currentFrame, this.currentFrame, new Size(Picture.Width, Picture.Height));
@@ -126,6 +129,11 @@ namespace TOPBanga
                 this.currentFrame = this.webcam.QueryFrame();
             if (this.currentFrame != null)
                 CvInvoke.Resize(this.currentFrame, this.currentFrame, new Size(Picture.Width, Picture.Height));
+            if (this.currentFrame == null)
+            {
+                this.videoTickTimer.Stop();
+                return;
+            }
             Image<Bgr, byte> currentImage = this.currentFrame.ToImage<Bgr, byte>();
             this.detector.image = currentImage;
             foreach (Hsv i in colorContainer.list)
@@ -166,13 +174,12 @@ namespace TOPBanga
             }
         }
 
-        [System.Obsolete("This method will be moved elsewhere sometime soon")]
         private void switchCam_Click(object sender, EventArgs e)
         {
-            this.colorNeeded = true;
+            this.videoTickTimer.Interval = webcamInterval;
             if (this.videoLoaded)
             {
-                this.video.Stop();
+                this.videoTickTimer.Stop();
                 this.videoLoaded = false;
             }
             if (this.webcam == null)
