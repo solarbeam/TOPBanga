@@ -8,6 +8,8 @@ using TOPBanga.Detection;
 using System.Threading;
 using System.Collections.Generic;
 using TOPBanga.Detection.GameUtil;
+using TOPBanga.Detection.GameUtil;
+using System.Collections.Generic;
 
 namespace TOPBanga
 {
@@ -51,7 +53,7 @@ namespace TOPBanga
             openFileDialog.Filter = "MP4 file|*.mp4|AVI file|*.avi";
             if (openFileDialog.ShowDialog() == DialogResult.OK)
             {
-                if ( this.video != null )
+                if (this.video != null)
                 {
                     this.video.Dispose();
                 }
@@ -75,8 +77,9 @@ namespace TOPBanga
             int y = mouseEventArgs.Y;
             if (!markingMode)
             {
-                if (this.colorNeeded || this.colorNeeded)
+                //if (this.colorNeeded || this.colorNeeded) // there is something missing here
                 {
+                    colorContainer = new ColorContainer();
                     colorContainer.Add(this.detector.GetBallColorHSVFromCoords(x, y));
                     Image<Hsv, byte> colorImage = new Image<Hsv, byte>(this.ColorBox.Width, this.ColorBox.Height, colorContainer.list[0]);
                     this.ColorBox.Image = colorImage.Bitmap;
@@ -109,7 +112,7 @@ namespace TOPBanga
             }
             this.colorNeeded = false;
             this.colorContainer.Add(initialHsv);
-            if ( !added )
+            if (!added)
             {
                 this.video.ImageGrabbed += ImageGrabbed;
                 added = true;
@@ -146,25 +149,26 @@ namespace TOPBanga
             if (!circleFound)
             {
                 /**
-                 * TODO
-                 * 
-                 * Pause the video and ask the user to select the ball
-                 */
-                this.video.Pause();
-                MessageBox.Show("Please select the ball and press Start Detection");
-                this.colorNeeded = true;
+                    * TODO
+                    * 
+                    * Pause the video and ask the user to select the ball
+                    */
+               // this.video.Pause();
+               // MessageBox.Show("Please select the ball and press Start Detection");
+                //this.colorNeeded = true;
             }
-            Thread.Sleep((int) video.GetCaptureProperty(Emgu.CV.CvEnum.CapProp.Fps));
+            Thread.Sleep((int)video.GetCaptureProperty(Emgu.CV.CvEnum.CapProp.Fps));
         }
 
         private void skipFrame_Click(object sender, EventArgs e)
         {
-            if ( this.videoLoaded )
+            if (this.videoLoaded)
             {
                 Mat temp = video.QueryFrame();
                 CvInvoke.Resize(temp, temp, new Size(this.Picture.Width, this.Picture.Height));
                 this.Picture.Image = temp.Bitmap;
                 this.detector.image = temp.ToImage<Bgr, byte>();
+                temp.Dispose();
             }
         }
 
@@ -178,7 +182,7 @@ namespace TOPBanga
             }
             if (this.webcam == null)
             {
-                this.webcam = new VideoCapture(); 
+                this.webcam = new VideoCapture();
             }
             this.currentFrame = this.webcam.QueryFrame();
             this.Picture.Image = this.currentFrame.Bitmap;
@@ -206,3 +210,5 @@ namespace TOPBanga
         }
     }
 }
+
+
