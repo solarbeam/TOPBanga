@@ -144,8 +144,10 @@ namespace TOPBanga
                     bitmap = this.gameController.PaintGoals(bitmap);
                     this.Picture.Image = bitmap;
                     circleFound = true;
+                    break;
                 }
             }
+            currentImage.Dispose();
             if (!circleFound)
             {
                 /**
