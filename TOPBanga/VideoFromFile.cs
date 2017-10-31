@@ -173,7 +173,7 @@ namespace TOPBanga
                 temp.Dispose();
             }
         }
-
+        [System.Obsolete("Will be moved elsewhere shortly")]
         private void switchCam_Click(object sender, EventArgs e)
         {
             this.videoTickTimer.Interval = webcamInterval;

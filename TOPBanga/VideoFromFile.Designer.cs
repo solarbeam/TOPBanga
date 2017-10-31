@@ -84,6 +84,7 @@ namespace TOPBanga
             // switchCam
             // 
             this.switchCam.AccessibleName = "";
+            this.switchCam.Enabled = false;
             this.switchCam.Location = new System.Drawing.Point(698, 112);
             this.switchCam.Margin = new System.Windows.Forms.Padding(2, 3, 2, 3);
             this.switchCam.Name = "switchCam";
