@@ -108,6 +108,7 @@ namespace TOPBanga
             {
                 this.detector.image.Dispose();
                 this.colorContainer.Add(initialHsv);
+                this.colorNeededFromThread = false;
             }
             this.colorNeeded = false;
             this.colorContainer.Add(initialHsv);
