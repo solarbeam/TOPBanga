@@ -77,9 +77,8 @@ namespace TOPBanga
             int y = mouseEventArgs.Y;
             if (!markingMode)
             {
-                //if (this.colorNeeded || this.colorNeeded) // there is something missing here
+                if (this.colorNeeded || this.colorNeededFromThread)
                 {
-                    colorContainer = new ColorContainer();
                     colorContainer.Add(this.detector.GetBallColorHSVFromCoords(x, y));
                     Image<Hsv, byte> colorImage = new Image<Hsv, byte>(this.ColorBox.Width, this.ColorBox.Height, colorContainer.list[0]);
                     this.ColorBox.Image = colorImage.Bitmap;
