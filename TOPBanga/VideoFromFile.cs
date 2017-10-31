@@ -3,24 +3,18 @@ using Emgu.CV.Structure;
 using System;
 using System.Drawing;
 using System.Windows.Forms;
-using System.Timers;
 using TOPBanga.Detection;
 using System.Threading;
 using System.Collections.Generic;
 using TOPBanga.Detection.GameUtil;
-using TOPBanga.Detection.GameUtil;
-using System.Collections.Generic;
 
 namespace TOPBanga
 {
     public partial class VideoFromFile : Form
     {
-        private const int videoInterval = 30;
-        private const int webcamInterval = 80;
         private IDetector detector;
         private VideoCapture video;
         private Mat currentFrame;
-        private System.Timers.Timer videoTickTimer;
         private bool videoLoaded;
         private bool colorNeeded = false;
         private bool colorNeededFromThread = false;
@@ -38,7 +32,6 @@ namespace TOPBanga
 
             this.detector = detector;
 
-            videoTickTimer = new System.Timers.Timer();
             this.gameController = new GameController();
         }
 
@@ -59,7 +52,6 @@ namespace TOPBanga
                 }
                 this.webcam = null;
                 this.videoLoaded = true;
-                this.videoTickTimer.Interval = videoInterval;
                 this.video = new VideoCapture(openFileDialog.FileName);
                 this.currentFrame = this.video.QueryFrame();
                 CvInvoke.Resize(this.currentFrame, this.currentFrame, new Size(Picture.Width, Picture.Height));
@@ -131,7 +123,7 @@ namespace TOPBanga
                 CvInvoke.Resize(this.currentFrame, this.currentFrame, new Size(Picture.Width, Picture.Height));
             if (this.currentFrame == null)
             {
-                this.videoTickTimer.Stop();
+                //this.videoTickTimer.Stop();
                 return;
             }
             Image<Bgr, byte> currentImage = this.currentFrame.ToImage<Bgr, byte>();
@@ -176,10 +168,9 @@ namespace TOPBanga
         [System.Obsolete("Will be moved elsewhere shortly")]
         private void switchCam_Click(object sender, EventArgs e)
         {
-            this.videoTickTimer.Interval = webcamInterval;
             if (this.videoLoaded)
             {
-                this.videoTickTimer.Stop();
+                //this.videoTickTimer.Stop();
                 this.videoLoaded = false;
             }
             if (this.webcam == null)
