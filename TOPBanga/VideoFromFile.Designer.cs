@@ -35,6 +35,7 @@
             this.switchCam = new System.Windows.Forms.Button();
             this.Mark_Goals_Button = new System.Windows.Forms.Button();
             this.skipFrame = new System.Windows.Forms.Button();
+            this.settings = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.Picture)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.ColorBox)).BeginInit();
             this.SuspendLayout();
@@ -114,11 +115,22 @@
             this.skipFrame.UseVisualStyleBackColor = true;
             this.skipFrame.Click += new System.EventHandler(this.skipFrame_Click);
             // 
+            // settings
+            // 
+            this.settings.Location = new System.Drawing.Point(654, 370);
+            this.settings.Name = "settings";
+            this.settings.Size = new System.Drawing.Size(105, 35);
+            this.settings.TabIndex = 9;
+            this.settings.Text = "Settings";
+            this.settings.UseVisualStyleBackColor = true;
+            this.settings.Click += new System.EventHandler(this.settings_Click);
+            // 
             // VideoFromFile
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(770, 417);
+            this.Controls.Add(this.settings);
             this.Controls.Add(this.skipFrame);
             this.Controls.Add(this.Mark_Goals_Button);
             this.Controls.Add(this.switchCam);
@@ -147,5 +159,6 @@
         private System.Windows.Forms.Button switchCam;
         private System.Windows.Forms.Button Mark_Goals_Button;
         private System.Windows.Forms.Button skipFrame;
+        private System.Windows.Forms.Button settings;
     }
 }
