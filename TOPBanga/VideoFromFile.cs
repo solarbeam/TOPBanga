@@ -145,8 +145,10 @@ namespace TOPBanga
                     bitmap = this.gameController.PaintGoals(bitmap);
                     this.Picture.Image = bitmap;
                     circleFound = true;
+                    break;
                 }
             }
+            this.detector.image.Dispose();
             if (!circleFound)
             {
                 /**
@@ -212,7 +214,7 @@ namespace TOPBanga
         private void settings_Click(object sender, EventArgs e)
         {
             SettingsWindow window = new SettingsWindow(this);
-            window.Show();
+            window.ShowDialog();
         }
     }
 }

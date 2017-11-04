@@ -150,6 +150,9 @@
             this.Controls.Add(this.redTeamWinLabel);
             this.Controls.Add(this.redTeamGoalSet);
             this.Controls.Add(this.redTeamGoalLabel);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
+            this.MaximizeBox = false;
+            this.MinimizeBox = false;
             this.Name = "SettingsWindow";
             this.Text = "SettingsWindow";
             this.ResumeLayout(false);
