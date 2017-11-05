@@ -32,10 +32,6 @@ namespace TOPBanga.Util
         }
         public void Play(EAlert alertType)
         {
-            /**
-             * #TODO
-             * Add exception handling
-             */
             switch(alertType)
             {
                 case EAlert.RedGoal:
