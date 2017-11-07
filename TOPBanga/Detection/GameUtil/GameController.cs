@@ -42,7 +42,7 @@ namespace TOPBanga.Detection.GameUtil
         {
             this.ballCoordinates = new Queue<PointF>();
             this.lastBallCoordinates = new PointF(0, 0);
-            this.GoalEvent += ((obj, args) => System.Console.WriteLine("WEW lad"));
+            this.GoalEvent += ((obj, args) => System.Console.WriteLine("GOAL"));
         }
 
         public Bitmap PaintGoals(Bitmap bitmap)
@@ -79,11 +79,15 @@ namespace TOPBanga.Detection.GameUtil
             {
                 if (goal.graphicsPath.IsVisible(this.lastBallCoordinates))
                 {
-                    goal.timesTouched++;
-                    if(goal.timesTouched == GOAL_FRAMES_TO_COUNT_GOAL)
+                    goal.framesBallInGoal++;
+                    if(goal.framesBallInGoal == GOAL_FRAMES_TO_COUNT_GOAL)
                     {
                         GoalEvent(this, new EventArgs());
                     }
+                }
+                else {
+                    goal.framesBallInGoal = 0;
+
                 }
             }
         }
@@ -92,12 +96,12 @@ namespace TOPBanga.Detection.GameUtil
     internal class Goal : IDisposable
     {
         public GraphicsPath graphicsPath { get; set; }
-        public int timesTouched { get; set; }
+        public int framesBallInGoal { get; set; }
 
         internal Goal(GraphicsPath graphicsPath)
         {
             this.graphicsPath = graphicsPath;
-            this.timesTouched = 0;
+            this.framesBallInGoal = 0;
         }
 
         public void Dispose() {
