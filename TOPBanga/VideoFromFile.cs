@@ -138,6 +138,10 @@ namespace TOPBanga
                     circleFound = true;
                     break;
                 }
+                else
+                {
+                    this.Picture.Image = currentImage.Bitmap;
+                }
             }
             currentImage.Dispose();
             if (!circleFound)
