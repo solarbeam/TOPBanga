@@ -20,15 +20,15 @@ namespace TOPBanga.Detection
 
         public Bgr drawColor { get; set; }
 
-        public int circleWidth { get; set; }
+        public int drawWidth { get; set; }
 
         private const int MAX_BLOB_LIMIT = 5;
 
         public ColorDetector()
         {
             this.threshold = 40; // default threshold, was raised due to the increase of reliability
-            this.drawColor = new Bgr(255, 1, 1); // the default circle draw color is red
-            this.circleWidth = 1;
+            this.drawColor = new Bgr(255, 1, 1); // the default circle draw color is blue
+            this.drawWidth = 1;
         }
 
         public ColorDetector(int threshold)
@@ -79,7 +79,7 @@ namespace TOPBanga.Detection
                 /**
                  * Paint the blob with the highest area
                  */
-                this.image.Draw(points[1].BoundingBox, drawColor, 2);
+                this.image.Draw(points[1].BoundingBox, this.drawColor, this.drawWidth);
                 x = points[1].Centroid.X;
                 y = points[1].Centroid.Y;
                 success = true;
