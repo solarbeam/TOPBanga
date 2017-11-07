@@ -18,15 +18,16 @@ namespace TOPBanga.Detection
 
         public int threshold { get; set; }
 
-        public Bgr circleColor { get; set; }
+        public Bgr drawColor { get; set; }
 
         public int circleWidth { get; set; }
 
+        private const int MAX_BLOB_LIMIT = 5;
 
         public ColorDetector()
         {
-            this.threshold = 35; // default threshold
-            this.circleColor = new Bgr(1, 1, 255); // the default circle draw color is red
+            this.threshold = 40; // default threshold, was raised due to the increase of reliability
+            this.drawColor = new Bgr(255, 1, 1); // the default circle draw color is red
             this.circleWidth = 1;
         }
 
@@ -43,7 +44,6 @@ namespace TOPBanga.Detection
             y = 0;
             radius = 0;
             bitmap = null;
-            int maxRadius = 20;
             Image<Hsv, byte> hsvImg = this.image.Convert<Hsv, byte>();
 
             Hsv lowerLimit = new Hsv(ballHsv.Hue - this.threshold, ballHsv.Satuation - this.threshold, ballHsv.Value - this.threshold);
@@ -57,6 +57,7 @@ namespace TOPBanga.Detection
 
             count = detector.GetBlobs(imgFiltered, points);
 
+
             if (count == 0)
             {
                 /**
@@ -66,7 +67,8 @@ namespace TOPBanga.Detection
                 bitmap = this.image.Bitmap;
                 return false;
             }
-
+            if (points.Count > MAX_BLOB_LIMIT)
+                return false;
             /**
              * Sort blobs by the amount of pixels in them
              */
@@ -77,7 +79,7 @@ namespace TOPBanga.Detection
                 /**
                  * Paint the blob with the highest area
                  */
-                this.image.Draw(points[1].BoundingBox, new Bgr(255,255,255), 2);
+                this.image.Draw(points[1].BoundingBox, drawColor, 2);
                 x = points[1].Centroid.X;
                 y = points[1].Centroid.Y;
                 success = true;
