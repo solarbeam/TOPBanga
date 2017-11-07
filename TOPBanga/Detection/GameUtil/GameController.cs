@@ -42,7 +42,7 @@ namespace TOPBanga.Detection.GameUtil
         {
             this.ballCoordinates = new Queue<PointF>();
             this.lastBallCoordinates = new PointF(0, 0);
-            this.GoalEvent += ((obj, args) => System.Console.WriteLine("GOAL"));
+            //this.GoalEvent += ((obj, args) => System.Console.WriteLine("GOAL")); // for preview
         }
 
         public Bitmap PaintGoals(Bitmap bitmap)
