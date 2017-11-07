@@ -213,7 +213,7 @@ namespace TOPBanga
 
         private void settings_Click(object sender, EventArgs e)
         {
-            SettingsWindow window = new SettingsWindow(this);
+            SettingsWindow window = new SettingsWindow(this.alerts);
             window.ShowDialog();
         }
     }
