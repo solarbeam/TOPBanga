@@ -259,3 +259,7 @@ paket-files/
 # Python Tools for Visual Studio (PTVS)
 __pycache__/
 *.pyc
+/FoosLiveAndroid/FoosLiveAndroid/Emgu.CV.DebuggerVisualizers.VS2017.dll
+/FoosLiveAndroid/FoosLiveAndroid/Emgu.CV.UI.dll
+/FoosLiveAndroid/FoosLiveAndroid/Emgu.CV.UI.GL.dll
+/FoosLiveAndroid/FoosLiveAndroid/Emgu.CV.World.dll
