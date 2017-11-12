@@ -1,9 +1,8 @@
-﻿using Emgu.CV;
+using Emgu.CV;
 using Emgu.CV.Structure;
 using System;
 using System.Drawing;
 using System.Windows.Forms;
-using System.Timers;
 using TOPBanga.Detection;
 using System.Threading;
 using System.Collections.Generic;
@@ -14,12 +13,9 @@ namespace TOPBanga
 {
     public partial class VideoFromFile : Form
     {
-        private const int videoInterval = 30;
-        private const int webcamInterval = 80;
         private IDetector detector;
         private VideoCapture video;
         private Mat currentFrame;
-        private System.Timers.Timer videoTickTimer;
         private bool videoLoaded;
         private bool colorNeeded = false;
         private bool colorNeededFromThread = false;
@@ -39,7 +35,6 @@ namespace TOPBanga
 
             this.detector = detector;
 
-            videoTickTimer = new System.Timers.Timer();
             this.gameController = new GameController();
             this.alerts = new SoundAlerts();
         }
@@ -55,13 +50,12 @@ namespace TOPBanga
             openFileDialog.Filter = "MP4 file|*.mp4|AVI file|*.avi";
             if (openFileDialog.ShowDialog() == DialogResult.OK)
             {
-                if ( this.video != null )
+                if (this.video != null)
                 {
                     this.video.Dispose();
                 }
                 this.webcam = null;
                 this.videoLoaded = true;
-                this.videoTickTimer.Interval = videoInterval;
                 this.video = new VideoCapture(openFileDialog.FileName);
                 this.currentFrame = this.video.QueryFrame();
                 CvInvoke.Resize(this.currentFrame, this.currentFrame, new Size(Picture.Width, Picture.Height));
@@ -79,7 +73,7 @@ namespace TOPBanga
             int y = mouseEventArgs.Y;
             if (!markingMode)
             {
-                if (this.colorNeeded || this.colorNeeded)
+                if (this.colorNeeded || this.colorNeededFromThread)
                 {
                     colorContainer.Add(this.detector.GetBallColorHSVFromCoords(x, y));
                     Image<Hsv, byte> colorImage = new Image<Hsv, byte>(this.ColorBox.Width, this.ColorBox.Height, colorContainer.list[0]);
@@ -110,10 +104,11 @@ namespace TOPBanga
             {
                 this.detector.image.Dispose();
                 this.colorContainer.Add(initialHsv);
+                this.colorNeededFromThread = false;
             }
             this.colorNeeded = false;
             this.colorContainer.Add(initialHsv);
-            if ( !added )
+            if (!added)
             {
                 this.video.ImageGrabbed += ImageGrabbed;
                 added = true;
@@ -132,7 +127,7 @@ namespace TOPBanga
                 CvInvoke.Resize(this.currentFrame, this.currentFrame, new Size(Picture.Width, Picture.Height));
             if (this.currentFrame == null)
             {
-                this.videoTickTimer.Stop();
+                //this.videoTickTimer.Stop();
                 return;
             }
             Image<Bgr, byte> currentImage = this.currentFrame.ToImage<Bgr, byte>();
@@ -147,44 +142,48 @@ namespace TOPBanga
                     circleFound = true;
                     break;
                 }
+                else
+                {
+                    this.Picture.Image = currentImage.Bitmap;
+                }
             }
-            this.detector.image.Dispose();
+            currentImage.Dispose();
             if (!circleFound)
             {
                 /**
-                 * TODO
-                 * 
-                 * Pause the video and ask the user to select the ball
-                 */
-                this.video.Pause();
-                MessageBox.Show("Please select the ball and press Start Detection");
-                this.colorNeeded = true;
+                    * TODO
+                    * 
+                    * Pause the video and ask the user to select the ball
+                    */
+               // this.video.Pause();
+               // MessageBox.Show("Please select the ball and press Start Detection");
+                //this.colorNeeded = true;
             }
-            Thread.Sleep((int) video.GetCaptureProperty(Emgu.CV.CvEnum.CapProp.Fps));
+            Thread.Sleep((int)video.GetCaptureProperty(Emgu.CV.CvEnum.CapProp.Fps));
         }
 
         private void skipFrame_Click(object sender, EventArgs e)
         {
-            if ( this.videoLoaded )
+            if (this.videoLoaded)
             {
                 Mat temp = video.QueryFrame();
                 CvInvoke.Resize(temp, temp, new Size(this.Picture.Width, this.Picture.Height));
                 this.Picture.Image = temp.Bitmap;
                 this.detector.image = temp.ToImage<Bgr, byte>();
+                temp.Dispose();
             }
         }
-
+        [System.Obsolete("Will be moved elsewhere shortly")]
         private void switchCam_Click(object sender, EventArgs e)
         {
-            this.videoTickTimer.Interval = webcamInterval;
             if (this.videoLoaded)
             {
-                this.videoTickTimer.Stop();
+                //this.videoTickTimer.Stop();
                 this.videoLoaded = false;
             }
             if (this.webcam == null)
             {
-                this.webcam = new VideoCapture(); 
+                this.webcam = new VideoCapture();
             }
             this.currentFrame = this.webcam.QueryFrame();
             this.Picture.Image = this.currentFrame.Bitmap;
@@ -218,3 +217,5 @@ namespace TOPBanga
         }
     }
 }
+
+
