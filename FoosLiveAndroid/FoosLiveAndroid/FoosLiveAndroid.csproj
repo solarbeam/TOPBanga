@@ -117,6 +117,7 @@
     <Compile Include="Util\CameraUtil\CameraGrabber.cs" />
     <Compile Include="Util\CameraUtil\CameraOutputs.cs" />
     <Compile Include="Util\CameraUtil\CameraOptimalSize.cs" />
+    <Compile Include="Util\CameraUtil\CameraTransform.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="GettingStarted.Xamarin" />

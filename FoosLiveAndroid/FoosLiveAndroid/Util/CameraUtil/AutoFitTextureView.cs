@@ -15,8 +15,8 @@ namespace FoosLiveAndroid.Util.CameraUtil
 {
     public class AutoFitTextureView : TextureView
     {
-        private int mRatioWidth = 0;
-        private int mRatioHeight = 0;
+        private int ratioWidth = 0;
+        private int ratioHeight = 0;
 
         public AutoFitTextureView(Context context)
             : this(context, null)
@@ -38,8 +38,8 @@ namespace FoosLiveAndroid.Util.CameraUtil
         {
             if (width == 0 || height == 0)
                 throw new ArgumentException("Size cannot be negative.");
-            mRatioWidth = width;
-            mRatioHeight = height;
+            ratioWidth = width;
+            ratioHeight = height;
             RequestLayout();
         }
 
@@ -48,19 +48,19 @@ namespace FoosLiveAndroid.Util.CameraUtil
             base.OnMeasure(widthMeasureSpec, heightMeasureSpec);
             int width = MeasureSpec.GetSize(widthMeasureSpec);
             int height = MeasureSpec.GetSize(heightMeasureSpec);
-            if (0 == mRatioWidth || 0 == mRatioHeight)
+            if (0 == ratioWidth || 0 == ratioHeight)
             {
                 SetMeasuredDimension(width, height);
             }
             else
             {
-                if (width < (float)height * mRatioWidth / (float)mRatioHeight)
+                if (width < (float)height * ratioWidth / (float)ratioHeight)
                 {
-                    SetMeasuredDimension(width, width * mRatioHeight / mRatioWidth);
+                    SetMeasuredDimension(width, width * ratioHeight / ratioWidth);
                 }
                 else
                 {
-                    SetMeasuredDimension(height * mRatioWidth / mRatioHeight, height);
+                    SetMeasuredDimension(height * ratioWidth / ratioHeight, height);
                 }
             }
         }

@@ -24,11 +24,11 @@ namespace FoosLiveAndroid.Util.CameraUtil
     {
         private static int MAX_PREVIEW_WIDTH = 1920;
         private static int MAX_PREVIEW_HEIGHT = 1080;
-        void SetUp(Activity activity, ImageReader reader, int sensorOrientation, int width, int height,
-                    Size previewSize, AutoFitTextureView view, out string CameraID, out bool flashSupported)
+        public static void SetUp(Activity activity, ImageReader reader, int width, int height,
+                    out Size previewSize, AutoFitTextureView view, out string CameraID, out bool flashSupported)
         {
             CameraManager manager = (CameraManager)activity.GetSystemService(Context.CameraService);
-            
+            int sensorOrientation;
             try
             {
                 for (int i = 0 ; i < manager.GetCameraIdList().Length ; i ++)
@@ -149,6 +149,7 @@ namespace FoosLiveAndroid.Util.CameraUtil
                 e.PrintStackTrace();
                 // Nezinau kaip cia elgtis
             }
+            previewSize = null;
             CameraID = null;
             flashSupported = false;
         }
