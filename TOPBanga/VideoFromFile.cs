@@ -7,6 +7,7 @@ using TOPBanga.Detection;
 using System.Threading;
 using System.Collections.Generic;
 using TOPBanga.Detection.GameUtil;
+using TOPBanga.Util;
 
 namespace TOPBanga
 {
@@ -26,6 +27,8 @@ namespace TOPBanga
         private bool markingMode = false;
         private bool added = false;
 
+        public SoundAlerts alerts;
+
         public VideoFromFile(IDetector detector)
         {
             InitializeComponent();
@@ -33,6 +36,7 @@ namespace TOPBanga
             this.detector = detector;
 
             this.gameController = new GameController();
+            this.alerts = new SoundAlerts();
         }
 
         private void VideoFromFile_Load(object sender, EventArgs e)
@@ -204,6 +208,12 @@ namespace TOPBanga
                 this.markingMode = false;
             }
 
+        }
+
+        private void settings_Click(object sender, EventArgs e)
+        {
+            SettingsWindow window = new SettingsWindow(this.alerts);
+            window.ShowDialog();
         }
     }
 }
