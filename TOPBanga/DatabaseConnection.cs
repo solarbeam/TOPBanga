@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using MySql.Data.MySqlClient;
+using System.Configuration;
 
 namespace TOPBanga
 {
@@ -11,23 +12,26 @@ namespace TOPBanga
     {
         public bool initSuccess { get; set; }
         private MySqlConnection connection;
+        private Lazy<MySqlCommand> insertIntoHistory;
 
         public DatabaseConnection(string connectionString)
         {
+            this.initSuccess = true;
             this.connection = new MySqlConnection(connectionString);
             try
             {
                 this.connection.Open();
             }
             catch(MySqlException e) {
-                Console.WriteLine(e);
                 this.initSuccess = false;
             }
-            this.initSuccess = true;
+            this.insertIntoHistory = new Lazy<MySqlCommand>(() => 
+                new MySqlCommand(System.Configuration.ConfigurationManager.AppSettings["InsertIntoHistory"], connection));
         }
 
         public void Dispose() {
             this.connection.Dispose();
+            this.insertIntoHistory.Value.Dispose();
         }
 
         public int ExecuteCommand (string command)
@@ -68,5 +72,22 @@ namespace TOPBanga
             return reader;
         }
 
+        public int InsertIntoHistory(string blueTeamName, string redTeamName, int blueTeamPoints, int redTeamPoints)
+        {
+            this.insertIntoHistory.Value.Parameters.AddWithValue("@blueTeamName", blueTeamName);
+            this.insertIntoHistory.Value.Parameters.AddWithValue("@redTeamName", redTeamName);
+            this.insertIntoHistory.Value.Parameters.AddWithValue("@blueTeamPoints", blueTeamPoints);
+            this.insertIntoHistory.Value.Parameters.AddWithValue("@redTeamPoints", redTeamPoints);
+            int rowsAffected = -1;
+            try
+            {
+                rowsAffected = this.insertIntoHistory.Value.ExecuteNonQuery();
+            }
+            catch (MySqlException e)
+            {
+                return -1;
+            }
+            return rowsAffected;
+        }
     }
 }
