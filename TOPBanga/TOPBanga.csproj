@@ -40,7 +40,9 @@
     <Reference Include="Emgu.CV.World, Version=3.2.0.2721, Culture=neutral, PublicKeyToken=7281126722ab4438, processorArchitecture=MSIL">
       <HintPath>..\packages\Emgu.CV.3.2.0.2721\lib\net35\Emgu.CV.World.dll</HintPath>
     </Reference>
+    <Reference Include="MySql.Data, Version=6.9.10.0, Culture=neutral, PublicKeyToken=c5687fc88969c44d, processorArchitecture=MSIL" />
     <Reference Include="System" />
+    <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
     <Reference Include="System.ServiceModel" />
     <Reference Include="System.Xml.Linq" />
@@ -57,6 +59,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DatabaseConnection.cs" />
     <Compile Include="Detection\BlobDetector.cs" />
     <Compile Include="Detection\ColorDetector.cs" />
     <Compile Include="Detection\ColorContainer.cs" />
