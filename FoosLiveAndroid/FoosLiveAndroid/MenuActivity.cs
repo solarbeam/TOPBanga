@@ -10,7 +10,7 @@ using FoosLiveAndroid.Fragments;
 namespace FoosLiveAndroid
 {
     //Todo: fragment backstack management
-    [Activity(Label = "Fooslive", MainLauncher = true, Icon = "@mipmap/icon")]
+    //[Activity(Label = "Fooslive", MainLauncher = true, Icon = "@mipmap/icon")]
     public class MenuActivity : AppCompatActivity, ISwitchFragmentListener
     {
         public const string Tag = "MenuActivity";

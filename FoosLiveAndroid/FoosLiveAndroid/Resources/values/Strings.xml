@@ -1,16 +1,26 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-  <string name="app_name">fooslive</string>
-  <string name="main_menu">Main menu</string>
-  <string name="start">Start</string>
-  <string name="choose_mode">Choose mode</string>
-  <string name="settings">Settings</string>
-  <string name="info">Info</string>
-  <string name="live">Live</string>
-  <string name="from_file">From file</string>
-  <string name="main_menu_title">Title</string>
-  <string name="choose_team1_score_sound">Choose TEAM 1 score sound…</string>
-  <string name="choose_team2_score_sound">Choose TEAM 2 score sound…</string>
-  <string name="choose_team1_win_sound">Choose TEAM 2 win sound…</string>
-  <string name="choose_team2_win_sound">Choose TEAM 2 win sound…</string>
+	<!--Global-->
+	<string name="app_name">fooslive</string>
+    <!--Menu-->
+	<string name="main_menu">Main menu</string>
+	<string name="start">Start</string>
+    <string name="choose_mode">Choose mode</string>
+    <string name="settings">Settings</string>
+    <string name="info">Info</string>
+    <string name="live">Live</string>
+    <string name="from_file">From file</string>
+    <string name="main_menu_title">Title</string>
+    <!--Settings-->
+    <string name="choose_team1_score_sound">Choose TEAM 1 score sound…</string>
+    <string name="choose_team2_score_sound">Choose TEAM 2 score sound…</string>
+    <string name="choose_team1_win_sound">Choose TEAM 2 win sound…</string>
+    <string name="choose_team2_win_sound">Choose TEAM 2 win sound…</string>
+    <!--Game-->
+    <string name="start_game">Start game</string>
+    <string name="end_game">End game</string>
+    <string name="team1">TEAM 1</string>
+    <string name="team2">TEAM 2</string>
+	<string name="points_format">%1$d : %2$d</string>
+	
 </resources>

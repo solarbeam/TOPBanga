@@ -31,36 +31,36 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="@dimen/buttons_distance"
-            android:background="@drawable/button_selector"
+            android:background="@drawable/menu_button_selector"
             android:minHeight="40dp"
             android:minWidth="250dp"
             android:stateListAnimator="@null"
             android:text="@string/start"
             android:textAllCaps="false"
-            android:textColor="@color/buttonTextColor" />
+            android:textColor="@color/button_text" />
         <Button
             android:id="@+id/settingsButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="@dimen/buttons_distance"
-            android:background="@drawable/button_selector"
+            android:background="@drawable/menu_button_selector"
             android:minHeight="40dp"
             android:minWidth="250dp"
             android:stateListAnimator="@null"
             android:text="@string/settings"
             android:textAllCaps="false"
-            android:textColor="@color/buttonTextColor" />
+            android:textColor="@color/button_text" />
         <Button
             android:id="@+id/infoButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@drawable/button_selector"
+            android:background="@drawable/menu_button_selector"
             android:minHeight="40dp"
             android:minWidth="250dp"
             android:stateListAnimator="@null"
             android:text="@string/info"
             android:textAllCaps="false"
-            android:textColor="@color/buttonTextColor" />
+            android:textColor="@color/button_text" />
     </LinearLayout>
     <LinearLayout xmlns:tools="http://schemas.android.com/tools"
         android:id="@+id/menu_mode_buttons_temp"
@@ -75,25 +75,25 @@
             android:id="@+id/liveButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="10dp"
-            android:background="@drawable/button_selector"
+            android:layout_marginBottom="@dimen/buttons_distance"
+            android:background="@drawable/menu_button_selector"
             android:minHeight="40dp"
             android:minWidth="250dp"
             android:stateListAnimator="@null"
             android:text="@string/live"
             android:textAllCaps="false"
-            android:textColor="@color/buttonTextColor" />
+            android:textColor="@color/button_text" />
         <Button
             android:id="@+id/fromFileButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="10dp"
-            android:background="@drawable/button_selector"
+            android:layout_marginBottom="@dimen/buttons_distance"
+            android:background="@drawable/menu_button_selector"
             android:minHeight="40dp"
             android:minWidth="250dp"
             android:stateListAnimator="@null"
             android:text="@string/from_file"
             android:textAllCaps="false"
-            android:textColor="@color/buttonTextColor" />
+            android:textColor="@color/button_text" />
     </LinearLayout>
 </LinearLayout>

@@ -134,22 +134,27 @@
     <Compile Include="Fragments\InfoFragment.cs" />
     <Compile Include="Fragments\SettingsFragment.cs" />
     <Compile Include="Interface\IFrameGrabber.cs" />
+    <Compile Include="GameActivity.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="lib\armeabi-v7a\libcvextern.so" />
     <None Include="lib\armeabi\libcvextern.so" />
     <None Include="lib\x86\libcvextern.so" />
     <None Include="packages.config" />
-    <None Include="Resources\AboutResources.txt" />
     <None Include="Properties\AndroidManifest.xml" />
     <None Include="Assets\AboutAssets.txt" />
   </ItemGroup>
   <ItemGroup>
-    <AndroidResource Include="Resources\layout\Main.axml">
-      <SubType>Designer</SubType>
-    </AndroidResource>
     <AndroidResource Include="Resources\values\style.xml" />
     <AndroidResource Include="Resources\values\Strings.xml" />
+    <AndroidResource Include="Resources\drawable\game_button_selector.xml" />
+    <AndroidResource Include="Resources\drawable\game_button_shape.xml" />
+    <AndroidResource Include="Resources\drawable\game_button_shape_clicked.xml" />
+    <AndroidResource Include="Resources\drawable\menu_button_selector.xml" />
+    <AndroidResource Include="Resources\drawable\menu_button_shape.xml" />
+    <AndroidResource Include="Resources\drawable\menu_button_shape_clicked.xml" />
+    <AndroidResource Include="Resources\drawable\status_label_shape.xml" />
+    <AndroidResource Include="Resources\layout\activity_game.axml" />
   </ItemGroup>
   <ItemGroup>
     <AndroidResource Include="Resources\mipmap-hdpi\Icon.png" />
@@ -157,9 +162,6 @@
     <AndroidResource Include="Resources\mipmap-xhdpi\Icon.png" />
     <AndroidResource Include="Resources\mipmap-xxhdpi\Icon.png" />
     <AndroidResource Include="Resources\mipmap-xxxhdpi\Icon.png" />
-    <AndroidResource Include="Resources\drawable\button_selector.xml" />
-    <AndroidResource Include="Resources\drawable\button_shape_clicked.xml" />
-    <AndroidResource Include="Resources\drawable\button_shape.xml" />
     <AndroidResource Include="Resources\drawable\ic_android_logo.xml" />
     <AndroidResource Include="Resources\layout\activity_menu.axml">
       <SubType>Designer</SubType>
@@ -173,9 +175,11 @@
     <AndroidResource Include="Resources\values\Colors.xml" />
     <AndroidResource Include="Resources\values\Dimens.xml" />
     <AndroidResource Include="Resources\values-v21\style.xml" />
-    <AndroidResource Include="Resources\layout-land\activity_game.xml" />
   </ItemGroup>
   <ItemGroup />
+  <ItemGroup>
+    <Folder Include="Resources\layout-land\" />
+  </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\Android\Xamarin.Android.CSharp.targets" />
   <Import Project="..\packages\Xamarin.Android.Support.Annotations.26.1.0.1\build\MonoAndroid80\Xamarin.Android.Support.Annotations.targets" Condition="Exists('..\packages\Xamarin.Android.Support.Annotations.26.1.0.1\build\MonoAndroid80\Xamarin.Android.Support.Annotations.targets')" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

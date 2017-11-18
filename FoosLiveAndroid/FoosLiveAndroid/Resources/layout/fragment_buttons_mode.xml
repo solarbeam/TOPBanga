@@ -12,24 +12,24 @@
         android:id="@+id/liveButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="10dp"
-        android:background="@drawable/button_selector"
+        android:layout_marginBottom="@dimen/buttons_distance"
+        android:background="@drawable/menu_button_selector"
         android:minHeight="40dp"
         android:minWidth="250dp"
         android:stateListAnimator="@null"
         android:text="@string/live"
         android:textAllCaps="false"
-        android:textColor="@color/buttonTextColor" />
+        android:textColor="@color/button_text" />
     <Button
         android:id="@+id/fromFileButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="10dp"
-        android:background="@drawable/button_selector"
+        android:layout_marginBottom="@dimen/buttons_distance"
+        android:background="@drawable/menu_button_selector"
         android:minHeight="40dp"
         android:minWidth="250dp"
         android:stateListAnimator="@null"
         android:text="@string/from_file"
         android:textAllCaps="false"
-        android:textColor="@color/buttonTextColor" />
+        android:textColor="@color/button_text" />
 </LinearLayout>
