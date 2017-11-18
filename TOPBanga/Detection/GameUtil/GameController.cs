@@ -12,7 +12,7 @@ namespace TOPBanga.Detection.GameUtil
 
     public class GameController
     {
-        //a
+        
         public event EventHandler<EventArgs> GoalEvent;
         public int redScore { get; private set; }
         public int blueScore { get; private set; }
@@ -24,8 +24,7 @@ namespace TOPBanga.Detection.GameUtil
         private const int MAXIMUM_BALL_COORDINATE_NUMBER = 20;
         private const int GOAL_FRAMES_TO_COUNT_GOAL = 3;
         private PointF last_ball_coordinates;
-        private const string redTeamWin = "Red Team Wins";
-        private const string blueTeamWin = "Blue Team Wins";
+        
 
 
         public PointF lastBallCoordinates {
@@ -58,7 +57,7 @@ namespace TOPBanga.Detection.GameUtil
             this.ballCoordinates = new Queue<PointF>();
             this.lastBallCoordinates = new PointF(0, 0);
             this.EventLog = new EventLog(filepath);
-            this.GoalEvent += ((obj, args) => this.EventLog.Write(goalAnnouncement + " " + blueScore + ":" + redScore + " " + WinAnnouncement()));
+            this.GoalEvent += ((obj, args) => this.EventLog.Write(goalAnnouncement + " " + blueScore + ":" + redScore + " " + this.EventLog.WinAnnouncement()));
         }
 
         public Bitmap PaintGoals(Bitmap bitmap)
@@ -110,16 +109,6 @@ namespace TOPBanga.Detection.GameUtil
             
         }
 
-        private string WinAnnouncement()
-        {
-            if (this.redScore == 10)
-                return redTeamWin;
-            if (this.blueScore == 10)
-                return blueTeamWin;
-            else
-                return null;
-        
-        }
 
         private void OnNewFrame()
         {
