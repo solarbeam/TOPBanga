@@ -18,6 +18,8 @@ namespace FoosLiveAndroid
     {
         private Button _gameButton;
         private TextView _score;
+        private TextureView _gameView;
+
         protected override void OnCreate(Bundle savedInstanceState)
         {
             base.OnCreate(savedInstanceState);
@@ -31,6 +33,7 @@ namespace FoosLiveAndroid
         private void GetReferencesFromLayout()
         {
             _gameButton = FindViewById<Button>(Resource.Id.gameButton);
+            _gameView = FindViewById<TextureView>(Resource.Id.game_content);
             _score = FindViewById<TextView>(Resource.Id.score);
         }
     }
