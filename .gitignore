@@ -276,3 +276,11 @@ __pycache__/
 /FoosLiveAndroid/FoosLiveAndroid/ZedGraph.xml
 /FoosLiveAndroid/FoosLiveAndroid/lib/armeabi-v7a/libcvextern.so
 /FoosLiveAndroid/FoosLiveAndroid/lib/armeabi/libcvextern.so
+FoosLiveAndroid/.DS_Store
+FoosLiveAndroid/FoosLiveAndroid/Accessibility.dll
+FoosLiveAndroid/FoosLiveAndroid/Resources/.DS_Store
+FoosLiveAndroid/FoosLiveAndroid/System.Windows.Forms.dll
+FoosLiveAndroid/FoosLiveAndroid/System.Runtime.Serialization.Formatters.Soap.dll
+FoosLiveAndroid/FoosLiveAndroid/System.Drawing.dll
+FoosLiveAndroid/FoosLiveAndroid/System.Deployment.dll
+FoosLiveAndroid/FoosLiveAndroid/System.configuration.dll
