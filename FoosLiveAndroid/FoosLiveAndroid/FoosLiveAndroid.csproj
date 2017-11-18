@@ -141,6 +141,9 @@
     <Compile Include="Interface\IFrameGrabber.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="lib\armeabi-v7a\libcvextern.so" />
+    <None Include="lib\armeabi\libcvextern.so" />
+    <None Include="lib\x86\libcvextern.so" />
     <None Include="packages.config" />
     <None Include="Resources\AboutResources.txt" />
     <None Include="Properties\AndroidManifest.xml" />

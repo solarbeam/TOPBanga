@@ -259,6 +259,8 @@ paket-files/
 # Python Tools for Visual Studio (PTVS)
 __pycache__/
 *.pyc
+
+# Local dependencies
 /FoosLiveAndroid/FoosLiveAndroid/Emgu.CV.DebuggerVisualizers.VS2017.dll
 /FoosLiveAndroid/FoosLiveAndroid/Emgu.CV.UI.dll
 /FoosLiveAndroid/FoosLiveAndroid/Emgu.CV.UI.GL.dll
@@ -272,3 +274,5 @@ __pycache__/
 /FoosLiveAndroid/FoosLiveAndroid/OpenTK.xml
 /FoosLiveAndroid/FoosLiveAndroid/ZedGraph.dll
 /FoosLiveAndroid/FoosLiveAndroid/ZedGraph.xml
+/FoosLiveAndroid/FoosLiveAndroid/lib/armeabi-v7a/libcvextern.so
+/FoosLiveAndroid/FoosLiveAndroid/lib/armeabi/libcvextern.so
