@@ -90,6 +90,7 @@ namespace TOPBanga.Detection.GameUtil
         public void AddGoal(PointF[] points)
         {
             
+            
             if (this.goals.Count == 2)
             {
                 Goal toDispose = this.goals.Dequeue();
