@@ -73,7 +73,7 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Windows.Forms">
-      <HintPath>.\System.Windows.Forms.dll</HintPath>
+      <HintPath>..\..\..\Windows\Microsoft.NET\Framework64\v2.0.50727\System.Windows.Forms.dll</HintPath>
     </Reference>
     <Reference Include="System.Xml" />
     <Reference Include="System.Core" />
