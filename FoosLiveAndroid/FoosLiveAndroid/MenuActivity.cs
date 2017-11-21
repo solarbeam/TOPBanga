@@ -1,5 +1,4 @@
-﻿using Android;
-using Android.App;
+﻿using Android.App;
 using Android.Widget;
 using Android.OS;
 using Android.Support.V7.App;
@@ -10,12 +9,14 @@ using FoosLiveAndroid.Fragments;
 namespace FoosLiveAndroid
 {
     //Todo: fragment backstack management
-    //[Activity(Label = "Fooslive", MainLauncher = true, Icon = "@mipmap/icon")]
-    public class MenuActivity : AppCompatActivity, ISwitchFragmentListener
+    [Activity(Label = "Fooslive", MainLauncher = true, Icon = "@mipmap/icon")]
+    public class MenuActivity : AppCompatActivity, IOnFragmentInteractionListener
     {
         public const string Tag = "MenuActivity";
+        Fragment fragment = null;
         private TextView toolbarTitle;
         private Android.Support.V7.Widget.Toolbar toolbar;
+
         protected override void OnCreate(Bundle savedInstanceState)
         {
             base.OnCreate(savedInstanceState);
@@ -34,43 +35,41 @@ namespace FoosLiveAndroid
 
         public override void OnBackPressed()
         {
-            if (FragmentManager.BackStackEntryCount > 0)
+            // leave default fragment main menu[0] in place
+            if (FragmentManager.BackStackEntryCount > 1)
             {
                 FragmentManager.PopBackStack();
             }
-            else 
+            else if (fragment is MainMenuFragment) 
+            {
+                ((MainMenuFragment)fragment).LoadMainMenu();
+            }
+            else
             {
                 Finish();   
             }
         }
 
         private void LoadInitialFragment() {
-            SwitchFragment(FragmentId.Main_menu);
+            LoadFragment(FragmentId.Main_menu);
         }
 
-        public void SwitchFragment(int id)
+        public void LoadFragment(int id)
         {
-            Fragment fragment = null;
-            //default target view to inflate
-            int contentId = Resource.Id.menu_content;
+            fragment = null;
             switch (id)
             {
                 case FragmentId.Main_menu:
-                    fragment = new MainFragment();
+                    fragment = new MainMenuFragment();
                     toolbarTitle.Text = GetString(Resource.String.main_menu);
-                    break;
-                case FragmentId.Mode:
-                    //targets only button view
-                    contentId = Resource.Id.buttonContent;
-                    fragment = new ModeFragment();
-                    toolbarTitle.Text = GetString(Resource.String.choose_mode);
+
                     break;
                 case FragmentId.Settings:
-                    //fragment = new SettingsFragment();
+                    fragment = new SettingsFragment();
                     toolbarTitle.Text = GetString(Resource.String.settings);
                     break;
                 case FragmentId.Info:
-                    //fragment = new InfoFragment();
+                    fragment = new InfoFragment();
                     toolbarTitle.Text = GetString(Resource.String.info);
                     break;
                 default:
@@ -79,13 +78,18 @@ namespace FoosLiveAndroid
                     break;
             }
 
-            if (fragment == null)
+            if (fragment != null)
             {
-                return;
-            }
 
-            FragmentManager.BeginTransaction().Replace(contentId, fragment)
-                           .Commit();
+                var transaction = FragmentManager.BeginTransaction();
+                transaction.AddToBackStack(fragment.Tag);
+                transaction.Replace(Resource.Id.menu_content, fragment).Commit();
+            }
+        }
+
+        public void UpdateTitle(string title)
+        {
+            toolbarTitle.Text = title;
         }
     }
 }

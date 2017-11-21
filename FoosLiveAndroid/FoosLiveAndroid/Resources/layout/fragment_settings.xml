@@ -15,9 +15,9 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="20dp"
         android:scaleType="center"
-        android:scaleX="0.2"
-        android:scaleY="0.2"
-        android:src="@drawable/ic_android_logo" />
+        android:scaleX="0.4"
+        android:scaleY="0.4"
+        android:src="@drawable/ic_logo" />
     <LinearLayout
         android:id="@+id/settings_buttons"
         android:layout_width="match_parent"

@@ -11,14 +11,17 @@ namespace FoosLiveAndroid.Fragments
         public override void OnCreate(Bundle savedInstanceState)
         {
             base.OnCreate(savedInstanceState);
-
         }
 
         public override View OnCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
         {
-            // return inflater.Inflate(Resource.Layout.fragment_settings, container, false);
+            view = inflater.Inflate(Resource.Layout.fragment_settings, container, false);
 
-            return base.OnCreateView(inflater, container, savedInstanceState);
+            return view;
+        }
+
+        private void GetReferencesFromLayout()
+        {
         }
     }
 }

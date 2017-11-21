@@ -1,25 +1,18 @@
-﻿
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System;
 using Android.App;
-using Android.Content;
 using Android.Content.PM;
 using Android.OS;
-using Android.Runtime;
 using Android.Views;
 using Android.Widget;
 using Android.Graphics;
 using Emgu.CV;
 using Camera = Android.Hardware.Camera;
-using Java.Lang;
-using Android.Media;
 using Emgu.CV.Structure;
 
 namespace FoosLiveAndroid
 {
-    [Activity(MainLauncher = true, ScreenOrientation = ScreenOrientation.Landscape)]
+    //[Activity(MainLauncher = true, ScreenOrientation = ScreenOrientation.Landscape)]
+    [Activity(ScreenOrientation = ScreenOrientation.Landscape)]
     public class GameActivity : Activity, TextureView.ISurfaceTextureListener, View.IOnTouchListener
     {
         private Button _gameButton;
@@ -27,6 +20,7 @@ namespace FoosLiveAndroid
         private TextureView _gameView;
         private SurfaceView surfaceView;
 
+        //Todo: change Camera to Camera2
         private Camera camera;
         private Hsv selectedHsv;
         private bool hsvSelected;
@@ -39,9 +33,7 @@ namespace FoosLiveAndroid
             Window.SetFlags(WindowManagerFlags.Fullscreen, WindowManagerFlags.Fullscreen);
             GetReferencesFromLayout();
 
-            /**
-             * Open the camera
-             */
+             // Open the camera
             this._gameView.SurfaceTextureListener = this;
             this._gameView.SetOnTouchListener(this);
         }

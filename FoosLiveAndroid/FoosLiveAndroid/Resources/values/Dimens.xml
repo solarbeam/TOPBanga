@@ -3,7 +3,7 @@
     <dimen name="buttons_distance">10dp</dimen>
     <dimen name="button_radius">7dp</dimen>
 	<dimen name="game_button_radius">2dp</dimen>
-	<dimen name="game_button_radius">10dp</dimen>
 	<dimen name="status_radius">15dp</dimen>
 	<dimen name="status_padding">5dp</dimen>
+	<dimen name="info_margin">15dp</dimen>
 </resources>

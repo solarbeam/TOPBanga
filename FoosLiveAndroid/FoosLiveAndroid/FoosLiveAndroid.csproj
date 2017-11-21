@@ -135,10 +135,9 @@
     <Compile Include="MenuActivity.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Resources\Resource.Designer.cs" />
-    <Compile Include="Fragments\MainFragment.cs" />
-    <Compile Include="Fragments\ISwitchFragmentListener.cs" />
+    <Compile Include="Fragments\MainMenuFragment.cs" />
+    <Compile Include="Interface\IOnFragmentInteractionListener.cs" />
     <Compile Include="Model\FragmentId.cs" />
-    <Compile Include="Fragments\ModeFragment.cs" />
     <Compile Include="Fragments\InfoFragment.cs" />
     <Compile Include="Fragments\SettingsFragment.cs" />
     <Compile Include="Interface\IFrameGrabber.cs" />
@@ -163,6 +162,7 @@
     <AndroidResource Include="Resources\drawable\menu_button_shape_clicked.xml" />
     <AndroidResource Include="Resources\drawable\status_label_shape.xml" />
     <AndroidResource Include="Resources\layout\activity_game.axml" />
+    <AndroidResource Include="Resources\drawable\ic_logo.xml" />
   </ItemGroup>
   <ItemGroup>
     <AndroidResource Include="Resources\mipmap-hdpi\Icon.png" />
@@ -170,11 +170,9 @@
     <AndroidResource Include="Resources\mipmap-xhdpi\Icon.png" />
     <AndroidResource Include="Resources\mipmap-xxhdpi\Icon.png" />
     <AndroidResource Include="Resources\mipmap-xxxhdpi\Icon.png" />
-    <AndroidResource Include="Resources\drawable\ic_android_logo.xml" />
     <AndroidResource Include="Resources\layout\activity_menu.axml">
       <SubType>Designer</SubType>
     </AndroidResource>
-    <AndroidResource Include="Resources\layout\fragment_buttons_mode.xml" />
     <AndroidResource Include="Resources\layout\fragment_info.xml" />
     <AndroidResource Include="Resources\layout\fragment_main_menu.xml">
       <SubType>Designer</SubType>
@@ -185,7 +183,6 @@
     <AndroidResource Include="Resources\values-v21\style.xml" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Resources\layout-land\" />
     <Folder Include="Util\CameraUtil\" />
   </ItemGroup>
   <ItemGroup />

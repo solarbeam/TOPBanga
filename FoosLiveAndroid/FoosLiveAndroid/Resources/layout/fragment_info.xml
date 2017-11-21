@@ -1,7 +1,42 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/settings"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical">
-
+    android:layout_height="wrap_content"
+    android:gravity="center_horizontal"
+    android:orientation="vertical"
+    tools:ignore="ContentDescription"
+    android:layout_marginStart="20dp"
+    android:layout_marginEnd="20dp">
+    <ImageView
+        android:id="@+id/appLogo"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:scaleType="center"
+        android:scaleX="0.4"
+        android:scaleY="0.4"
+        android:src="@drawable/ic_logo"
+        android:adjustViewBounds="true" />
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:id="@+id/appVersion"
+        android:typeface="normal"
+        android:text="@string/app_version"
+        android:textAppearance="@android:style/TextAppearance.Material.Subhead" />
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/info_margin"
+        android:gravity="center"
+        android:id="@+id/credits"
+        android:text="@string/credits" />
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:id="@+id/appDescription"
+        android:text="@string/app_description" />
 </LinearLayout>
