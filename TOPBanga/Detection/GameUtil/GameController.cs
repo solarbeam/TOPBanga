@@ -21,6 +21,7 @@ namespace TOPBanga.Detection.GameUtil
         private const int MAXIMUM_BALL_COORDINATE_NUMBER = 20;
         private const int GOAL_FRAMES_TO_COUNT_GOAL = 3;
         private PointF last_ball_coordinates;
+
         public PointF lastBallCoordinates {
 
             get {
@@ -38,6 +39,27 @@ namespace TOPBanga.Detection.GameUtil
 
         public Queue<PointF> ballCoordinates;
 
+
+        public GraphicsPath table { get; private set; }
+        public void SetTable(PointF[] points)
+        {
+            this.table = new GraphicsPath();
+            this.table.AddPolygon(points);
+            PointF[] goalPoint = new PointF[4];
+            float xMiddle = (points[0].X + points[1].X)/2;
+            goalPoint[0] = new PointF(xMiddle - 25, points[0].Y);
+            goalPoint[1] = new PointF(xMiddle + 25, points[0].Y);
+            goalPoint[2] = new PointF(xMiddle + 25, points[0].Y + 25);
+            goalPoint[3] = new PointF(xMiddle - 25, points[0].Y + 25);
+            this.AddGoal(goalPoint);
+            goalPoint = new PointF[4];
+            xMiddle = (points[2].X + points[3].X) / 2;
+            goalPoint[0] = new PointF(xMiddle - 25, points[2].Y);
+            goalPoint[1] = new PointF(xMiddle + 25, points[2].Y);
+            goalPoint[2] = new PointF(xMiddle + 25, points[2].Y - 25);
+            goalPoint[3] = new PointF(xMiddle - 25, points[2].Y - 25);
+            this.AddGoal(goalPoint);
+        }
         public GameController()
         {
             this.ballCoordinates = new Queue<PointF>();
@@ -50,6 +72,7 @@ namespace TOPBanga.Detection.GameUtil
             Graphics graphics = Graphics.FromImage(bitmap);
             Pen bluePen = new Pen(Color.Blue);
             Pen redPen = new Pen(Color.Red);
+            graphics.DrawPath(bluePen, this.table);
             foreach (Goal goal in goals)
             {
                 if (goal.graphicsPath.IsVisible(this.lastBallCoordinates))
