@@ -42,20 +42,20 @@ namespace TOPBanga
             // 
             // Picture
             // 
-            this.Picture.Location = new System.Drawing.Point(1, 0);
-            this.Picture.Margin = new System.Windows.Forms.Padding(1, 1, 1, 1);
+            this.Picture.Location = new System.Drawing.Point(2, 0);
+            this.Picture.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.Picture.Name = "Picture";
-            this.Picture.Size = new System.Drawing.Size(462, 416);
+            this.Picture.Size = new System.Drawing.Size(693, 640);
             this.Picture.TabIndex = 0;
             this.Picture.TabStop = false;
             this.Picture.Click += new System.EventHandler(this.Picture_Click);
             // 
             // BrowseButton
             // 
-            this.BrowseButton.Location = new System.Drawing.Point(465, 39);
-            this.BrowseButton.Margin = new System.Windows.Forms.Padding(1, 1, 1, 1);
+            this.BrowseButton.Location = new System.Drawing.Point(698, 60);
+            this.BrowseButton.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.BrowseButton.Name = "BrowseButton";
-            this.BrowseButton.Size = new System.Drawing.Size(195, 31);
+            this.BrowseButton.Size = new System.Drawing.Size(292, 48);
             this.BrowseButton.TabIndex = 1;
             this.BrowseButton.Text = "Browse";
             this.BrowseButton.UseVisualStyleBackColor = true;
@@ -63,10 +63,10 @@ namespace TOPBanga
             // 
             // DetectionButton
             // 
-            this.DetectionButton.Location = new System.Drawing.Point(465, 6);
-            this.DetectionButton.Margin = new System.Windows.Forms.Padding(1, 1, 1, 1);
+            this.DetectionButton.Location = new System.Drawing.Point(698, 9);
+            this.DetectionButton.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.DetectionButton.Name = "DetectionButton";
-            this.DetectionButton.Size = new System.Drawing.Size(195, 31);
+            this.DetectionButton.Size = new System.Drawing.Size(292, 48);
             this.DetectionButton.TabIndex = 2;
             this.DetectionButton.Text = "Start Detection";
             this.DetectionButton.UseVisualStyleBackColor = true;
@@ -74,10 +74,10 @@ namespace TOPBanga
             // 
             // ColorBox
             // 
-            this.ColorBox.Location = new System.Drawing.Point(466, 186);
-            this.ColorBox.Margin = new System.Windows.Forms.Padding(1, 1, 1, 1);
+            this.ColorBox.Location = new System.Drawing.Point(699, 286);
+            this.ColorBox.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.ColorBox.Name = "ColorBox";
-            this.ColorBox.Size = new System.Drawing.Size(42, 62);
+            this.ColorBox.Size = new System.Drawing.Size(63, 95);
             this.ColorBox.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
             this.ColorBox.TabIndex = 4;
             this.ColorBox.TabStop = false;
@@ -86,10 +86,10 @@ namespace TOPBanga
             // 
             this.switchCam.AccessibleName = "";
             this.switchCam.Enabled = false;
-            this.switchCam.Location = new System.Drawing.Point(465, 73);
-            this.switchCam.Margin = new System.Windows.Forms.Padding(1, 2, 1, 2);
+            this.switchCam.Location = new System.Drawing.Point(698, 112);
+            this.switchCam.Margin = new System.Windows.Forms.Padding(2, 3, 2, 3);
             this.switchCam.Name = "switchCam";
-            this.switchCam.Size = new System.Drawing.Size(195, 31);
+            this.switchCam.Size = new System.Drawing.Size(292, 48);
             this.switchCam.TabIndex = 5;
             this.switchCam.Text = "Switch to Webcam";
             this.switchCam.UseVisualStyleBackColor = true;
@@ -97,21 +97,20 @@ namespace TOPBanga
             // 
             // Mark_Goals_Button
             // 
-            this.Mark_Goals_Button.Location = new System.Drawing.Point(465, 107);
-            this.Mark_Goals_Button.Margin = new System.Windows.Forms.Padding(1, 1, 1, 1);
+            this.Mark_Goals_Button.Location = new System.Drawing.Point(698, 165);
+            this.Mark_Goals_Button.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.Mark_Goals_Button.Name = "Mark_Goals_Button";
-            this.Mark_Goals_Button.Size = new System.Drawing.Size(195, 33);
+            this.Mark_Goals_Button.Size = new System.Drawing.Size(292, 51);
             this.Mark_Goals_Button.TabIndex = 7;
-            this.Mark_Goals_Button.Text = "Mark Goals";
+            this.Mark_Goals_Button.Text = "Mark Table";
             this.Mark_Goals_Button.UseVisualStyleBackColor = true;
             this.Mark_Goals_Button.Click += new System.EventHandler(this.Mark_Goals_Button_Click);
             // 
             // skipFrame
             // 
-            this.skipFrame.Location = new System.Drawing.Point(466, 144);
-            this.skipFrame.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.skipFrame.Location = new System.Drawing.Point(699, 222);
             this.skipFrame.Name = "skipFrame";
-            this.skipFrame.Size = new System.Drawing.Size(195, 33);
+            this.skipFrame.Size = new System.Drawing.Size(292, 51);
             this.skipFrame.TabIndex = 8;
             this.skipFrame.Text = "Skip frame";
             this.skipFrame.UseVisualStyleBackColor = true;
@@ -119,10 +118,9 @@ namespace TOPBanga
             // 
             // settings
             // 
-            this.settings.Location = new System.Drawing.Point(590, 432);
-            this.settings.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.settings.Location = new System.Drawing.Point(885, 665);
             this.settings.Name = "settings";
-            this.settings.Size = new System.Drawing.Size(70, 23);
+            this.settings.Size = new System.Drawing.Size(105, 35);
             this.settings.TabIndex = 9;
             this.settings.Text = "Settings";
             this.settings.UseVisualStyleBackColor = true;
@@ -130,9 +128,9 @@ namespace TOPBanga
             // 
             // VideoFromFile
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(672, 466);
+            this.ClientSize = new System.Drawing.Size(999, 691);
             this.Controls.Add(this.settings);
             this.Controls.Add(this.skipFrame);
             this.Controls.Add(this.Mark_Goals_Button);
@@ -142,11 +140,11 @@ namespace TOPBanga
             this.Controls.Add(this.BrowseButton);
             this.Controls.Add(this.Picture);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
-            this.Margin = new System.Windows.Forms.Padding(1, 1, 1, 1);
+            this.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.MaximizeBox = false;
-            this.MaximumSize = new System.Drawing.Size(688, 505);
+            this.MaximumSize = new System.Drawing.Size(1021, 747);
             this.MinimizeBox = false;
-            this.MinimumSize = new System.Drawing.Size(688, 505);
+            this.MinimumSize = new System.Drawing.Size(1021, 747);
             this.Name = "VideoFromFile";
             this.StartPosition = System.Windows.Forms.FormStartPosition.Manual;
             this.Text = "VideoFromFile";

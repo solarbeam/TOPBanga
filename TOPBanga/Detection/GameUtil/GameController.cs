@@ -15,12 +15,14 @@ namespace TOPBanga.Detection.GameUtil
         public event EventHandler<EventArgs> GoalEvent;
         public int redScore { get; private set; }
         public int blueScore { get; private set; }
+        private const int SPACE_FOR_GOALS = 25;
 
         private Queue<Goal> goals = new Queue<Goal>();
 
         private const int MAXIMUM_BALL_COORDINATE_NUMBER = 20;
         private const int GOAL_FRAMES_TO_COUNT_GOAL = 3;
         private PointF last_ball_coordinates;
+
         public PointF lastBallCoordinates {
 
             get {
@@ -38,6 +40,29 @@ namespace TOPBanga.Detection.GameUtil
 
         public Queue<PointF> ballCoordinates;
 
+
+        public GraphicsPath table { get; private set; }
+        public void SetTable(PointF[] points)
+        {
+            if (points.Length != 4)
+                return;
+            this.table = new GraphicsPath();
+            this.table.AddPolygon(points);
+            PointF[] goalPoint = new PointF[4];
+            float xMiddle = (points[0].X + points[1].X)/2;
+            goalPoint[0] = new PointF(xMiddle - SPACE_FOR_GOALS, points[0].Y);
+            goalPoint[1] = new PointF(xMiddle + SPACE_FOR_GOALS, points[0].Y);
+            goalPoint[2] = new PointF(xMiddle + SPACE_FOR_GOALS, points[0].Y + SPACE_FOR_GOALS);
+            goalPoint[3] = new PointF(xMiddle - SPACE_FOR_GOALS, points[0].Y + SPACE_FOR_GOALS);
+            this.AddGoal(goalPoint);
+            goalPoint = new PointF[4];
+            xMiddle = (points[2].X + points[3].X) / 2;
+            goalPoint[0] = new PointF(xMiddle - SPACE_FOR_GOALS, points[2].Y);
+            goalPoint[1] = new PointF(xMiddle + SPACE_FOR_GOALS, points[2].Y);
+            goalPoint[2] = new PointF(xMiddle + SPACE_FOR_GOALS, points[2].Y - SPACE_FOR_GOALS);
+            goalPoint[3] = new PointF(xMiddle - SPACE_FOR_GOALS, points[2].Y - SPACE_FOR_GOALS);
+            this.AddGoal(goalPoint);
+        }
         public GameController()
         {
             this.ballCoordinates = new Queue<PointF>();
@@ -50,6 +75,7 @@ namespace TOPBanga.Detection.GameUtil
             Graphics graphics = Graphics.FromImage(bitmap);
             Pen bluePen = new Pen(Color.Blue);
             Pen redPen = new Pen(Color.Red);
+            graphics.DrawPath(bluePen, this.table);
             foreach (Goal goal in goals)
             {
                 if (goal.graphicsPath.IsVisible(this.lastBallCoordinates))
