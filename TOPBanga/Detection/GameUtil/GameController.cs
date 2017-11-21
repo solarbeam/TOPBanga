@@ -57,7 +57,7 @@ namespace TOPBanga.Detection.GameUtil
             this.ballCoordinates = new Queue<PointF>();
             this.lastBallCoordinates = new PointF(0, 0);
             this.EventLog = new EventLog(filepath);
-            this.GoalEvent += ((obj, args) => this.EventLog.Write(goalAnnouncement + " " + blueScore + ":" + redScore + " " + this.EventLog.WinAnnouncement()));
+            this.GoalEvent += ((obj, args) => this.EventLog.Write(goalAnnouncement + " " + blueScore + ":" + redScore + " " + this.EventLog.WinAnnouncement(redScore, blueScore)));
         }
 
         public Bitmap PaintGoals(Bitmap bitmap)
@@ -114,8 +114,7 @@ namespace TOPBanga.Detection.GameUtil
         {
            foreach (Goal goal in goals)
            {
-                try
-                {
+                
                     if (first.graphicsPath.IsVisible(this.lastBallCoordinates))
                     {
                         first.framesBallInGoal++;
@@ -144,9 +143,7 @@ namespace TOPBanga.Detection.GameUtil
                     {
                         second.framesBallInGoal = 0;
                     }
-                }
-                catch(Exception e) { }
-            }
+           }
         }
     }
 

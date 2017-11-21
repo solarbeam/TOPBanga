@@ -210,16 +210,16 @@ namespace TOPBanga
             }
 
         }
-        //a
-        private void saveFile_Click_1(object sender, EventArgs e)
-        {
+
+        private void SaveFile_Click(object sender, EventArgs e)
+        {    
             SaveFileDialog saveFileDialog = new SaveFileDialog();
             saveFileDialog.Filter = "Text files (*.txt)|*.txt";
             if (saveFileDialog.ShowDialog() == DialogResult.OK)
             {
                 filepath = saveFileDialog.FileName;
                 this.gameController = new GameController(EventLog, filepath);
-                
+
             }
         }
     }

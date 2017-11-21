@@ -30,12 +30,11 @@ namespace TOPBanga.Util
             catch (Exception e) { }
         }
 
-        public string WinAnnouncement()
+        public string WinAnnouncement(int redScore,int blueScore)
         {
-            GameController score = new GameController();
-            if (score.redScore == 10)
+            if (redScore == 10)
                 return redTeamWin;
-            if (score.blueScore == 10)
+            if (blueScore == 10)
                 return blueTeamWin;
             else
                 return null;
