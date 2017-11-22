@@ -1,10 +1,11 @@
 ﻿using System;
 namespace FoosLiveAndroid.Model
 {
-    public static class FragmentId
+    public enum FragmentId
     {
-        public const int Settings = 1;
-        public const int Info = 2;
-        public const int Main_menu = 3;
+        Main_menu,
+        Mode_menu,
+        Settings,
+        Info
     }
 }

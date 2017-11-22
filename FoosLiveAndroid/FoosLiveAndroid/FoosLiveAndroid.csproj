@@ -135,13 +135,15 @@
     <Compile Include="MenuActivity.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Resources\Resource.Designer.cs" />
-    <Compile Include="Fragments\MainMenuFragment.cs" />
     <Compile Include="Interface\IOnFragmentInteractionListener.cs" />
     <Compile Include="Model\FragmentId.cs" />
     <Compile Include="Fragments\InfoFragment.cs" />
     <Compile Include="Fragments\SettingsFragment.cs" />
     <Compile Include="Interface\IFrameGrabber.cs" />
     <Compile Include="GameActivity.cs" />
+    <Compile Include="Fragments\MainMenu\MainMenuButtonsFragment.cs" />
+    <Compile Include="Fragments\MainMenu\MainMenuFragment.cs" />
+    <Compile Include="Fragments\MainMenu\ModeMenuButtonsFragment.cs" />
   </ItemGroup>
   <ItemGroup>
     <AndroidNativeLibrary Include="lib\armeabi-v7a\libcvextern.so" />
@@ -163,6 +165,13 @@
     <AndroidResource Include="Resources\drawable\status_label_shape.xml" />
     <AndroidResource Include="Resources\layout\activity_game.axml" />
     <AndroidResource Include="Resources\drawable\ic_logo.xml" />
+    <AndroidResource Include="Resources\layout\main_menu_items.axml" />
+    <AndroidResource Include="Resources\layout\mode_menu_items.axml" />
+    <AndroidResource Include="Resources\mipmap-hdpi\Icon_round.png" />
+    <AndroidResource Include="Resources\mipmap-mdpi\Icon_round.png" />
+    <AndroidResource Include="Resources\mipmap-xhdpi\Icon_round.png" />
+    <AndroidResource Include="Resources\mipmap-xxhdpi\Icon_round.png" />
+    <AndroidResource Include="Resources\mipmap-xxxhdpi\Icon_round.png" />
   </ItemGroup>
   <ItemGroup>
     <AndroidResource Include="Resources\mipmap-hdpi\Icon.png" />
@@ -173,17 +182,18 @@
     <AndroidResource Include="Resources\layout\activity_menu.axml">
       <SubType>Designer</SubType>
     </AndroidResource>
-    <AndroidResource Include="Resources\layout\fragment_info.xml" />
-    <AndroidResource Include="Resources\layout\fragment_main_menu.xml">
+    <AndroidResource Include="Resources\layout\fragment_info.axml" />
+    <AndroidResource Include="Resources\layout\fragment_main_menu.axml">
       <SubType>Designer</SubType>
     </AndroidResource>
-    <AndroidResource Include="Resources\layout\fragment_settings.xml" />
+    <AndroidResource Include="Resources\layout\fragment_settings.axml" />
     <AndroidResource Include="Resources\values\Colors.xml" />
     <AndroidResource Include="Resources\values\Dimens.xml" />
     <AndroidResource Include="Resources\values-v21\style.xml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Util\CameraUtil\" />
+    <Folder Include="Fragments\MainMenu\" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\Android\Xamarin.Android.CSharp.targets" />

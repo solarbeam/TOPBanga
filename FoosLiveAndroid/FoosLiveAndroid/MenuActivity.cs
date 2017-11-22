@@ -5,15 +5,20 @@ using Android.Support.V7.App;
 using Android.Util;
 using FoosLiveAndroid.Model;
 using FoosLiveAndroid.Fragments;
+using Android.Content.PM;
 
 namespace FoosLiveAndroid
 {
-    //Todo: fragment backstack management
-    [Activity(Label = "Fooslive", MainLauncher = true, Icon = "@mipmap/icon")]
+    [Activity(Label = "Fooslive", MainLauncher = true, Icon = "@mipmap/icon_round",
+              ScreenOrientation = ScreenOrientation.Portrait)]
     public class MenuActivity : AppCompatActivity, IOnFragmentInteractionListener
     {
         public const string Tag = "MenuActivity";
-        Fragment fragment = null;
+
+        // Todo: replace with fragmentmanager 
+        private Fragment previousFragment = null;
+        private Fragment fragment = null;
+
         private TextView toolbarTitle;
         private Android.Support.V7.Widget.Toolbar toolbar;
 
@@ -24,7 +29,8 @@ namespace FoosLiveAndroid
             GetReferencesFromLayout();
             SetSupportActionBar(toolbar);
             SupportActionBar.SetDisplayShowTitleEnabled(false);
-            LoadInitialFragment();
+            // loads initial fragment
+            LoadFragment(FragmentId.Main_menu);
         }
 
         private void GetReferencesFromLayout()
@@ -35,14 +41,21 @@ namespace FoosLiveAndroid
 
         public override void OnBackPressed()
         {
-            // leave default fragment main menu[0] in place
+            // leave default fragment in place
             if (FragmentManager.BackStackEntryCount > 1)
             {
+                fragment = previousFragment;
                 FragmentManager.PopBackStack();
             }
             else if (fragment is MainMenuFragment) 
             {
-                ((MainMenuFragment)fragment).LoadMainMenu();
+                FragmentManager childFm = fragment.ChildFragmentManager;
+                // leave default fragment in place
+                if (childFm.BackStackEntryCount > 1)
+                {
+                    childFm.PopBackStack();
+                    return;
+                }
             }
             else
             {
@@ -50,40 +63,32 @@ namespace FoosLiveAndroid
             }
         }
 
-        private void LoadInitialFragment() {
-            LoadFragment(FragmentId.Main_menu);
-        }
-
-        public void LoadFragment(int id)
+        public void LoadFragment(FragmentId id)
         {
+            previousFragment = fragment;
             fragment = null;
             switch (id)
             {
                 case FragmentId.Main_menu:
-                    fragment = new MainMenuFragment();
-                    toolbarTitle.Text = GetString(Resource.String.main_menu);
-
+                    fragment = MainMenuFragment.NewInstance();
                     break;
                 case FragmentId.Settings:
-                    fragment = new SettingsFragment();
-                    toolbarTitle.Text = GetString(Resource.String.settings);
+                    fragment = SettingsFragment.NewInstance();
                     break;
                 case FragmentId.Info:
-                    fragment = new InfoFragment();
-                    toolbarTitle.Text = GetString(Resource.String.info);
+                    fragment = InfoFragment.NewInstance();
                     break;
                 default:
                     Log.Error(Tag, $"SwitchFragment unknown ID: {id}");
-                    // throw custom exception
                     break;
             }
 
             if (fragment != null)
             {
-
-                var transaction = FragmentManager.BeginTransaction();
-                transaction.AddToBackStack(fragment.Tag);
-                transaction.Replace(Resource.Id.menu_content, fragment).Commit();
+                FragmentManager.BeginTransaction()
+                               .Replace(Resource.Id.menu_content, fragment)
+                               .AddToBackStack(fragment.Tag)
+                               .Commit();
             }
         }
 
