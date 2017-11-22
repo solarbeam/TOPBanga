@@ -17,7 +17,7 @@ namespace FoosLiveAndroid.Fragments
 {
     public class ModeMenuButtonsFragment : Fragment
     {
-        public new string Tag = "ModeMenuButtonsFragment";
+        public static new string Tag = "ModeMenuButtonsFragment";
         private const int VideoRequest = 0;
 
         private View view;

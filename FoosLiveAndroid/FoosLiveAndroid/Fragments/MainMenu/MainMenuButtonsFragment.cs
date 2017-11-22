@@ -11,7 +11,7 @@ namespace FoosLiveAndroid.Fragments
 {
     public class MainMenuButtonsFragment : Fragment
     {
-        public new string Tag = "MainMenuButtonsFragment";
+        public static new string Tag = "MainMenuButtonsFragment";
         private View view;
 
         private Button startButton;

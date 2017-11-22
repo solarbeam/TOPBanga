@@ -13,7 +13,7 @@ namespace FoosLiveAndroid.Fragments
 {
     public class MainMenuFragment : Fragment
     {
-        public new string Tag = "MainMenuFragment";
+        public static new string Tag = "MainMenuFragment";
         private View view;
 
         public static Fragment NewInstance()
@@ -45,12 +45,12 @@ namespace FoosLiveAndroid.Fragments
                     break;
                 case FragmentId.Mode_menu:
                     childFragment = ModeMenuButtonsFragment.NewInstance();
+                    transaction.AddToBackStack(childFragment.Tag);
                     break;
             }
 
             if (childFragment != null)
                 transaction.Replace(Resource.Id.menu_items, childFragment)
-                           .AddToBackStack(childFragment.Tag)
                            .Commit();
         }
     }

@@ -9,7 +9,7 @@ namespace FoosLiveAndroid.Fragments
 {
     public class SettingsFragment : Fragment
     {
-        public new string Tag = "SettingsFragment";
+        public static new string Tag = "SettingsFragment";
 
         private View view;
         private IOnFragmentInteractionListener interactionListener;

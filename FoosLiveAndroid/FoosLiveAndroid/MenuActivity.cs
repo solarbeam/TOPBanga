@@ -13,7 +13,7 @@ namespace FoosLiveAndroid
               ScreenOrientation = ScreenOrientation.Portrait)]
     public class MenuActivity : AppCompatActivity, IOnFragmentInteractionListener
     {
-        public const string Tag = "MenuActivity";
+        public static string Tag = "MenuActivity";
 
         // Todo: replace with fragmentmanager 
         private Fragment previousFragment = null;
@@ -30,8 +30,11 @@ namespace FoosLiveAndroid
             SetSupportActionBar(toolbar);
             SupportActionBar.SetDisplayShowTitleEnabled(false);
             // loads initial fragment
-            LoadFragment(FragmentId.Main_menu);
+            FragmentManager.BeginTransaction()
+                           .Replace(Resource.Id.menu_content, fragment = MainMenuFragment.NewInstance())
+                           .Commit();
         }
+
 
         private void GetReferencesFromLayout()
         {
@@ -42,20 +45,14 @@ namespace FoosLiveAndroid
         public override void OnBackPressed()
         {
             // leave default fragment in place
-            if (FragmentManager.BackStackEntryCount > 1)
+            if (FragmentManager.BackStackEntryCount > 0)
             {
                 fragment = previousFragment;
                 FragmentManager.PopBackStack();
             }
-            else if (fragment is MainMenuFragment) 
+            else if (fragment is MainMenuFragment && fragment.ChildFragmentManager.BackStackEntryCount > 0) 
             {
-                FragmentManager childFm = fragment.ChildFragmentManager;
-                // leave default fragment in place
-                if (childFm.BackStackEntryCount > 1)
-                {
-                    childFm.PopBackStack();
-                    return;
-                }
+                fragment.ChildFragmentManager.PopBackStack();
             }
             else
             {
