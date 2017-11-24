@@ -73,7 +73,7 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Windows.Forms">
-      <HintPath>..\..\..\Windows\Microsoft.NET\Framework64\v2.0.50727\System.Windows.Forms.dll</HintPath>
+      <HintPath>..\..\..\..\..\..\..\Windows\Microsoft.NET\Framework64\v2.0.50727\System.Windows.Forms.dll</HintPath>
     </Reference>
     <Reference Include="System.Xml" />
     <Reference Include="System.Core" />
@@ -147,6 +147,7 @@
     <Compile Include="TOPBanga\Detection\BlobDetector.cs" />
     <Compile Include="TOPBanga\Detection\ColorContainer.cs" />
     <Compile Include="TOPBanga\Detection\ColorDetector.cs" />
+    <Compile Include="TOPBanga\Detection\GameUtil\GameController.cs" />
     <Compile Include="TOPBanga\Interface\IDetector.cs" />
     <Compile Include="TOPBanga\Interface\IGameTracker.cs" />
     <Compile Include="TOPBanga\Interface\IWrite.cs" />
@@ -197,7 +198,6 @@
     <AndroidResource Include="Resources\values-v21\style.xml" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="TOPBanga\Detection\GameUtil\" />
     <Folder Include="Util\CameraUtil\" />
   </ItemGroup>
   <ItemGroup>
