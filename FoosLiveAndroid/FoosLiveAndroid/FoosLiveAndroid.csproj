@@ -130,13 +130,15 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>.\ZedGraph.dll</HintPath>
     </Reference>
+    <Reference Include="System.IO.Compression" />
+    <Reference Include="System.Net.Http" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="MenuActivity.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Resources\Resource.Designer.cs" />
     <Compile Include="Interface\IOnFragmentInteractionListener.cs" />
-    <Compile Include="Model\FragmentId.cs" />
+    <Compile Include="Model\EFragmentId.cs" />
     <Compile Include="Fragments\InfoFragment.cs" />
     <Compile Include="Fragments\SettingsFragment.cs" />
     <Compile Include="Interface\IFrameGrabber.cs" />
@@ -151,6 +153,11 @@
     <Compile Include="Util\Detection\ColorContainer.cs" />
     <Compile Include="Util\Detection\ColorDetector.cs" />
     <Compile Include="Util\Detection\GameController.cs" />
+    <Compile Include="Util\Sounds\SoundAlerts.cs" />
+    <Compile Include="Util\Interface\IAlert.cs" />
+    <Compile Include="Util\Sounds\EAlert.cs" />
+    <Compile Include="Util\Database\DatabaseConnection.cs" />
+    <Compile Include="Util\Sounds\PlayerOGG.cs" />
   </ItemGroup>
   <ItemGroup>
     <AndroidNativeLibrary Include="lib\armeabi-v7a\libcvextern.so" />
@@ -201,6 +208,9 @@
     <Folder Include="Util\CameraUtil\" />
     <Folder Include="Util\Detection\" />
     <Folder Include="Util\Interface\" />
+    <Folder Include="Util\Sounds\" />
+    <Folder Include="Util\Database\" />
+    <Folder Include="Resources\raw\" />
   </ItemGroup>
   <ItemGroup>
     <AndroidResource Include="Resources\drawable\ic_logo.xml" />

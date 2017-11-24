@@ -2,6 +2,7 @@
 <resources>
 	<!--Global-->
 	<string name="app_name">fooslive</string>
+	<string name="dismiss">OK</string>
     <!--Menu-->
 	<string name="main_menu">Main menu</string>
 	<string name="start">Start</string>
@@ -26,4 +27,8 @@
 	<string name="app_version">Version: 0.1</string>
 	<string name="app_description">Description.Description.Description.Description.Description.Description.Description.Description.</string>
 	<string name="credits">Developed by TOPBanga team</string>
+    <!--Camera request-->
+	<string name="camera_request_explanation_title">Camera access request</string>
+	<string name="camera_request_explanation_content">Camera access is required to record and analyse live game.</string>
+	<string name="camera_access_missing">The application does not have access to record live game.</string>
 </resources>

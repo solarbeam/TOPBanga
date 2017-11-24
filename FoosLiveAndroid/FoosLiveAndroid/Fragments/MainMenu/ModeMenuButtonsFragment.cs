@@ -91,7 +91,6 @@ namespace FoosLiveAndroid.Fragments
         private void GetCameraPermission()
         {
             const string CameraPermission = Manifest.Permission.Camera;
-            //if (.CheckPermission(Manifest.Permission.Camera))
             if (Context.CheckSelfPermission(CameraPermission) == (int)Permission.Granted)
             {
                 StartCameraActivity();
@@ -104,10 +103,10 @@ namespace FoosLiveAndroid.Fragments
                 //Explain to the user why we need to read the contacts
                 Android.App.AlertDialog.Builder dialog = new Android.App.AlertDialog.Builder(Context); 
                 Android.App.AlertDialog alert = dialog.Create();  
-                alert.SetTitle("Camera access");
-                alert.SetMessage("Camera access is required to record and analyse live game.");
+                alert.SetTitle(GetString(Resource.String.camera_request_explanation_title));
+                alert.SetMessage(GetString(Resource.String.camera_request_explanation_content));
 
-                alert.SetButton("OK", (c, ev) =>
+                alert.SetButton(GetString(Resource.String.dismiss), (c, ev) =>
                 {
                     alert.Dismiss();
                     RequestPermissions(PermissionsCamera, RequestCameraId);
@@ -168,7 +167,7 @@ namespace FoosLiveAndroid.Fragments
                         }
                         else
                         {
-                            Snackbar.Make(view, "The application does not have access to record live game", Snackbar.LengthLong)
+                            Snackbar.Make(view, GetString(Resource.String.camera_access_missing), Snackbar.LengthLong)
                                     .Show();
                         }
                     }
