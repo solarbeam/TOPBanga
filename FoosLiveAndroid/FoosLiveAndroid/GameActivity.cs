@@ -109,7 +109,7 @@ namespace FoosLiveAndroid
             _gameButton = FindViewById<Button>(Resource.Id.gameButton);
             _gameView = FindViewById<TextureView>(Resource.Id.game_content);
             _score = FindViewById<TextView>(Resource.Id.score);
-            this.surfaceView = FindViewById<SurfaceView>(Resource.Id.surfaceView1);
+            this.surfaceView = FindViewById<SurfaceView>(Resource.Id.surfaceView);
         }
 
         public bool OnTouch(View v, MotionEvent e)
