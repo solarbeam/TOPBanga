@@ -8,26 +8,21 @@ namespace TOPBanga.Util
     {
         private const string redTeamWin = "Red Team Wins";
         private const string blueTeamWin = "Blue Team Wins";
+        private const string eventLogStart = "Start of Event Log";
         private StreamWriter file;
         
         public EventLog(String fileName)
         {
-            try
-            {
+            
                 this.file = new StreamWriter(fileName);
-                this.file.WriteLine("Start of Event Log");
+                this.file.WriteLine(eventLogStart);
                 this.file.Flush();
-            }
-            catch(Exception e) {  }
+           
         }
         public void Write(String ev)
         {
-            try
-            {
                 this.file.WriteLine(DateTime.Now.ToString() + ": " + ev);
                 this.file.Flush();
-            }
-            catch (Exception e) { }
         }
 
         public string WinAnnouncement(int redScore,int blueScore)

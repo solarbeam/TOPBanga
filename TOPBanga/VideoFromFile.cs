@@ -222,6 +222,11 @@ namespace TOPBanga
 
             }
         }
+
+        private void settings_Click(object sender, EventArgs e)
+        {
+
+        }
     }
 }
 
