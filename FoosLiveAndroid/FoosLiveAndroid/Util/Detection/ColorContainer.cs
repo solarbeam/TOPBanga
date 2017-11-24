@@ -1,19 +1,16 @@
 ﻿using Emgu.CV.Structure;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace FoosLiveAndroid.TOPBanga.Detection
 {
     class ColorContainer
     {
-        public List<Hsv> list { get; private set; }
+        public List<Hsv> List { get; private set; }
 
         public ColorContainer()
         {
-            this.list = new List<Hsv>();
+            List = new List<Hsv>();
         }
 
         public Boolean Add(Hsv hsv)
@@ -22,7 +19,7 @@ namespace FoosLiveAndroid.TOPBanga.Detection
              * Check if the specific value exists already
              * in the list
              */
-            foreach(Hsv i in this.list)
+            foreach(Hsv i in this.List)
             {
                 if ( hsv.Hue == i.Hue && hsv.Satuation == i.Satuation && hsv.Value == i.Value )
                 {
@@ -30,7 +27,7 @@ namespace FoosLiveAndroid.TOPBanga.Detection
                 }
             }
 
-            this.list.Add(hsv);
+            List.Add(hsv);
 
             return true;
         }

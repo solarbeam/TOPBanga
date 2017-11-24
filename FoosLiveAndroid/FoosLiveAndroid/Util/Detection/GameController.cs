@@ -8,8 +8,8 @@ namespace TOPBanga.Detection.GameUtil
     {
 
         public event EventHandler<EventArgs> GoalEvent;
-        public int redScore { get; private set; }
-        public int blueScore { get; private set; }
+        public int RedScore { get; private set; }
+        public int BlueScore { get; private set; }
         private const int SPACE_FOR_GOALS = 25;
 
         private Queue<Goal> goals = new Queue<Goal>();
@@ -80,15 +80,15 @@ namespace TOPBanga.Detection.GameUtil
             bluePaint.SetARGB(255, 0, 0, 255);
             Paint redPaint = new Paint();
             redPaint.SetARGB(255, 255, 0, 0);
-            graphics.DrawPath(this.Table, bluePaint);
+            graphics.DrawPath(Table, bluePaint);
             foreach (Goal goal in goals)
             {
                 RectF goalConvertion = new RectF();
-                goal.path.ComputeBounds(goalConvertion, true);
-                if (goalConvertion.Contains(this.LastBallCoordinates.X, this.LastBallCoordinates.Y))
-                    graphics.DrawPath(this.Table, redPaint);
+                goal.Path.ComputeBounds(goalConvertion, true);
+                if (goalConvertion.Contains(LastBallCoordinates.X, LastBallCoordinates.Y))
+                    graphics.DrawPath(Table, redPaint);
                 else
-                    graphics.DrawPath(this.Table, bluePaint);
+                    graphics.DrawPath(Table, bluePaint);
             }
             graphics.Dispose();
             return bitmap;
@@ -134,18 +134,18 @@ namespace TOPBanga.Detection.GameUtil
 
     internal class Goal : IDisposable
     {
-        public Path path { get; set; }
+        public Path Path { get; set; }
         public int FramesBallInGoal { get; set; }
 
         internal Goal(Path path)
         {
-            this.path = path;
+            this.Path = path;
             FramesBallInGoal = 0;
         }
 
         public void Dispose()
         {
-            path.Dispose();
+            Path.Dispose();
         }
     }
 }

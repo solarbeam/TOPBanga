@@ -9,12 +9,12 @@ namespace FoosLiveAndroid.TOPBanga.Detection
         private CvBlobDetector detector;
         public BlobDetector()
         {
-            this.detector = new CvBlobDetector();
+            detector = new CvBlobDetector();
             CvBlobs blobs = new CvBlobs();
         }
         public uint GetBlobs(Image<Gray,byte> image, CvBlobs blobs)
         {
-            return this.detector.Detect(image,blobs);
+            return detector.Detect(image,blobs);
         }
     }
 }

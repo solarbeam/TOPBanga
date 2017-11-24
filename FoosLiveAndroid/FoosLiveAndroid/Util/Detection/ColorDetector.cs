@@ -1,14 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Emgu.CV;
 using Emgu.CV.Structure;
 using Emgu.CV.Cvb;
 using FoosLiveAndroid.TOPBanga.Interface;
-using Android.Graphics;
-using FoosLiveAndroid.TOPBanga.Detection;
 using Emgu.CV.Util;
 using Emgu.CV.CvEnum;
 using System.Drawing;
@@ -19,23 +15,23 @@ namespace FoosLiveAndroid.TOPBanga.Detection
     {
         public Image<Bgr, byte> image { get; set; }
 
-        public int threshold { get; set; }
+        public int Threshold { get; set; }
 
-        public Bgr circleColor { get; set; }
+        public Bgr CircleColor { get; set; }
 
-        public int circleWidth { get; set; }
+        public int CircleWidth { get; set; }
 
 
         public ColorDetector()
         {
-            this.threshold = 35; // default threshold
-            this.circleColor = new Bgr(1, 1, 255); // the default circle draw color is red
-            this.circleWidth = 1;
+            Threshold = 35; // default threshold
+            CircleColor = new Bgr(1, 1, 255); // the default circle draw color is red
+            CircleWidth = 1;
         }
 
         public ColorDetector(int threshold)
         {
-            this.threshold = threshold;
+            Threshold = threshold;
         }
 
         public bool DetectTable(out RotatedRect rect)
@@ -98,10 +94,10 @@ namespace FoosLiveAndroid.TOPBanga.Detection
             //default returns
             bool success = false;
             rect = new Rectangle();
-            Image<Hsv, byte> hsvImg = this.image.Convert<Hsv, byte>();
+            Image<Hsv, byte> hsvImg = image.Convert<Hsv, byte>();
 
-            Hsv lowerLimit = new Hsv(ballHsv.Hue - this.threshold, ballHsv.Satuation - this.threshold, ballHsv.Value - this.threshold);
-            Hsv upperLimit = new Hsv(ballHsv.Hue + this.threshold, ballHsv.Satuation + this.threshold, ballHsv.Value + this.threshold);
+            Hsv lowerLimit = new Hsv(ballHsv.Hue - Threshold, ballHsv.Satuation - Threshold, ballHsv.Value - Threshold);
+            Hsv upperLimit = new Hsv(ballHsv.Hue + Threshold, ballHsv.Satuation + Threshold, ballHsv.Value + Threshold);
 
             Image<Gray, byte> imgFiltered = hsvImg.InRange(lowerLimit, upperLimit);
 
@@ -138,7 +134,7 @@ namespace FoosLiveAndroid.TOPBanga.Detection
 
         public Hsv GetBallColorHSVFromCoords(int x, int y)
         {
-            Image<Hsv, byte> hsvImage = this.image.Convert<Hsv, byte>();
+            Image<Hsv, byte> hsvImage = image.Convert<Hsv, byte>();
             return new Hsv(hsvImage.Data[y, x, 0], hsvImage.Data[y, x, 1], hsvImage.Data[y, x, 2]);
         }
     }
