@@ -9,6 +9,9 @@ using Emgu.CV.Cvb;
 using FoosLiveAndroid.TOPBanga.Interface;
 using Android.Graphics;
 using FoosLiveAndroid.TOPBanga.Detection;
+using Emgu.CV.Util;
+using Emgu.CV.CvEnum;
+using System.Drawing;
 
 namespace FoosLiveAndroid.TOPBanga.Detection
 {
@@ -35,15 +38,66 @@ namespace FoosLiveAndroid.TOPBanga.Detection
             this.threshold = threshold;
         }
 
-        public bool DetectBall(out float x, out float y, out float radius, out Bitmap bitmap, Hsv ballHsv)
+        public bool DetectTable(out RotatedRect rect)
+        {
+            bool success = false;
+            rect = new RotatedRect();
+            List<RotatedRect> boxList = new List<RotatedRect>();
+            UMat cannyEdges = new UMat();
+            UMat uimage = new UMat();
+            double cannyThreshold = 180.0;
+            double cannyThresholdLinking = 120.0;
+            CvInvoke.CvtColor(this.image, uimage, ColorConversion.Bgr2Gray);
+            CvInvoke.Canny(uimage, cannyEdges, cannyThreshold, cannyThresholdLinking);
+            using (VectorOfVectorOfPoint contours = new VectorOfVectorOfPoint())
+            {
+                CvInvoke.FindContours(cannyEdges, contours, null, RetrType.List, ChainApproxMethod.ChainApproxSimple);
+                int count = contours.Size;
+                for (int i = 0; i < count; i++)
+                {
+                    using (VectorOfPoint contour = contours[i])
+                    using (VectorOfPoint approxContour = new VectorOfPoint())
+                    {
+                        CvInvoke.ApproxPolyDP(contour, approxContour, CvInvoke.ArcLength(contour, true) * 0.05, true);
+                        if (CvInvoke.ContourArea(approxContour, false) > 250) //only consider contours with area greater than 250
+                        {
+                            if (approxContour.Size == 4) //The contour has 4 vertices.
+                            {
+                                bool isRectangle = true;
+                                System.Drawing.Point[] pts = approxContour.ToArray();
+                                LineSegment2D[] edges = PointCollection.PolyLine(pts, true);
+
+                                for (int j = 0; j < edges.Length; j++)
+                                {
+                                    double angle = Math.Abs(
+                                       edges[(j + 1) % edges.Length].GetExteriorAngleDegree(edges[j]));
+                                    if (angle < 80 || angle > 100)
+                                    {
+                                        isRectangle = false;
+                                        break;
+                                    }
+                                }
+
+                                if (isRectangle) boxList.Add(CvInvoke.MinAreaRect(approxContour));
+                            }
+                        }
+                    }
+                }
+            }
+            if (boxList.Count > 0)
+            {
+                success = true;
+                boxList.OrderByDescending(b => b.Size);
+                rect = boxList[0];
+            }   
+            return success;
+        }
+
+        public bool DetectBall(Hsv ballHsv, out Rectangle rect)
         {
             //default returns
             bool success = false;
-            x = 0;
-            y = 0;
-            radius = 0;
-            bitmap = null;
-            int maxRadius = 20;
+            rect = new Rectangle();
             Image<Hsv, byte> hsvImg = this.image.Convert<Hsv, byte>();
 
             Hsv lowerLimit = new Hsv(ballHsv.Hue - this.threshold, ballHsv.Satuation - this.threshold, ballHsv.Value - this.threshold);
@@ -59,11 +113,7 @@ namespace FoosLiveAndroid.TOPBanga.Detection
 
             if (count == 0)
             {
-                /**
-                 * Will change this in the future
-                 */
                 success = false;
-                bitmap = this.image.Bitmap;
                 return false;
             }
 
@@ -74,20 +124,15 @@ namespace FoosLiveAndroid.TOPBanga.Detection
 
             if (points.Count != 0)
             {
-                /**
-                 * Paint the blob with the highest area
-                 */
-                this.image.Draw(points[1].BoundingBox, new Bgr(255,255,255), 2);
-                x = points[1].Centroid.X;
-                y = points[1].Centroid.Y;
+                //this.image.Draw(points[1].BoundingBox, new Bgr(255,255,255), 2);
                 success = true;
             }  
 
             if (success)
             {
-                bitmap = this.image.Bitmap;
-            }
+                rect = points[1].BoundingBox;
 
+            }
             return success;
         }
 
