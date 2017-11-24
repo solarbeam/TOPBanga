@@ -6,8 +6,7 @@ namespace FoosLiveAndroid.TOPBanga.Interface
 {
     public interface IDetector
     {
-        Image<Bgr, byte> Image { get; set; }
+        Image<Bgr, byte> image { get; set; }
         bool DetectBall(Hsv ballHsv, out Rectangle rect);
-        Hsv GetBallColorHSVFromCoords(int x, int y);
     }
 }

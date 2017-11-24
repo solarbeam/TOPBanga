@@ -127,15 +127,8 @@ namespace FoosLiveAndroid.TOPBanga.Detection
             if (success)
             {
                 rect = points[1].BoundingBox;
-
             }
             return success;
-        }
-
-        public Hsv GetBallColorHSVFromCoords(int x, int y)
-        {
-            Image<Hsv, byte> hsvImage = image.Convert<Hsv, byte>();
-            return new Hsv(hsvImage.Data[y, x, 0], hsvImage.Data[y, x, 1], hsvImage.Data[y, x, 2]);
         }
     }
 }
