@@ -144,6 +144,12 @@
     <Compile Include="Fragments\MainMenu\MainMenuButtonsFragment.cs" />
     <Compile Include="Fragments\MainMenu\MainMenuFragment.cs" />
     <Compile Include="Fragments\MainMenu\ModeMenuButtonsFragment.cs" />
+    <Compile Include="TOPBanga\Detection\BlobDetector.cs" />
+    <Compile Include="TOPBanga\Detection\ColorContainer.cs" />
+    <Compile Include="TOPBanga\Detection\ColorDetector.cs" />
+    <Compile Include="TOPBanga\Interface\IDetector.cs" />
+    <Compile Include="TOPBanga\Interface\IGameTracker.cs" />
+    <Compile Include="TOPBanga\Interface\IWrite.cs" />
   </ItemGroup>
   <ItemGroup>
     <AndroidNativeLibrary Include="lib\armeabi-v7a\libcvextern.so" />
@@ -164,7 +170,6 @@
     <AndroidResource Include="Resources\drawable\menu_button_shape_clicked.xml" />
     <AndroidResource Include="Resources\drawable\status_label_shape.xml" />
     <AndroidResource Include="Resources\layout\activity_game.axml" />
-    <AndroidResource Include="Resources\drawable\ic_logo.xml" />
     <AndroidResource Include="Resources\layout\main_menu_items.axml" />
     <AndroidResource Include="Resources\layout\mode_menu_items.axml" />
     <AndroidResource Include="Resources\mipmap-hdpi\Icon_round.png" />
@@ -192,10 +197,12 @@
     <AndroidResource Include="Resources\values-v21\style.xml" />
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="TOPBanga\Detection\GameUtil\" />
     <Folder Include="Util\CameraUtil\" />
-    <Folder Include="Fragments\MainMenu\" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <AndroidResource Include="Resources\drawable\ic_logo.xml" />
+  </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\Android\Xamarin.Android.CSharp.targets" />
   <Import Project="..\packages\Xamarin.Android.Support.Annotations.26.1.0.1\build\MonoAndroid80\Xamarin.Android.Support.Annotations.targets" Condition="Exists('..\packages\Xamarin.Android.Support.Annotations.26.1.0.1\build\MonoAndroid80\Xamarin.Android.Support.Annotations.targets')" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
