@@ -144,13 +144,13 @@
     <Compile Include="Fragments\MainMenu\MainMenuButtonsFragment.cs" />
     <Compile Include="Fragments\MainMenu\MainMenuFragment.cs" />
     <Compile Include="Fragments\MainMenu\ModeMenuButtonsFragment.cs" />
-    <Compile Include="TOPBanga\Detection\BlobDetector.cs" />
-    <Compile Include="TOPBanga\Detection\ColorContainer.cs" />
-    <Compile Include="TOPBanga\Detection\ColorDetector.cs" />
-    <Compile Include="TOPBanga\Detection\GameUtil\GameController.cs" />
-    <Compile Include="TOPBanga\Interface\IDetector.cs" />
-    <Compile Include="TOPBanga\Interface\IGameTracker.cs" />
-    <Compile Include="TOPBanga\Interface\IWrite.cs" />
+    <Compile Include="Util\Interface\IDetector.cs" />
+    <Compile Include="Util\Interface\IGameTracker.cs" />
+    <Compile Include="Util\Interface\IWrite.cs" />
+    <Compile Include="Util\Detection\BlobDetector.cs" />
+    <Compile Include="Util\Detection\ColorContainer.cs" />
+    <Compile Include="Util\Detection\ColorDetector.cs" />
+    <Compile Include="Util\Detection\GameController.cs" />
   </ItemGroup>
   <ItemGroup>
     <AndroidNativeLibrary Include="lib\armeabi-v7a\libcvextern.so" />
@@ -199,6 +199,8 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Util\CameraUtil\" />
+    <Folder Include="Util\Detection\" />
+    <Folder Include="Util\Interface\" />
   </ItemGroup>
   <ItemGroup>
     <AndroidResource Include="Resources\drawable\ic_logo.xml" />
