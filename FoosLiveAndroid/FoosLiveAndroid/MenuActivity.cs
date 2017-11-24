@@ -44,13 +44,13 @@ namespace FoosLiveAndroid
 
         public override void OnBackPressed()
         {
-            // leave default fragment in place
             if (FragmentManager.BackStackEntryCount > 0)
             {
                 fragment = previousFragment;
                 FragmentManager.PopBackStack();
             }
-            else if (fragment is MainMenuFragment && fragment.ChildFragmentManager.BackStackEntryCount > 0) 
+            else if (fragment is MainMenuFragment && 
+                     fragment.ChildFragmentManager.BackStackEntryCount > 0) 
             {
                 fragment.ChildFragmentManager.PopBackStack();
             }
