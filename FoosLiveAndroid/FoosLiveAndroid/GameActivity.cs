@@ -47,8 +47,8 @@ namespace FoosLiveAndroid
 
         //Todo: change Camera to Camera2
         private Camera camera;
-        private Hsv selectedHsv;
-        private bool hsvSelected;
+        private Bgr selectedBgr;
+        private bool bgrSelected;
 
         protected override void OnCreate(Bundle savedInstanceState)
         {
@@ -153,7 +153,7 @@ namespace FoosLiveAndroid
                 tableDetected = true;
             }
 
-            if ( this.hsvSelected && this.detector.DetectBall(this.selectedHsv, out this.rectangle) )
+            if ( this.bgrSelected && this.detector.DetectBall(this.selectedBgr, out this.rectangle) )
             {
                 ballDetected = true;
             }
@@ -196,8 +196,8 @@ namespace FoosLiveAndroid
 
             if ( ballDetected )
             {
-                canvas.DrawRect((int)((this.rectangle.X - this.rectangle.Width) * mul),
-                                 (int)((this.rectangle.Y - this.rectangle.Height) * mul),
+                canvas.DrawRect((int)((this.rectangle.X) * mul),
+                                 (int)((this.rectangle.Y) * mul),
                                  (int)((this.rectangle.X + this.rectangle.Width) * mul),
                                  (int)((this.rectangle.Y + this.rectangle.Height) * mul),
                                  paintBall);
@@ -221,14 +221,15 @@ namespace FoosLiveAndroid
 
         public bool OnTouch(View v, MotionEvent e)
         {
-            if ( !hsvSelected )
+            if ( !this.bgrSelected )
             {
-                Image<Hsv, byte> image = new Image<Hsv, byte>(this._gameView.GetBitmap(preview_width, preview_height));
-                this.selectedHsv = new Hsv(image.Data[ (int)(e.GetY()/mul), (int)(e.GetX()/mul), 0 ],
+                Image<Bgr, byte> image = new Image<Bgr, byte>(this._gameView.GetBitmap(preview_width, preview_height));
+                this.selectedBgr = new Bgr(image.Data[ (int)(e.GetY()/mul), (int)(e.GetX()/mul), 0 ],
                                             image.Data[ (int)(e.GetY()/mul), (int)(e.GetX()/mul), 1],
                                             image.Data[ (int)(e.GetY()/mul), (int)(e.GetX()/mul), 2]);
                 image.Dispose();
-                this.hsvSelected = true;
+                this.bgrSelected = true;
+                Console.WriteLine(this.selectedBgr.ToString());
             }
             return true;
         }

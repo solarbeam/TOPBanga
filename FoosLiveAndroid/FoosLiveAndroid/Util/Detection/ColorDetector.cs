@@ -11,7 +11,7 @@ using System.Drawing;
 
 namespace FoosLiveAndroid.TOPBanga.Detection
 {
-    class ColorDetector : IDetector
+    class ColorDetector
     {
         public Image<Bgr, byte> image { get; set; }
 
@@ -24,9 +24,7 @@ namespace FoosLiveAndroid.TOPBanga.Detection
 
         public ColorDetector()
         {
-            Threshold = 35; // default threshold
-            CircleColor = new Bgr(1, 1, 255); // the default circle draw color is red
-            CircleWidth = 1;
+            Threshold = 15; // default threshold
         }
 
         public ColorDetector(int threshold)
@@ -89,34 +87,80 @@ namespace FoosLiveAndroid.TOPBanga.Detection
             return success;
         }
 
-        public bool DetectBall(Hsv ballHsv, out Rectangle rect)
+        public bool DetectBall(Bgr ballBgr, out Rectangle rect)
         {
             //default returns
             bool success = false;
             rect = new Rectangle();
-            Image<Hsv, byte> hsvImg = image.Convert<Hsv, byte>();
+            Image<Bgr, byte> bgrImg = image;
+            int primaryChannel;
 
-            Hsv lowerLimit = new Hsv(ballHsv.Hue - Threshold, ballHsv.Satuation - Threshold, ballHsv.Value - Threshold);
-            Hsv upperLimit = new Hsv(ballHsv.Hue + Threshold, ballHsv.Satuation + Threshold, ballHsv.Value + Threshold);
+            /**
+             * Find the primary channel
+             */
+            Gray lowerLimit, upperLimit;
+            if (ballBgr.Blue > ballBgr.Green && ballBgr.Blue > ballBgr.Red)
+            {
+                lowerLimit = new Gray(ballBgr.Blue - Threshold);
+                upperLimit = new Gray(ballBgr.Blue + Threshold);
+                primaryChannel = 0;
+            }
+            else
+                if (ballBgr.Green >= ballBgr.Blue && ballBgr.Green > ballBgr.Red)
+            {
+                lowerLimit = new Gray(ballBgr.Green - Threshold);
+                upperLimit = new Gray(ballBgr.Green + Threshold);
+                primaryChannel = 1;
+            }
+            else
+            {
+                lowerLimit = new Gray(ballBgr.Red - Threshold);
+                upperLimit = new Gray(ballBgr.Red + Threshold);
+                primaryChannel = 2;
+            }
 
-            Image<Gray, byte> imgFiltered = hsvImg.InRange(lowerLimit, upperLimit);
+            Image<Gray, byte>[] imgFiltered = bgrImg.Split();
+
+            for(int i = 0; i < 3; i ++)
+            {
+                if (i == primaryChannel)
+                    continue;
+
+                imgFiltered[i].Dispose();
+            }
+
+            imgFiltered[primaryChannel] = imgFiltered[primaryChannel].InRange(lowerLimit, upperLimit);
 
             BlobDetector detector = new BlobDetector();
             CvBlobs points = new CvBlobs();
+            CvBlob blob;
             uint count;
 
-            count = detector.GetBlobs(imgFiltered, points);
+            count = detector.GetBlobs(imgFiltered[primaryChannel], points);
+
+            imgFiltered[primaryChannel].Dispose();
 
             if (count == 0)
             {
                 success = false;
+                points.Dispose();
                 return false;
             }
 
             /**
-             * Sort blobs by the amount of pixels in them
+             * Get the biggest blob
              */
-            points.OrderByDescending(b => b.Value.Area);
+            var enumerator = points.GetEnumerator();
+            CvBlob biggestBlob = null;
+            int biggestArea = 0;
+            foreach(var pair in points)
+            {
+                if ( biggestArea < pair.Value.Area )
+                {
+                    biggestArea = pair.Value.Area;
+                    biggestBlob = pair.Value;
+                }
+            }
 
             if (points.Count != 0)
             {
@@ -126,8 +170,15 @@ namespace FoosLiveAndroid.TOPBanga.Detection
 
             if (success)
             {
-                rect = points[1].BoundingBox;
+                /**
+                 * Deep copy the blob
+                 */
+                rect = new Rectangle(new Point(biggestBlob.BoundingBox.X, biggestBlob.BoundingBox.Y),
+                                        new Size(biggestBlob.BoundingBox.Size.Width, biggestBlob.BoundingBox.Height));
             }
+
+            points.Dispose();
+
             return success;
         }
     }
