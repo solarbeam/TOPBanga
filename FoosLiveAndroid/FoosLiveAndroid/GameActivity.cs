@@ -13,6 +13,7 @@ using System.Collections.Generic;
 using Android.Runtime;
 using System.Drawing;
 using Android.Support.V4.Content;
+using Android.Graphics.Drawables;
 
 namespace FoosLiveAndroid
 {
@@ -26,8 +27,10 @@ namespace FoosLiveAndroid
         private const int texture_width = 1920;
         private const int texture_height = 1080;
 
-        private float mul_width;
-        private float mul_height;
+        /**
+         * A constant for upscaling the positions
+         */
+        private float mul;
 
         private Button _gameButton;
         private TextView _score;
@@ -35,6 +38,8 @@ namespace FoosLiveAndroid
 
         private SurfaceView surfaceView;
         private ISurfaceHolder holder;
+
+        private Bitmap alphaBitmap;
 
         private ColorDetector detector;
 
@@ -53,14 +58,17 @@ namespace FoosLiveAndroid
             Window.SetFlags(WindowManagerFlags.Fullscreen, WindowManagerFlags.Fullscreen);
             GetReferencesFromLayout();
 
-            this.mul_width = texture_width / preview_width;
-            this.mul_height = texture_height / preview_height;
+            this.mul = texture_width / preview_width;
 
             this.detector = new ColorDetector();
 
             this.surfaceView.SetZOrderOnTop(true);
             this.surfaceView.Holder.SetFormat(Format.Transparent);
             this.holder = this.surfaceView.Holder;
+
+            BitmapDrawable tempBitmap = new BitmapDrawable(Bitmap.CreateBitmap(texture_width, texture_height, Bitmap.Config.Argb8888));
+            tempBitmap.SetAlpha(0);
+            this.alphaBitmap = tempBitmap.Bitmap;
 
             // Open the camera
             this._gameView.SurfaceTextureListener = this;
@@ -122,8 +130,7 @@ namespace FoosLiveAndroid
             RotatedRect table;
 
             /**
-             * Refresh the image in the detector, but
-             *  of a smaller size
+             * Refresh the detector's image
              */
             this.detector.image = new Image<Bgr, byte>(this._gameView.GetBitmap(preview_width,preview_height));
 
@@ -131,6 +138,12 @@ namespace FoosLiveAndroid
              * Lock the canvas for drawing
              */
             Canvas canvas = this.holder.LockCanvas();
+
+            /**
+             * Clear the image
+             */
+            canvas.DrawColor(Android.Graphics.Color.Transparent, PorterDuff.Mode.Clear);
+            canvas.DrawBitmap(this.alphaBitmap,0,0,null);
 
             /**
              * Try to detect a table
@@ -145,30 +158,50 @@ namespace FoosLiveAndroid
                 ballDetected = true;
             }
 
+            /**
+             *
+             */
+            Paint paintRect = new Paint();
+            paintRect.Color = new Android.Graphics.Color(255,0,0);
+            paintRect.SetStyle(Paint.Style.Stroke);
+
+            Paint paintBall = new Paint();
+            paintBall.Color = new Android.Graphics.Color(0, 255, 0);
+            paintBall.SetStyle(Paint.Style.Stroke);
+
             if ( tableDetected )
             {
-                Console.WriteLine("Table detected");
-
                 /**
                  * Convert PointF[] to Point[]
                  */
-                System.Drawing.Point[] tablePoints = new System.Drawing.Point[4];
+                float[] tablePoints = new float[8];
 
-                for(int i = 0; i < 4; i ++)
+                int j = 0;
+
+                for(int i = 0; i < 8; i += 2)
                 {
-                    tablePoints[i].X = (int)table.GetVertices()[i].X;
-                    tablePoints[i].Y = (int)table.GetVertices()[i].Y;
+                    tablePoints[i] = table.GetVertices()[j].X * mul;
+                    tablePoints[i+1] = table.GetVertices()[j].Y * mul;
+                    j++;
                 }
 
-                this.detector.image.DrawPolyline(tablePoints,true,new Bgr(0,0,255));
+                /**
+                 * Draw the rectangle
+                 */
+                canvas.DrawLine(tablePoints[0], tablePoints[1], tablePoints[2], tablePoints[3], paintRect);
+                canvas.DrawLine(tablePoints[2], tablePoints[3], tablePoints[4], tablePoints[5], paintRect);
+                canvas.DrawLine(tablePoints[4], tablePoints[5], tablePoints[6], tablePoints[7], paintRect);
+                canvas.DrawLine(tablePoints[6], tablePoints[7], tablePoints[0], tablePoints[1], paintRect);
             }
 
             if ( ballDetected )
             {
-                this.detector.image.Draw(this.rectangle, new Bgr(255, 255, 255));
+                canvas.DrawRect((int)((this.rectangle.X - this.rectangle.Width) * mul),
+                                 (int)((this.rectangle.Y - this.rectangle.Height) * mul),
+                                 (int)((this.rectangle.X + this.rectangle.Width) * mul),
+                                 (int)((this.rectangle.Y + this.rectangle.Height) * mul),
+                                 paintBall);
             }
-
-            canvas.DrawBitmap(this.detector.image.Bitmap,0,0,null);
 
             this.holder.UnlockCanvasAndPost(canvas);
 
@@ -191,9 +224,9 @@ namespace FoosLiveAndroid
             if ( !hsvSelected )
             {
                 Image<Hsv, byte> image = new Image<Hsv, byte>(this._gameView.GetBitmap(preview_width, preview_height));
-                this.selectedHsv = new Hsv(image.Data[ (int)(e.GetY()/mul_height), (int)(e.GetX()/mul_width), 0 ],
-                                            image.Data[ (int)(e.GetY()/mul_height), (int)(e.GetX()/mul_width), 1],
-                                            image.Data[ (int)(e.GetY()/mul_height), (int)(e.GetX()/mul_width), 2]);
+                this.selectedHsv = new Hsv(image.Data[ (int)(e.GetY()/mul), (int)(e.GetX()/mul), 0 ],
+                                            image.Data[ (int)(e.GetY()/mul), (int)(e.GetX()/mul), 1],
+                                            image.Data[ (int)(e.GetY()/mul), (int)(e.GetX()/mul), 2]);
                 image.Dispose();
                 this.hsvSelected = true;
             }
