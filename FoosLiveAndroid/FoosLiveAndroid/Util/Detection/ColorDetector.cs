@@ -11,7 +11,7 @@ using System.Drawing;
 
 namespace FoosLiveAndroid.TOPBanga.Detection
 {
-    class ColorDetector
+    class ColorDetector : IDetector
     {
         public Image<Bgr, byte> image { get; set; }
 
@@ -24,7 +24,7 @@ namespace FoosLiveAndroid.TOPBanga.Detection
 
         public ColorDetector()
         {
-            Threshold = 15; // default threshold
+            Threshold = 35; // default threshold
         }
 
         public ColorDetector(int threshold)
@@ -87,58 +87,27 @@ namespace FoosLiveAndroid.TOPBanga.Detection
             return success;
         }
 
-        public bool DetectBall(Bgr ballBgr, out Rectangle rect)
+        public bool DetectBall(Hsv ballHsv, out Rectangle rect)
         {
             //default returns
             bool success = false;
             rect = new Rectangle();
-            Image<Bgr, byte> bgrImg = image;
-            int primaryChannel;
+            Image<Hsv, byte> hsvImg = image.Convert<Hsv,byte>();
 
-            /**
-             * Find the primary channel
-             */
-            Gray lowerLimit, upperLimit;
-            if (ballBgr.Blue > ballBgr.Green && ballBgr.Blue > ballBgr.Red)
-            {
-                lowerLimit = new Gray(ballBgr.Blue - Threshold);
-                upperLimit = new Gray(ballBgr.Blue + Threshold);
-                primaryChannel = 0;
-            }
-            else
-                if (ballBgr.Green >= ballBgr.Blue && ballBgr.Green > ballBgr.Red)
-            {
-                lowerLimit = new Gray(ballBgr.Green - Threshold);
-                upperLimit = new Gray(ballBgr.Green + Threshold);
-                primaryChannel = 1;
-            }
-            else
-            {
-                lowerLimit = new Gray(ballBgr.Red - Threshold);
-                upperLimit = new Gray(ballBgr.Red + Threshold);
-                primaryChannel = 2;
-            }
+            Image<Gray, byte> imgFiltered;
 
-            Image<Gray, byte>[] imgFiltered = bgrImg.Split();
+            Hsv lowerLimit = new Hsv(ballHsv.Hue - Threshold, ballHsv.Satuation - Threshold, ballHsv.Value - Threshold);
+            Hsv upperLimit = new Hsv(ballHsv.Hue + Threshold, ballHsv.Satuation + Threshold, ballHsv.Value + Threshold);
 
-            for(int i = 0; i < 3; i ++)
-            {
-                if (i == primaryChannel)
-                    continue;
-
-                imgFiltered[i].Dispose();
-            }
-
-            imgFiltered[primaryChannel] = imgFiltered[primaryChannel].InRange(lowerLimit, upperLimit);
+            imgFiltered = hsvImg.InRange(lowerLimit,upperLimit);
 
             BlobDetector detector = new BlobDetector();
             CvBlobs points = new CvBlobs();
-            CvBlob blob;
             uint count;
 
-            count = detector.GetBlobs(imgFiltered[primaryChannel], points);
+            count = detector.GetBlobs(imgFiltered, points);
 
-            imgFiltered[primaryChannel].Dispose();
+            imgFiltered.Dispose();
 
             if (count == 0)
             {

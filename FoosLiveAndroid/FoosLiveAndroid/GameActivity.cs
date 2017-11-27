@@ -14,6 +14,7 @@ using Android.Runtime;
 using System.Drawing;
 using Android.Support.V4.Content;
 using Android.Graphics.Drawables;
+using Android.Util;
 
 namespace FoosLiveAndroid
 {
@@ -21,11 +22,11 @@ namespace FoosLiveAndroid
     [Activity(ScreenOrientation = ScreenOrientation.Landscape)]
     public class GameActivity : Activity, TextureView.ISurfaceTextureListener, View.IOnTouchListener
     {
-        private const int preview_width = 640;
-        private const int preview_height = 360;
+        private const int preview_width = 240;
+        private const int preview_height = 135;
 
-        private const int texture_width = 1920;
-        private const int texture_height = 1080;
+        private int texture_width;
+        private int texture_height;
 
         /**
          * A constant for upscaling the positions
@@ -47,8 +48,8 @@ namespace FoosLiveAndroid
 
         //Todo: change Camera to Camera2
         private Camera camera;
-        private Bgr selectedBgr;
-        private bool bgrSelected;
+        private Hsv selectedHsv;
+        private bool hsvSelected;
 
         protected override void OnCreate(Bundle savedInstanceState)
         {
@@ -57,6 +58,15 @@ namespace FoosLiveAndroid
             //hides notification bar
             Window.SetFlags(WindowManagerFlags.Fullscreen, WindowManagerFlags.Fullscreen);
             GetReferencesFromLayout();
+
+            /**
+             * Get the device's display size
+             */
+            DisplayMetrics metrics = new DisplayMetrics();
+            WindowManager.DefaultDisplay.GetMetrics(metrics);
+            this.texture_width = metrics.WidthPixels;
+            this.texture_height = metrics.HeightPixels;
+            metrics.Dispose();
 
             this.mul = texture_width / preview_width;
 
@@ -153,7 +163,7 @@ namespace FoosLiveAndroid
                 tableDetected = true;
             }
 
-            if ( this.bgrSelected && this.detector.DetectBall(this.selectedBgr, out this.rectangle) )
+            if ( this.hsvSelected && this.detector.DetectBall(this.selectedHsv, out this.rectangle) )
             {
                 ballDetected = true;
             }
@@ -221,15 +231,15 @@ namespace FoosLiveAndroid
 
         public bool OnTouch(View v, MotionEvent e)
         {
-            if ( !this.bgrSelected )
+            if ( !this.hsvSelected )
             {
-                Image<Bgr, byte> image = new Image<Bgr, byte>(this._gameView.GetBitmap(preview_width, preview_height));
-                this.selectedBgr = new Bgr(image.Data[ (int)(e.GetY()/mul), (int)(e.GetX()/mul), 0 ],
+                Image<Hsv, byte> image = new Image<Hsv, byte>(this._gameView.GetBitmap(preview_width, preview_height));
+                this.selectedHsv = new Hsv(image.Data[ (int)(e.GetY()/mul), (int)(e.GetX()/mul), 0 ],
                                             image.Data[ (int)(e.GetY()/mul), (int)(e.GetX()/mul), 1],
                                             image.Data[ (int)(e.GetY()/mul), (int)(e.GetX()/mul), 2]);
                 image.Dispose();
-                this.bgrSelected = true;
-                Console.WriteLine(this.selectedBgr.ToString());
+                this.hsvSelected = true;
+                Console.WriteLine(this.selectedHsv.ToString());
             }
             return true;
         }
