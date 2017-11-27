@@ -26,8 +26,8 @@ namespace TOPBanga
         private Hsv initialHsv;
         private bool markingMode = false;
         private bool added = false;
-
-        public SoundAlerts alerts;
+        private IWrite EventLog;
+        private string filepath;
 
         public VideoFromFile(IDetector detector)
         {
@@ -36,7 +36,8 @@ namespace TOPBanga
             this.detector = detector;
 
             this.gameController = new GameController();
-            this.alerts = new SoundAlerts();
+
+            EventLog = new EventLog(filepath);
         }
 
         private void VideoFromFile_Load(object sender, EventArgs e)
@@ -154,8 +155,8 @@ namespace TOPBanga
                     * 
                     * Pause the video and ask the user to select the ball
                     */
-               // this.video.Pause();
-               // MessageBox.Show("Please select the ball and press Start Detection");
+                // this.video.Pause();
+                // MessageBox.Show("Please select the ball and press Start Detection");
                 //this.colorNeeded = true;
             }
             Thread.Sleep((int)video.GetCaptureProperty(Emgu.CV.CvEnum.CapProp.Fps));
@@ -209,10 +210,21 @@ namespace TOPBanga
 
         }
 
+        private void SaveFile_Click(object sender, EventArgs e)
+        {    
+            SaveFileDialog saveFileDialog = new SaveFileDialog();
+            saveFileDialog.Filter = "Text files (*.txt)|*.txt";
+            if (saveFileDialog.ShowDialog() == DialogResult.OK)
+            {
+                filepath = saveFileDialog.FileName;
+                this.gameController = new GameController(EventLog, filepath);
+
+            }
+        }
+
         private void settings_Click(object sender, EventArgs e)
         {
-            SettingsWindow window = new SettingsWindow(this.alerts);
-            window.ShowDialog();
+
         }
     }
 }

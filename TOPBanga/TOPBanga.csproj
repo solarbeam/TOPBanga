@@ -64,6 +64,7 @@
     <Compile Include="Detection\ColorDetector.cs" />
     <Compile Include="Detection\ColorContainer.cs" />
     <Compile Include="Detection\GameUtil\GameController.cs" />
+    <Compile Include="EventLog.cs" />
     <Compile Include="Interface\IAlert.cs" />
     <Compile Include="Interface\IDetector.cs" />
     <Compile Include="Interface\IGameTracker.cs" />

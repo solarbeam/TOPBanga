@@ -5,6 +5,7 @@ using System.Drawing.Drawing2D;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using TOPBanga.Util;
 
 namespace TOPBanga.Detection.GameUtil
 {
@@ -17,8 +18,12 @@ namespace TOPBanga.Detection.GameUtil
         public int blueScore { get; private set; }
         private const int SPACE_FOR_GOALS = 25;
 
-        private Queue<Goal> goals = new Queue<Goal>();
+        public EventLog EventLog { get; set; }
+        private Goal first;
+        private Goal second;
 
+        private Queue<Goal> goals = new Queue<Goal>();
+        private string goalAnnouncement = "Goal!";
         private const int MAXIMUM_BALL_COORDINATE_NUMBER = 20;
         private const int GOAL_FRAMES_TO_COUNT_GOAL = 3;
         private PointF last_ball_coordinates;
@@ -70,6 +75,14 @@ namespace TOPBanga.Detection.GameUtil
             //this.GoalEvent += ((obj, args) => System.Console.WriteLine("GOAL")); // for preview
         }
 
+        public GameController(IWrite EventLog, string filepath)
+        {
+            this.ballCoordinates = new Queue<PointF>();
+            this.lastBallCoordinates = new PointF(0, 0);
+            this.EventLog = new EventLog(filepath);
+            this.GoalEvent += ((obj, args) => this.EventLog.Write(goalAnnouncement + " " + blueScore + ":" + redScore + " " + this.EventLog.WinAnnouncement(redScore, blueScore)));
+        }
+
         public Bitmap PaintGoals(Bitmap bitmap)
         {
             Graphics graphics = Graphics.FromImage(bitmap);
@@ -78,10 +91,20 @@ namespace TOPBanga.Detection.GameUtil
             graphics.DrawPath(bluePen, this.table);
             foreach (Goal goal in goals)
             {
-                if (goal.graphicsPath.IsVisible(this.lastBallCoordinates))
-                    graphics.DrawPath(redPen, goal.graphicsPath);
+                if (first.graphicsPath.IsVisible(this.lastBallCoordinates))
+                {
+                    graphics.DrawPath(redPen, first.graphicsPath);
+                }
                 else
-                    graphics.DrawPath(bluePen, goal.graphicsPath);
+                    graphics.DrawPath(bluePen, first.graphicsPath);
+
+
+                if (second.graphicsPath.IsVisible(this.lastBallCoordinates))
+                {
+                    graphics.DrawPath(redPen, second.graphicsPath);
+                }
+                else
+                    graphics.DrawPath(bluePen, second.graphicsPath);
             }
             graphics.Dispose();
             return bitmap;
@@ -89,13 +112,21 @@ namespace TOPBanga.Detection.GameUtil
 
         public void AddGoal(PointF[] points)
         {
-            if(this.goals.Count == 2)
+            if (this.goals.Count == 2)
             {
                 Goal toDispose = this.goals.Dequeue();
                 toDispose.Dispose();
             }
             GraphicsPath temp = new GraphicsPath();
             temp.AddPolygon(points);
+            if (this.goals.Count == 0)
+            {
+                first = new Goal(temp);
+            }
+            if (this.goals.Count == 1)
+            {
+                second = new Goal(temp);
+            }
             this.goals.Enqueue(new Goal(temp));
         }
 
@@ -103,11 +134,26 @@ namespace TOPBanga.Detection.GameUtil
         {
             foreach (Goal goal in goals)
             {
-                if (goal.graphicsPath.IsVisible(this.lastBallCoordinates))
+                if (first.graphicsPath.IsVisible(this.lastBallCoordinates))
                 {
-                    goal.framesBallInGoal++;
-                    if(goal.framesBallInGoal == GOAL_FRAMES_TO_COUNT_GOAL)
+                    first.framesBallInGoal++;
+                    if (first.framesBallInGoal == GOAL_FRAMES_TO_COUNT_GOAL)
                     {
+                        this.redScore++;
+                        GoalEvent(this, new EventArgs());
+                    }
+                }
+                else
+                {
+                    first.framesBallInGoal = 0;
+                }
+                
+                if (second.graphicsPath.IsVisible(this.lastBallCoordinates))
+                {
+                    second.framesBallInGoal++;
+                    if (second.framesBallInGoal == GOAL_FRAMES_TO_COUNT_GOAL)
+                    {
+                        this.blueScore++;
                         GoalEvent(this, new EventArgs());
                     }
                 }
