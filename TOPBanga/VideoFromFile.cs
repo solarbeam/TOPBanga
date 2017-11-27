@@ -89,7 +89,7 @@ namespace TOPBanga
                 {
                     this.markingMode = false;
                     this.Toggle_Buttons_Except_Mark_Goals();
-                    this.gameController.AddGoal(this.tempCoords.ToArray());
+                    this.gameController.SetTable(this.tempCoords.ToArray());
                     this.tempCoords = new List<PointF>();
 
                 }
@@ -128,7 +128,6 @@ namespace TOPBanga
                 CvInvoke.Resize(this.currentFrame, this.currentFrame, new Size(Picture.Width, Picture.Height));
             if (this.currentFrame == null)
             {
-                //this.videoTickTimer.Stop();
                 return;
             }
             Image<Bgr, byte> currentImage = this.currentFrame.ToImage<Bgr, byte>();

@@ -17,9 +17,11 @@ namespace TOPBanga.Detection.GameUtil
         public int redScore { get; private set; }
         public int blueScore { get; private set; }
         private const int SPACE_FOR_GOALS = 25;
+
         public EventLog EventLog { get; set; }
         private Goal first;
         private Goal second;
+
         private Queue<Goal> goals = new Queue<Goal>();
         private string goalAnnouncement = "Goal!";
         private const int MAXIMUM_BALL_COORDINATE_NUMBER = 20;
