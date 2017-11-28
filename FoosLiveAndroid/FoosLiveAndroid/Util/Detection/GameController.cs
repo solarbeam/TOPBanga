@@ -51,10 +51,7 @@ namespace TOPBanga.Detection.GameUtil
         /// </summary>
         public PointF LastBallCoordinates
         {
-            get
-            {
-                return last_ball_coordinates;
-            }
+            get => last_ball_coordinates;
 
             set
             {
@@ -86,12 +83,12 @@ namespace TOPBanga.Detection.GameUtil
         {
             if (points.Length != 4)
                 return;
-            this.Table = new Path();
-            this.Table.MoveTo(points[0].X, points[0].Y);
-            this.Table.LineTo(points[1].X, points[1].Y);
-            this.Table.LineTo(points[2].X, points[2].Y);
-            this.Table.LineTo(points[3].X, points[3].Y);
-            this.Table.Close();
+            Table = new Path();
+            Table.MoveTo(points[0].X, points[0].Y);
+            Table.LineTo(points[1].X, points[1].Y);
+            Table.LineTo(points[2].X, points[2].Y);
+            Table.LineTo(points[3].X, points[3].Y);
+            Table.Close();
             //PointF[] goalPoint = new PointF[4];
             //float xMiddle = (points[0].X + points[1].X) / 2;
             //goalPoint[0] = new PointF(xMiddle - SPACE_FOR_GOALS, points[0].Y);
@@ -112,8 +109,8 @@ namespace TOPBanga.Detection.GameUtil
         /// </summary>
         public GameController()
         {
-            this.ballCoordinates = new Queue<PointF>();
-            this.LastBallCoordinates = new PointF(0, 0);
+            ballCoordinates = new Queue<PointF>();
+            LastBallCoordinates = new PointF(0, 0);
             //this.GoalEvent += ((obj, args) => System.Console.WriteLine("GOAL")); // for preview
         }
 
@@ -130,14 +127,12 @@ namespace TOPBanga.Detection.GameUtil
             Paint redPaint = new Paint();
             redPaint.SetARGB(255, 255, 0, 0);
             graphics.DrawPath(Table, bluePaint);
-            foreach (Goal goal in goals)
+            foreach (var goal in goals)
             {
-                RectF goalConvertion = new RectF();
+                var goalConvertion = new RectF();
                 goal.Path.ComputeBounds(goalConvertion, true);
-                if (goalConvertion.Contains(LastBallCoordinates.X, LastBallCoordinates.Y))
-                    graphics.DrawPath(Table, redPaint);
-                else
-                    graphics.DrawPath(Table, bluePaint);
+                graphics.DrawPath(Table,
+                    goalConvertion.Contains(LastBallCoordinates.X, LastBallCoordinates.Y) ? redPaint : bluePaint);
             }
             graphics.Dispose();
             return bitmap;
@@ -149,18 +144,18 @@ namespace TOPBanga.Detection.GameUtil
         /// <param name="points">The points before a goal was made</param>
         public void AddGoal(PointF[] points)
         {
-            if (this.goals.Count == 2)
+            if (goals.Count == 2)
             {
-                Goal toDispose = this.goals.Dequeue();
+                Goal toDispose = goals.Dequeue();
                 toDispose.Dispose();
             }
-            Path temp = new Path();
+            var temp = new Path();
             temp.MoveTo(points[0].X, points[0].Y);
             temp.LineTo(points[1].X, points[1].Y);
             temp.LineTo(points[2].X, points[2].Y);
             temp.LineTo(points[3].X, points[3].Y);
             temp.Close();
-            this.goals.Enqueue(new Goal(temp));
+            goals.Enqueue(new Goal(temp));
         }
 
         /// <summary>
@@ -168,9 +163,9 @@ namespace TOPBanga.Detection.GameUtil
         /// </summary>
         private void OnNewFrame()
         {
-            foreach (Goal goal in goals)
+            foreach (var goal in goals)
             {
-                RectF goalConvertion = new RectF();
+                var goalConvertion = new RectF();
                 if (goalConvertion.Contains(LastBallCoordinates.X, LastBallCoordinates.Y))
                 {
                     goal.FramesBallInGoal++;
@@ -207,7 +202,7 @@ namespace TOPBanga.Detection.GameUtil
         /// <param name="path">TODO</param>
         internal Goal(Path path)
         {
-            this.Path = path;
+            Path = path;
             FramesBallInGoal = 0;
         }
 

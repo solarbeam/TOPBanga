@@ -120,7 +120,6 @@ namespace FoosLiveAndroid.TOPBanga.Detection
         public bool DetectBall(Hsv ballHsv, out Rectangle rect)
         {
             //default returns
-            bool success = false;
             rect = new Rectangle();
 
             // Will change this in order to optimize
@@ -146,14 +145,13 @@ namespace FoosLiveAndroid.TOPBanga.Detection
             //imgFiltered = hsvImg.InRange(lowerLimit,upperLimit);
 
             // Will be added as an attribute to this class
-            BlobDetector detector = new BlobDetector();
+            var detector = new BlobDetector();
 
             // Define the class, which will store information about blobs found
-            CvBlobs points = new CvBlobs();
-            uint count;
+            var points = new CvBlobs();
 
             // Get the blobs found out of the filtered image and the count
-            count = detector.GetBlobs(imgFiltered, points);
+            var count = detector.GetBlobs(imgFiltered, points);
 
             // Cleanup the filtered image, as it will not be needed anymore
             imgFiltered.Dispose();
@@ -161,14 +159,13 @@ namespace FoosLiveAndroid.TOPBanga.Detection
             // If there were 0 blobs, return false
             if (count == 0)
             {
-                success = false;
                 points.Dispose();
                 return false;
             }
 
             // Get the biggest blob by going through all of them
             CvBlob biggestBlob = null;
-            int biggestArea = 0;
+            var biggestArea = 0;
             foreach(var pair in points)
             {
                 if ( biggestArea < pair.Value.Area )
@@ -177,12 +174,8 @@ namespace FoosLiveAndroid.TOPBanga.Detection
                     biggestBlob = pair.Value;
                 }
             }
-
-            if (points.Count != 0)
-            {
-                //this.image.Draw(points[1].BoundingBox, new Bgr(255,255,255), 2);
-                success = true;
-            }  
+            //this.image.Draw(points[1].BoundingBox, new Bgr(255,255,255), 2);
+            var success = points.Count != 0; 
 
             if (success)
             {
