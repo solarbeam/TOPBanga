@@ -146,6 +146,7 @@
     <Compile Include="Fragments\MainMenu\MainMenuButtonsFragment.cs" />
     <Compile Include="Fragments\MainMenu\MainMenuFragment.cs" />
     <Compile Include="Fragments\MainMenu\ModeMenuButtonsFragment.cs" />
+    <Compile Include="Util\Detection\ObjectDetector.cs" />
     <Compile Include="Util\Interface\IDetector.cs" />
     <Compile Include="Util\Interface\IGameTracker.cs" />
     <Compile Include="Util\Interface\IWrite.cs" />
@@ -206,12 +207,8 @@
     <AndroidResource Include="Resources\values-v21\style.xml" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Util\CameraUtil\" />
-    <Folder Include="Util\Detection\" />
-    <Folder Include="Util\Interface\" />
-    <Folder Include="Util\Sounds\" />
-    <Folder Include="Util\Database\" />
     <Folder Include="Resources\raw\" />
+    <Folder Include="Util\CameraUtil\" />
   </ItemGroup>
   <ItemGroup>
     <AndroidResource Include="Resources\drawable\ic_logo.xml" />

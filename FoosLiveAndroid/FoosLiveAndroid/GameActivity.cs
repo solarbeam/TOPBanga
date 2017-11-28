@@ -15,6 +15,7 @@ using System.Drawing;
 using Android.Support.V4.Content;
 using Android.Graphics.Drawables;
 using Android.Util;
+using FoosLiveAndroid.Util.Detection;
 
 namespace FoosLiveAndroid
 {
@@ -33,13 +34,14 @@ namespace FoosLiveAndroid
         private Button _gameButton;
         private TextView _score;
         private TextureView _gameView;
-
         private SurfaceView surfaceView;
+
         private ISurfaceHolder holder;
 
         private Bitmap alphaBitmap;
 
         private ColorDetector detector;
+        private ObjectDetector objectDetector;
 
         private Rectangle rectangle;
 
@@ -84,7 +86,11 @@ namespace FoosLiveAndroid
             this.camera = Camera.Open();
             this._gameView.LayoutParameters = new FrameLayout.LayoutParams(w,h);
 
+            // Set the upscaling constant
             this.mul = w / preview_width;
+
+            // Create the ObjectDetector class for the GameActivity
+            this.objectDetector = new ObjectDetector(this.mul, this.detector);
 
             // Create a template alpha bitmap for repeated drawing
             BitmapDrawable tempBitmap = new BitmapDrawable(Bitmap.CreateBitmap(w, h, Bitmap.Config.Argb8888));
@@ -155,76 +161,22 @@ namespace FoosLiveAndroid
         /// <param name="surface">The surface, which calls this function</param>
         public void OnSurfaceTextureUpdated(SurfaceTexture surface)
         {
-            // Declare temporary variables
-            bool tableDetected = false;
-            bool ballDetected = false;
-            RotatedRect table;
-
-            // Refresh the detector's image
-            this.detector.image = new Image<Bgr, byte>(this._gameView.GetBitmap(preview_width,preview_height));
-
-            // Lock the canvas for drawing
-            Canvas canvas = this.holder.LockCanvas();
-
-            // Clear the image
-            canvas.DrawColor(Android.Graphics.Color.Transparent, PorterDuff.Mode.Clear);
-            canvas.DrawBitmap(this.alphaBitmap,0,0,null);
-
-            // Try to detect a table
-            if (this.detector.DetectTable(out table))
+            /**
+             * The table is currently drawn only if an Hsv value is selected
+             */
+            if ( this.hsvSelected )
             {
-                tableDetected = true;
-            }
+                Canvas canvas = this.holder.LockCanvas();
 
-            if ( this.hsvSelected && this.detector.DetectBall(this.selectedHsv, out this.rectangle) )
-            {
-                ballDetected = true;
-            }
-
-            // Declare the outline styles
-            Paint paintRect = new Paint();
-            paintRect.Color = new Android.Graphics.Color(255,0,0);
-            paintRect.SetStyle(Paint.Style.Stroke);
-
-            Paint paintBall = new Paint();
-            paintBall.Color = new Android.Graphics.Color(0, 255, 0);
-            paintBall.SetStyle(Paint.Style.Stroke);
-
-            if ( tableDetected )
-            {
-                // Get the table points
-                float[] tablePoints = new float[8];
-
-                int j = 0;
-
-                for(int i = 0; i < 8; i += 2)
+                if ( ! this.objectDetector.Detect(canvas, this.selectedHsv,
+                                            this._gameView.GetBitmap(preview_width, preview_height),
+                                            this.alphaBitmap) )
                 {
-                    tablePoints[i] = table.GetVertices()[j].X * mul;
-                    tablePoints[i+1] = table.GetVertices()[j].Y * mul;
-                    j++;
+                    canvas.DrawBitmap(this.alphaBitmap, 0, 0, null);
                 }
 
-                // Finally, draw the rectangle
-                canvas.DrawLine(tablePoints[0], tablePoints[1], tablePoints[2], tablePoints[3], paintRect);
-                canvas.DrawLine(tablePoints[2], tablePoints[3], tablePoints[4], tablePoints[5], paintRect);
-                canvas.DrawLine(tablePoints[4], tablePoints[5], tablePoints[6], tablePoints[7], paintRect);
-                canvas.DrawLine(tablePoints[6], tablePoints[7], tablePoints[0], tablePoints[1], paintRect);
+                this.holder.UnlockCanvasAndPost(canvas);
             }
-
-            if ( ballDetected )
-            {
-                canvas.DrawRect((int)((this.rectangle.X) * mul),
-                                 (int)((this.rectangle.Y) * mul),
-                                 (int)((this.rectangle.X + this.rectangle.Width) * mul),
-                                 (int)((this.rectangle.Y + this.rectangle.Height) * mul),
-                                 paintBall);
-            }
-
-            // Draw the canvas
-            this.holder.UnlockCanvasAndPost(canvas);
-
-            // Free unused resources
-            this.detector.image.Dispose();
         }
 
         /// <summary>
@@ -256,7 +208,6 @@ namespace FoosLiveAndroid
                 // Dispose of the temporary image
                 image.Dispose();
                 this.hsvSelected = true;
-                Console.WriteLine(this.selectedHsv.ToString());
             }
             return true;
         }

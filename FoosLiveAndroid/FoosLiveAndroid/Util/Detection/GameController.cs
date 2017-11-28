@@ -182,7 +182,6 @@ namespace TOPBanga.Detection.GameUtil
                 else
                 {
                     goal.FramesBallInGoal = 0;
-
                 }
             }
         }
