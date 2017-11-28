@@ -16,12 +16,12 @@ namespace FoosLiveAndroid.TOPBanga.Detection
     /// </summary>
     class ColorDetector : IDetector
     {
-        private double cannyThreshold = 180.0;
-        private double cannyThresholdLinking = 120.0;
-        private int contourArea = 250;
-        private int verticeCount = 4;
-        private int minAngle = 80;
-        private int maxAngle = 100;
+        private const double CannyThreshold = 180.0;
+        private const double CannyThresholdLinking = 120.0;
+        private const int ContourArea = 250;
+        private const int VerticeCount = 4;
+        private const int MinAngle = 80;
+        private const int MaxAngle = 100;
         /// <summary>
         /// The detector's image, used for calculations
         /// </summary>
@@ -69,7 +69,7 @@ namespace FoosLiveAndroid.TOPBanga.Detection
             UMat cannyEdges = new UMat();
             UMat uimage = new UMat();
             CvInvoke.CvtColor(this.image, uimage, ColorConversion.Bgr2Gray);
-            CvInvoke.Canny(uimage, cannyEdges, cannyThreshold, cannyThresholdLinking);
+            CvInvoke.Canny(uimage, cannyEdges, CannyThreshold, CannyThresholdLinking);
             using (VectorOfVectorOfPoint contours = new VectorOfVectorOfPoint())
             {
                 CvInvoke.FindContours(cannyEdges, contours, null, RetrType.List, ChainApproxMethod.ChainApproxSimple);
@@ -79,9 +79,9 @@ namespace FoosLiveAndroid.TOPBanga.Detection
                     using (VectorOfPoint approxContour = new VectorOfPoint())
                     {
                         CvInvoke.ApproxPolyDP(contour, approxContour, CvInvoke.ArcLength(contour, true) * 0.05, true);
-                        if (CvInvoke.ContourArea(approxContour, false) > contourArea) //only consider contours with area greater than 250
+                        if (CvInvoke.ContourArea(approxContour, false) > ContourArea) //only consider contours with area greater than 250
                         {
-                            if (approxContour.Size == verticeCount) //The contour has 4 vertices.
+                            if (approxContour.Size == VerticeCount) //The contour has 4 vertices.
                             {
                                 bool isRectangle = true;
                                 System.Drawing.Point[] pts = approxContour.ToArray();
@@ -91,7 +91,7 @@ namespace FoosLiveAndroid.TOPBanga.Detection
                                 {
                                     double angle = Math.Abs(
                                        edges[(j + 1) % edges.Length].GetExteriorAngleDegree(edges[j]));
-                                    if (angle < minAngle || angle > maxAngle)
+                                    if (angle < MinAngle || angle > MaxAngle)
                                     {
                                         isRectangle = false;
                                         break;

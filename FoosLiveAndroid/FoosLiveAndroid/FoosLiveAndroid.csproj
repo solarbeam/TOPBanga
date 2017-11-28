@@ -141,7 +141,6 @@
     <Compile Include="Model\EFragmentId.cs" />
     <Compile Include="Fragments\InfoFragment.cs" />
     <Compile Include="Fragments\SettingsFragment.cs" />
-    <Compile Include="Interface\IFrameGrabber.cs" />
     <Compile Include="GameActivity.cs" />
     <Compile Include="Fragments\MainMenu\MainMenuButtonsFragment.cs" />
     <Compile Include="Fragments\MainMenu\MainMenuFragment.cs" />
@@ -208,7 +207,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Resources\raw\" />
-    <Folder Include="Util\CameraUtil\" />
   </ItemGroup>
   <ItemGroup>
     <AndroidResource Include="Resources\drawable\ic_logo.xml" />
