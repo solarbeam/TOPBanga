@@ -11,27 +11,50 @@ using System.Drawing;
 
 namespace FoosLiveAndroid.TOPBanga.Detection
 {
+    /// <summary>
+    /// The class contains functions to detect a table by contours and a blob by color
+    /// </summary>
     class ColorDetector : IDetector
     {
+        /// <summary>
+        /// The detector's image, used for calculations
+        /// </summary>
         public Image<Bgr, byte> image { get; set; }
 
+        /// <summary>
+        /// The threshold, which defines the range of colors
+        /// </summary>
         public int Threshold { get; set; }
 
+        [Obsolete("Not used anymore")]
         public Bgr CircleColor { get; set; }
 
+        [Obsolete("Not used anymore")]
         public int CircleWidth { get; set; }
 
-
+        /// <summary>
+        /// The default constructor for the ColorDetector class
+        /// The threshold is assumed to be 15
+        /// </summary>
         public ColorDetector()
         {
-            Threshold = 35; // default threshold
+            Threshold = 15; // default threshold
         }
 
+        /// <summary>
+        /// Creates the ColorDetector class with the appropriate threshold
+        /// </summary>
+        /// <param name="threshold">The threshold, which will be used to define the range of colors</param>
         public ColorDetector(int threshold)
         {
             Threshold = threshold;
         }
 
+        /// <summary>
+        /// Detect a table, using the predefined image, stored in this class
+        /// </summary>
+        /// <param name="rect">Creates the rectangle, holding the positions</param>
+        /// <returns>True if a table was detected. False otherwise</returns>
         public bool DetectTable(out RotatedRect rect)
         {
             bool success = false;
@@ -87,28 +110,55 @@ namespace FoosLiveAndroid.TOPBanga.Detection
             return success;
         }
 
+        /// <summary>
+        /// Detects a ball using the predefined image, stored in this class,
+        /// and the specific Hsv
+        /// </summary>
+        /// <param name="ballHsv">The Hsv values, which are to be used in calculations</param>
+        /// <param name="rect">The rectangle, which holds the information about the blob, if such was found</param>
+        /// <returns></returns>
         public bool DetectBall(Hsv ballHsv, out Rectangle rect)
         {
             //default returns
             bool success = false;
             rect = new Rectangle();
+
+            // Will change this in order to optimize
             Image<Hsv, byte> hsvImg = image.Convert<Hsv,byte>();
 
-            Image<Gray, byte> imgFiltered;
-
+            // Define the upper and lower limits of the Hue and Saturation values
             Hsv lowerLimit = new Hsv(ballHsv.Hue - Threshold, ballHsv.Satuation - Threshold, ballHsv.Value - Threshold);
             Hsv upperLimit = new Hsv(ballHsv.Hue + Threshold, ballHsv.Satuation + Threshold, ballHsv.Value + Threshold);
 
-            imgFiltered = hsvImg.InRange(lowerLimit,upperLimit);
+            // Use an intermediary to filter on different channels
+            Image<Gray, byte>[] intermediary = hsvImg.Split();
+            intermediary[0] = intermediary[0].InRange(new Gray(lowerLimit.Hue), new Gray(upperLimit.Hue));
+            intermediary[1] = intermediary[1].InRange(new Gray(lowerLimit.Satuation), new Gray(upperLimit.Satuation));
 
+            // Join the two channels together
+            Image<Gray, byte> imgFiltered = intermediary[0].And(intermediary[1]);
+
+            // Cleanup
+            intermediary[0].Dispose();
+            intermediary[1].Dispose();
+            intermediary[2].Dispose();
+
+            //imgFiltered = hsvImg.InRange(lowerLimit,upperLimit);
+
+            // Will be added as an attribute to this class
             BlobDetector detector = new BlobDetector();
+
+            // Define the class, which will store information about blobs found
             CvBlobs points = new CvBlobs();
             uint count;
 
+            // Get the blobs found out of the filtered image and the count
             count = detector.GetBlobs(imgFiltered, points);
 
+            // Cleanup the filtered image, as it will not be needed anymore
             imgFiltered.Dispose();
 
+            // If there were 0 blobs, return false
             if (count == 0)
             {
                 success = false;
@@ -116,10 +166,7 @@ namespace FoosLiveAndroid.TOPBanga.Detection
                 return false;
             }
 
-            /**
-             * Get the biggest blob
-             */
-            var enumerator = points.GetEnumerator();
+            // Get the biggest blob by going through all of them
             CvBlob biggestBlob = null;
             int biggestArea = 0;
             foreach(var pair in points)
@@ -139,9 +186,7 @@ namespace FoosLiveAndroid.TOPBanga.Detection
 
             if (success)
             {
-                /**
-                 * Deep copy the blob
-                 */
+                // Deep copy the blob's information
                 rect = new Rectangle(new Point(biggestBlob.BoundingBox.X, biggestBlob.BoundingBox.Y),
                                         new Size(biggestBlob.BoundingBox.Size.Width, biggestBlob.BoundingBox.Height));
             }

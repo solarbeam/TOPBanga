@@ -22,6 +22,10 @@ namespace FoosLiveAndroid
         private TextView toolbarTitle;
         private Android.Support.V7.Widget.Toolbar toolbar;
 
+        /// <summary>
+        /// Called whenever the view is created
+        /// </summary>
+        /// <param name="savedInstanceState"></param>
         protected override void OnCreate(Bundle savedInstanceState)
         {
             base.OnCreate(savedInstanceState);
@@ -36,6 +40,9 @@ namespace FoosLiveAndroid
                            .Commit();
         }
 
+        /// <summary>
+        /// Set the instances according to the layout, defined in Resources/layout/activity_game.axml
+        /// </summary>
         private void GetReferencesFromLayout()
         {
             toolbarTitle = FindViewById<TextView>(Resource.Id.toolbarTitle);

@@ -4,20 +4,51 @@ using System.Collections.Generic;
 
 namespace TOPBanga.Detection.GameUtil
 {
+    /// <summary>
+    /// The class holds the primary functions, required for goal detection
+    /// and the predefined attributes for them
+    /// </summary>
     public class GameController
     {
-
+        /// <summary>
+        /// Fired whenever a goal event occurs
+        /// </summary>
         public event EventHandler<EventArgs> GoalEvent;
+        /// <summary>
+        /// Defines the current score for the red team
+        /// </summary>
         public int RedScore { get; private set; }
+        /// <summary>
+        /// Defines the current score for the blue team
+        /// </summary>
         public int BlueScore { get; private set; }
+        /// <summary>
+        /// TODO Add documentation
+        /// </summary>
         private const int SPACE_FOR_GOALS = 25;
 
+        /// <summary>
+        /// TODO Add documentation
+        /// </summary>
         private Queue<Goal> goals = new Queue<Goal>();
 
+        /// <summary>
+        /// TODO Add documentation
+        /// </summary>
         private const int MAXIMUM_BALL_COORDINATE_NUMBER = 20;
+        /// <summary>
+        /// The minimum amount of frames in the goal zone in order for
+        /// the goal to be accepted
+        /// </summary>
         private const int GOAL_FRAMES_TO_COUNT_GOAL = 3;
+        /// <summary>
+        /// Holds the coordinates of the last position of the ball
+        /// </summary>
         private PointF last_ball_coordinates;
 
+        /// <summary>
+        /// TODO Add documentation
+        /// </summary>
         public PointF LastBallCoordinates
         {
             get
@@ -37,10 +68,20 @@ namespace TOPBanga.Detection.GameUtil
             }
         }
 
+        /// <summary>
+        /// Holds the ball coordinates in a queue
+        /// </summary>
         public Queue<PointF> ballCoordinates;
 
-
+        /// <summary>
+        /// TODO Add documentation
+        /// </summary>
         public Path Table { get; private set; }
+        /// <summary>
+        /// Set the table, which will be used for the definition of
+        /// the goal zones
+        /// </summary>
+        /// <param name="points">The coordinates of the table</param>
         public void SetTable(PointF[] points)
         {
             if (points.Length != 4)
@@ -66,6 +107,9 @@ namespace TOPBanga.Detection.GameUtil
             //goalPoint[3] = new PointF(xMiddle - SPACE_FOR_GOALS, points[2].Y - SPACE_FOR_GOALS);
             //this.AddGoal(goalPoint);
         }
+        /// <summary>
+        /// The default constructor for the GameController class
+        /// </summary>
         public GameController()
         {
             this.ballCoordinates = new Queue<PointF>();
@@ -73,6 +117,11 @@ namespace TOPBanga.Detection.GameUtil
             //this.GoalEvent += ((obj, args) => System.Console.WriteLine("GOAL")); // for preview
         }
 
+        /// <summary>
+        /// Draw the goal zone if a goal was made
+        /// </summary>
+        /// <param name="bitmap">The bitmap, to which a path will be drawn</param>
+        /// <returns>The drawn bitmap</returns>
         public Bitmap PaintGoals(Bitmap bitmap)
         {
             Canvas graphics = new Canvas(bitmap);
@@ -94,6 +143,10 @@ namespace TOPBanga.Detection.GameUtil
             return bitmap;
         }
 
+        /// <summary>
+        /// Add a goal to the queue
+        /// </summary>
+        /// <param name="points">The points before a goal was made</param>
         public void AddGoal(PointF[] points)
         {
             if (this.goals.Count == 2)
@@ -110,6 +163,9 @@ namespace TOPBanga.Detection.GameUtil
             this.goals.Enqueue(new Goal(temp));
         }
 
+        /// <summary>
+        /// TODO Add documentation
+        /// </summary>
         private void OnNewFrame()
         {
             foreach (Goal goal in goals)
@@ -132,17 +188,34 @@ namespace TOPBanga.Detection.GameUtil
         }
     }
 
+    /// <summary>
+    /// TODO Add documentation
+    /// </summary>
     internal class Goal : IDisposable
     {
+        /// <summary>
+        /// TODO Add documentation
+        /// </summary>
         public Path Path { get; set; }
+        /// <summary>
+        /// TODO Add documentation
+        /// </summary>
         public int FramesBallInGoal { get; set; }
 
+        /// <summary>
+        /// TODO Add documentation
+        /// </summary>
+        /// <param name="path">TODO</param>
         internal Goal(Path path)
         {
             this.Path = path;
             FramesBallInGoal = 0;
         }
 
+        /// <summary>
+        /// A function that is called when the object is to be
+        /// given to the garbage collector
+        /// </summary>
         public void Dispose()
         {
             Path.Dispose();
