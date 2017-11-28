@@ -163,9 +163,7 @@ namespace FoosLiveAndroid
         /// <param name="surface">The surface, which calls this function</param>
         public void OnSurfaceTextureUpdated(SurfaceTexture surface)
         {
-            /**
-             * The table is currently drawn only if an Hsv value is selected
-             */
+            // The table is currently drawn only if an Hsv value is selected
             if ( this.hsvSelected )
             {
                 Canvas canvas = this.holder.LockCanvas();
@@ -189,7 +187,7 @@ namespace FoosLiveAndroid
             _gameButton = FindViewById<Button>(Resource.Id.gameButton);
             _gameView = FindViewById<TextureView>(Resource.Id.game_content);
             _score = FindViewById<TextView>(Resource.Id.score);
-            this.surfaceView = FindViewById<SurfaceView>(Resource.Id.surfaceView);
+            surfaceView = FindViewById<SurfaceView>(Resource.Id.surfaceView);
         }
 
         /// <summary>
