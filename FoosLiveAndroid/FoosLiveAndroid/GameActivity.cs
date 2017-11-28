@@ -25,9 +25,6 @@ namespace FoosLiveAndroid
         private const int preview_width = 240;
         private const int preview_height = 135;
 
-        private int texture_width;
-        private int texture_height;
-
         /**
          * A constant for upscaling the positions
          */
@@ -59,26 +56,11 @@ namespace FoosLiveAndroid
             Window.SetFlags(WindowManagerFlags.Fullscreen, WindowManagerFlags.Fullscreen);
             GetReferencesFromLayout();
 
-            /**
-             * Get the device's display size
-             */
-            DisplayMetrics metrics = new DisplayMetrics();
-            WindowManager.DefaultDisplay.GetMetrics(metrics);
-            this.texture_width = metrics.WidthPixels;
-            this.texture_height = metrics.HeightPixels;
-            metrics.Dispose();
-
-            this.mul = texture_width / preview_width;
-
             this.detector = new ColorDetector();
 
             this.surfaceView.SetZOrderOnTop(true);
             this.surfaceView.Holder.SetFormat(Format.Transparent);
             this.holder = this.surfaceView.Holder;
-
-            BitmapDrawable tempBitmap = new BitmapDrawable(Bitmap.CreateBitmap(texture_width, texture_height, Bitmap.Config.Argb8888));
-            tempBitmap.SetAlpha(0);
-            this.alphaBitmap = tempBitmap.Bitmap;
 
             // Open the camera
             this._gameView.SurfaceTextureListener = this;
@@ -88,12 +70,18 @@ namespace FoosLiveAndroid
         public void OnSurfaceTextureAvailable(SurfaceTexture surface, int w, int h)
         {
             this.camera = Camera.Open();
-            this._gameView.LayoutParameters = new FrameLayout.LayoutParams(texture_width,texture_height);
+            this._gameView.LayoutParameters = new FrameLayout.LayoutParams(w,h);
+
+            this.mul = w / preview_width;
+
+            BitmapDrawable tempBitmap = new BitmapDrawable(Bitmap.CreateBitmap(w, h, Bitmap.Config.Argb8888));
+            tempBitmap.SetAlpha(0);
+            this.alphaBitmap = tempBitmap.Bitmap;
 
             Camera.Parameters parameters = this.camera.GetParameters();
             IList<Camera.Size> list = camera.GetParameters().SupportedPreviewSizes;
 
-            this.holder.SetFixedSize(texture_width, texture_height);
+            this.holder.SetFixedSize(w, h);
 
             foreach (Camera.Size size in list)
             {
