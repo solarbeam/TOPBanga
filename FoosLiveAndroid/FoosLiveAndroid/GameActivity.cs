@@ -23,6 +23,7 @@ namespace FoosLiveAndroid
     [Activity(ScreenOrientation = ScreenOrientation.Landscape)]
     public class GameActivity : Activity, TextureView.ISurfaceTextureListener, View.IOnTouchListener
     {
+        public static string Tag = "GameActivity";
         private const int camera_width = 1280;
         private const int camera_height = 720;
         private const int preview_width = 240;
@@ -125,9 +126,10 @@ namespace FoosLiveAndroid
                 this.camera.SetPreviewTexture(surface);
                 this.camera.StartPreview();
             }
-            catch (Java.IO.IOException ex)
+            catch (Java.IO.IOException e)
             {
-                Console.WriteLine(ex.Message);
+                Log.Error(Tag, e.Message);
+                throw e;
             }
         }
 
