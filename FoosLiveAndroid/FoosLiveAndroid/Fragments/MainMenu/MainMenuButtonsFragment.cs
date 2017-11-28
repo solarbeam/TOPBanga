@@ -46,6 +46,7 @@ namespace FoosLiveAndroid.Fragments
             view = inflater.Inflate(Resource.Layout.main_menu_items, container, false);
             //Main menu buttons
             GetReferencesFromLayout();
+
             startButton.Click += delegate
             {
                 ((MainMenuFragment)ParentFragment).LoadChildFragment(FragmentId.Mode_menu);

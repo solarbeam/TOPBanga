@@ -23,44 +23,64 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:gravity="center"
         android:orientation="vertical"
         tools:ignore="ContentDescription">
+        <TextView
+            android:id="@+id/team1ScoreSoundLabel"
+            android:text="@string/team1_score_sound_label"
+            android:textAppearance="@android:style/TextAppearance.Material.Caption"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignTop="@+id/team1ScoreSoundSpinner"
+            android:layout_alignBottom="@+id/team1ScoreSoundSpinner"
+            android:gravity="center"
+            android:layout_marginStart="2dp" />
         <Button
             android:id="@+id/team1ScoreSoundButton"
             style="@style/Base.Widget.AppCompat.Spinner.Underlined"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="@dimen/buttons_distance"
-            android:text="@string/choose_team1_score_sound"
-            android:textAllCaps="false"
             android:textColor="@color/settings_button_text" />
+        <TextView
+            android:id="@+id/team1WinSoundLabel"
+            android:text="@string/team1_win_sound_label"
+            android:textAppearance="@android:style/TextAppearance.Material.Caption"
+            android:layout_width="wrap_content"
+            android:layout_marginStart="2dp"
+            android:layout_height="wrap_content" />
         <Button
-            android:id="@+id/team1WinSoundButton"
+            android:id="@+id/team1ScoreSoundButton"
             style="@style/Base.Widget.AppCompat.Spinner.Underlined"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="@dimen/buttons_distance"
-            android:text="@string/choose_team1_win_sound"
-            android:textAllCaps="false"
             android:textColor="@color/settings_button_text" />
+        <TextView
+            android:id="@+id/team2ScoreSoundLabel"
+            android:text="@string/team2_score_sound_label"
+            android:textAppearance="@android:style/TextAppearance.Material.Caption"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
         <Button
-            android:id="@+id/team2ScoreSoundButton"
+            android:id="@+id/team1ScoreSoundButton"
             style="@style/Base.Widget.AppCompat.Spinner.Underlined"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="@dimen/buttons_distance"
-            android:text="@string/choose_team2_score_sound"
-            android:textAllCaps="false"
             android:textColor="@color/settings_button_text" />
+        <TextView
+            android:id="@+id/team2WinSoundLabel"
+            android:text="@string/team2_win_sound_label"
+            android:textAppearance="@android:style/TextAppearance.Material.Caption"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
         <Button
-            android:id="@+id/team2WinSoundButton"
+            android:id="@+id/team1ScoreSoundButton"
             style="@style/Base.Widget.AppCompat.Spinner.Underlined"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="@dimen/buttons_distance"
-            android:text="@string/choose_team2_win_sound"
-            android:textAllCaps="false"
             android:textColor="@color/settings_button_text" />
     </LinearLayout>
 </LinearLayout>

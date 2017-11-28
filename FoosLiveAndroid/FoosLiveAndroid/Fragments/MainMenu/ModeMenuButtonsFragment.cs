@@ -1,34 +1,27 @@
-﻿
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System;
 using Android;
 using Android.App;
 using Android.Content;
 using Android.Content.PM;
 using Android.OS;
 using Android.Provider;
-using Android.Runtime;
 using Android.Support.Design.Widget;
-using Android.Support.V4.Content;
-using Android.Support.V7.App;
 using Android.Util;
 using Android.Views;
 using Android.Widget;
+using FoosLiveAndroid.Model;
 
 namespace FoosLiveAndroid.Fragments
 {
     public class ModeMenuButtonsFragment : Fragment
     {
+        // used for debugging
         public static new string Tag = "ModeMenuButtonsFragment";
-        private const int VideoRequest = 0;
 
         private View view;
         private Button liveButton;
         private Button fromFileButton;
-
-        const int RequestCameraId = 0;
+        // target permissions list
         readonly string [] PermissionsCamera = 
         {
           Manifest.Permission.Camera,
@@ -64,28 +57,39 @@ namespace FoosLiveAndroid.Fragments
 
             GetReferencesFromLayout();
 
-            //Mode menu buttons
-            liveButton.Click += delegate
-            {
-                
-                if ((int)Build.VERSION.SdkInt < 23)
-                {
-                    StartCameraActivity();
-                }
-                else 
-                {
-                    GetCameraPermission();
-                }
-
-            };
-
-            fromFileButton.Click += delegate
-            {
-                // select video file dialog
-                StartVideoPickActivity();
-            };
+            //set up click events
+            liveButton.Click += InitialiseCameraActivity;
+            fromFileButton.Click += StartVideoPickActivity;
 
             return view;
+        }
+
+        /// <summary>
+        /// Starts the camera activity
+        /// </summary>
+        /// <param name="data">Video uri</param>
+        private void StartCameraActivity(Android.Net.Uri data = null) 
+        {
+            Intent intent = new Intent(Activity, typeof(GameActivity));
+            // set video uri as game activity intent data
+            if (data != null)
+                intent.SetData(data);
+            StartActivity(intent);
+        }
+
+
+        private void InitialiseCameraActivity(object sender, EventArgs e) 
+        {
+            // Check android version
+            if ((int)Build.VERSION.SdkInt < 23)
+            {
+                StartCameraActivity();
+            }
+            else
+            {
+                // API 23+ demands runtime requests
+                GetCameraPermission();
+            }
         }
 
         private void GetCameraPermission()
@@ -101,43 +105,28 @@ namespace FoosLiveAndroid.Fragments
             if (ShouldShowRequestPermissionRationale(CameraPermission))
             {
                 //Explain to the user why we need to read the contacts
-                Android.App.AlertDialog.Builder dialog = new Android.App.AlertDialog.Builder(Context); 
-                Android.App.AlertDialog alert = dialog.Create();  
+                Android.App.AlertDialog.Builder dialog = new Android.App.AlertDialog.Builder(Context);
+                Android.App.AlertDialog alert = dialog.Create();
                 alert.SetTitle(GetString(Resource.String.camera_request_explanation_title));
                 alert.SetMessage(GetString(Resource.String.camera_request_explanation_content));
-
                 alert.SetButton(GetString(Resource.String.dismiss), (c, ev) =>
                 {
                     alert.Dismiss();
-                    RequestPermissions(PermissionsCamera, RequestCameraId);
+                    RequestPermissions(PermissionsCamera, (int)ERequestId.Camera);
                 });
-                alert.Show();  
+                alert.Show();
                 return;
             }
             //Finally request permissions with the list of permissions and Id
-            RequestPermissions(PermissionsCamera, RequestCameraId);
+            RequestPermissions(PermissionsCamera, (int)ERequestId.Camera);
         }
 
-        private void StartCameraActivity(Android.Net.Uri data) 
-        {
-            Intent intent = new Intent(Activity, typeof(GameActivity));
-            // set video uri as game activity intent data
-            intent.SetData(data);
-            StartActivity(intent);
-        }
-
-        private void StartCameraActivity()
-        {
-            Intent intent = new Intent(Activity, typeof(GameActivity));
-            StartActivity(intent);
-        }
-
-        private void StartVideoPickActivity()
+        private void StartVideoPickActivity(object sender, EventArgs e)
         {
             var videoIntent = new Intent();
             videoIntent.SetAction(Intent.ActionPick);
             videoIntent.SetData(MediaStore.Video.Media.ExternalContentUri);
-            StartActivityForResult(videoIntent, VideoRequest);
+            StartActivityForResult(videoIntent, (int) ERequestId.VideoRequest);
         }
 
         private void GetReferencesFromLayout()
@@ -149,17 +138,24 @@ namespace FoosLiveAndroid.Fragments
         public override void OnActivityResult(int requestCode, Result resultCode, Intent data)
         {
             base.OnActivityResult(requestCode, resultCode, data);
-            if (resultCode == Result.Ok && requestCode == VideoRequest)
+            if (resultCode == Result.Ok && requestCode == (int)ERequestId.VideoRequest)
             {
-                StartCameraActivity(data.Data);
+                Snackbar.Make(view, "Not implemented", Snackbar.LengthLong)
+                        .Show();
+                //StartCameraActivity(data.Data);
             }
         }
-
+        /// <summary>
+        /// Called when permission request result is received
+        /// </summary>
+        /// <param name="requestCode">Request code.</param>
+        /// <param name="permissions">Permissions.</param>
+        /// <param name="grantResults">Grant results.</param>
         public override void OnRequestPermissionsResult(int requestCode, string[] permissions, Permission[] grantResults)
         {
             switch (requestCode)
             {
-                case RequestCameraId:
+                case (int)ERequestId.VideoRequest:
                     {
                         if (grantResults[0] == Permission.Granted)
                         {
@@ -167,12 +163,16 @@ namespace FoosLiveAndroid.Fragments
                         }
                         else
                         {
-                            Snackbar.Make(view, GetString(Resource.String.camera_access_missing), Snackbar.LengthLong)
+                            // show notification about missing access
+                            Snackbar.Make(view, 
+                                          GetString(Resource.String.camera_access_missing),
+                                          Snackbar.LengthLong)
                                     .Show();
                         }
                     }
                     break;
             }
         }
+
     }
 }

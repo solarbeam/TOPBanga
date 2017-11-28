@@ -16,8 +16,8 @@ namespace FoosLiveAndroid
         public static string Tag = "MenuActivity";
 
         // Todo: replace with fragmentmanager 
-        private Fragment previousFragment = null;
-        private Fragment fragment = null;
+        private Fragment previousFragment;
+        private Fragment fragment;
 
         private TextView toolbarTitle;
         private Android.Support.V7.Widget.Toolbar toolbar;
@@ -28,13 +28,13 @@ namespace FoosLiveAndroid
             SetContentView(Resource.Layout.activity_menu);
             GetReferencesFromLayout();
             SetSupportActionBar(toolbar);
+            // hide default top bar title
             SupportActionBar.SetDisplayShowTitleEnabled(false);
-            // loads initial fragment
+            // load initial fragment
             FragmentManager.BeginTransaction()
                            .Replace(Resource.Id.menu_content, fragment = MainMenuFragment.NewInstance())
                            .Commit();
         }
-
 
         private void GetReferencesFromLayout()
         {
@@ -42,6 +42,9 @@ namespace FoosLiveAndroid
             toolbar = FindViewById<Android.Support.V7.Widget.Toolbar>(Resource.Id.toolbar);
         }
 
+        /// <summary>
+        /// Called when back button is pressed
+        /// </summary>
         public override void OnBackPressed()
         {
             if (FragmentManager.BackStackEntryCount > 0)
@@ -60,6 +63,9 @@ namespace FoosLiveAndroid
             }
         }
 
+        /// <summary>
+        /// Load the fragment on top of activity view
+        /// </summary>
         public void LoadFragment(FragmentId id)
         {
             previousFragment = fragment;
@@ -88,7 +94,9 @@ namespace FoosLiveAndroid
                                .Commit();
             }
         }
-
+        /// <summary>
+        /// Update top actionbar title
+        /// </summary>
         public void UpdateTitle(string title)
         {
             toolbarTitle.Text = title;

@@ -158,6 +158,7 @@
     <Compile Include="Util\Sounds\EAlert.cs" />
     <Compile Include="Util\Database\DatabaseConnection.cs" />
     <Compile Include="Util\Sounds\PlayerOGG.cs" />
+    <Compile Include="Model\ERequestId.cs" />
   </ItemGroup>
   <ItemGroup>
     <AndroidNativeLibrary Include="lib\armeabi-v7a\libcvextern.so" />

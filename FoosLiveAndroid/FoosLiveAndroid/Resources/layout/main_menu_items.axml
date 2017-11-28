@@ -32,6 +32,18 @@
         android:textAllCaps="false"
         android:textColor="@color/button_text" />
     <Button
+        android:id="@+id/historyButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/buttons_distance"
+        android:background="@drawable/menu_button_selector"
+        android:minHeight="40dp"
+        android:minWidth="250dp"
+        android:stateListAnimator="@null"
+        android:text="@string/history"
+        android:textAllCaps="false"
+        android:textColor="@color/button_text" />
+    <Button
         android:id="@+id/infoButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
