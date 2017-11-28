@@ -32,8 +32,6 @@ namespace FoosLiveAndroid.Util.Detection
             // Declare temporary variables
             bool tableDetected = false;
             bool ballDetected = false;
-            RotatedRect table;
-            Rectangle ball;
 
             // Refresh the detector's image
             detector.image = new Image<Bgr, byte>(bitmap);
@@ -43,38 +41,35 @@ namespace FoosLiveAndroid.Util.Detection
             canvas.DrawBitmap(bgBitmap, 0, 0, null);
 
             // Try to detect a table
-            if (detector.DetectTable(out table))
-            {
-                tableDetected = true;
-            }
+            tableDetected = detector.DetectTable(out var table);
 
-            if ( detector.DetectBall(ballHsv, out ball))
-            {
-                ballDetected = true;
-            }
-
+            ballDetected = detector.DetectBall(ballHsv, out var ball);
             // Declare the outline style for the table
-            Paint paintRect = new Paint();
-            paintRect.Color = new Android.Graphics.Color(255, 0, 0);
+            var paintRect = new Paint
+            {
+                Color = new Android.Graphics.Color(255, 0, 0)
+            };
             paintRect.SetStyle(Paint.Style.Stroke);
 
             // Declare the outline style for the ball
-            Paint paintBall = new Paint();
-            paintBall.Color = new Android.Graphics.Color(0, 255, 0);
+            var paintBall = new Paint
+            {
+                Color = new Android.Graphics.Color(0, 255, 0)
+            };
             paintBall.SetStyle(Paint.Style.Stroke);
 
             // Free unused resources
-            this.detector.image.Dispose();
+            detector.image.Dispose();
 
             if (tableDetected)
             {
                 // Get the table points
-                float[] tablePoints = new float[8];
+                var tablePoints = new float[8];
 
-                int j = 0;
+                var j = 0;
 
                 // Assign them values
-                for (int i = 0; i < 8; i += 2)
+                for (var i = 0; i < 8; i += 2)
                 {
                     tablePoints[i] = table.GetVertices()[j].X * mul;
                     tablePoints[i + 1] = table.GetVertices()[j].Y * mul;
@@ -92,8 +87,8 @@ namespace FoosLiveAndroid.Util.Detection
 
             if (ballDetected)
             {
-                canvas.DrawRect((int)((ball.X) * mul),
-                                 (int)((ball.Y) * mul),
+                canvas.DrawRect((int)(ball.X * mul),
+                                 (int)(ball.Y * mul),
                                  (int)((ball.X + ball.Width) * mul),
                                  (int)((ball.Y + ball.Height) * mul),
                                  paintBall);
