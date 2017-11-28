@@ -59,7 +59,7 @@ namespace FoosLiveAndroid
             }
             else
             {
-                Finish();   
+                Finish();
             }
         }
 

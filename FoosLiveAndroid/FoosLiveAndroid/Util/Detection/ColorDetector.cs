@@ -25,8 +25,6 @@ namespace FoosLiveAndroid.TOPBanga.Detection
         public ColorDetector()
         {
             Threshold = 35; // default threshold
-            CircleColor = new Bgr(1, 1, 255); // the default circle draw color is red
-            CircleWidth = 1;
         }
 
         public ColorDetector(int threshold)
@@ -94,12 +92,14 @@ namespace FoosLiveAndroid.TOPBanga.Detection
             //default returns
             bool success = false;
             rect = new Rectangle();
-            Image<Hsv, byte> hsvImg = image.Convert<Hsv, byte>();
+            Image<Hsv, byte> hsvImg = image.Convert<Hsv,byte>();
+
+            Image<Gray, byte> imgFiltered;
 
             Hsv lowerLimit = new Hsv(ballHsv.Hue - Threshold, ballHsv.Satuation - Threshold, ballHsv.Value - Threshold);
             Hsv upperLimit = new Hsv(ballHsv.Hue + Threshold, ballHsv.Satuation + Threshold, ballHsv.Value + Threshold);
 
-            Image<Gray, byte> imgFiltered = hsvImg.InRange(lowerLimit, upperLimit);
+            imgFiltered = hsvImg.InRange(lowerLimit,upperLimit);
 
             BlobDetector detector = new BlobDetector();
             CvBlobs points = new CvBlobs();
@@ -107,16 +107,29 @@ namespace FoosLiveAndroid.TOPBanga.Detection
 
             count = detector.GetBlobs(imgFiltered, points);
 
+            imgFiltered.Dispose();
+
             if (count == 0)
             {
                 success = false;
+                points.Dispose();
                 return false;
             }
 
             /**
-             * Sort blobs by the amount of pixels in them
+             * Get the biggest blob
              */
-            points.OrderByDescending(b => b.Value.Area);
+            var enumerator = points.GetEnumerator();
+            CvBlob biggestBlob = null;
+            int biggestArea = 0;
+            foreach(var pair in points)
+            {
+                if ( biggestArea < pair.Value.Area )
+                {
+                    biggestArea = pair.Value.Area;
+                    biggestBlob = pair.Value;
+                }
+            }
 
             if (points.Count != 0)
             {
@@ -126,8 +139,15 @@ namespace FoosLiveAndroid.TOPBanga.Detection
 
             if (success)
             {
-                rect = points[1].BoundingBox;
+                /**
+                 * Deep copy the blob
+                 */
+                rect = new Rectangle(new Point(biggestBlob.BoundingBox.X, biggestBlob.BoundingBox.Y),
+                                        new Size(biggestBlob.BoundingBox.Size.Width, biggestBlob.BoundingBox.Height));
             }
+
+            points.Dispose();
+
             return success;
         }
     }
