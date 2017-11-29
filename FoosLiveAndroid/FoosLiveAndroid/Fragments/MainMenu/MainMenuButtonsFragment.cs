@@ -7,18 +7,18 @@ using Android.Views;
 using Android.Widget;
 using FoosLiveAndroid.Model;
 
-namespace FoosLiveAndroid.Fragments
+namespace FoosLiveAndroid.Fragments.MainMenu
 {
     public class MainMenuButtonsFragment : Fragment
     {
-        public static new string Tag = "MainMenuButtonsFragment";
-        private View view;
+        private new const string Tag = "MainMenuButtonsFragment";
+        private View _view;
 
-        private Button startButton;
-        private Button settingsButton;
-        private Button infoButton;
+        private Button _startButton;
+        private Button _settingsButton;
+        private Button _infoButton;
 
-        private IOnFragmentInteractionListener interactionListener;
+        private IOnFragmentInteractionListener _interactionListener;
 
         public static Fragment NewInstance()
         {
@@ -29,12 +29,12 @@ namespace FoosLiveAndroid.Fragments
         {
             try
             {
-                interactionListener = (IOnFragmentInteractionListener) context;
+                _interactionListener = (IOnFragmentInteractionListener) context;
             }
-            catch (InvalidCastException e)
+            catch (InvalidCastException)
             {
                 Log.Error(Tag, "IOnFragmentInteractionListener not implemented in parent activity");
-                throw e;
+                throw;
             }
 
             base.OnAttach(context);
@@ -42,34 +42,34 @@ namespace FoosLiveAndroid.Fragments
 
         public override View OnCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
         {
-            interactionListener.UpdateTitle(GetString(Resource.String.main_menu));
-            view = inflater.Inflate(Resource.Layout.main_menu_items, container, false);
+            _interactionListener.UpdateTitle(GetString(Resource.String.main_menu));
+            _view = inflater.Inflate(Resource.Layout.main_menu_items, container, false);
             //Main menu buttons
             GetReferencesFromLayout();
 
-            startButton.Click += delegate
+            _startButton.Click += delegate
             {
-                ((MainMenuFragment)ParentFragment).LoadChildFragment(FragmentId.Mode_menu);
+                ((MainMenuFragment)ParentFragment).LoadChildFragment(FragmentId.ModeMenu);
             };
 
-            settingsButton.Click += delegate
+            _settingsButton.Click += delegate
             {   
-                interactionListener.LoadFragment(FragmentId.Settings);
+                _interactionListener.LoadFragment(FragmentId.Settings);
             };
 
-            infoButton.Click += delegate
+            _infoButton.Click += delegate
             {
-                interactionListener.LoadFragment(FragmentId.Info);
+                _interactionListener.LoadFragment(FragmentId.Info);
             };
 
-            return view;
+            return _view;
         }
 
         private void GetReferencesFromLayout()
         {
-            startButton = view.FindViewById<Button>(Resource.Id.startButton);
-            settingsButton = view.FindViewById<Button>(Resource.Id.settingsButton);
-            infoButton = view.FindViewById<Button>(Resource.Id.infoButton);
+            _startButton = _view.FindViewById<Button>(Resource.Id.startButton);
+            _settingsButton = _view.FindViewById<Button>(Resource.Id.settingsButton);
+            _infoButton = _view.FindViewById<Button>(Resource.Id.infoButton);
         }
     }
 }

@@ -2,7 +2,7 @@
 using Emgu.CV.Cvb;
 using Emgu.CV.Structure;
 
-namespace FoosLiveAndroid.TOPBanga.Detection
+namespace FoosLiveAndroid.Util.Detection
 {
     class BlobDetector
     {
@@ -10,7 +10,7 @@ namespace FoosLiveAndroid.TOPBanga.Detection
         public BlobDetector()
         {
             detector = new CvBlobDetector();
-            CvBlobs blobs = new CvBlobs();
+            var blobs = new CvBlobs();
         }
         public uint GetBlobs(Image<Gray,byte> image, CvBlobs blobs)
         {

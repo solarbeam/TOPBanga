@@ -9,9 +9,9 @@ namespace FoosLiveAndroid.Fragments
 {
     public class InfoFragment : Fragment
     {
-        public static new string Tag = "InfoFragment";
-        private View view;
-        private IOnFragmentInteractionListener interactionListener;
+        private new const string Tag = "InfoFragment";
+        private View _view;
+        private IOnFragmentInteractionListener _interactionListener;
 
         public static Fragment NewInstance()
         {
@@ -22,12 +22,12 @@ namespace FoosLiveAndroid.Fragments
         {
             try
             {
-                interactionListener = (IOnFragmentInteractionListener)context;
+                _interactionListener = (IOnFragmentInteractionListener)context;
             }
-            catch (InvalidCastException e)
+            catch (InvalidCastException)
             {
                 Log.Error(Tag, "IOnFragmentInteractionListener not implemented in parent activity");
-                throw e;
+                throw;
             }
 
             base.OnAttach(context);
@@ -35,10 +35,10 @@ namespace FoosLiveAndroid.Fragments
 
         public override View OnCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
         {
-            interactionListener.UpdateTitle(GetString(Resource.String.info));
-            view = inflater.Inflate(Resource.Layout.fragment_info, container, false);
+            _interactionListener.UpdateTitle(GetString(Resource.String.info));
+            _view = inflater.Inflate(Resource.Layout.fragment_info, container, false);
 
-            return view;
+            return _view;
         }
 
         private void GetReferencesFromLayout()

@@ -1,15 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using Emgu.CV;
-using Emgu.CV.Structure;
 using Emgu.CV.Cvb;
-using FoosLiveAndroid.TOPBanga.Interface;
-using Emgu.CV.Util;
 using Emgu.CV.CvEnum;
-using System.Drawing;
+using Emgu.CV.Structure;
+using Emgu.CV.Util;
+using FoosLiveAndroid.Util.Interface;
 
-namespace FoosLiveAndroid.TOPBanga.Detection
+namespace FoosLiveAndroid.Util.Detection
 {
     /// <summary>
     /// The class contains functions to detect a table by contours and a blob by color
@@ -65,26 +65,26 @@ namespace FoosLiveAndroid.TOPBanga.Detection
         {
             bool success = false;
             rect = new RotatedRect();
-            List<RotatedRect> boxList = new List<RotatedRect>();
-            UMat cannyEdges = new UMat();
-            UMat uimage = new UMat();
-            CvInvoke.CvtColor(this.image, uimage, ColorConversion.Bgr2Gray);
+            var boxList = new List<RotatedRect>();
+            var cannyEdges = new UMat();
+            var uimage = new UMat();
+            CvInvoke.CvtColor(image, uimage, ColorConversion.Bgr2Gray);
             CvInvoke.Canny(uimage, cannyEdges, CannyThreshold, CannyThresholdLinking);
             using (VectorOfVectorOfPoint contours = new VectorOfVectorOfPoint())
             {
                 CvInvoke.FindContours(cannyEdges, contours, null, RetrType.List, ChainApproxMethod.ChainApproxSimple);
                 for (int i = 0; i < contours.Size; i++)
                 {
-                    using (VectorOfPoint contour = contours[i])
-                    using (VectorOfPoint approxContour = new VectorOfPoint())
+                    using (var contour = contours[i])
+                    using (var approxContour = new VectorOfPoint())
                     {
                         CvInvoke.ApproxPolyDP(contour, approxContour, CvInvoke.ArcLength(contour, true) * 0.05, true);
-                        if (CvInvoke.ContourArea(approxContour, false) > ContourArea) //only consider contours with area greater than 250
+                        if (CvInvoke.ContourArea(approxContour) > ContourArea) //only consider contours with area greater than 250
                         {
                             if (approxContour.Size == VerticeCount) //The contour has 4 vertices.
                             {
                                 bool isRectangle = true;
-                                System.Drawing.Point[] pts = approxContour.ToArray();
+                                Point[] pts = approxContour.ToArray();
                                 LineSegment2D[] edges = PointCollection.PolyLine(pts, true);
 
                                 for (int j = 0; j < edges.Length; j++)

@@ -1,8 +1,8 @@
-﻿using Emgu.CV;
+﻿using System.Drawing;
+using Emgu.CV;
 using Emgu.CV.Structure;
-using System.Drawing;
 
-namespace FoosLiveAndroid.TOPBanga.Interface
+namespace FoosLiveAndroid.Util.Interface
 {
     public interface IDetector
     {

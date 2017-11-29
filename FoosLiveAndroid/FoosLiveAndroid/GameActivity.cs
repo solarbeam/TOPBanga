@@ -1,5 +1,4 @@
-﻿using System;
-using Android.App;
+﻿using Android.App;
 using Android.Content.PM;
 using Android.OS;
 using Android.Views;
@@ -8,22 +7,18 @@ using Android.Graphics;
 using Emgu.CV;
 using Camera = Android.Hardware.Camera;
 using Emgu.CV.Structure;
-using FoosLiveAndroid.TOPBanga.Detection;
 using System.Collections.Generic;
-using Android.Runtime;
 using System.Drawing;
-using Android.Support.V4.Content;
 using Android.Graphics.Drawables;
 using Android.Util;
 using FoosLiveAndroid.Util.Detection;
 
 namespace FoosLiveAndroid
 {
-    //[Activity(MainLauncher = true, ScreenOrientation = ScreenOrientation.Landscape)]
     [Activity(ScreenOrientation = ScreenOrientation.Landscape)]
     public class GameActivity : Activity, TextureView.ISurfaceTextureListener, View.IOnTouchListener
     {
-        public static string Tag = "GameActivity";
+        private const string Tag = "GameActivity";
         private const int camera_width = 1280;
         private const int camera_height = 720;
         private const int preview_width = 240;
@@ -65,15 +60,15 @@ namespace FoosLiveAndroid
             Window.SetFlags(WindowManagerFlags.Fullscreen, WindowManagerFlags.Fullscreen);
             GetReferencesFromLayout();
 
-            this.detector = new ColorDetector();
+            detector = new ColorDetector();
 
-            this.surfaceView.SetZOrderOnTop(true);
-            this.surfaceView.Holder.SetFormat(Format.Transparent);
-            this.holder = this.surfaceView.Holder;
+            surfaceView.SetZOrderOnTop(true);
+            surfaceView.Holder.SetFormat(Format.Transparent);
+            holder = surfaceView.Holder;
 
             // Open the camera
-            this._gameView.SurfaceTextureListener = this;
-            this._gameView.SetOnTouchListener(this);
+            _gameView.SurfaceTextureListener = this;
+            _gameView.SetOnTouchListener(this);
         }
 
         /// <summary>
@@ -84,25 +79,25 @@ namespace FoosLiveAndroid
         /// <param name="h">The height of the surface, defined as an integer</param>
         public void OnSurfaceTextureAvailable(SurfaceTexture surface, int w, int h)
         {
-            this.camera = Camera.Open();
-            this._gameView.LayoutParameters = new FrameLayout.LayoutParams(w,h);
+            camera = Camera.Open();
+            _gameView.LayoutParameters = new FrameLayout.LayoutParams(w,h);
 
             // Set the upscaling constant
-            this.mul = w / preview_width;
+            mul = w / preview_width;
 
             // Create the ObjectDetector class for the GameActivity
-            this.objectDetector = new ObjectDetector(this.mul, this.detector);
+            objectDetector = new ObjectDetector(mul, detector);
 
             // Create a template alpha bitmap for repeated drawing
-            BitmapDrawable tempBitmap = new BitmapDrawable(Bitmap.CreateBitmap(w, h, Bitmap.Config.Argb8888));
+            var tempBitmap = new BitmapDrawable(Bitmap.CreateBitmap(w, h, Bitmap.Config.Argb8888));
             tempBitmap.SetAlpha(0);
-            this.alphaBitmap = tempBitmap.Bitmap;
+            alphaBitmap = tempBitmap.Bitmap;
 
             // Get the camera parameters in order to set the appropriate frame size
-            Camera.Parameters parameters = this.camera.GetParameters();
+            Camera.Parameters parameters = camera.GetParameters();
             IList<Camera.Size> list = camera.GetParameters().SupportedPreviewSizes;
 
-            this.holder.SetFixedSize(w, h);
+            holder.SetFixedSize(w, h);
 
             // Go through all of the sizes until we find an appropriate one
             foreach (Camera.Size size in list)
@@ -115,7 +110,7 @@ namespace FoosLiveAndroid
                 }
             }
 
-            this.camera.SetParameters(parameters);
+            camera.SetParameters(parameters);
 
             try
             {
@@ -123,13 +118,13 @@ namespace FoosLiveAndroid
                  * Set the surface on which frames are drawn
                  * In this case, it's the surface, which was created for _gameview
                  */
-                this.camera.SetPreviewTexture(surface);
-                this.camera.StartPreview();
+                camera.SetPreviewTexture(surface);
+                camera.StartPreview();
             }
             catch (Java.IO.IOException e)
             {
                 Log.Error(Tag, e.Message);
-                throw e;
+                throw;
             }
         }
 
@@ -140,8 +135,8 @@ namespace FoosLiveAndroid
         /// <returns>Returns true if the input is accepted. False otherwise</returns>
         public bool OnSurfaceTextureDestroyed(SurfaceTexture surface)
         {
-            this.camera.StopPreview();
-            this.camera.Release();
+            camera.StopPreview();
+            camera.Release();
 
             return true;
         }
@@ -164,18 +159,18 @@ namespace FoosLiveAndroid
         public void OnSurfaceTextureUpdated(SurfaceTexture surface)
         {
             // The table is currently drawn only if an Hsv value is selected
-            if ( this.hsvSelected )
+            if ( hsvSelected )
             {
-                Canvas canvas = this.holder.LockCanvas();
+                Canvas canvas = holder.LockCanvas();
 
-                if ( ! this.objectDetector.Detect(canvas, this.selectedHsv,
-                                            this._gameView.GetBitmap(preview_width, preview_height),
-                                            this.alphaBitmap) )
+                if ( ! objectDetector.Detect(canvas, selectedHsv,
+                                            _gameView.GetBitmap(preview_width, preview_height),
+                                            alphaBitmap) )
                 {
-                    canvas.DrawBitmap(this.alphaBitmap, 0, 0, null);
+                    canvas.DrawBitmap(alphaBitmap, 0, 0, null);
                 }
 
-                this.holder.UnlockCanvasAndPost(canvas);
+                holder.UnlockCanvasAndPost(canvas);
             }
         }
 
@@ -198,16 +193,16 @@ namespace FoosLiveAndroid
         /// <returns>True if the Touch was accepted. False otherwise</returns>
         public bool OnTouch(View v, MotionEvent e)
         {
-            if ( !this.hsvSelected )
+            if ( !hsvSelected )
             {
-                Image<Hsv, byte> image = new Image<Hsv, byte>(this._gameView.GetBitmap(preview_width, preview_height));
-                this.selectedHsv = new Hsv(image.Data[ (int)(e.GetY()/mul), (int)(e.GetX()/mul), 0 ],
-                                            image.Data[ (int)(e.GetY()/mul), (int)(e.GetX()/mul), 1],
-                                            image.Data[ (int)(e.GetY()/mul), (int)(e.GetX()/mul), 2]);
+                var image = new Image<Hsv, byte>(_gameView.GetBitmap(preview_width, preview_height));
+                selectedHsv = new Hsv(image.Data[ (int)(e.GetY()/mul), (int)(e.GetX()/mul), 0 ],
+                    image.Data[ (int)(e.GetY()/mul), (int)(e.GetX()/mul), 1],
+                    image.Data[ (int)(e.GetY()/mul), (int)(e.GetX()/mul), 2]);
 
                 // Dispose of the temporary image
                 image.Dispose();
-                this.hsvSelected = true;
+                hsvSelected = true;
             }
             return true;
         }

@@ -10,17 +10,17 @@ namespace FoosLiveAndroid.Fragments
 {
     public class SettingsFragment : Fragment
     {
-        public static new string Tag = "SettingsFragment";
+        private new const string Tag = "SettingsFragment";
 
-        private View view;
-        private Button team1ScoreSoundButton;
-        private Button team1WinSoundButton;
-        private Button team2ScoreSoundButton;
-        private Button team2WinSoundButton;
+        private View _view;
+        private Button _team1ScoreSoundButton;
+        private Button _team1WinSoundButton;
+        private Button _team2ScoreSoundButton;
+        private Button _team2WinSoundButton;
 
-        AlertDialog.Builder dialogBuilder;
+        private AlertDialog.Builder _dialogBuilder;
 
-        private IOnFragmentInteractionListener interactionListener;
+        private IOnFragmentInteractionListener _interactionListener;
 
         public static Fragment NewInstance()
         {
@@ -31,12 +31,12 @@ namespace FoosLiveAndroid.Fragments
         {
             try
             {
-                interactionListener = (IOnFragmentInteractionListener)context;
+                _interactionListener = (IOnFragmentInteractionListener)context;
             }
-            catch (InvalidCastException e)
+            catch (InvalidCastException)
             {
                 Log.Error(Tag, "IOnFragmentInteractionListener not implemented in parent activity");
-                throw e;
+                throw;
             }
 
             base.OnAttach(context);
@@ -44,36 +44,34 @@ namespace FoosLiveAndroid.Fragments
 
         public override View OnCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
         {
-            interactionListener.UpdateTitle(GetString(Resource.String.settings));
-            view = inflater.Inflate(Resource.Layout.fragment_settings, container, false);
+            _interactionListener.UpdateTitle(GetString(Resource.String.settings));
+            _view = inflater.Inflate(Resource.Layout.fragment_settings, container, false);
 
             GetReferencesFromLayout();
+            
+            // Todo: set up button click events
 
-            return view;
+            return _view;
         }
 
         private void GetReferencesFromLayout()
         {
-            //team1ScoreSoundButton = view.FindViewById<Button>(Resource.Id.team1ScoreSoundSpinner);
-            //team1WinSoundButton  = view.FindViewById<Button>(Resource.Id.team1WinSoundSpinner);
-            //team2ScoreSoundButton = view.FindViewById<Button>(Resource.Id.team2ScoreSoundSpinner);
-            //team2WinSoundButton  = view.FindViewById<Button>(Resource.Id.team2WinSoundSpinner);
+//            _team1ScoreSoundButton = _view.FindViewById<Button>(Resource.Id.team1ScoreSoundButton);
+//            _team1WinSoundButton = _view.FindViewById<Button>(Resource.Id.team1WinSoundButton);
+//            _team2ScoreSoundButton = _view.FindViewById<Button>(Resource.Id.team2ScoreSoundButton);
+//            _team2WinSoundButton = _view.FindViewById<Button>(Resource.Id.team2WinSoundButton);
         }
 
-        private void SoundItemSelected(object sender, AdapterView.ItemSelectedEventArgs e)
-        {
-            // Todo: change game sounds based on request
-        }
-
+        // Todo: fully implement Alertdialog and selection events
         private void OpenSoundPicker(ArrayAdapter<string> adapter)
         {
             if (adapter == null) throw new ArgumentNullException(nameof(adapter));
-            dialogBuilder =  dialogBuilder ?? new AlertDialog.Builder(Context);
-            dialogBuilder.SetTitle("");
-            dialogBuilder.SetAdapter(adapter, (dialog, item) => {
+            _dialogBuilder =  _dialogBuilder ?? new AlertDialog.Builder(Context);
+            _dialogBuilder.SetTitle("");
+            _dialogBuilder.SetAdapter(adapter, (dialog, item) => {
                 //button.Text(adapter.getItem(item));
             });
-            AlertDialog soundPickDialog = dialogBuilder.Create();
+            var soundPickDialog = _dialogBuilder.Create();
             soundPickDialog.Show();
         }
     }

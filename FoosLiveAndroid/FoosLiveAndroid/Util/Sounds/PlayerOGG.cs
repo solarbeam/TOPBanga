@@ -6,18 +6,18 @@ namespace FoosLiveAndroid.Util.Sounds
 {
     public class PlayerOGG : IAlert
     {
-        readonly MediaPlayer player;
+        private readonly MediaPlayer _player;
 
         //Todo: paths from cfg
 
         public PlayerOGG(Context context, Android.Net.Uri path)
         {
-            player = MediaPlayer.Create(context, path); 
+            _player = MediaPlayer.Create(context, path); 
         }
 
         public void Play()
         {
-            player.Start();
+            _player.Start();
         }
     }
 }

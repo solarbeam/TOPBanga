@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Drawing;
 
-namespace FoosLiveAndroid.TOPBanga.Interface
+namespace FoosLiveAndroid.Util.Interface
 {
 
     public interface IGameTracker
