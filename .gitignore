@@ -259,3 +259,33 @@ paket-files/
 # Python Tools for Visual Studio (PTVS)
 __pycache__/
 *.pyc
+
+# Local dependencies
+/FoosLiveAndroid/FoosLiveAndroid/Emgu.CV.DebuggerVisualizers.VS2017.dll
+/FoosLiveAndroid/FoosLiveAndroid/Emgu.CV.UI.dll
+/FoosLiveAndroid/FoosLiveAndroid/Emgu.CV.UI.GL.dll
+/FoosLiveAndroid/FoosLiveAndroid/Emgu.CV.World.dll
+/FoosLiveAndroid/FoosLiveAndroid/OpenCL.dll
+/FoosLiveAndroid/FoosLiveAndroid/OpenTK.Compatibility.dll
+/FoosLiveAndroid/FoosLiveAndroid/OpenTK.Compatibility.xml
+/FoosLiveAndroid/FoosLiveAndroid/OpenTK.dll
+/FoosLiveAndroid/FoosLiveAndroid/OpenTK.GLControl.dll
+/FoosLiveAndroid/FoosLiveAndroid/OpenTK.GLControl.xml
+/FoosLiveAndroid/FoosLiveAndroid/OpenTK.xml
+/FoosLiveAndroid/FoosLiveAndroid/ZedGraph.dll
+/FoosLiveAndroid/FoosLiveAndroid/ZedGraph.xml
+/FoosLiveAndroid/FoosLiveAndroid/lib/armeabi-v7a/libcvextern.so
+/FoosLiveAndroid/FoosLiveAndroid/lib/armeabi/libcvextern.so
+FoosLiveAndroid/.DS_Store
+FoosLiveAndroid/FoosLiveAndroid/Accessibility.dll
+FoosLiveAndroid/FoosLiveAndroid/Resources/.DS_Store
+FoosLiveAndroid/FoosLiveAndroid/System.Windows.Forms.dll
+FoosLiveAndroid/FoosLiveAndroid/System.Runtime.Serialization.Formatters.Soap.dll
+FoosLiveAndroid/FoosLiveAndroid/System.Drawing.dll
+FoosLiveAndroid/FoosLiveAndroid/System.Deployment.dll
+FoosLiveAndroid/FoosLiveAndroid/System.configuration.dll
+FoosLiveAndroid/FoosLiveAndroid/.DS_Store
+.DS_Store
+*.dll
+*.mdb
+*.XML

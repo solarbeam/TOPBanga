@@ -63,9 +63,6 @@
     <Compile Include="Detection\BlobDetector.cs" />
     <Compile Include="Detection\ColorDetector.cs" />
     <Compile Include="Detection\ColorContainer.cs" />
-    <Compile Include="Detection\GameUtil\GameController.cs" />
-    <Compile Include="EventLog.cs" />
-    <Compile Include="Interface\IAlert.cs" />
     <Compile Include="Interface\IDetector.cs" />
     <Compile Include="Interface\IGameTracker.cs" />
     <Compile Include="Interface\IWrite.cs" />
@@ -125,6 +122,9 @@
     <Content Include="opencv_imgproc220.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Detection\GameUtil\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="..\packages\Emgu.CV.3.2.0.2721\build\Emgu.CV.targets" Condition="Exists('..\packages\Emgu.CV.3.2.0.2721\build\Emgu.CV.targets')" />

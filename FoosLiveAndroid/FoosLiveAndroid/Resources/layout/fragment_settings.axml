@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/settings"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:gravity="center_horizontal"
+    android:orientation="vertical"
+    tools:ignore="ContentDescription"
+    android:layout_marginStart="20dp"
+    android:layout_marginEnd="20dp">
+    <ImageView
+        android:id="@+id/appLogo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="20dp"
+        android:scaleType="center"
+        android:scaleX="0.4"
+        android:scaleY="0.4"
+        android:src="@drawable/ic_logo" />
+    <LinearLayout
+        android:id="@+id/settings_buttons"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:orientation="vertical"
+        tools:ignore="ContentDescription">
+        <TextView
+            android:id="@+id/team1ScoreSoundLabel"
+            android:text="@string/team1_score_sound_label"
+            android:textAppearance="@android:style/TextAppearance.Material.Caption"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignTop="@+id/team1ScoreSoundSpinner"
+            android:layout_alignBottom="@+id/team1ScoreSoundSpinner"
+            android:gravity="center"
+            android:layout_marginStart="2dp" />
+        <Button
+            android:id="@+id/team1ScoreSoundButton"
+            style="@style/Base.Widget.AppCompat.Spinner.Underlined"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/buttons_distance"
+            android:textColor="@color/settings_button_text" />
+        <TextView
+            android:id="@+id/team1WinSoundLabel"
+            android:text="@string/team1_win_sound_label"
+            android:textAppearance="@android:style/TextAppearance.Material.Caption"
+            android:layout_width="wrap_content"
+            android:layout_marginStart="2dp"
+            android:layout_height="wrap_content" />
+        <Button
+            android:id="@+id/team1ScoreSoundButton"
+            style="@style/Base.Widget.AppCompat.Spinner.Underlined"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/buttons_distance"
+            android:textColor="@color/settings_button_text" />
+        <TextView
+            android:id="@+id/team2ScoreSoundLabel"
+            android:text="@string/team2_score_sound_label"
+            android:textAppearance="@android:style/TextAppearance.Material.Caption"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+        <Button
+            android:id="@+id/team1ScoreSoundButton"
+            style="@style/Base.Widget.AppCompat.Spinner.Underlined"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/buttons_distance"
+            android:textColor="@color/settings_button_text" />
+        <TextView
+            android:id="@+id/team2WinSoundLabel"
+            android:text="@string/team2_win_sound_label"
+            android:textAppearance="@android:style/TextAppearance.Material.Caption"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+        <Button
+            android:id="@+id/team1ScoreSoundButton"
+            style="@style/Base.Widget.AppCompat.Spinner.Underlined"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/buttons_distance"
+            android:textColor="@color/settings_button_text" />
+    </LinearLayout>
+</LinearLayout>
