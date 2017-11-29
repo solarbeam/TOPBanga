@@ -1,8 +1,8 @@
-﻿using Android.Graphics;
-using System;
+﻿using System;
 using System.Collections.Generic;
+using Android.Graphics;
 
-namespace TOPBanga.Detection.GameUtil
+namespace FoosLiveAndroid.Util.Detection
 {
     /// <summary>
     /// The class holds the primary functions, required for goal detection

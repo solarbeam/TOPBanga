@@ -1,8 +1,8 @@
-﻿using Emgu.CV.Structure;
-using System;
+﻿using System;
 using System.Collections.Generic;
+using Emgu.CV.Structure;
 
-namespace FoosLiveAndroid.TOPBanga.Detection
+namespace FoosLiveAndroid.Util.Detection
 {
     class ColorContainer
     {

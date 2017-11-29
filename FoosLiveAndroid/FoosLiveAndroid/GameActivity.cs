@@ -8,7 +8,6 @@ using Android.Graphics;
 using Emgu.CV;
 using Camera = Android.Hardware.Camera;
 using Emgu.CV.Structure;
-using FoosLiveAndroid.TOPBanga.Detection;
 using System.Collections.Generic;
 using Android.Runtime;
 using System.Drawing;
