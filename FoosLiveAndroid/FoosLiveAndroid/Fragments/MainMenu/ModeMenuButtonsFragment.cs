@@ -140,9 +140,7 @@ namespace FoosLiveAndroid.Fragments
             base.OnActivityResult(requestCode, resultCode, data);
             if (resultCode == Result.Ok && requestCode == (int)ERequestId.VideoRequest)
             {
-                Snackbar.Make(view, "Not implemented", Snackbar.LengthLong)
-                        .Show();
-                //StartCameraActivity(data.Data);
+                StartCameraActivity(data.Data);
             }
         }
         /// <summary>

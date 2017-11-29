@@ -16,12 +16,13 @@ using Android.Support.V4.Content;
 using Android.Graphics.Drawables;
 using Android.Util;
 using FoosLiveAndroid.Util.Detection;
+using Android.Media;
 
 namespace FoosLiveAndroid
 {
     //[Activity(MainLauncher = true, ScreenOrientation = ScreenOrientation.Landscape)]
     [Activity(ScreenOrientation = ScreenOrientation.Landscape)]
-    public class GameActivity : Activity, TextureView.ISurfaceTextureListener, View.IOnTouchListener
+    public class GameActivity : Activity, TextureView.ISurfaceTextureListener, View.IOnTouchListener, MediaPlayer.IOnPreparedListener
     {
         public static string Tag = "GameActivity";
         private const int camera_width = 1280;
@@ -49,6 +50,9 @@ namespace FoosLiveAndroid
         // Todo: change Camera to Camera2
         private Camera camera;
 
+        private MediaPlayer video;
+        private Surface videoSurface;
+
         private Hsv selectedHsv;
         private bool hsvSelected;
 
@@ -67,7 +71,7 @@ namespace FoosLiveAndroid
 
             this.detector = new ColorDetector();
 
-            this.surfaceView.SetZOrderOnTop(true);
+            //this.surfaceView.SetZOrderOnTop(true);
             this.surfaceView.Holder.SetFormat(Format.Transparent);
             this.holder = this.surfaceView.Holder;
 
@@ -84,25 +88,38 @@ namespace FoosLiveAndroid
         /// <param name="h">The height of the surface, defined as an integer</param>
         public void OnSurfaceTextureAvailable(SurfaceTexture surface, int w, int h)
         {
-            this.camera = Camera.Open();
-            this._gameView.LayoutParameters = new FrameLayout.LayoutParams(w,h);
-
-            // Set the upscaling constant
-            this.mul = w / preview_width;
-
-            // Create the ObjectDetector class for the GameActivity
-            this.objectDetector = new ObjectDetector(this.mul, this.detector);
+            this.holder.SetFixedSize(w, h);
 
             // Create a template alpha bitmap for repeated drawing
             BitmapDrawable tempBitmap = new BitmapDrawable(Bitmap.CreateBitmap(w, h, Bitmap.Config.Argb8888));
             tempBitmap.SetAlpha(0);
             this.alphaBitmap = tempBitmap.Bitmap;
 
+            // Create the ObjectDetector class for the GameActivity
+            this.objectDetector = new ObjectDetector(this.mul, this.detector);
+
+            // Set the upscaling constant
+            this.mul = w / preview_width;
+
+            this._gameView.LayoutParameters = new FrameLayout.LayoutParams(w, h);
+
+            if ( Intent.Data.ToString() != null )
+            {
+                this.videoSurface = new Surface(surface);
+
+                this.video = new MediaPlayer();
+                this.video.SetDisplay(this.holder);
+                this.video.SetDataSource(this.ApplicationContext,this.Intent.Data,null);
+                this.video.Prepare();
+                this.video.SetOnPreparedListener(this);
+                return;
+            }
+
+            this.camera = Camera.Open();
+
             // Get the camera parameters in order to set the appropriate frame size
             Camera.Parameters parameters = this.camera.GetParameters();
             IList<Camera.Size> list = camera.GetParameters().SupportedPreviewSizes;
-
-            this.holder.SetFixedSize(w, h);
 
             // Go through all of the sizes until we find an appropriate one
             foreach (Camera.Size size in list)
@@ -140,8 +157,10 @@ namespace FoosLiveAndroid
         /// <returns>Returns true if the input is accepted. False otherwise</returns>
         public bool OnSurfaceTextureDestroyed(SurfaceTexture surface)
         {
-            this.camera.StopPreview();
-            this.camera.Release();
+            if (this.video != null)
+                this.video.Release();
+            else
+                this.camera.Release();
 
             return true;
         }
@@ -210,6 +229,11 @@ namespace FoosLiveAndroid
                 this.hsvSelected = true;
             }
             return true;
+        }
+
+        public void OnPrepared(MediaPlayer mp)
+        {
+            mp.Start();
         }
     }
 }
