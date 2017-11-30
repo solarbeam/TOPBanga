@@ -8,10 +8,11 @@ using Emgu.CV;
 using Camera = Android.Hardware.Camera;
 using Emgu.CV.Structure;
 using System.Collections.Generic;
-using System.Drawing;
 using Android.Graphics.Drawables;
 using Android.Util;
 using FoosLiveAndroid.Util.Detection;
+using TOPBanga.Detection.GameUtil;
+using System;
 
 namespace FoosLiveAndroid
 {
@@ -38,8 +39,9 @@ namespace FoosLiveAndroid
 
         private ColorDetector detector;
         private ObjectDetector objectDetector;
+        private GameController gameController;
 
-        private Rectangle rectangle;
+        private PointF rectangle;
 
         // Todo: change Camera to Camera2
         private Camera camera;
@@ -61,6 +63,7 @@ namespace FoosLiveAndroid
             GetReferencesFromLayout();
 
             detector = new ColorDetector();
+            this.gameController = new GameController();
 
             surfaceView.SetZOrderOnTop(true);
             surfaceView.Holder.SetFormat(Format.Transparent);
@@ -169,6 +172,8 @@ namespace FoosLiveAndroid
                 {
                     canvas.DrawBitmap(alphaBitmap, 0, 0, null);
                 }
+                else
+                    this.gameController.LastBallCoordinates = this.rectangle;
 
                 holder.UnlockCanvasAndPost(canvas);
             }
@@ -205,6 +210,19 @@ namespace FoosLiveAndroid
                 hsvSelected = true;
             }
             return true;
+        }
+
+        /// <summary>
+        /// Called whenever the GameController fires a goal event
+        /// </summary>
+        /// <param name="sender">The class, which calls this function</param>
+        /// <param name="e">The arguments, assigned to this call</param>
+        public void OnGoalEvent(object sender, EventArgs e)
+        {
+            /**
+             * TODO
+             * Display the team scores
+             */
         }
     }
 }

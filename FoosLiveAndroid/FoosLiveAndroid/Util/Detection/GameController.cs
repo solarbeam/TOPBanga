@@ -1,4 +1,5 @@
 ﻿using Android.Graphics;
+using Emgu.CV.Structure;
 using System;
 using System.Collections.Generic;
 
@@ -33,9 +34,9 @@ namespace TOPBanga.Detection.GameUtil
         private Queue<Goal> goals = new Queue<Goal>();
 
         /// <summary>
-        /// TODO Add documentation
+        /// The amount of positions to hold in the queue
         /// </summary>
-        private const int MAXIMUM_BALL_COORDINATE_NUMBER = 20;
+        private const int MAXIMUM_BALL_COORDINATE_NUMBER = 50;
         /// <summary>
         /// The minimum amount of frames in the goal zone in order for
         /// the goal to be accepted
@@ -47,7 +48,7 @@ namespace TOPBanga.Detection.GameUtil
         private PointF last_ball_coordinates;
 
         /// <summary>
-        /// TODO Add documentation
+        /// A get and set function to assign the last position of the ball
         /// </summary>
         public PointF LastBallCoordinates
         {
@@ -83,26 +84,13 @@ namespace TOPBanga.Detection.GameUtil
         {
             if (points.Length != 4)
                 return;
+
             Table = new Path();
             Table.MoveTo(points[0].X, points[0].Y);
             Table.LineTo(points[1].X, points[1].Y);
             Table.LineTo(points[2].X, points[2].Y);
             Table.LineTo(points[3].X, points[3].Y);
             Table.Close();
-            //PointF[] goalPoint = new PointF[4];
-            //float xMiddle = (points[0].X + points[1].X) / 2;
-            //goalPoint[0] = new PointF(xMiddle - SPACE_FOR_GOALS, points[0].Y);
-            //goalPoint[1] = new PointF(xMiddle + SPACE_FOR_GOALS, points[0].Y);
-            //goalPoint[2] = new PointF(xMiddle + SPACE_FOR_GOALS, points[0].Y + SPACE_FOR_GOALS);
-            //goalPoint[3] = new PointF(xMiddle - SPACE_FOR_GOALS, points[0].Y + SPACE_FOR_GOALS);
-            //this.AddGoal(goalPoint);
-            //goalPoint = new PointF[4];
-            //xMiddle = (points[2].X + points[3].X) / 2;
-            //goalPoint[0] = new PointF(xMiddle - SPACE_FOR_GOALS, points[2].Y);
-            //goalPoint[1] = new PointF(xMiddle + SPACE_FOR_GOALS, points[2].Y);
-            //goalPoint[2] = new PointF(xMiddle + SPACE_FOR_GOALS, points[2].Y - SPACE_FOR_GOALS);
-            //goalPoint[3] = new PointF(xMiddle - SPACE_FOR_GOALS, points[2].Y - SPACE_FOR_GOALS);
-            //this.AddGoal(goalPoint);
         }
         /// <summary>
         /// The default constructor for the GameController class
@@ -111,31 +99,6 @@ namespace TOPBanga.Detection.GameUtil
         {
             ballCoordinates = new Queue<PointF>();
             LastBallCoordinates = new PointF(0, 0);
-            //this.GoalEvent += ((obj, args) => System.Console.WriteLine("GOAL")); // for preview
-        }
-
-        /// <summary>
-        /// Draw the goal zone if a goal was made
-        /// </summary>
-        /// <param name="bitmap">The bitmap, to which a path will be drawn</param>
-        /// <returns>The drawn bitmap</returns>
-        public Bitmap PaintGoals(Bitmap bitmap)
-        {
-            Canvas graphics = new Canvas(bitmap);
-            Paint bluePaint = new Paint();
-            bluePaint.SetARGB(255, 0, 0, 255);
-            Paint redPaint = new Paint();
-            redPaint.SetARGB(255, 255, 0, 0);
-            graphics.DrawPath(Table, bluePaint);
-            foreach (var goal in goals)
-            {
-                var goalConvertion = new RectF();
-                goal.Path.ComputeBounds(goalConvertion, true);
-                graphics.DrawPath(Table,
-                    goalConvertion.Contains(LastBallCoordinates.X, LastBallCoordinates.Y) ? redPaint : bluePaint);
-            }
-            graphics.Dispose();
-            return bitmap;
         }
 
         /// <summary>
@@ -166,6 +129,7 @@ namespace TOPBanga.Detection.GameUtil
             foreach (var goal in goals)
             {
                 var goalConvertion = new RectF();
+
                 if (goalConvertion.Contains(LastBallCoordinates.X, LastBallCoordinates.Y))
                 {
                     goal.FramesBallInGoal++;
