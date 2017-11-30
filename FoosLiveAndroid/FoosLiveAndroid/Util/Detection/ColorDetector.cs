@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
+using Android.Util;
 using Emgu.CV;
 using Emgu.CV.Cvb;
 using Emgu.CV.CvEnum;
@@ -16,9 +17,10 @@ namespace FoosLiveAndroid.Util.Detection
     /// </summary>
     class ColorDetector : IDetector
     {
+        public static string Tag = "ColorDetector";
         private const double CannyThreshold = 180.0;
         private const double CannyThresholdLinking = 120.0;
-        private const int ContourArea = 250;
+        private const int DefaultContourArea = 250;
         private const int VerticeCount = 4;
         private const int MinAngle = 80;
         private const int MaxAngle = 100;
@@ -41,16 +43,37 @@ namespace FoosLiveAndroid.Util.Detection
         [Obsolete("Not used anymore")]
         public int CircleWidth { get; set; }
 
-        public readonly int minContourArea;
+        private int minContourArea = DefaultContourArea;
+        public int MinContourArea 
+        {
+            get
+            {
+                return minContourArea;
+            }
+            set
+            {
+                if (value > DefaultThreshold)
+                    minContourArea = value;
+                else
+                    Log.Warn(Tag, "minContourArea remains default");
+            }
+        }
+
+
+
+        public void SetSceenSize(int screenWidth, int screenHeight) 
+        {
+            MinContourArea = (int)(screenWidth * screenHeight * MinTableSize);
+        }
 
         /// <summary>
         /// Creates the ColorDetector class with the appropriate threshold
         /// </summary>
         /// <param name="threshold">The threshold, which will be used to define the range of colors</param>
-        public ColorDetector(int threshold = DefaultThreshold, int screenWidth = 0, int screenHeight = 0)
+        public ColorDetector(int threshold = DefaultThreshold)
         {
             Threshold = threshold;
-            minContourArea = ContourArea;
+            MinContourArea = DefaultContourArea;
             //minContourArea = (int)(screenWidth * screenHeight * MinTableSize);
         }
 
@@ -79,7 +102,7 @@ namespace FoosLiveAndroid.Util.Detection
                         CvInvoke.ApproxPolyDP(contour, approxContour, CvInvoke.ArcLength(contour, true) * 0.05, true);
 
                         // Todo: patikrinti ar ContourArea pakeista į minContourArea veikia gerai
-                        if (CvInvoke.ContourArea(approxContour) > minContourArea)
+                        if (CvInvoke.ContourArea(approxContour) > MinContourArea)
                         {
                             if (approxContour.Size == VerticeCount) //The contour has 4 vertices.
                             {
@@ -183,7 +206,7 @@ namespace FoosLiveAndroid.Util.Detection
             {
                 // Deep copy the blob's information
                 rect = new Rectangle(new Point(biggestBlob.BoundingBox.X, biggestBlob.BoundingBox.Y),
-                                        new Size(biggestBlob.BoundingBox.Size.Width, biggestBlob.BoundingBox.Height));
+                                        new System.Drawing.Size(biggestBlob.BoundingBox.Size.Width, biggestBlob.BoundingBox.Height));
             }
 
             points.Dispose();
