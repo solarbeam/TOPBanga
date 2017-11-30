@@ -51,7 +51,7 @@ namespace FoosLiveAndroid
         private Camera camera;
 
         private MediaPlayer video;
-        private Surface videoSurface;
+        private Surface surface;
 
         private Hsv selectedHsv;
         private bool hsvSelected;
@@ -71,7 +71,7 @@ namespace FoosLiveAndroid
 
             this.detector = new ColorDetector();
 
-            //this.surfaceView.SetZOrderOnTop(true);
+            this.surfaceView.SetZOrderOnTop(true);
             this.surfaceView.Holder.SetFormat(Format.Transparent);
             this.holder = this.surfaceView.Holder;
 
@@ -103,13 +103,12 @@ namespace FoosLiveAndroid
 
             this._gameView.LayoutParameters = new FrameLayout.LayoutParams(w, h);
 
-            if ( Intent.Data.ToString() != null )
+            if ( Intent.Data != null )
             {
-                this.videoSurface = new Surface(surface);
-
+                this.surface = new Surface(surface);
                 this.video = new MediaPlayer();
-                this.video.SetDisplay(this.holder);
-                this.video.SetDataSource(this.ApplicationContext,this.Intent.Data,null);
+                this.video.SetDataSource(this.ApplicationContext, this.Intent.Data);
+                this.video.SetSurface(this.surface);
                 this.video.Prepare();
                 this.video.SetOnPreparedListener(this);
                 return;
@@ -219,7 +218,10 @@ namespace FoosLiveAndroid
         {
             if ( !this.hsvSelected )
             {
-                Image<Hsv, byte> image = new Image<Hsv, byte>(this._gameView.GetBitmap(preview_width, preview_height));
+                Image<Hsv, byte> image;
+
+                image = new Image<Hsv, byte>(this._gameView.GetBitmap(preview_width, preview_height));
+
                 this.selectedHsv = new Hsv(image.Data[ (int)(e.GetY()/mul), (int)(e.GetX()/mul), 0 ],
                                             image.Data[ (int)(e.GetY()/mul), (int)(e.GetX()/mul), 1],
                                             image.Data[ (int)(e.GetY()/mul), (int)(e.GetX()/mul), 2]);
@@ -227,13 +229,24 @@ namespace FoosLiveAndroid
                 // Dispose of the temporary image
                 image.Dispose();
                 this.hsvSelected = true;
+
+                // If the video was paused, resume it
+                if ( this.video != null )
+                {
+                    this.video.Start();
+                }
             }
             return true;
         }
 
+        /// <summary>
+        /// Called whenever the mediaplayer is ready to be started
+        /// </summary>
+        /// <param name="mp">The MediaPlayer instance, which called this function</param>
         public void OnPrepared(MediaPlayer mp)
         {
             mp.Start();
+            mp.Pause();
         }
     }
 }
