@@ -1,15 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using Emgu.CV;
-using Emgu.CV.Structure;
 using Emgu.CV.Cvb;
-using FoosLiveAndroid.TOPBanga.Interface;
-using Emgu.CV.Util;
 using Emgu.CV.CvEnum;
-using System.Drawing;
+using Emgu.CV.Structure;
+using Emgu.CV.Util;
+using FoosLiveAndroid.Util.Interface;
 
-namespace FoosLiveAndroid.TOPBanga.Detection
+namespace FoosLiveAndroid.Util.Detection
 {
     /// <summary>
     /// The class contains functions to detect a table by contours and a blob by color
@@ -22,6 +22,9 @@ namespace FoosLiveAndroid.TOPBanga.Detection
         private const int VerticeCount = 4;
         private const int MinAngle = 80;
         private const int MaxAngle = 100;
+        private const int DefaultThreshold = 15;
+        private const double MinTableSize = 0.6;
+
         /// <summary>
         /// The detector's image, used for calculations
         /// </summary>
@@ -38,22 +41,17 @@ namespace FoosLiveAndroid.TOPBanga.Detection
         [Obsolete("Not used anymore")]
         public int CircleWidth { get; set; }
 
-        /// <summary>
-        /// The default constructor for the ColorDetector class
-        /// The threshold is assumed to be 15
-        /// </summary>
-        public ColorDetector()
-        {
-            Threshold = 15; // default threshold
-        }
+        public readonly int minContourArea;
 
         /// <summary>
         /// Creates the ColorDetector class with the appropriate threshold
         /// </summary>
         /// <param name="threshold">The threshold, which will be used to define the range of colors</param>
-        public ColorDetector(int threshold)
+        public ColorDetector(int threshold = DefaultThreshold, int screenWidth = 0, int screenHeight = 0)
         {
             Threshold = threshold;
+            minContourArea = ContourArea;
+            //minContourArea = (int)(screenWidth * screenHeight * MinTableSize);
         }
 
         /// <summary>
@@ -65,26 +63,28 @@ namespace FoosLiveAndroid.TOPBanga.Detection
         {
             bool success = false;
             rect = new RotatedRect();
-            List<RotatedRect> boxList = new List<RotatedRect>();
-            UMat cannyEdges = new UMat();
-            UMat uimage = new UMat();
-            CvInvoke.CvtColor(this.image, uimage, ColorConversion.Bgr2Gray);
+            var boxList = new List<RotatedRect>();
+            var cannyEdges = new UMat();
+            var uimage = new UMat();
+            CvInvoke.CvtColor(image, uimage, ColorConversion.Bgr2Gray);
             CvInvoke.Canny(uimage, cannyEdges, CannyThreshold, CannyThresholdLinking);
             using (VectorOfVectorOfPoint contours = new VectorOfVectorOfPoint())
             {
                 CvInvoke.FindContours(cannyEdges, contours, null, RetrType.List, ChainApproxMethod.ChainApproxSimple);
                 for (int i = 0; i < contours.Size; i++)
                 {
-                    using (VectorOfPoint contour = contours[i])
-                    using (VectorOfPoint approxContour = new VectorOfPoint())
+                    using (var contour = contours[i])
+                    using (var approxContour = new VectorOfPoint())
                     {
                         CvInvoke.ApproxPolyDP(contour, approxContour, CvInvoke.ArcLength(contour, true) * 0.05, true);
-                        if (CvInvoke.ContourArea(approxContour, false) > ContourArea) //only consider contours with area greater than 250
+
+                        // Todo: patikrinti ar ContourArea pakeista į minContourArea veikia gerai
+                        if (CvInvoke.ContourArea(approxContour) > minContourArea)
                         {
                             if (approxContour.Size == VerticeCount) //The contour has 4 vertices.
                             {
                                 bool isRectangle = true;
-                                System.Drawing.Point[] pts = approxContour.ToArray();
+                                Point[] pts = approxContour.ToArray();
                                 LineSegment2D[] edges = PointCollection.PolyLine(pts, true);
 
                                 for (int j = 0; j < edges.Length; j++)
@@ -104,12 +104,11 @@ namespace FoosLiveAndroid.TOPBanga.Detection
                     }
                 }
             }
-            if (boxList.Count > 0)
+            if (success = (boxList.Count > 0))
             {
-                success = true;
                 boxList.OrderByDescending(b => b.Size);
                 rect = boxList[0];
-            }   
+            }
             return success;
         }
 
@@ -126,7 +125,7 @@ namespace FoosLiveAndroid.TOPBanga.Detection
             rect = new Rectangle();
 
             // Will change this in order to optimize
-            Image<Hsv, byte> hsvImg = image.Convert<Hsv,byte>();
+            Image<Hsv, byte> hsvImg = image.Convert<Hsv, byte>();
 
             // Define the upper and lower limits of the Hue and Saturation values
             Hsv lowerLimit = new Hsv(ballHsv.Hue - Threshold, ballHsv.Satuation - Threshold, ballHsv.Value - Threshold);
@@ -169,16 +168,16 @@ namespace FoosLiveAndroid.TOPBanga.Detection
             // Get the biggest blob by going through all of them
             CvBlob biggestBlob = null;
             var biggestArea = 0;
-            foreach(var pair in points)
+            foreach (var pair in points)
             {
-                if ( biggestArea < pair.Value.Area )
+                if (biggestArea < pair.Value.Area)
                 {
                     biggestArea = pair.Value.Area;
                     biggestBlob = pair.Value;
                 }
             }
             //this.image.Draw(points[1].BoundingBox, new Bgr(255,255,255), 2);
-            var success = points.Count != 0; 
+            var success = points.Count != 0;
 
             if (success)
             {

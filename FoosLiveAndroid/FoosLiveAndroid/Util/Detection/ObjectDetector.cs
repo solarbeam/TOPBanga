@@ -1,7 +1,6 @@
 ﻿using Android.Graphics;
 using Emgu.CV;
 using Emgu.CV.Structure;
-using FoosLiveAndroid.TOPBanga.Detection;
 
 namespace FoosLiveAndroid.Util.Detection
 {
@@ -11,17 +10,18 @@ namespace FoosLiveAndroid.Util.Detection
     /// </summary>
     class ObjectDetector
     {
-        private ColorDetector detector;
-        private float mul;
-        public ObjectDetector(float mul, ColorDetector detector)
+        private ColorDetector _detector;
+        private float _scaleMultiplier;
+
+        public ObjectDetector(float scaleMultiplier, ColorDetector detector)
         {
-            this.detector = detector;
-            this.mul = mul;
+            _detector = detector;
+            _scaleMultiplier = scaleMultiplier;
         }
         public bool Detect(Canvas canvas, Hsv ballHsv, Bitmap bitmap, Bitmap bgBitmap)
         {
             // Preliminary checks
-            if (canvas == null || detector == null || bitmap == null)
+            if (canvas == null || _detector == null || bitmap == null)
                 return false;
 
             // Declare temporary variables
@@ -29,46 +29,43 @@ namespace FoosLiveAndroid.Util.Detection
             bool ballDetected = false;
 
             // Refresh the detector's image
-            detector.image = new Image<Bgr, byte>(bitmap);
+            _detector.image = new Image<Bgr, byte>(bitmap);
 
             // Clear the image
-            canvas.DrawColor(Android.Graphics.Color.Transparent, PorterDuff.Mode.Clear);
+            canvas.DrawColor(Color.Transparent, PorterDuff.Mode.Clear);
             canvas.DrawBitmap(bgBitmap, 0, 0, null);
 
             // Try to detect a table
-            tableDetected = detector.DetectTable(out var table);
+            tableDetected = _detector.DetectTable(out var table);
 
-            ballDetected = detector.DetectBall(ballHsv, out var ball);
+            ballDetected = _detector.DetectBall(ballHsv, out var ball);
             // Declare the outline style for the table
             var paintRect = new Paint
             {
-                Color = new Android.Graphics.Color(255, 0, 0)
+                Color = new Color(255, 0, 0)
             };
             paintRect.SetStyle(Paint.Style.Stroke);
 
             // Declare the outline style for the ball
             var paintBall = new Paint
             {
-                Color = new Android.Graphics.Color(0, 255, 0)
+                Color = new Color(0, 255, 0)
             };
             paintBall.SetStyle(Paint.Style.Stroke);
 
             // Free unused resources
-            detector.image.Dispose();
+            _detector.image.Dispose();
 
             if (tableDetected)
             {
                 // Get the table points
                 var tablePoints = new float[8];
 
-                var j = 0;
-
                 // Assign them values
-                for (var i = 0; i < 8; i += 2)
+                for (int i = 0, j = 0; i < tablePoints.Length; i += 2, j++)
                 {
-                    tablePoints[i] = table.GetVertices()[j].X * mul;
-                    tablePoints[i + 1] = table.GetVertices()[j].Y * mul;
-                    j++;
+                    tablePoints[i] = table.GetVertices()[j].X * _scaleMultiplier;
+                    tablePoints[i + 1] = table.GetVertices()[j].Y * _scaleMultiplier;
                 }
 
                 // Finally, draw the rectangle
@@ -82,10 +79,10 @@ namespace FoosLiveAndroid.Util.Detection
 
             if (ballDetected)
             {
-                canvas.DrawRect((int)(ball.X * mul),
-                                 (int)(ball.Y * mul),
-                                 (int)((ball.X + ball.Width) * mul),
-                                 (int)((ball.Y + ball.Height) * mul),
+                canvas.DrawRect((int)(ball.X * _scaleMultiplier),
+                                 (int)(ball.Y * _scaleMultiplier),
+                                 (int)((ball.X + ball.Width) * _scaleMultiplier),
+                                 (int)((ball.Y + ball.Height) * _scaleMultiplier),
                                  paintBall);
             }
 

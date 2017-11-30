@@ -31,8 +31,6 @@
             android:textAppearance="@android:style/TextAppearance.Material.Caption"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignTop="@+id/team1ScoreSoundSpinner"
-            android:layout_alignBottom="@+id/team1ScoreSoundSpinner"
             android:gravity="center"
             android:layout_marginStart="2dp" />
         <Button
@@ -50,7 +48,7 @@
             android:layout_marginStart="2dp"
             android:layout_height="wrap_content" />
         <Button
-            android:id="@+id/team1ScoreSoundButton"
+            android:id="@+id/team1WinSoundButton"
             style="@style/Base.Widget.AppCompat.Spinner.Underlined"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -63,7 +61,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
         <Button
-            android:id="@+id/team1ScoreSoundButton"
+            android:id="@+id/team2ScoreSoundButton"
             style="@style/Base.Widget.AppCompat.Spinner.Underlined"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -76,7 +74,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
         <Button
-            android:id="@+id/team1ScoreSoundButton"
+            android:id="@+id/team2WinSoundButton"
             style="@style/Base.Widget.AppCompat.Spinner.Underlined"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

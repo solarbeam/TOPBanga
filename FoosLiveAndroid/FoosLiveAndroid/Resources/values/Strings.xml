@@ -2,6 +2,7 @@
 <resources>
 	<!--Global-->
 	<string name="app_name">fooslive</string>
+	<string name="app_version">Version: 0.1</string>
 	<string name="dismiss">OK</string>
     <!--Menu-->
 	<string name="main_menu">Main menu</string>
@@ -25,7 +26,6 @@
     <string name="team2">TEAM 2</string>
 	<string name="points_format">%1$d : %2$d</string>
 	<!--Info-->
-	<string name="app_version">Version: 0.1</string>
 	<string name="app_description">This is the description of foosbal live application. </string>
 	<string name="credits">Developed by TOPBanga team</string>
     <!--Camera request-->
