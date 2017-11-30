@@ -13,6 +13,7 @@ using Android.Graphics.Drawables;
 using Android.Util;
 using FoosLiveAndroid.Util.Detection;
 using Android.Media;
+using System;
 
 namespace FoosLiveAndroid
 {
@@ -83,20 +84,20 @@ namespace FoosLiveAndroid
         /// <param name="h">The height of the surface, defined as an integer</param>
         public void OnSurfaceTextureAvailable(SurfaceTexture surface, int w, int h)
         {
-            this.holder.SetFixedSize(w, h);
+            this._gameView.LayoutParameters = new FrameLayout.LayoutParams(w, h);
+
+            // Set the upscaling constant
+            this.mul = w / preview_width;
+
+            // Create the ObjectDetector class for the GameActivity
+            this.objectDetector = new ObjectDetector(this.mul, this.detector);
 
             // Create a template alpha bitmap for repeated drawing
             var tempBitmap = new BitmapDrawable(Bitmap.CreateBitmap(w, h, Bitmap.Config.Argb8888));
             tempBitmap.SetAlpha(0);
             alphaBitmap = tempBitmap.Bitmap;
 
-            // Create the ObjectDetector class for the GameActivity
-            this.objectDetector = new ObjectDetector(this.mul, this.detector);
-
-            // Set the upscaling constant
-            this.mul = w / preview_width;
-
-            this._gameView.LayoutParameters = new FrameLayout.LayoutParams(w, h);
+            this.holder.SetFixedSize(w, h);
 
             if ( Intent.Data != null )
             {
