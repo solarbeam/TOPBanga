@@ -8,28 +8,20 @@ namespace FoosLiveAndroid.Util
     public static class DatabaseExecutor
     {
 
+        private const string CONNECTION_URL = "http://yu-gi-oh.lt/a.php";
+
         public static bool InsertIntoHistory(string blueTeamName, string redTeamName, int bluePoints, int redPoints)
         {
-            HttpWebRequest httpWebRequest = (HttpWebRequest)WebRequest.Create("http://yu-gi-oh.lt/a.php");
+            HttpWebRequest httpWebRequest = (HttpWebRequest)WebRequest.Create(CONNECTION_URL);
             httpWebRequest.Method = "POST";
             StreamWriter streamWriter = new StreamWriter(httpWebRequest.GetRequestStream());
-            StringBuilder stringBuilder = new StringBuilder();
-            stringBuilder.Append("InsertIntoHistory;");
-            stringBuilder.Append(blueTeamName);
-            stringBuilder.Append(";");
-            stringBuilder.Append(redTeamName);
-            stringBuilder.Append(";");
-            stringBuilder.Append(bluePoints);
-            stringBuilder.Append(";");
-            stringBuilder.Append(redPoints);
-            streamWriter.Write(stringBuilder.ToString());
+            streamWriter.Write($"InsertIntoHistory;{blueTeamName};{redTeamName};{bluePoints};{redPoints}");
             streamWriter.Flush();
             HttpWebResponse httpWebResponse = (HttpWebResponse)httpWebRequest.GetResponse();
             StreamReader streamReader = new StreamReader(httpWebResponse.GetResponseStream());
             string s = streamReader.ReadLine();
-            if(s != null)
-                if (s.Equals("SUCCESS"))
-                    return true;
+            if(s != null && s.Equals("SUCCESS"))
+                return true;
             return false;
         }
     }
