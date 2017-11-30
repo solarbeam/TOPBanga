@@ -9,6 +9,7 @@ namespace FoosLiveAndroid.Util
     {
 
         private const string CONNECTION_URL = "http://yu-gi-oh.lt/a.php";
+        private const string OPERATION_SUCCESS = "SUCCESS";
 
         public static bool InsertIntoHistory(string blueTeamName, string redTeamName, int bluePoints, int redPoints)
         {
@@ -19,10 +20,8 @@ namespace FoosLiveAndroid.Util
             streamWriter.Flush();
             HttpWebResponse httpWebResponse = (HttpWebResponse)httpWebRequest.GetResponse();
             StreamReader streamReader = new StreamReader(httpWebResponse.GetResponseStream());
-            string s = streamReader.ReadLine();
-            if(s != null && s.Equals("SUCCESS"))
-                return true;
-            return false;
+            string response = streamReader.ReadLine();
+            return (response != null && response.Equals(OPERATION_SUCCESS));
         }
     }
 }
