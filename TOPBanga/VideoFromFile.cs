@@ -7,6 +7,7 @@ using TOPBanga.Detection;
 using System.Threading;
 using System.Collections.Generic;
 using TOPBanga.Detection.GameUtil;
+using TOPBanga.Util;
 
 namespace TOPBanga
 {
@@ -25,6 +26,8 @@ namespace TOPBanga
         private Hsv initialHsv;
         private bool markingMode = false;
         private bool added = false;
+        private IWrite EventLog;
+        private string filepath;
 
         public VideoFromFile(IDetector detector)
         {
@@ -33,6 +36,8 @@ namespace TOPBanga
             this.detector = detector;
 
             this.gameController = new GameController();
+
+            EventLog = new EventLog(filepath);
         }
 
         private void VideoFromFile_Load(object sender, EventArgs e)
@@ -84,7 +89,7 @@ namespace TOPBanga
                 {
                     this.markingMode = false;
                     this.Toggle_Buttons_Except_Mark_Goals();
-                    this.gameController.AddGoal(this.tempCoords.ToArray());
+                    this.gameController.SetTable(this.tempCoords.ToArray());
                     this.tempCoords = new List<PointF>();
 
                 }
@@ -123,7 +128,6 @@ namespace TOPBanga
                 CvInvoke.Resize(this.currentFrame, this.currentFrame, new Size(Picture.Width, Picture.Height));
             if (this.currentFrame == null)
             {
-                //this.videoTickTimer.Stop();
                 return;
             }
             Image<Bgr, byte> currentImage = this.currentFrame.ToImage<Bgr, byte>();
@@ -138,6 +142,10 @@ namespace TOPBanga
                     circleFound = true;
                     break;
                 }
+                else
+                {
+                    this.Picture.Image = currentImage.Bitmap;
+                }
             }
             currentImage.Dispose();
             if (!circleFound)
@@ -147,8 +155,8 @@ namespace TOPBanga
                     * 
                     * Pause the video and ask the user to select the ball
                     */
-               // this.video.Pause();
-               // MessageBox.Show("Please select the ball and press Start Detection");
+                // this.video.Pause();
+                // MessageBox.Show("Please select the ball and press Start Detection");
                 //this.colorNeeded = true;
             }
             Thread.Sleep((int)video.GetCaptureProperty(Emgu.CV.CvEnum.CapProp.Fps));
@@ -199,6 +207,23 @@ namespace TOPBanga
             {
                 this.markingMode = false;
             }
+
+        }
+
+        private void SaveFile_Click(object sender, EventArgs e)
+        {    
+            SaveFileDialog saveFileDialog = new SaveFileDialog();
+            saveFileDialog.Filter = "Text files (*.txt)|*.txt";
+            if (saveFileDialog.ShowDialog() == DialogResult.OK)
+            {
+                filepath = saveFileDialog.FileName;
+                this.gameController = new GameController(EventLog, filepath);
+
+            }
+        }
+
+        private void settings_Click(object sender, EventArgs e)
+        {
 
         }
     }

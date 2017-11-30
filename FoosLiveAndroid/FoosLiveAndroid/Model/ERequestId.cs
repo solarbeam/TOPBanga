@@ -1,5 +1,4 @@
-﻿using System;
-namespace FoosLiveAndroid.Model
+﻿namespace FoosLiveAndroid.Model
 {
     /// <summary>
     /// Runtime requests ids

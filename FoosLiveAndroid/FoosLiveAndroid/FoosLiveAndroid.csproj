@@ -156,7 +156,6 @@
     <Compile Include="Util\Sounds\SoundAlerts.cs" />
     <Compile Include="Util\Interface\IAlert.cs" />
     <Compile Include="Util\Sounds\EAlert.cs" />
-    <Compile Include="Util\Database\DatabaseConnection.cs" />
     <Compile Include="Util\Sounds\PlayerOGG.cs" />
     <Compile Include="Model\ERequestId.cs" />
   </ItemGroup>
@@ -207,6 +206,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Resources\raw\" />
+    <Folder Include="Util\Database\" />
   </ItemGroup>
   <ItemGroup>
     <AndroidResource Include="Resources\drawable\ic_logo.xml" />

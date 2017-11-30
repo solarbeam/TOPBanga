@@ -48,6 +48,8 @@ namespace FoosLiveAndroid.Fragments
             _view = inflater.Inflate(Resource.Layout.fragment_settings, container, false);
 
             GetReferencesFromLayout();
+            
+            // Todo: set up button click events
 
             //Todo: set up sound adapter from model
             var scoreSoundsAdapter = new ArrayAdapter<string>(
