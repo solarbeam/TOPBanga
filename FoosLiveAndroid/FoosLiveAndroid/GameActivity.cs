@@ -26,7 +26,8 @@ namespace FoosLiveAndroid
         private const int preview_height = 180;
 
         // A constant for upscaling the positions
-        private float mul;
+        private float upscaleMultiplierX;
+        private float upscaleMultiplierY;
 
         private Button _gameButton;
         private TextView _score;
@@ -64,6 +65,7 @@ namespace FoosLiveAndroid
 
             detector = new ColorDetector();
             this.gameController = new GameController();
+            this.gameController.GoalEvent += GameController_GoalEvent;
 
             surfaceView.SetZOrderOnTop(true);
             surfaceView.Holder.SetFormat(Format.Transparent);
@@ -72,6 +74,11 @@ namespace FoosLiveAndroid
             // Open the camera
             _gameView.SurfaceTextureListener = this;
             _gameView.SetOnTouchListener(this);
+        }
+
+        private void GameController_GoalEvent(object sender, EventArgs e)
+        {
+            // TODO Handle goal logic here
         }
 
         /// <summary>
@@ -86,10 +93,11 @@ namespace FoosLiveAndroid
             _gameView.LayoutParameters = new FrameLayout.LayoutParams(w,h);
 
             // Set the upscaling constant
-            mul = w / preview_width;
+            upscaleMultiplierX = w / preview_width;
+            upscaleMultiplierY = h / preview_height;
 
             // Create the ObjectDetector class for the GameActivity
-            objectDetector = new ObjectDetector(mul, detector);
+            objectDetector = new ObjectDetector(upscaleMultiplierX, upscaleMultiplierY, detector, gameController);
 
             // Create a template alpha bitmap for repeated drawing
             var tempBitmap = new BitmapDrawable(Bitmap.CreateBitmap(w, h, Bitmap.Config.Argb8888));
@@ -201,9 +209,11 @@ namespace FoosLiveAndroid
             if ( !hsvSelected )
             {
                 var image = new Image<Hsv, byte>(_gameView.GetBitmap(preview_width, preview_height));
-                selectedHsv = new Hsv(image.Data[ (int)(e.GetY()/mul), (int)(e.GetX()/mul), 0 ],
-                    image.Data[ (int)(e.GetY()/mul), (int)(e.GetX()/mul), 1],
-                    image.Data[ (int)(e.GetY()/mul), (int)(e.GetX()/mul), 2]);
+                selectedHsv = new Hsv(
+                    image.Data[(int)(e.GetY()/upscaleMultiplierY), (int)(e.GetX()/upscaleMultiplierX), 0 ],
+                    image.Data[ (int)(e.GetY()/upscaleMultiplierY), (int)(e.GetX()/upscaleMultiplierX), 1],
+                    image.Data[ (int)(e.GetY()/upscaleMultiplierY), (int)(e.GetX()/upscaleMultiplierX), 2]
+                    );
 
                 // Dispose of the temporary image
                 image.Dispose();

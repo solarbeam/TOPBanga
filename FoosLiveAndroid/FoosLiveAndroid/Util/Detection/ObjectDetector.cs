@@ -1,6 +1,7 @@
 ﻿using Android.Graphics;
 using Emgu.CV;
 using Emgu.CV.Structure;
+using TOPBanga.Detection.GameUtil;
 
 namespace FoosLiveAndroid.Util.Detection
 {
@@ -11,11 +12,22 @@ namespace FoosLiveAndroid.Util.Detection
     class ObjectDetector
     {
         private ColorDetector _detector;
-        private float _mul;
-        public ObjectDetector(float mul, ColorDetector detector)
+        private GameController _controller;
+        private float _mulX;
+        private float _mulY;
+        /// <summary>
+        /// The default constructor for the ObjectDetector class
+        /// </summary>
+        /// <param name="mulX">The upscaling multiplier for the X axis</param>
+        /// <param name="mulY">The upscaling multiplier for the Y axis</param>
+        /// <param name="detector">The detector used to detect the ball</param>
+        /// <param name="controller">The Game Controller, which fires specific events, related to the game</param>
+        public ObjectDetector(float mulX, float mulY, ColorDetector detector, GameController controller)
         {
+            _controller = controller;
             _detector = detector;
-            _mul = mul;
+            _mulX = mulX;
+            _mulY = mulY;
         }
         public bool Detect(Canvas canvas, Hsv ballHsv, Bitmap bitmap, Bitmap bgBitmap)
         {
@@ -65,8 +77,8 @@ namespace FoosLiveAndroid.Util.Detection
                 // Assign them values
                 for (var i = 0; i < 8; i += 2)
                 {
-                    tablePoints[i] = table.GetVertices()[j].X * _mul;
-                    tablePoints[i + 1] = table.GetVertices()[j].Y * _mul;
+                    tablePoints[i] = table.GetVertices()[j].X * _mulX;
+                    tablePoints[i + 1] = table.GetVertices()[j].Y * _mulY;
                     j++;
                 }
 
@@ -79,11 +91,13 @@ namespace FoosLiveAndroid.Util.Detection
 
             if (ballDetected)
             {
-                canvas.DrawRect((int)(ball.X * _mul),
-                                 (int)(ball.Y * _mul),
-                                 (int)((ball.X + ball.Width) * _mul),
-                                 (int)((ball.Y + ball.Height) * _mul),
+                canvas.DrawRect((int)(ball.X * _mulX),
+                                 (int)(ball.Y * _mulY),
+                                 (int)((ball.X + ball.Width) * _mulX),
+                                 (int)((ball.Y + ball.Height) * _mulY),
                                  paintBall);
+                // Update the GameController class with new coordinates
+                _controller.LastBallCoordinates = new PointF(ball.X, ball.Y);
             }
 
             return true;

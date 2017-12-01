@@ -36,7 +36,7 @@ namespace TOPBanga.Detection.GameUtil
         /// <summary>
         /// The amount of positions to hold in the queue
         /// </summary>
-        private const int MAXIMUM_BALL_COORDINATE_NUMBER = 800;
+        private const int MAXIMUM_BALL_COORDINATE_NUMBER = 2500;
         /// <summary>
         /// The minimum amount of frames in the goal zone in order for
         /// the goal to be accepted
@@ -50,9 +50,9 @@ namespace TOPBanga.Detection.GameUtil
         /// <summary>
         /// Defines the zones, which hold the goals ( the point of no return for the ball ) and the middle
         /// </summary>
-        private System.Drawing.Rectangle zoneOne;
-        private System.Drawing.Rectangle zoneTwo;
-        private System.Drawing.Rectangle middleZone;
+        private RectF zoneOne;
+        private RectF zoneTwo;
+        private RectF middleZone;
         private const float percentageOfSide = 0.10f;
 
         /// <summary>
@@ -68,8 +68,8 @@ namespace TOPBanga.Detection.GameUtil
                 {
                     ballCoordinates.Dequeue();
                 }
-                ballCoordinates.Enqueue(last_ball_coordinates);
                 last_ball_coordinates = value;
+                ballCoordinates.Enqueue(last_ball_coordinates);
                 OnNewFrame();
             }
         }
@@ -103,24 +103,15 @@ namespace TOPBanga.Detection.GameUtil
             Table.LineTo(points[3].X, points[3].Y);
             Table.Close();
 
-            // Calculate the different zones
-            this.zoneOne = new System.Drawing.Rectangle();
-            this.zoneOne.X = (int)((points[0].X + points[1].X)/2);
-            this.zoneOne.Y = (int)(points[0].Y + ((points[0].Y + points[2].Y) / 2)*percentageOfSide);
-            this.zoneOne.Size = new System.Drawing.Size((int)(points[0].X+points[1].X),
-                                                        (int)((points[0].Y+points[2].Y)/2));
-
-            this.zoneTwo = new System.Drawing.Rectangle();
-            this.zoneTwo.X = (int)((points[2].X + points[3].X)/2);
-            this.zoneTwo.Y = (int)(points[2].Y - ((points[0].Y + points[2].Y)/2)*percentageOfSide);
-            this.zoneTwo.Size = new System.Drawing.Size((int)(points[2].X + points[3].X),
-                                                        (int)((points[0].Y+points[2].Y)/2));
-
-            this.middleZone = new System.Drawing.Rectangle();
-            this.middleZone.X = (int)((points[2].X + points[3].X)/2);
-            this.middleZone.Y = (int)((points[0].Y+points[2].Y)/2);
-            this.middleZone.Size = new System.Drawing.Size((int)(points[2].X+points[3].X),
-                                                            (int)((points[0].Y+points[2].Y)/2));
+            // Calculate the different zones, using the values given
+            this.zoneOne = new RectF(points[0].X, points[0].Y,
+                                        points[1].X,
+                                        points[1].Y + ((points[2].Y - points[0].Y) * percentageOfSide));
+            this.zoneTwo = new RectF(points[0].X, points[2].Y - (points[2].Y - points[0].Y) * percentageOfSide,
+                                        points[3].X,
+                                        points[3].Y);
+            this.middleZone = new RectF(points[0].X, (points[0].Y + points[2].Y) - (points[2].Y - points[0].Y) * percentageOfSide,
+                                        points[0].X, points[0].Y + points[2].Y);
         }
         /// <summary>
         /// The default constructor for the GameController class
@@ -128,7 +119,6 @@ namespace TOPBanga.Detection.GameUtil
         public GameController()
         {
             ballCoordinates = new Queue<PointF>();
-            LastBallCoordinates = new PointF(0, 0);
         }
 
         /// <summary>
@@ -157,40 +147,50 @@ namespace TOPBanga.Detection.GameUtil
         private void OnNewFrame()
         {
             // Check if there was a goal event for either team
-            bool ballInGoalZone
+            bool ballInGoalZone = false;
             bool ballInFirstGoalZone = false;
             bool ballInSecondGoalZone = false;
             bool ballLeftGoalZone = false;
+            bool validGoal = false;
             foreach(var ballPos in ballCoordinates)
             {
-                System.Drawing.Point pos = new System.Drawing.Point((int)ballPos.X, (int)ballPos.Y);
-                if (this.zoneOne.Contains(pos))
+                PointF pos = new PointF(ballPos.X, ballPos.Y);
+
+                if (this.zoneOne.Contains(pos.X, pos.Y))
                 {
-                    ballInGoalZone = true;
                     ballInFirstGoalZone = true;
-                }
-                else
-                    if (this.zoneTwo.Contains(pos))
-                {
                     ballInGoalZone = true;
-                    ballInSecondGoalZone = true;
+                    continue;
                 }
                 else
-                    if (this.middleZone.Contains(pos) && (!ballInFirstGoalZone || !ballInSecondGoalZone))
-                    ballLeftGoalZone = true;
+                    if (this.zoneTwo.Contains(pos.X, pos.Y))
+                {
+                    ballInSecondGoalZone = true;
+                    ballInGoalZone = true;
+                    continue;
+                }
                 else
-                    ballInGoalZone = false;
+                    if (this.middleZone.Contains(pos.X, pos.Y) && ballInGoalZone)
+                {
+                    validGoal = true;
+                }
+                else
+                    ballLeftGoalZone = true;
             }
 
             if (ballLeftGoalZone)
             {
-                if (ballInFirstGoalZone)
+                if (validGoal && ballInFirstGoalZone && !ballInSecondGoalZone)
                     RedScore ++;
                 else
-                    if (ballInSecondGoalZone)
+                    if (validGoal && ballInSecondGoalZone && !ballInFirstGoalZone)
                     BlueScore ++;
+                else
+                {
+                    // Will fix this Data anomaly in the future
+                }
 
-                // Fire the goal event here
+                // Fire goal event here
             }
         }
     }
