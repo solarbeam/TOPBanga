@@ -12,11 +12,13 @@ using System.Drawing;
 using Android.Graphics.Drawables;
 using Android.Util;
 using FoosLiveAndroid.Util.Detection;
+using Android.Media;
+using System;
 
 namespace FoosLiveAndroid
 {
-    [Activity(ScreenOrientation = ScreenOrientation.Landscape)]
-    public class GameActivity : Activity, TextureView.ISurfaceTextureListener, View.IOnTouchListener
+    [Activity(ScreenOrientation = ScreenOrientation.Portrait)]
+    public class GameActivity : Activity, TextureView.ISurfaceTextureListener, View.IOnTouchListener, MediaPlayer.IOnPreparedListener
     {
         private const string Tag = "GameActivity";
         private const int camera_width = 1280;
@@ -43,6 +45,9 @@ namespace FoosLiveAndroid
 
         // Todo: change Camera to Camera2
         private Camera camera;
+
+        private MediaPlayer video;
+        private Surface surface;
 
         private Hsv selectedHsv;
         private bool hsvSelected;
@@ -79,25 +84,37 @@ namespace FoosLiveAndroid
         /// <param name="h">The height of the surface, defined as an integer</param>
         public void OnSurfaceTextureAvailable(SurfaceTexture surface, int w, int h)
         {
-            camera = Camera.Open();
-            _gameView.LayoutParameters = new FrameLayout.LayoutParams(w,h);
+            this._gameView.LayoutParameters = new FrameLayout.LayoutParams(w, h);
 
             // Set the upscaling constant
-            mul = w / preview_width;
+            this.mul = w / preview_width;
 
             // Create the ObjectDetector class for the GameActivity
-            objectDetector = new ObjectDetector(mul, detector);
+            this.objectDetector = new ObjectDetector(this.mul, this.detector);
 
             // Create a template alpha bitmap for repeated drawing
             var tempBitmap = new BitmapDrawable(Bitmap.CreateBitmap(w, h, Bitmap.Config.Argb8888));
             tempBitmap.SetAlpha(0);
             alphaBitmap = tempBitmap.Bitmap;
 
+            this.holder.SetFixedSize(w, h);
+
+            if ( Intent.Data != null )
+            {
+                this.surface = new Surface(surface);
+                this.video = new MediaPlayer();
+                this.video.SetDataSource(this.ApplicationContext, this.Intent.Data);
+                this.video.SetSurface(this.surface);
+                this.video.Prepare();
+                this.video.SetOnPreparedListener(this);
+                return;
+            }
+
+            this.camera = Camera.Open();
+
             // Get the camera parameters in order to set the appropriate frame size
             Camera.Parameters parameters = camera.GetParameters();
             IList<Camera.Size> list = camera.GetParameters().SupportedPreviewSizes;
-
-            holder.SetFixedSize(w, h);
 
             // Go through all of the sizes until we find an appropriate one
             foreach (Camera.Size size in list)
@@ -135,8 +152,13 @@ namespace FoosLiveAndroid
         /// <returns>Returns true if the input is accepted. False otherwise</returns>
         public bool OnSurfaceTextureDestroyed(SurfaceTexture surface)
         {
-            camera.StopPreview();
-            camera.Release();
+            // Check if we use a video file for getting frames or the camera
+            if (video != null)
+                // We use a video file, so release it's resources
+                video.Release();
+            else
+                // We use a camera, so release it
+                camera.Release();
 
             return true;
         }
@@ -195,16 +217,35 @@ namespace FoosLiveAndroid
         {
             if ( !hsvSelected )
             {
-                var image = new Image<Hsv, byte>(_gameView.GetBitmap(preview_width, preview_height));
-                selectedHsv = new Hsv(image.Data[ (int)(e.GetY()/mul), (int)(e.GetX()/mul), 0 ],
-                    image.Data[ (int)(e.GetY()/mul), (int)(e.GetX()/mul), 1],
-                    image.Data[ (int)(e.GetY()/mul), (int)(e.GetX()/mul), 2]);
+                Image<Hsv, byte> image;
+
+                image = new Image<Hsv, byte>(this._gameView.GetBitmap(preview_width, preview_height));
+
+                this.selectedHsv = new Hsv(image.Data[ (int)(e.GetY()/mul), (int)(e.GetX()/mul), 0 ],
+                                            image.Data[ (int)(e.GetY()/mul), (int)(e.GetX()/mul), 1],
+                                            image.Data[ (int)(e.GetY()/mul), (int)(e.GetX()/mul), 2]);
 
                 // Dispose of the temporary image
                 image.Dispose();
-                hsvSelected = true;
+                this.hsvSelected = true;
+
+                // If the video was paused, resume it
+                if ( this.video != null )
+                {
+                    this.video.Start();
+                }
             }
             return true;
+        }
+
+        /// <summary>
+        /// Called whenever the mediaplayer is ready to be started
+        /// </summary>
+        /// <param name="mp">The MediaPlayer instance, which called this function</param>
+        public void OnPrepared(MediaPlayer mp)
+        {
+            mp.Start();
+            mp.Pause();
         }
     }
 }

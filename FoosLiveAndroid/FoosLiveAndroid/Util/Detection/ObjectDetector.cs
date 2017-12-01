@@ -11,11 +11,12 @@ namespace FoosLiveAndroid.Util.Detection
     class ObjectDetector
     {
         private ColorDetector _detector;
-        private float _mul;
-        public ObjectDetector(float mul, ColorDetector detector)
+        private float _scaleMultiplier;
+
+        public ObjectDetector(float scaleMultiplier, ColorDetector detector)
         {
             _detector = detector;
-            _mul = mul;
+            _scaleMultiplier = scaleMultiplier;
         }
         public bool Detect(Canvas canvas, Hsv ballHsv, Bitmap bitmap, Bitmap bgBitmap)
         {
@@ -60,14 +61,11 @@ namespace FoosLiveAndroid.Util.Detection
                 // Get the table points
                 var tablePoints = new float[8];
 
-                var j = 0;
-
                 // Assign them values
-                for (var i = 0; i < 8; i += 2)
+                for (int i = 0, j = 0; i < tablePoints.Length; i += 2, j++)
                 {
-                    tablePoints[i] = table.GetVertices()[j].X * _mul;
-                    tablePoints[i + 1] = table.GetVertices()[j].Y * _mul;
-                    j++;
+                    tablePoints[i] = table.GetVertices()[j].X * _scaleMultiplier;
+                    tablePoints[i + 1] = table.GetVertices()[j].Y * _scaleMultiplier;
                 }
 
                 // Finally, draw the rectangle
@@ -81,10 +79,10 @@ namespace FoosLiveAndroid.Util.Detection
 
             if (ballDetected)
             {
-                canvas.DrawRect((int)(ball.X * _mul),
-                                 (int)(ball.Y * _mul),
-                                 (int)((ball.X + ball.Width) * _mul),
-                                 (int)((ball.Y + ball.Height) * _mul),
+                canvas.DrawRect((int)(ball.X * _scaleMultiplier),
+                                 (int)(ball.Y * _scaleMultiplier),
+                                 (int)((ball.X + ball.Width) * _scaleMultiplier),
+                                 (int)((ball.Y + ball.Height) * _scaleMultiplier),
                                  paintBall);
             }
 

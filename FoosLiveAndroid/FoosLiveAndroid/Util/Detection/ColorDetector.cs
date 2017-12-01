@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
+using Android.Util;
 using Emgu.CV;
 using Emgu.CV.Cvb;
 using Emgu.CV.CvEnum;
@@ -16,12 +17,16 @@ namespace FoosLiveAndroid.Util.Detection
     /// </summary>
     class ColorDetector : IDetector
     {
+        public static string Tag = "ColorDetector";
         private const double CannyThreshold = 180.0;
         private const double CannyThresholdLinking = 120.0;
-        private const int ContourArea = 250;
+        private const int DefaultContourArea = 250;
         private const int VerticeCount = 4;
         private const int MinAngle = 80;
         private const int MaxAngle = 100;
+        private const int DefaultThreshold = 15;
+        private const double MinTableSize = 0.6;
+
         /// <summary>
         /// The detector's image, used for calculations
         /// </summary>
@@ -38,22 +43,38 @@ namespace FoosLiveAndroid.Util.Detection
         [Obsolete("Not used anymore")]
         public int CircleWidth { get; set; }
 
-        /// <summary>
-        /// The default constructor for the ColorDetector class
-        /// The threshold is assumed to be 15
-        /// </summary>
-        public ColorDetector()
+        private int minContourArea = DefaultContourArea;
+        public int MinContourArea 
         {
-            Threshold = 15; // default threshold
+            get
+            {
+                return minContourArea;
+            }
+            set
+            {
+                if (value > DefaultThreshold)
+                    minContourArea = value;
+                else
+                    Log.Warn(Tag, "minContourArea remains default");
+            }
+        }
+
+
+
+        public void SetSceenSize(int screenWidth, int screenHeight) 
+        {
+            MinContourArea = (int)(screenWidth * screenHeight * MinTableSize);
         }
 
         /// <summary>
         /// Creates the ColorDetector class with the appropriate threshold
         /// </summary>
         /// <param name="threshold">The threshold, which will be used to define the range of colors</param>
-        public ColorDetector(int threshold)
+        public ColorDetector(int threshold = DefaultThreshold)
         {
             Threshold = threshold;
+            MinContourArea = DefaultContourArea;
+            //minContourArea = (int)(screenWidth * screenHeight * MinTableSize);
         }
 
         /// <summary>
@@ -79,7 +100,9 @@ namespace FoosLiveAndroid.Util.Detection
                     using (var approxContour = new VectorOfPoint())
                     {
                         CvInvoke.ApproxPolyDP(contour, approxContour, CvInvoke.ArcLength(contour, true) * 0.05, true);
-                        if (CvInvoke.ContourArea(approxContour) > ContourArea) //only consider contours with area greater than 250
+
+                        // Todo: patikrinti ar ContourArea pakeista į minContourArea veikia gerai
+                        if (CvInvoke.ContourArea(approxContour) > MinContourArea)
                         {
                             if (approxContour.Size == VerticeCount) //The contour has 4 vertices.
                             {
@@ -104,12 +127,11 @@ namespace FoosLiveAndroid.Util.Detection
                     }
                 }
             }
-            if (boxList.Count > 0)
+            if (success = (boxList.Count > 0))
             {
-                success = true;
                 boxList.OrderByDescending(b => b.Size);
                 rect = boxList[0];
-            }   
+            }
             return success;
         }
 
@@ -126,7 +148,7 @@ namespace FoosLiveAndroid.Util.Detection
             rect = new Rectangle();
 
             // Will change this in order to optimize
-            Image<Hsv, byte> hsvImg = image.Convert<Hsv,byte>();
+            Image<Hsv, byte> hsvImg = image.Convert<Hsv, byte>();
 
             // Define the upper and lower limits of the Hue and Saturation values
             Hsv lowerLimit = new Hsv(ballHsv.Hue - Threshold, ballHsv.Satuation - Threshold, ballHsv.Value - Threshold);
@@ -169,22 +191,22 @@ namespace FoosLiveAndroid.Util.Detection
             // Get the biggest blob by going through all of them
             CvBlob biggestBlob = null;
             var biggestArea = 0;
-            foreach(var pair in points)
+            foreach (var pair in points)
             {
-                if ( biggestArea < pair.Value.Area )
+                if (biggestArea < pair.Value.Area)
                 {
                     biggestArea = pair.Value.Area;
                     biggestBlob = pair.Value;
                 }
             }
             //this.image.Draw(points[1].BoundingBox, new Bgr(255,255,255), 2);
-            var success = points.Count != 0; 
+            var success = points.Count != 0;
 
             if (success)
             {
                 // Deep copy the blob's information
                 rect = new Rectangle(new Point(biggestBlob.BoundingBox.X, biggestBlob.BoundingBox.Y),
-                                        new Size(biggestBlob.BoundingBox.Size.Width, biggestBlob.BoundingBox.Height));
+                                        new System.Drawing.Size(biggestBlob.BoundingBox.Size.Width, biggestBlob.BoundingBox.Height));
             }
 
             points.Dispose();
