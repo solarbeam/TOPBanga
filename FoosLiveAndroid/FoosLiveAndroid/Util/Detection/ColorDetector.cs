@@ -35,11 +35,11 @@ namespace FoosLiveAndroid.Util.Detection
         /// <summary>
         /// Defines the starting box's width
         /// </summary>
-        private int boxWidth = 40;
+        private int boxWidth = 20;
         /// <summary>
         /// Defines the starting box's height
         /// </summary>
-        private int boxHeight = 40;
+        private int boxHeight = 20;
         /// <summary>
         /// Count how many frames a blob was not detected
         /// </summary>
@@ -47,15 +47,19 @@ namespace FoosLiveAndroid.Util.Detection
         /// <summary>
         /// Defines the count of frames a blob is allowed to not be detected
         /// </summary>
-        private const int framesLostToNewBoundingBox = 40;
+        private const int framesLostToNewBoundingBox = 30;
         /// <summary>
         /// Defines the last calculated size of the blob
         /// </summary>
         private int lastBlobSize;
         /// <summary>
+        /// Defines the preliminary size of the blob
+        /// </summary>
+        private int firstBlobSize;
+        /// <summary>
         /// Defines the range, in which the size of the blob is permitted to be
         /// </summary>
-        private const float rangeMultiplier = 1.30f;
+        private const float rangeMultiplier = 1.10f;
 
         /// <summary>
         /// The detector's image, used for calculations
@@ -79,7 +83,7 @@ namespace FoosLiveAndroid.Util.Detection
         /// </summary>
         public ColorDetector()
         {
-            Threshold = 15; // default threshold
+            Threshold = 25; // default threshold
             this.box = new Rectangle();
             this.box.Width = boxWidth;
             this.box.Height = boxHeight;
@@ -147,7 +151,7 @@ namespace FoosLiveAndroid.Util.Detection
                 success = true;
                 boxList.OrderByDescending(b => b.Size);
                 rect = boxList[0];
-            }   
+            }
             return success;
         }
 
@@ -164,26 +168,14 @@ namespace FoosLiveAndroid.Util.Detection
             rect = new Rectangle();
 
             // Will change this in order to optimize
-            Image<Hsv, byte> hsvImg = image.Convert<Hsv,byte>();
+            Image<Hsv, byte> hsvImg = image.Convert<Hsv, byte>();
+            hsvImg.SmoothBlur(hsvImg.Size.Width, hsvImg.Size.Height);
 
             // Define the upper and lower limits of the Hue and Saturation values
             Hsv lowerLimit = new Hsv(ballHsv.Hue - Threshold, ballHsv.Satuation - Threshold, ballHsv.Value - Threshold);
             Hsv upperLimit = new Hsv(ballHsv.Hue + Threshold, ballHsv.Satuation + Threshold, ballHsv.Value + Threshold);
 
-            // Use an intermediary to filter on different channels
-            Image<Gray, byte>[] intermediary = hsvImg.Split();
-            intermediary[0] = intermediary[0].InRange(new Gray(lowerLimit.Hue), new Gray(upperLimit.Hue));
-            intermediary[1] = intermediary[1].InRange(new Gray(lowerLimit.Satuation), new Gray(upperLimit.Satuation));
-
-            // Join the two channels together
-            Image<Gray, byte> imgFiltered = intermediary[0].And(intermediary[1]);
-
-            // Cleanup
-            intermediary[0].Dispose();
-            intermediary[1].Dispose();
-            intermediary[2].Dispose();
-
-            //imgFiltered = hsvImg.InRange(lowerLimit,upperLimit);
+            Image<Gray, byte> imgFiltered = hsvImg.InRange(lowerLimit, upperLimit);
 
             // Will be added as an attribute to this class
             var detector = new BlobDetector();
@@ -195,12 +187,12 @@ namespace FoosLiveAndroid.Util.Detection
             var count = detector.GetBlobs(imgFiltered, points);
 
             // If the blob was lost for an amount of frames, reset the bounding box
-            if ( framesLost > framesLostToNewBoundingBox )
+            if (framesLost > framesLostToNewBoundingBox)
             {
                 this.box.X = image.Size.Width / 2;
                 this.box.Y = image.Size.Height / 2;
-                this.box.Width = 40;
-                this.box.Height = 40;
+                this.box.Width = boxWidth;
+                this.box.Height = boxHeight;
                 this.boxSet = false;
             }
 
@@ -227,11 +219,11 @@ namespace FoosLiveAndroid.Util.Detection
                     biggestBlob = pair.Value;
                     this.box.X = biggestBlob.BoundingBox.X;
                     this.box.Y = biggestBlob.BoundingBox.Y;
-                    this.box.Width = (int)(biggestBlob.BoundingBox.Width * 1.3f);
-                    this.box.Height = (int)(biggestBlob.BoundingBox.Height * 1.3f);
+                    this.box.Width = (int)(biggestBlob.BoundingBox.Width * 0.8f);
+                    this.box.Height = (int)(biggestBlob.BoundingBox.Height * 0.8f);
                     break;
                 }
-                    else
+                else
                 // Check if the box was given a preliminary position
                 if (!this.boxSet)
                 {
@@ -242,7 +234,7 @@ namespace FoosLiveAndroid.Util.Detection
                     this.box.Y = biggestBlob.BoundingBox.Y;
                     break;
                 }
-                }
+            }
             var success = biggestBlob != null;
 
             if (success)
