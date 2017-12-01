@@ -157,6 +157,7 @@ namespace TOPBanga.Detection.GameUtil
         private void OnNewFrame()
         {
             // Check if there was a goal event for either team
+            bool ballInGoalZone
             bool ballInFirstGoalZone = false;
             bool ballInSecondGoalZone = false;
             bool ballLeftGoalZone = false;
@@ -165,23 +166,31 @@ namespace TOPBanga.Detection.GameUtil
                 System.Drawing.Point pos = new System.Drawing.Point((int)ballPos.X, (int)ballPos.Y);
                 if (this.zoneOne.Contains(pos))
                 {
+                    ballInGoalZone = true;
                     ballInFirstGoalZone = true;
-                    continue;
                 }
                 else
-                    if(this.zoneTwo.Contains(pos))
+                    if (this.zoneTwo.Contains(pos))
                 {
+                    ballInGoalZone = true;
                     ballInSecondGoalZone = true;
-                    continue;
                 }
                 else
-                    if (this.middleZone.Contains(pos) && ( ballInFirstGoalZone || ballInSecondGoalZone))
+                    if (this.middleZone.Contains(pos) && (!ballInFirstGoalZone || !ballInSecondGoalZone))
                     ballLeftGoalZone = true;
+                else
+                    ballInGoalZone = false;
             }
 
             if (ballLeftGoalZone)
             {
-                // Fire the goal event
+                if (ballInFirstGoalZone)
+                    RedScore ++;
+                else
+                    if (ballInSecondGoalZone)
+                    BlueScore ++;
+
+                // Fire the goal event here
             }
         }
     }
