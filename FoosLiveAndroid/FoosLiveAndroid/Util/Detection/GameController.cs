@@ -36,7 +36,7 @@ namespace TOPBanga.Detection.GameUtil
         /// <summary>
         /// The amount of positions to hold in the queue
         /// </summary>
-        private const int MAXIMUM_BALL_COORDINATE_NUMBER = 50;
+        private const int MAXIMUM_BALL_COORDINATE_NUMBER = 800;
         /// <summary>
         /// The minimum amount of frames in the goal zone in order for
         /// the goal to be accepted
@@ -156,22 +156,32 @@ namespace TOPBanga.Detection.GameUtil
         /// </summary>
         private void OnNewFrame()
         {
-            foreach (var goal in goals)
+            // Check if there was a goal event for either team
+            bool ballInFirstGoalZone = false;
+            bool ballInSecondGoalZone = false;
+            bool ballLeftGoalZone = false;
+            foreach(var ballPos in ballCoordinates)
             {
-                var goalConvertion = new RectF();
-
-                if (goalConvertion.Contains(LastBallCoordinates.X, LastBallCoordinates.Y))
+                System.Drawing.Point pos = new System.Drawing.Point((int)ballPos.X, (int)ballPos.Y);
+                if (this.zoneOne.Contains(pos))
                 {
-                    goal.FramesBallInGoal++;
-                    if (goal.FramesBallInGoal == GOAL_FRAMES_TO_COUNT_GOAL)
-                    {
-                        GoalEvent?.Invoke(this, new EventArgs());
-                    }
+                    ballInFirstGoalZone = true;
+                    continue;
                 }
                 else
+                    if(this.zoneTwo.Contains(pos))
                 {
-                    goal.FramesBallInGoal = 0;
+                    ballInSecondGoalZone = true;
+                    continue;
                 }
+                else
+                    if (this.middleZone.Contains(pos) && ( ballInFirstGoalZone || ballInSecondGoalZone))
+                    ballLeftGoalZone = true;
+            }
+
+            if (ballLeftGoalZone)
+            {
+                // Fire the goal event
             }
         }
     }

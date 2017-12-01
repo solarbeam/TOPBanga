@@ -22,8 +22,8 @@ namespace FoosLiveAndroid
         private const string Tag = "GameActivity";
         private const int camera_width = 1280;
         private const int camera_height = 720;
-        private const int preview_width = 240;
-        private const int preview_height = 135;
+        private const int preview_width = 320;
+        private const int preview_height = 180;
 
         // A constant for upscaling the positions
         private float mul;
