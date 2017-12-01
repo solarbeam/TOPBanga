@@ -76,8 +76,6 @@ namespace FoosLiveAndroid.Util.Detection
                 canvas.DrawLine(tablePoints[4], tablePoints[5], tablePoints[6], tablePoints[7], paintRect);
                 canvas.DrawLine(tablePoints[6], tablePoints[7], tablePoints[0], tablePoints[1], paintRect);
             }
-            else
-                return false;
 
             if (ballDetected)
             {
