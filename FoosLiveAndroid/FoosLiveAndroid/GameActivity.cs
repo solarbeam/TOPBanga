@@ -152,9 +152,12 @@ namespace FoosLiveAndroid
         /// <returns>Returns true if the input is accepted. False otherwise</returns>
         public bool OnSurfaceTextureDestroyed(SurfaceTexture surface)
         {
+            // Check if we use a video file for getting frames or the camera
             if (video != null)
+                // We use a video file, so release it's resources
                 video.Release();
             else
+                // We use a camera, so release it
                 camera.Release();
 
             return true;
