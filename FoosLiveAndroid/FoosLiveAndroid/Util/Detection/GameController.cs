@@ -48,6 +48,14 @@ namespace TOPBanga.Detection.GameUtil
         private PointF last_ball_coordinates;
 
         /// <summary>
+        /// Defines the zones, which hold the goals ( the point of no return for the ball ) and the middle
+        /// </summary>
+        private System.Drawing.Rectangle zoneOne;
+        private System.Drawing.Rectangle zoneTwo;
+        private System.Drawing.Rectangle middleZone;
+        private const float percentageOfSide = 0.10f;
+
+        /// <summary>
         /// A get and set function to assign the last position of the ball
         /// </summary>
         public PointF LastBallCoordinates
@@ -78,6 +86,9 @@ namespace TOPBanga.Detection.GameUtil
         /// <summary>
         /// Set the table, which will be used for the definition of
         /// the goal zones
+        /// It is pressumed, that the first point is the top left one, the second
+        /// is the top right, the third is the bottom left and the bottom is the
+        /// bottom right
         /// </summary>
         /// <param name="points">The coordinates of the table</param>
         public void SetTable(PointF[] points)
@@ -91,6 +102,25 @@ namespace TOPBanga.Detection.GameUtil
             Table.LineTo(points[2].X, points[2].Y);
             Table.LineTo(points[3].X, points[3].Y);
             Table.Close();
+
+            // Calculate the different zones
+            this.zoneOne = new System.Drawing.Rectangle();
+            this.zoneOne.X = (int)((points[0].X + points[1].X)/2);
+            this.zoneOne.Y = (int)(points[0].Y + ((points[0].Y + points[2].Y) / 2)*percentageOfSide);
+            this.zoneOne.Size = new System.Drawing.Size((int)(points[0].X+points[1].X),
+                                                        (int)((points[0].Y+points[2].Y)/2));
+
+            this.zoneTwo = new System.Drawing.Rectangle();
+            this.zoneTwo.X = (int)((points[2].X + points[3].X)/2);
+            this.zoneTwo.Y = (int)(points[2].Y - ((points[0].Y + points[2].Y)/2)*percentageOfSide);
+            this.zoneTwo.Size = new System.Drawing.Size((int)(points[2].X + points[3].X),
+                                                        (int)((points[0].Y+points[2].Y)/2));
+
+            this.middleZone = new System.Drawing.Rectangle();
+            this.middleZone.X = (int)((points[2].X + points[3].X)/2);
+            this.middleZone.Y = (int)((points[0].Y+points[2].Y)/2);
+            this.middleZone.Size = new System.Drawing.Size((int)(points[2].X+points[3].X),
+                                                            (int)((points[0].Y+points[2].Y)/2));
         }
         /// <summary>
         /// The default constructor for the GameController class

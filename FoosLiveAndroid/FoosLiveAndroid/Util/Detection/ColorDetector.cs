@@ -33,13 +33,13 @@ namespace FoosLiveAndroid.Util.Detection
         /// </summary>
         private Rectangle box;
         /// <summary>
-        /// Defines the box's width
+        /// Defines the starting box's width
         /// </summary>
-        private const int boxWidth = 40;
+        private int boxWidth = 40;
         /// <summary>
-        /// Defines the box's height
+        /// Defines the starting box's height
         /// </summary>
-        private const int boxHeight = 40;
+        private int boxHeight = 40;
         /// <summary>
         /// Count how many frames a blob was not detected
         /// </summary>
@@ -55,7 +55,7 @@ namespace FoosLiveAndroid.Util.Detection
         /// <summary>
         /// Defines the range, in which the size of the blob is permitted to be
         /// </summary>
-        private const float rangeMultiplier = 1.50f;
+        private const float rangeMultiplier = 1.30f;
 
         /// <summary>
         /// The detector's image, used for calculations
@@ -79,7 +79,7 @@ namespace FoosLiveAndroid.Util.Detection
         /// </summary>
         public ColorDetector()
         {
-            Threshold = 20; // default threshold
+            Threshold = 15; // default threshold
             this.box = new Rectangle();
             this.box.Width = boxWidth;
             this.box.Height = boxHeight;
@@ -199,6 +199,8 @@ namespace FoosLiveAndroid.Util.Detection
             {
                 this.box.X = image.Size.Width / 2;
                 this.box.Y = image.Size.Height / 2;
+                this.box.Width = 40;
+                this.box.Height = 40;
                 this.boxSet = false;
             }
 
@@ -225,6 +227,8 @@ namespace FoosLiveAndroid.Util.Detection
                     biggestBlob = pair.Value;
                     this.box.X = biggestBlob.BoundingBox.X;
                     this.box.Y = biggestBlob.BoundingBox.Y;
+                    this.box.Width = (int)(biggestBlob.BoundingBox.Width * 1.3f);
+                    this.box.Height = (int)(biggestBlob.BoundingBox.Height * 1.3f);
                     break;
                 }
                     else
