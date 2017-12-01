@@ -1977,6 +1977,9 @@ namespace FoosLiveAndroid
 			// aapt resource value: 0x7f07009a
 			public const int notification_top_pad_large_text = 2131165338;
 			
+			// aapt resource value: 0x7f0700a1
+			public const int score_size = 2131165345;
+			
 			// aapt resource value: 0x7f07009f
 			public const int status_padding = 2131165343;
 			
@@ -3480,8 +3483,11 @@ namespace FoosLiveAndroid
 			// aapt resource value: 0x7f090028
 			public const int path_password_strike_through = 2131296296;
 			
+			// aapt resource value: 0x7f090043
+			public const int sample_score = 2131296323;
+			
 			// aapt resource value: 0x7f09003d
-			public const int points_format = 2131296317;
+			public const int score_format = 2131296317;
 			
 			// aapt resource value: 0x7f090013
 			public const int search_menu_title = 2131296275;

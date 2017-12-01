@@ -17,7 +17,7 @@ using System;
 
 namespace FoosLiveAndroid
 {
-    [Activity(ScreenOrientation = ScreenOrientation.Landscape)]
+    [Activity(ScreenOrientation = ScreenOrientation.Portrait)]
     public class GameActivity : Activity, TextureView.ISurfaceTextureListener, View.IOnTouchListener, MediaPlayer.IOnPreparedListener
     {
         private const string Tag = "GameActivity";
@@ -152,10 +152,10 @@ namespace FoosLiveAndroid
         /// <returns>Returns true if the input is accepted. False otherwise</returns>
         public bool OnSurfaceTextureDestroyed(SurfaceTexture surface)
         {
-            if (this.video != null)
-                this.video.Release();
+            if (video != null)
+                video.Release();
             else
-                this.camera.Release();
+                camera.Release();
 
             return true;
         }
