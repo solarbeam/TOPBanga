@@ -28,6 +28,8 @@ namespace FoosLiveAndroid.Util.Detection
         /// True if the box field is not null
         /// </summary>
         private bool boxSet = false;
+        private bool started = false;
+        private Rectangle preliminaryBlob;
         /// <summary>
         /// Defines the bounding box, in which we search for the blob
         /// </summary>
@@ -59,7 +61,7 @@ namespace FoosLiveAndroid.Util.Detection
         /// <summary>
         /// Defines the range, in which the size of the blob is permitted to be
         /// </summary>
-        private const float rangeMultiplier = 1.10f;
+        private const float rangeMultiplier = 1.05f;
 
         /// <summary>
         /// The detector's image, used for calculations
@@ -83,7 +85,7 @@ namespace FoosLiveAndroid.Util.Detection
         /// </summary>
         public ColorDetector()
         {
-            Threshold = 25; // default threshold
+            Threshold = 35; // default threshold
             this.box = new Rectangle();
             this.box.Width = boxWidth;
             this.box.Height = boxHeight;
@@ -186,6 +188,14 @@ namespace FoosLiveAndroid.Util.Detection
             // Get the blobs found out of the filtered image and the count
             var count = detector.GetBlobs(imgFiltered, points);
 
+            if (!this.started)
+            {
+                this.started = true;
+                this.box.X = image.Size.Width / 2;
+                this.box.Y = image.Size.Height / 2;
+                this.boxSet = true;
+            }
+
             // If the blob was lost for an amount of frames, reset the bounding box
             if (framesLost > framesLostToNewBoundingBox)
             {
@@ -219,8 +229,8 @@ namespace FoosLiveAndroid.Util.Detection
                     biggestBlob = pair.Value;
                     this.box.X = biggestBlob.BoundingBox.X;
                     this.box.Y = biggestBlob.BoundingBox.Y;
-                    this.box.Width = (int)(biggestBlob.BoundingBox.Width * 0.8f);
-                    this.box.Height = (int)(biggestBlob.BoundingBox.Height * 0.8f);
+                    this.box.Width = (int)(biggestBlob.BoundingBox.Width * 0.3f);
+                    this.box.Height = (int)(biggestBlob.BoundingBox.Height * 0.3f);
                     break;
                 }
                 else

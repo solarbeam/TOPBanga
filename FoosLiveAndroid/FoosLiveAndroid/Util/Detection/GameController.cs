@@ -71,7 +71,7 @@ namespace TOPBanga.Detection.GameUtil
                 }
                 last_ball_coordinates = value;
                 ballCoordinates.Enqueue(last_ball_coordinates);
-                OnNewFrame();
+                //OnNewFrame();
             }
         }
 
@@ -195,13 +195,13 @@ namespace TOPBanga.Detection.GameUtil
 
             if (ballLeftGoalZone )
             {
-                if (validGoal && ballInFirstGoalZone && !ballInSecondGoalZone && ballLostCounterLimitReached)
+                if (validGoal && ballInFirstGoalZone && ballLostCounterLimitReached)
                 {
                     // Fire the event, signaling a goal for the first team
                     GoalEvent(this, EventArgs.Empty);
                 }
                 else
-                    if (validGoal && ballInSecondGoalZone && !ballInFirstGoalZone && ballLostCounterLimitReached)
+                    if (validGoal && ballInSecondGoalZone && ballLostCounterLimitReached)
                 {
                     // Fire the event, signaling a goal for the second team
                     GoalEvent(this, EventArgs.Empty);
