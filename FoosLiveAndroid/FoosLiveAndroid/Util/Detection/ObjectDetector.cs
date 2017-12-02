@@ -48,8 +48,9 @@ namespace FoosLiveAndroid.Util.Detection
 
             // Try to detect a table
             tableDetected = _detector.DetectTable(out var table);
+            tableDetected = false;
 
-            ballDetected = _detector.DetectBall(ballHsv, out var ball);
+            ballDetected = _detector.DetectBall(ballHsv, out var ball, out var bBox);
             // Declare the outline style for the table
             var paintRect = new Paint
             {
@@ -91,14 +92,20 @@ namespace FoosLiveAndroid.Util.Detection
 
             if (ballDetected)
             {
-                canvas.DrawRect((int)(ball.X * _mulX),
-                                 (int)(ball.Y * _mulY),
-                                 (int)((ball.X + ball.Width) * _mulX),
-                                 (int)((ball.Y + ball.Height) * _mulY),
+                canvas.DrawRect((int)(ball.Left * _mulX),
+                                 (int)(ball.Top * _mulY),
+                                 (int)((ball.Right) * _mulX),
+                                 (int)((ball.Bottom) * _mulY),
                                  paintBall);
                 // Update the GameController class with new coordinates
                 _controller.LastBallCoordinates = new PointF(ball.X, ball.Y);
             }
+
+            canvas.DrawRect((int)(bBox.Left * _mulX),
+                                 (int)(bBox.Top * _mulY),
+                                 (int)((bBox.Right) * _mulX),
+                                 (int)((bBox.Bottom) * _mulY),
+                                 paintRect);
 
             return true;
         }

@@ -14,7 +14,7 @@ namespace FoosLiveAndroid.Util.Detection
     /// <summary>
     /// The class contains functions to detect a table by contours and a blob by color
     /// </summary>
-    class ColorDetector : IDetector
+    class ColorDetector
     {
         private const double CannyThreshold = 180.0;
         private const double CannyThresholdLinking = 120.0;
@@ -61,7 +61,7 @@ namespace FoosLiveAndroid.Util.Detection
         /// <summary>
         /// Defines the range, in which the size of the blob is permitted to be
         /// </summary>
-        private const float rangeMultiplier = 1.05f;
+        private const float rangeMultiplier = 3.0f;
 
         /// <summary>
         /// The detector's image, used for calculations
@@ -164,10 +164,11 @@ namespace FoosLiveAndroid.Util.Detection
         /// <param name="ballHsv">The Hsv values, which are to be used in calculations</param>
         /// <param name="rect">The rectangle, which holds the information about the blob, if such was found</param>
         /// <returns>True if a ball was detected. False otherwise</returns>
-        public bool DetectBall(Hsv ballHsv, out Rectangle rect)
+        public bool DetectBall(Hsv ballHsv, out Rectangle rect, out Rectangle bBox)
         {
             //default returns
             rect = new Rectangle();
+            bBox = this.box;
 
             // Will change this in order to optimize
             Image<Hsv, byte> hsvImg = image.Convert<Hsv, byte>();
@@ -188,22 +189,14 @@ namespace FoosLiveAndroid.Util.Detection
             // Get the blobs found out of the filtered image and the count
             var count = detector.GetBlobs(imgFiltered, points);
 
-            if (!this.started)
-            {
-                this.started = true;
-                this.box.X = image.Size.Width / 2;
-                this.box.Y = image.Size.Height / 2;
-                this.boxSet = true;
-            }
-
             // If the blob was lost for an amount of frames, reset the bounding box
-            if (framesLost > framesLostToNewBoundingBox)
+            if (framesLost > framesLostToNewBoundingBox || !this.boxSet)
             {
                 this.box.X = image.Size.Width / 2;
                 this.box.Y = image.Size.Height / 2;
                 this.box.Width = boxWidth;
-                this.box.Height = boxHeight;
-                this.boxSet = false;
+                this.box.Height = boxWidth;
+                this.boxSet = true;
             }
 
             // Cleanup the filtered image, as it will not be needed anymore
@@ -216,36 +209,25 @@ namespace FoosLiveAndroid.Util.Detection
                 framesLost++;
                 return false;
             }
-
+            
             CvBlob biggestBlob = null;
             foreach (var pair in points.OrderByDescending(e => e.Value.Area))
             {
                 // Check if the blob is within the predefined bounding box and is of a given size
-                if (this.boxSet && this.box.Contains((int)pair.Value.Centroid.X, (int)pair.Value.Centroid.Y) &&
-                        (int)(rangeMultiplier * lastBlobSize) > pair.Value.Area &&
-                        (int)(lastBlobSize / rangeMultiplier) < pair.Value.Area)
+                if (this.box.Contains((int)pair.Value.Centroid.X, (int)pair.Value.Centroid.Y))
                 {
                     // It is, so we pressume it to be the ball
                     biggestBlob = pair.Value;
-                    this.box.X = biggestBlob.BoundingBox.X;
-                    this.box.Y = biggestBlob.BoundingBox.Y;
-                    this.box.Width = (int)(biggestBlob.BoundingBox.Width * 0.3f);
-                    this.box.Height = (int)(biggestBlob.BoundingBox.Height * 0.3f);
-                    break;
-                }
-                else
-                // Check if the box was given a preliminary position
-                if (!this.boxSet)
-                {
-                    // It wasn't, so assign it values
-                    biggestBlob = pair.Value;
-                    this.boxSet = true;
-                    this.box.X = biggestBlob.BoundingBox.X;
-                    this.box.Y = biggestBlob.BoundingBox.Y;
+                    this.box = biggestBlob.BoundingBox;
+                    Size toInflate = new Size((int)(biggestBlob.BoundingBox.Width * 0.5f),
+                                                (int)(biggestBlob.BoundingBox.Height * 0.5f));
+                    this.box.Inflate(toInflate);
                     break;
                 }
             }
+
             var success = biggestBlob != null;
+            bBox = this.box;
 
             if (success)
             {
