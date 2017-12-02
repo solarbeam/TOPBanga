@@ -66,11 +66,12 @@ namespace TOPBanga.Detection.GameUtil
             {
                 if (ballCoordinates.Count == MAXIMUM_BALL_COORDINATE_NUMBER)
                 {
-                    ballCoordinates.Dequeue();
+                    PointF temp = ballCoordinates.Dequeue();
+                    temp.Dispose();
                 }
                 last_ball_coordinates = value;
                 ballCoordinates.Enqueue(last_ball_coordinates);
-                //OnNewFrame();
+                OnNewFrame();
             }
         }
 
@@ -147,50 +148,64 @@ namespace TOPBanga.Detection.GameUtil
         private void OnNewFrame()
         {
             // Check if there was a goal event for either team
-            bool ballInGoalZone = false;
             bool ballInFirstGoalZone = false;
             bool ballInSecondGoalZone = false;
             bool ballLeftGoalZone = false;
             bool validGoal = false;
+            int ballLostCounter = 0;
+            bool ballLostCounterLimitReached = false;
             foreach(var ballPos in ballCoordinates)
             {
-                PointF pos = new PointF(ballPos.X, ballPos.Y);
+                if (ballPos == null)
+                {
+                    ballLostCounter++;
 
-                if (this.zoneOne.Contains(pos.X, pos.Y))
+                    if (ballLostCounter == GOAL_FRAMES_TO_COUNT_GOAL)
+                        ballLostCounterLimitReached = true;
+
+                    if (ballInFirstGoalZone || ballInSecondGoalZone)
+                        validGoal = true;
+
+                    continue;
+                }
+                else
+                    ballLostCounter = 0;
+                    
+                if (this.zoneOne.Contains(ballPos.X, ballPos.Y))
                 {
                     ballInFirstGoalZone = true;
-                    ballInGoalZone = true;
+                    ballInSecondGoalZone = false;
+                    ballLeftGoalZone = false;
                     continue;
                 }
                 else
-                    if (this.zoneTwo.Contains(pos.X, pos.Y))
+                    if (this.zoneTwo.Contains(ballPos.X, ballPos.Y))
                 {
                     ballInSecondGoalZone = true;
-                    ballInGoalZone = true;
+                    ballInFirstGoalZone = false;
+                    ballLeftGoalZone = false;
                     continue;
                 }
                 else
-                    if (this.middleZone.Contains(pos.X, pos.Y) && ballInGoalZone)
-                {
-                    validGoal = true;
-                }
+                    if (this.middleZone.Contains(ballPos.X, ballPos.Y) && validGoal && ballLostCounterLimitReached)
+                    break;
                 else
                     ballLeftGoalZone = true;
             }
 
-            if (ballLeftGoalZone)
+            if (ballLeftGoalZone )
             {
-                if (validGoal && ballInFirstGoalZone && !ballInSecondGoalZone)
-                    RedScore ++;
-                else
-                    if (validGoal && ballInSecondGoalZone && !ballInFirstGoalZone)
-                    BlueScore ++;
-                else
+                if (validGoal && ballInFirstGoalZone && !ballInSecondGoalZone && ballLostCounterLimitReached)
                 {
-                    // Will fix this Data anomaly in the future
+                    // Fire the event, signaling a goal for the first team
+                    GoalEvent(this, EventArgs.Empty);
                 }
-
-                // Fire goal event here
+                else
+                    if (validGoal && ballInSecondGoalZone && !ballInFirstGoalZone && ballLostCounterLimitReached)
+                {
+                    // Fire the event, signaling a goal for the second team
+                    GoalEvent(this, EventArgs.Empty);
+                }
             }
         }
     }
