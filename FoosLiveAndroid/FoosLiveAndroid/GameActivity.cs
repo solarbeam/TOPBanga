@@ -16,7 +16,7 @@ using System;
 
 namespace FoosLiveAndroid
 {
-    [Activity(ScreenOrientation = ScreenOrientation.Landscape)]
+    [Activity(ScreenOrientation = ScreenOrientation.Portrait)]
     public class GameActivity : Activity, TextureView.ISurfaceTextureListener, View.IOnTouchListener
     {
         private const string Tag = "GameActivity";
@@ -93,8 +93,8 @@ namespace FoosLiveAndroid
             _gameView.LayoutParameters = new FrameLayout.LayoutParams(w,h);
 
             // Set the upscaling constant
-            upscaleMultiplierX = w / preview_width;
-            upscaleMultiplierY = h / preview_height;
+            upscaleMultiplierY = ((float)h / (float)preview_height);
+            upscaleMultiplierX = ((float)w / (float)preview_width);
 
             // Create the ObjectDetector class for the GameActivity
             objectDetector = new ObjectDetector(upscaleMultiplierX, upscaleMultiplierY, detector, gameController);
@@ -122,6 +122,7 @@ namespace FoosLiveAndroid
             }
 
             camera.SetParameters(parameters);
+            camera.SetDisplayOrientation(90);
 
             try
             {
@@ -209,11 +210,11 @@ namespace FoosLiveAndroid
             if ( !hsvSelected )
             {
                 var image = new Image<Hsv, byte>(_gameView.GetBitmap(preview_width, preview_height));
-                selectedHsv = new Hsv(
-                    image.Data[(int)(e.GetY()/upscaleMultiplierY), (int)(e.GetX()/upscaleMultiplierX), 0 ],
-                    image.Data[ (int)(e.GetY()/upscaleMultiplierY), (int)(e.GetX()/upscaleMultiplierX), 1],
-                    image.Data[ (int)(e.GetY()/upscaleMultiplierY), (int)(e.GetX()/upscaleMultiplierX), 2]
-                    );
+
+                int positionX = (int)(e.GetX() / upscaleMultiplierX);
+                int positionY = (int)(e.GetY() / upscaleMultiplierY);
+
+                selectedHsv = image[positionY, positionX];
 
                 // Dispose of the temporary image
                 image.Dispose();

@@ -70,7 +70,7 @@ namespace TOPBanga.Detection.GameUtil
                 }
                 last_ball_coordinates = value;
                 ballCoordinates.Enqueue(last_ball_coordinates);
-                OnNewFrame();
+                //OnNewFrame();
             }
         }
 
