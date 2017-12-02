@@ -1,6 +1,7 @@
 ﻿using Android.Graphics;
 using Emgu.CV;
 using Emgu.CV.Structure;
+using System;
 
 namespace FoosLiveAndroid.Util.Detection
 {
@@ -64,6 +65,12 @@ namespace FoosLiveAndroid.Util.Detection
             };
             paintBall.SetStyle(Paint.Style.Stroke);
 
+            canvas.DrawRect((int)(bBox.Left * _mulX),
+                                 (int)(bBox.Top * _mulY),
+                                 (int)(bBox.Right * _mulX),
+                                 (int)(bBox.Bottom * _mulY),
+                                 paintRect);
+
             // Free unused resources
             _detector.image.Dispose();
 
@@ -97,12 +104,6 @@ namespace FoosLiveAndroid.Util.Detection
                 // Update the GameController class with new coordinates
                 _controller.LastBallCoordinates = new PointF(ball.X, ball.Y);
             }
-
-            canvas.DrawRect((int)(bBox.Left * _mulX),
-                                 (int)(bBox.Top * _mulY),
-                                 (int)(bBox.Right * _mulX),
-                                 (int)(bBox.Bottom * _mulY),
-                                 paintRect);
 
             return true;
         }

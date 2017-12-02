@@ -51,15 +51,13 @@ namespace FoosLiveAndroid.Util.Detection
         /// <summary>
         /// Defines the count of frames a blob is allowed to not be detected
         /// </summary>
-        private const int framesLostToNewBoundingBox = 60;
+        private const int framesLostToNewBoundingBox = 30;
         /// <summary>
         /// Defines the last calculated size of the blob
         /// </summary>
-        private int lastBlobSize;
-        /// <summary>
-        /// Defines the preliminary size of the blob
-        /// </summary>
-        private int firstBlobSize;
+        private PointF lastBlob;
+        private int lastSize = 0;
+        private int sizeDiff = 5;
         /// <summary>
         /// Defines the range, in which the size of the blob is permitted to be
         /// </summary>
@@ -187,7 +185,6 @@ namespace FoosLiveAndroid.Util.Detection
         {
             //default returns
             rect = new Rectangle();
-            bBox = new Rectangle();
 
             // Will change this in order to optimize
             Image<Hsv, byte> hsvImg = image.Convert<Hsv, byte>();
@@ -208,17 +205,20 @@ namespace FoosLiveAndroid.Util.Detection
             var count = detector.GetBlobs(imgFiltered, points);
 
             // If the blob was lost for an amount of frames, reset the bounding box
-            if (framesLost > framesLostToNewBoundingBox)
+            if (framesLost > framesLostToNewBoundingBox || !this.boxSet)
             {
-                this.box.Width = boxWidth;
+                this.box.Width = image.Size.Width;
                 this.box.Height = boxHeight;
-                this.box.X = (image.Size.Width - boxWidth) / 2; 
-                this.box.Y = (image.Size.Height - boxHeight) / 2;
+                this.box.X = 0;
+                this.box.Y = image.Size.Height / 2 - boxHeight / 2;
                 framesLost = 0;
+                this.boxSet = true;
             }
 
             // Cleanup the filtered image, as it will not be needed anymore
             imgFiltered.Dispose();
+
+            bBox = this.box;
 
             // If there were 0 blobs, return false
             if (count == 0)
@@ -237,13 +237,26 @@ namespace FoosLiveAndroid.Util.Detection
                     // It is, so we pressume it to be the ball
                     biggestBlob = pair.Value;
                     this.box = biggestBlob.BoundingBox;
-                    System.Drawing.Size toInflate = new System.Drawing.Size((int)(biggestBlob.BoundingBox.Width * 1.5f),
-                                                (int)(biggestBlob.BoundingBox.Height * 1.5f));
-                    this.box.Inflate(toInflate);
+                    updateBox(biggestBlob);
+                    framesLost = 0;
                     break;
                 }
             }
 
+            // If a blob wasn't found, find the one with the area in a range close to the last one
+            if (biggestBlob == null)
+            {
+                foreach (var blob in points)
+                {
+                    if (blob.Value.Area > lastSize - sizeDiff && blob.Value.Area < lastSize + sizeDiff)
+                    {
+                        biggestBlob = blob.Value;
+                        lastBlob = biggestBlob.Centroid;
+                        updateBox(blob.Value);
+                        break;
+                    }
+                }
+            }
             var success = biggestBlob != null;
             bBox = this.box;
 
@@ -252,16 +265,45 @@ namespace FoosLiveAndroid.Util.Detection
                 // Deep copy the blob's information
                 rect = new Rectangle(new Point(biggestBlob.BoundingBox.X, biggestBlob.BoundingBox.Y),
                                         new System.Drawing.Size(biggestBlob.BoundingBox.Size.Width, biggestBlob.BoundingBox.Height));
-                this.lastBlobSize = biggestBlob.Area;
+                this.lastBlob = biggestBlob.Centroid;
+                this.lastSize = biggestBlob.Area;
             }
             else
             {
+                // Welp, we tried to find the ball
                 framesLost++;
             }
 
             points.Dispose();
 
             return success;
+        }
+        private void updateBox(CvBlob newBlob)
+        {
+            float toAddX = 0, toAddY = 0;
+            if (this.lastBlob != null)
+            {
+                toAddX = lastBlob.X - newBlob.Centroid.X;
+                toAddY = lastBlob.Y - newBlob.Centroid.Y;
+
+                if (toAddX < 0)
+                    toAddX *= -1;
+                if (toAddY < 0)
+                    toAddY *= -1;
+            }
+
+            System.Drawing.Size toInflate = new System.Drawing.Size();
+            if (newBlob.Area > 10)
+            {
+                toInflate = new System.Drawing.Size(newBlob.BoundingBox.Width * 2 + (int)toAddX * 4,
+                                        newBlob.BoundingBox.Height * 2 + (int)toAddY * 4);
+            }
+            else
+            {
+                toInflate = new System.Drawing.Size(30 + (int)toAddX * 4, 20 + (int)toAddY * 4);
+            }
+
+            this.box.Inflate(toInflate);
         }
     }
 }

@@ -22,8 +22,8 @@ namespace FoosLiveAndroid
         private const string Tag = "GameActivity";
         private const int camera_width = 1280;
         private const int camera_height = 720;
-        private const int preview_width = 320;
-        private const int preview_height = 180;
+        private const int preview_width = 240;
+        private const int preview_height = 135;
 
         // A constant for upscaling the positions
         private float upscaleMultiplierX;
@@ -201,8 +201,6 @@ namespace FoosLiveAndroid
                 {
                     canvas.DrawBitmap(alphaBitmap, 0, 0, null);
                 }
-                else
-                    this.gameController.LastBallCoordinates = this.rectangle;
 
                 holder.UnlockCanvasAndPost(canvas);
             }
