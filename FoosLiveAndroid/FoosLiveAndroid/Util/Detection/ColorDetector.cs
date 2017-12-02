@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
+using Android.Util;
 using Emgu.CV;
 using Emgu.CV.Cvb;
 using Emgu.CV.CvEnum;
@@ -16,9 +17,10 @@ namespace FoosLiveAndroid.Util.Detection
     /// </summary>
     class ColorDetector
     {
+        public static string Tag = "ColorDetector";
         private const double CannyThreshold = 180.0;
         private const double CannyThresholdLinking = 120.0;
-        private const int ContourArea = 250;
+        private const int DefaultContourArea = 250;
         private const int VerticeCount = 4;
         private const int MinAngle = 80;
         private const int MaxAngle = 100;
@@ -37,11 +39,11 @@ namespace FoosLiveAndroid.Util.Detection
         /// <summary>
         /// Defines the starting box's width
         /// </summary>
-        private int boxWidth = 20;
+        private int boxWidth = 40;
         /// <summary>
         /// Defines the starting box's height
         /// </summary>
-        private int boxHeight = 20;
+        private int boxHeight = 40;
         /// <summary>
         /// Count how many frames a blob was not detected
         /// </summary>
@@ -49,7 +51,7 @@ namespace FoosLiveAndroid.Util.Detection
         /// <summary>
         /// Defines the count of frames a blob is allowed to not be detected
         /// </summary>
-        private const int framesLostToNewBoundingBox = 30;
+        private const int framesLostToNewBoundingBox = 60;
         /// <summary>
         /// Defines the last calculated size of the blob
         /// </summary>
@@ -61,7 +63,9 @@ namespace FoosLiveAndroid.Util.Detection
         /// <summary>
         /// Defines the range, in which the size of the blob is permitted to be
         /// </summary>
-        private const float rangeMultiplier = 3.0f;
+        private const float rangeMultiplier = 1.3f;
+        private const int DefaultThreshold = 35;
+        private const double MinTableSize = 0.6;
 
         /// <summary>
         /// The detector's image, used for calculations
@@ -79,25 +83,39 @@ namespace FoosLiveAndroid.Util.Detection
         [Obsolete("Not used anymore")]
         public int CircleWidth { get; set; }
 
-        /// <summary>
-        /// The default constructor for the ColorDetector class
-        /// The threshold is assumed to be 15
-        /// </summary>
-        public ColorDetector()
+        private int minContourArea = DefaultContourArea;
+        public int MinContourArea 
         {
-            Threshold = 35; // default threshold
-            this.box = new Rectangle();
-            this.box.Width = boxWidth;
-            this.box.Height = boxHeight;
+            get
+            {
+                return minContourArea;
+            }
+            set
+            {
+                if (value > DefaultThreshold)
+                    minContourArea = value;
+                else
+                    Log.Warn(Tag, "minContourArea remains default");
+            }
+        }
+
+
+
+        public void SetSceenSize(int screenWidth, int screenHeight) 
+        {
+            MinContourArea = (int)(screenWidth * screenHeight * MinTableSize);
         }
 
         /// <summary>
         /// Creates the ColorDetector class with the appropriate threshold
         /// </summary>
         /// <param name="threshold">The threshold, which will be used to define the range of colors</param>
-        public ColorDetector(int threshold)
+        public ColorDetector(int threshold = DefaultThreshold)
         {
             Threshold = threshold;
+            MinContourArea = DefaultContourArea;
+            this.box = new Rectangle();
+            //minContourArea = (int)(screenWidth * screenHeight * MinTableSize);
         }
 
         /// <summary>
@@ -123,7 +141,9 @@ namespace FoosLiveAndroid.Util.Detection
                     using (var approxContour = new VectorOfPoint())
                     {
                         CvInvoke.ApproxPolyDP(contour, approxContour, CvInvoke.ArcLength(contour, true) * 0.05, true);
-                        if (CvInvoke.ContourArea(approxContour) > ContourArea) //only consider contours with area greater than 250
+
+                        // Todo: patikrinti ar ContourArea pakeista į minContourArea veikia gerai
+                        if (CvInvoke.ContourArea(approxContour) > MinContourArea)
                         {
                             if (approxContour.Size == VerticeCount) //The contour has 4 vertices.
                             {
@@ -148,9 +168,8 @@ namespace FoosLiveAndroid.Util.Detection
                     }
                 }
             }
-            if (boxList.Count > 0)
+            if (success = (boxList.Count > 0))
             {
-                success = true;
                 boxList.OrderByDescending(b => b.Size);
                 rect = boxList[0];
             }
@@ -168,11 +187,10 @@ namespace FoosLiveAndroid.Util.Detection
         {
             //default returns
             rect = new Rectangle();
-            bBox = this.box;
+            bBox = new Rectangle();
 
             // Will change this in order to optimize
             Image<Hsv, byte> hsvImg = image.Convert<Hsv, byte>();
-            hsvImg.SmoothBlur(hsvImg.Size.Width, hsvImg.Size.Height);
 
             // Define the upper and lower limits of the Hue and Saturation values
             Hsv lowerLimit = new Hsv(ballHsv.Hue - Threshold, ballHsv.Satuation - Threshold, ballHsv.Value - Threshold);
@@ -190,13 +208,13 @@ namespace FoosLiveAndroid.Util.Detection
             var count = detector.GetBlobs(imgFiltered, points);
 
             // If the blob was lost for an amount of frames, reset the bounding box
-            if (framesLost > framesLostToNewBoundingBox || !this.boxSet)
+            if (framesLost > framesLostToNewBoundingBox)
             {
-                this.box.X = image.Size.Width / 2;
-                this.box.Y = image.Size.Height / 2;
                 this.box.Width = boxWidth;
-                this.box.Height = boxWidth;
-                this.boxSet = true;
+                this.box.Height = boxHeight;
+                this.box.X = (image.Size.Width - boxWidth) / 2; 
+                this.box.Y = (image.Size.Height - boxHeight) / 2;
+                framesLost = 0;
             }
 
             // Cleanup the filtered image, as it will not be needed anymore
@@ -219,8 +237,8 @@ namespace FoosLiveAndroid.Util.Detection
                     // It is, so we pressume it to be the ball
                     biggestBlob = pair.Value;
                     this.box = biggestBlob.BoundingBox;
-                    Size toInflate = new Size((int)(biggestBlob.BoundingBox.Width * 0.5f),
-                                                (int)(biggestBlob.BoundingBox.Height * 0.5f));
+                    System.Drawing.Size toInflate = new System.Drawing.Size((int)(biggestBlob.BoundingBox.Width * 1.5f),
+                                                (int)(biggestBlob.BoundingBox.Height * 1.5f));
                     this.box.Inflate(toInflate);
                     break;
                 }
@@ -233,11 +251,13 @@ namespace FoosLiveAndroid.Util.Detection
             {
                 // Deep copy the blob's information
                 rect = new Rectangle(new Point(biggestBlob.BoundingBox.X, biggestBlob.BoundingBox.Y),
-                                        new Size(biggestBlob.BoundingBox.Size.Width, biggestBlob.BoundingBox.Height));
+                                        new System.Drawing.Size(biggestBlob.BoundingBox.Size.Width, biggestBlob.BoundingBox.Height));
                 this.lastBlobSize = biggestBlob.Area;
             }
             else
+            {
                 framesLost++;
+            }
 
             points.Dispose();
 

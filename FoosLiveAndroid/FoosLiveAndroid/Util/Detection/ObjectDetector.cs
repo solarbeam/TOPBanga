@@ -1,7 +1,6 @@
 ﻿using Android.Graphics;
 using Emgu.CV;
 using Emgu.CV.Structure;
-using TOPBanga.Detection.GameUtil;
 
 namespace FoosLiveAndroid.Util.Detection
 {
@@ -73,10 +72,8 @@ namespace FoosLiveAndroid.Util.Detection
                 // Get the table points
                 var tablePoints = new float[8];
 
-                var j = 0;
-
                 // Assign them values
-                for (var i = 0; i < 8; i += 2)
+                for (int i = 0, j = 0; i < tablePoints.Length; i += 2, j++)
                 {
                     tablePoints[i] = table.GetVertices()[j].X * _mulX;
                     tablePoints[i + 1] = table.GetVertices()[j].Y * _mulY;
@@ -94,8 +91,8 @@ namespace FoosLiveAndroid.Util.Detection
             {
                 canvas.DrawRect((int)(ball.Left * _mulX),
                                  (int)(ball.Top * _mulY),
-                                 (int)((ball.Right) * _mulX),
-                                 (int)((ball.Bottom) * _mulY),
+                                 (int)(ball.Right * _mulX),
+                                 (int)(ball.Bottom * _mulY),
                                  paintBall);
                 // Update the GameController class with new coordinates
                 _controller.LastBallCoordinates = new PointF(ball.X, ball.Y);
@@ -103,8 +100,8 @@ namespace FoosLiveAndroid.Util.Detection
 
             canvas.DrawRect((int)(bBox.Left * _mulX),
                                  (int)(bBox.Top * _mulY),
-                                 (int)((bBox.Right) * _mulX),
-                                 (int)((bBox.Bottom) * _mulY),
+                                 (int)(bBox.Right * _mulX),
+                                 (int)(bBox.Bottom * _mulY),
                                  paintRect);
 
             return true;

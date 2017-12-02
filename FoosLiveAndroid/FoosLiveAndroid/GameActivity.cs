@@ -11,13 +11,13 @@ using System.Collections.Generic;
 using Android.Graphics.Drawables;
 using Android.Util;
 using FoosLiveAndroid.Util.Detection;
-using TOPBanga.Detection.GameUtil;
+using Android.Media;
 using System;
 
 namespace FoosLiveAndroid
 {
     [Activity(ScreenOrientation = ScreenOrientation.Portrait)]
-    public class GameActivity : Activity, TextureView.ISurfaceTextureListener, View.IOnTouchListener
+    public class GameActivity : Activity, TextureView.ISurfaceTextureListener, View.IOnTouchListener, MediaPlayer.IOnPreparedListener
     {
         private const string Tag = "GameActivity";
         private const int camera_width = 1280;
@@ -46,6 +46,9 @@ namespace FoosLiveAndroid
 
         // Todo: change Camera to Camera2
         private Camera camera;
+
+        private MediaPlayer video;
+        private Surface surface;
 
         private Hsv selectedHsv;
         private bool hsvSelected;
@@ -89,8 +92,7 @@ namespace FoosLiveAndroid
         /// <param name="h">The height of the surface, defined as an integer</param>
         public void OnSurfaceTextureAvailable(SurfaceTexture surface, int w, int h)
         {
-            camera = Camera.Open();
-            _gameView.LayoutParameters = new FrameLayout.LayoutParams(w,h);
+            this._gameView.LayoutParameters = new FrameLayout.LayoutParams(w, h);
 
             // Set the upscaling constant
             upscaleMultiplierY = ((float)h / (float)preview_height);
@@ -104,11 +106,24 @@ namespace FoosLiveAndroid
             tempBitmap.SetAlpha(0);
             alphaBitmap = tempBitmap.Bitmap;
 
+            this.holder.SetFixedSize(w, h);
+
+            if ( Intent.Data != null )
+            {
+                this.surface = new Surface(surface);
+                this.video = new MediaPlayer();
+                this.video.SetDataSource(this.ApplicationContext, this.Intent.Data);
+                this.video.SetSurface(this.surface);
+                this.video.Prepare();
+                this.video.SetOnPreparedListener(this);
+                return;
+            }
+
+            this.camera = Camera.Open();
+
             // Get the camera parameters in order to set the appropriate frame size
             Camera.Parameters parameters = camera.GetParameters();
             IList<Camera.Size> list = camera.GetParameters().SupportedPreviewSizes;
-
-            holder.SetFixedSize(w, h);
 
             // Go through all of the sizes until we find an appropriate one
             foreach (Camera.Size size in list)
@@ -147,8 +162,13 @@ namespace FoosLiveAndroid
         /// <returns>Returns true if the input is accepted. False otherwise</returns>
         public bool OnSurfaceTextureDestroyed(SurfaceTexture surface)
         {
-            camera.StopPreview();
-            camera.Release();
+            // Check if we use a video file for getting frames or the camera
+            if (video != null)
+                // We use a video file, so release it's resources
+                video.Release();
+            else
+                // We use a camera, so release it
+                camera.Release();
 
             return true;
         }
@@ -218,22 +238,25 @@ namespace FoosLiveAndroid
 
                 // Dispose of the temporary image
                 image.Dispose();
-                hsvSelected = true;
+                this.hsvSelected = true;
+
+                // If the video was paused, resume it
+                if ( this.video != null )
+                {
+                    this.video.Start();
+                }
             }
             return true;
         }
 
         /// <summary>
-        /// Called whenever the GameController fires a goal event
+        /// Called whenever the mediaplayer is ready to be started
         /// </summary>
-        /// <param name="sender">The class, which calls this function</param>
-        /// <param name="e">The arguments, assigned to this call</param>
-        public void OnGoalEvent(object sender, EventArgs e)
+        /// <param name="mp">The MediaPlayer instance, which called this function</param>
+        public void OnPrepared(MediaPlayer mp)
         {
-            /**
-             * TODO
-             * Display the team scores
-             */
+            mp.Start();
+            mp.Pause();
         }
     }
 }

@@ -51,25 +51,49 @@ namespace FoosLiveAndroid.Fragments
             
             // Todo: set up button click events
 
+            //Todo: set up sound adapter from model
+            var scoreSoundsAdapter = new ArrayAdapter<string>(
+                Context, Android.Resource.Layout.SimpleSelectableListItem, new string[] { "sound1", "sound2" });
+
+            var winSoundsAdapter = new ArrayAdapter<string>(
+                Context, Android.Resource.Layout.SimpleListItem1, new string[] { "sound1", "sound2" });
+
+            // Todo: set up button click events
+            _team1ScoreSoundButton.Click += delegate
+            {
+                OpenSoundPicker("title", scoreSoundsAdapter);
+            };
+
+            _team1WinSoundButton.Click += delegate
+            {
+                OpenSoundPicker("title", winSoundsAdapter);
+            };
+
             return _view;
         }
 
         private void GetReferencesFromLayout()
         {
-//            _team1ScoreSoundButton = _view.FindViewById<Button>(Resource.Id.team1ScoreSoundButton);
-//            _team1WinSoundButton = _view.FindViewById<Button>(Resource.Id.team1WinSoundButton);
-//            _team2ScoreSoundButton = _view.FindViewById<Button>(Resource.Id.team2ScoreSoundButton);
-//            _team2WinSoundButton = _view.FindViewById<Button>(Resource.Id.team2WinSoundButton);
+            _team1ScoreSoundButton = _view.FindViewById<Button>(Resource.Id.team1ScoreSoundButton);
+            _team1WinSoundButton = _view.FindViewById<Button>(Resource.Id.team1WinSoundButton);
+            _team2ScoreSoundButton = _view.FindViewById<Button>(Resource.Id.team2ScoreSoundButton);
+            _team2WinSoundButton = _view.FindViewById<Button>(Resource.Id.team2WinSoundButton);
+        }
+
+        //Todo set values from model/cfg/shared pref
+        private void RestoreCurrentSoundValues()
+        {
+
         }
 
         // Todo: fully implement Alertdialog and selection events
-        private void OpenSoundPicker(ArrayAdapter<string> adapter)
+        private void OpenSoundPicker(string title, ArrayAdapter<string> adapter)
         {
             if (adapter == null) throw new ArgumentNullException(nameof(adapter));
-            _dialogBuilder =  _dialogBuilder ?? new AlertDialog.Builder(Context);
-            _dialogBuilder.SetTitle("");
+            _dialogBuilder = _dialogBuilder ?? new AlertDialog.Builder(Context);
+            _dialogBuilder.SetTitle($"Choose {title}");
             _dialogBuilder.SetAdapter(adapter, (dialog, item) => {
-                //button.Text(adapter.getItem(item));
+
             });
             var soundPickDialog = _dialogBuilder.Create();
             soundPickDialog.Show();
