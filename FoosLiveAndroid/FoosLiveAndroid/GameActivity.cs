@@ -13,11 +13,13 @@ using Android.Util;
 using FoosLiveAndroid.Util.Detection;
 using Android.Media;
 using System;
+using System.Threading.Tasks;
 
 namespace FoosLiveAndroid
 {
     [Activity(ScreenOrientation = ScreenOrientation.Portrait)]
     public class GameActivity : Activity, TextureView.ISurfaceTextureListener, View.IOnTouchListener, MediaPlayer.IOnPreparedListener
+                                , View.IOnClickListener
     {
         private const string Tag = "GameActivity";
         private const int camera_width = 1280;
@@ -52,6 +54,7 @@ namespace FoosLiveAndroid
 
         private Hsv selectedHsv;
         private bool hsvSelected;
+        private Image<Hsv, byte> image;
 
         /// <summary>
         /// Called whenever the view is created
@@ -73,6 +76,9 @@ namespace FoosLiveAndroid
             surfaceView.SetZOrderOnTop(true);
             surfaceView.Holder.SetFormat(Format.Transparent);
             holder = surfaceView.Holder;
+
+            _gameButton.Text = "Select the ball's color";
+            _gameButton.SetOnClickListener(this);
 
             // Open the camera
             _gameView.SurfaceTextureListener = this;
@@ -227,24 +233,31 @@ namespace FoosLiveAndroid
         {
             if ( !hsvSelected )
             {
-                var image = new Image<Hsv, byte>(_gameView.GetBitmap(preview_width, preview_height));
-
-                int positionX = (int)(e.GetX() / upscaleMultiplierX);
-                int positionY = (int)(e.GetY() / upscaleMultiplierY);
-
-                selectedHsv = image[positionY, positionX];
-
-                // Dispose of the temporary image
-                image.Dispose();
-                this.hsvSelected = true;
-
-                // If the video was paused, resume it
-                if ( this.video != null )
+                if (this.image == null)
                 {
-                    this.video.Start();
+                    
+                    this.image = new Image<Hsv, byte>(this._gameView.GetBitmap(preview_width, preview_height));
                 }
+                
+                drawButton(e);
             }
             return true;
+        }
+
+        private void drawButton(MotionEvent e)
+        {
+            int positionX = (int)(e.GetX() / upscaleMultiplierX);
+            int positionY = (int)(e.GetY() / upscaleMultiplierY);
+
+            selectedHsv = image[positionY, positionX];
+            Image<Hsv, byte> tempImage = new Image<Hsv, byte>(this._gameButton.Width,
+                                                                this._gameButton.Height,
+                                                                selectedHsv);
+            Canvas canvas = new Canvas(tempImage.Bitmap);
+            this._gameButton.Background = new BitmapDrawable(tempImage.Bitmap);
+            tempImage.Dispose();
+
+            this._gameButton.Text = "Start game";
         }
 
         /// <summary>
@@ -255,6 +268,22 @@ namespace FoosLiveAndroid
         {
             mp.Start();
             mp.Pause();
+        }
+
+        public void OnClick(View v)
+        {
+            if (this.image != null)
+            {
+                this.hsvSelected = true;
+                this.image.Dispose();
+
+                if (this.video != null)
+                    this.video.Start();
+
+                this._gameButton.Visibility = ViewStates.Gone;
+            }
+            else
+                return;
         }
     }
 }
