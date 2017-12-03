@@ -24,8 +24,8 @@ namespace FoosLiveAndroid
         private const string Tag = "GameActivity";
         private const int camera_width = 1280;
         private const int camera_height = 720;
-        private const int preview_width = 240;
-        private const int preview_height = 135;
+        private const int preview_width = 320;
+        private const int preview_height = 180;
 
         // A constant for upscaling the positions
         private float upscaleMultiplierX;
@@ -85,9 +85,14 @@ namespace FoosLiveAndroid
             _gameView.SetOnTouchListener(this);
         }
 
+        /// <summary>
+        /// Called whenever a goal event occurs
+        /// </summary>
+        /// <param name="sender">The class, which called this function</param>
+        /// <param name="e">Arguments, which are passed to this function</param>
         private void GameController_GoalEvent(object sender, EventArgs e)
         {
-            // TODO Handle goal logic here
+            this._score.Text = this.gameController.BlueScore + " : " + this.gameController.RedScore;
         }
 
         /// <summary>
@@ -113,6 +118,15 @@ namespace FoosLiveAndroid
             alphaBitmap = tempBitmap.Bitmap;
 
             this.holder.SetFixedSize(w, h);
+
+            // Set temporary points for now
+            this.gameController.SetTable(new PointF[]
+            {
+                new PointF(0,0),
+                new PointF(w,0),
+                new PointF(0,h),
+                new PointF(w,h)
+            });
 
             if ( Intent.Data != null )
             {
@@ -209,6 +223,7 @@ namespace FoosLiveAndroid
                 }
 
                 holder.UnlockCanvasAndPost(canvas);
+                canvas.Dispose();
             }
         }
 
@@ -235,7 +250,6 @@ namespace FoosLiveAndroid
             {
                 if (this.image == null)
                 {
-                    
                     this.image = new Image<Hsv, byte>(this._gameView.GetBitmap(preview_width, preview_height));
                 }
                 
@@ -244,18 +258,31 @@ namespace FoosLiveAndroid
             return true;
         }
 
+        /// <summary>
+        /// Draw the button using the attribute selectedHsv
+        /// </summary>
+        /// <param name="e">Holds the position of the Hsv value</param>
         private void drawButton(MotionEvent e)
         {
+            // Calculate the position
             int positionX = (int)(e.GetX() / upscaleMultiplierX);
             int positionY = (int)(e.GetY() / upscaleMultiplierY);
 
+            // Get the Hsv value from the image
             selectedHsv = image[positionY, positionX];
+
+            // Create the button's background and fill it with the chosen value
             Image<Hsv, byte> tempImage = new Image<Hsv, byte>(this._gameButton.Width,
                                                                 this._gameButton.Height,
                                                                 selectedHsv);
+
+            // Finally, draw the background
             Canvas canvas = new Canvas(tempImage.Bitmap);
             this._gameButton.Background = new BitmapDrawable(tempImage.Bitmap);
+
+            // Cleanup
             tempImage.Dispose();
+            canvas.Dispose();
 
             this._gameButton.Text = "Start game";
         }
@@ -267,19 +294,32 @@ namespace FoosLiveAndroid
         public void OnPrepared(MediaPlayer mp)
         {
             mp.Start();
+
+            // We only need the frames from the video, so mute the sound
+            mp.SetVolume(0, 0);
+
+            // Pause the video to let the user choose an Hsv value
             mp.Pause();
         }
 
+        /// <summary>
+        /// Called whenever the _gameButton is clicked
+        /// </summary>
+        /// <param name="v">The view, from which this function is called</param>
         public void OnClick(View v)
         {
             if (this.image != null)
             {
                 this.hsvSelected = true;
+
+                // Cleanup
                 this.image.Dispose();
 
+                // If it's a video, start it again
                 if (this.video != null)
                     this.video.Start();
 
+                // We don't need the button anymore, so remove it
                 this._gameButton.Visibility = ViewStates.Gone;
             }
             else

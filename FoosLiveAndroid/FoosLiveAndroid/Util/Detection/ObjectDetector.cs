@@ -1,6 +1,7 @@
 ﻿using Android.Graphics;
 using Emgu.CV;
 using Emgu.CV.Structure;
+using FoosLiveAndroid.Util.Interface;
 using System;
 
 namespace FoosLiveAndroid.Util.Detection
@@ -11,10 +12,15 @@ namespace FoosLiveAndroid.Util.Detection
     /// </summary>
     class ObjectDetector
     {
-        private ColorDetector _detector;
+        /// <summary>
+        /// Defines the detector 
+        /// </summary>
+        private IDetector _detector;
         private GameController _controller;
         private float _mulX;
         private float _mulY;
+        private Paint paintRect;
+        private Paint paintBall;
         /// <summary>
         /// The default constructor for the ObjectDetector class
         /// </summary>
@@ -28,6 +34,22 @@ namespace FoosLiveAndroid.Util.Detection
             _detector = detector;
             _mulX = mulX;
             _mulY = mulY;
+
+            // Declare the outline style for the table
+            this.paintRect = new Paint
+            {
+                Color = new Color(255, 0, 0)
+            };
+            paintRect.SetStyle(Paint.Style.Stroke);
+            paintRect.StrokeWidth = 5.0f;
+
+            // Declare the outline style for the ball
+            this.paintBall = new Paint
+            {
+                Color = new Color(0, 255, 0)
+            };
+            paintBall.SetStyle(Paint.Style.Stroke);
+            paintBall.StrokeWidth = 5.0f;
         }
         public bool Detect(Canvas canvas, Hsv ballHsv, Bitmap bitmap, Bitmap bgBitmap)
         {
@@ -40,30 +62,19 @@ namespace FoosLiveAndroid.Util.Detection
             bool ballDetected = false;
 
             // Refresh the detector's image
-            _detector.image = new Image<Bgr, byte>(bitmap);
+            _detector.image = new Image<Hsv, byte>(bitmap);
 
             // Clear the image
             canvas.DrawColor(Color.Transparent, PorterDuff.Mode.Clear);
             canvas.DrawBitmap(bgBitmap, 0, 0, null);
 
-            // Try to detect a table
+            // Disabled for now
             tableDetected = _detector.DetectTable(out var table);
             tableDetected = false;
 
+            // Try to detect the ball
             ballDetected = _detector.DetectBall(ballHsv, out var ball, out var bBox);
-            // Declare the outline style for the table
-            var paintRect = new Paint
-            {
-                Color = new Color(255, 0, 0)
-            };
-            paintRect.SetStyle(Paint.Style.Stroke);
-
-            // Declare the outline style for the ball
-            var paintBall = new Paint
-            {
-                Color = new Color(0, 255, 0)
-            };
-            paintBall.SetStyle(Paint.Style.Stroke);
+            
 
             canvas.DrawRect((int)(bBox.Left * _mulX),
                                  (int)(bBox.Top * _mulY),
@@ -96,11 +107,13 @@ namespace FoosLiveAndroid.Util.Detection
 
             if (ballDetected)
             {
+                // The ball was detected, so we draw it
                 canvas.DrawRect((int)(ball.Left * _mulX),
                                  (int)(ball.Top * _mulY),
                                  (int)(ball.Right * _mulX),
                                  (int)(ball.Bottom * _mulY),
                                  paintBall);
+
                 // Update the GameController class with new coordinates
                 _controller.LastBallCoordinates = new PointF(ball.X, ball.Y);
             }

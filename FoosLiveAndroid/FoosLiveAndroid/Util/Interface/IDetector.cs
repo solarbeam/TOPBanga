@@ -6,7 +6,8 @@ namespace FoosLiveAndroid.Util.Interface
 {
     public interface IDetector
     {
-        Image<Bgr, byte> image { get; set; }
-        bool DetectBall(Hsv ballHsv, out Rectangle rect);
+        Image<Hsv, byte> image { get; set; }
+        bool DetectTable(out RotatedRect rect);
+        bool DetectBall(Hsv ballHsv, out Rectangle rect, out Rectangle bBox);
     }
 }

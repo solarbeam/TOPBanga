@@ -72,7 +72,7 @@ namespace FoosLiveAndroid.Util.Detection
                 }
                 last_ball_coordinates = value;
                 ballCoordinates.Enqueue(last_ball_coordinates);
-                //OnNewFrame();
+                OnNewFrame();
             }
         }
 

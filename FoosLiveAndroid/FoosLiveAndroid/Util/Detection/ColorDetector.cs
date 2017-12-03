@@ -15,7 +15,7 @@ namespace FoosLiveAndroid.Util.Detection
     /// <summary>
     /// The class contains functions to detect a table by contours and a blob by color
     /// </summary>
-    class ColorDetector
+    class ColorDetector : IDetector
     {
         public static string Tag = "ColorDetector";
         private const double CannyThreshold = 180.0;
@@ -51,7 +51,7 @@ namespace FoosLiveAndroid.Util.Detection
         /// <summary>
         /// Defines the count of frames a blob is allowed to not be detected
         /// </summary>
-        private const int framesLostToNewBoundingBox = 30;
+        private const int framesLostToNewBoundingBox = 40;
         /// <summary>
         /// Defines the last calculated size of the blob
         /// </summary>
@@ -68,7 +68,9 @@ namespace FoosLiveAndroid.Util.Detection
         /// <summary>
         /// The detector's image, used for calculations
         /// </summary>
-        public Image<Bgr, byte> image { get; set; }
+        public Image<Hsv, byte> image { get; set; }
+
+        private BlobDetector blobDetector;
 
         /// <summary>
         /// The threshold, which defines the range of colors
@@ -113,6 +115,7 @@ namespace FoosLiveAndroid.Util.Detection
             Threshold = threshold;
             MinContourArea = DefaultContourArea;
             this.box = new Rectangle();
+            this.blobDetector = new BlobDetector();
             //minContourArea = (int)(screenWidth * screenHeight * MinTableSize);
         }
 
@@ -171,6 +174,11 @@ namespace FoosLiveAndroid.Util.Detection
                 boxList.OrderByDescending(b => b.Size);
                 rect = boxList[0];
             }
+
+            // Cleanup
+            cannyEdges.Dispose();
+            uimage.Dispose();
+
             return success;
         }
 
@@ -180,14 +188,14 @@ namespace FoosLiveAndroid.Util.Detection
         /// </summary>
         /// <param name="ballHsv">The Hsv values, which are to be used in calculations</param>
         /// <param name="rect">The rectangle, which holds the information about the blob, if such was found</param>
+        /// <param name="bBox">Defines the rectangle, in which we search for the blob</param>
         /// <returns>True if a ball was detected. False otherwise</returns>
         public bool DetectBall(Hsv ballHsv, out Rectangle rect, out Rectangle bBox)
         {
             //default returns
             rect = new Rectangle();
 
-            // Will change this in order to optimize
-            Image<Hsv, byte> hsvImg = image.Convert<Hsv, byte>();
+            Image<Hsv, byte> hsvImg = image;
 
             // Define the upper and lower limits of the Hue and Saturation values
             Hsv lowerLimit = new Hsv(ballHsv.Hue - Threshold, ballHsv.Satuation - Threshold, ballHsv.Value - Threshold);
@@ -195,14 +203,11 @@ namespace FoosLiveAndroid.Util.Detection
 
             Image<Gray, byte> imgFiltered = hsvImg.InRange(lowerLimit, upperLimit);
 
-            // Will be added as an attribute to this class
-            var detector = new BlobDetector();
-
             // Define the class, which will store information about blobs found
             var points = new CvBlobs();
 
             // Get the blobs found out of the filtered image and the count
-            var count = detector.GetBlobs(imgFiltered, points);
+            var count = this.blobDetector.GetBlobs(imgFiltered, points);
 
             // If the blob was lost for an amount of frames, reset the bounding box
             if (framesLost > framesLostToNewBoundingBox || !this.boxSet)
@@ -236,7 +241,6 @@ namespace FoosLiveAndroid.Util.Detection
                 {
                     // It is, so we pressume it to be the ball
                     biggestBlob = pair.Value;
-                    this.box = biggestBlob.BoundingBox;
                     updateBox(biggestBlob);
                     framesLost = 0;
                     break;
@@ -248,7 +252,7 @@ namespace FoosLiveAndroid.Util.Detection
             {
                 foreach (var blob in points)
                 {
-                    if (blob.Value.Area > lastSize - sizeDiff && blob.Value.Area < lastSize + sizeDiff)
+                    if (blob.Value.Area > ( lastSize - sizeDiff ) && blob.Value.Area < ( lastSize + sizeDiff ) )
                     {
                         biggestBlob = blob.Value;
                         lastBlob = biggestBlob.Centroid;
@@ -257,6 +261,8 @@ namespace FoosLiveAndroid.Util.Detection
                     }
                 }
             }
+
+            // Check if a blob was found
             var success = biggestBlob != null;
             bBox = this.box;
 
@@ -274,12 +280,14 @@ namespace FoosLiveAndroid.Util.Detection
                 framesLost++;
             }
 
+            // Cleanup
             points.Dispose();
 
             return success;
         }
         private void updateBox(CvBlob newBlob)
         {
+            this.box = newBlob.BoundingBox;
             float toAddX = 0, toAddY = 0;
             if (this.lastBlob != null)
             {
@@ -295,8 +303,8 @@ namespace FoosLiveAndroid.Util.Detection
             System.Drawing.Size toInflate = new System.Drawing.Size();
             if (newBlob.Area > 10)
             {
-                toInflate = new System.Drawing.Size(newBlob.BoundingBox.Width * 2 + (int)toAddX * 4,
-                                        newBlob.BoundingBox.Height * 2 + (int)toAddY * 4);
+                toInflate = new System.Drawing.Size(newBlob.BoundingBox.Width * 3 + (int)toAddX * 4,
+                                        newBlob.BoundingBox.Height * 3 + (int)toAddY * 4);
             }
             else
             {
