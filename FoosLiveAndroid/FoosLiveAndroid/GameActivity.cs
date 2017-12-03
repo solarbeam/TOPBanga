@@ -13,13 +13,14 @@ using Android.Util;
 using FoosLiveAndroid.Util.Detection;
 using Android.Media;
 using System;
-using System.Threading.Tasks;
+using Android.Hardware;
+using Android.Runtime;
 
 namespace FoosLiveAndroid
 {
     [Activity(ScreenOrientation = ScreenOrientation.Portrait)]
-    public class GameActivity : Activity, TextureView.ISurfaceTextureListener, View.IOnTouchListener, MediaPlayer.IOnPreparedListener
-                                , View.IOnClickListener
+    public class GameActivity : Activity, TextureView.ISurfaceTextureListener, View.IOnTouchListener, MediaPlayer.IOnPreparedListener, 
+    View.IOnClickListener
     {
         private const string Tag = "GameActivity";
         private const int camera_width = 1280;
@@ -70,8 +71,8 @@ namespace FoosLiveAndroid
             GetReferencesFromLayout();
 
             detector = new ColorDetector();
-            this.gameController = new GameController();
-            this.gameController.GoalEvent += GameController_GoalEvent;
+            gameController = new GameController();
+            gameController.GoalEvent += GameController_GoalEvent;
 
             surfaceView.SetZOrderOnTop(true);
             surfaceView.Holder.SetFormat(Format.Transparent);
@@ -92,7 +93,7 @@ namespace FoosLiveAndroid
         /// <param name="e">Arguments, which are passed to this function</param>
         private void GameController_GoalEvent(object sender, EventArgs e)
         {
-            this._score.Text = this.gameController.BlueScore + " : " + this.gameController.RedScore;
+            _score.Text = gameController.BlueScore + " : " + gameController.RedScore;
         }
 
         /// <summary>
@@ -103,11 +104,11 @@ namespace FoosLiveAndroid
         /// <param name="h">The height of the surface, defined as an integer</param>
         public void OnSurfaceTextureAvailable(SurfaceTexture surface, int w, int h)
         {
-            this._gameView.LayoutParameters = new FrameLayout.LayoutParams(w, h);
+            _gameView.LayoutParameters = new FrameLayout.LayoutParams(w, h);
 
             // Set the upscaling constant
-            upscaleMultiplierY = ((float)h / (float)preview_height);
-            upscaleMultiplierX = ((float)w / (float)preview_width);
+            upscaleMultiplierY = (float) h / preview_height;
+            upscaleMultiplierX = (float) w / preview_width;
 
             // Create the ObjectDetector class for the GameActivity
             objectDetector = new ObjectDetector(upscaleMultiplierX, upscaleMultiplierY, detector, gameController);
@@ -117,10 +118,10 @@ namespace FoosLiveAndroid
             tempBitmap.SetAlpha(0);
             alphaBitmap = tempBitmap.Bitmap;
 
-            this.holder.SetFixedSize(w, h);
+            holder.SetFixedSize(w, h);
 
             // Set temporary points for now
-            this.gameController.SetTable(new PointF[]
+            gameController.SetTable(new PointF[]
             {
                 new PointF(0,0),
                 new PointF(w,0),
@@ -131,15 +132,15 @@ namespace FoosLiveAndroid
             if ( Intent.Data != null )
             {
                 this.surface = new Surface(surface);
-                this.video = new MediaPlayer();
-                this.video.SetDataSource(this.ApplicationContext, this.Intent.Data);
-                this.video.SetSurface(this.surface);
-                this.video.Prepare();
-                this.video.SetOnPreparedListener(this);
+                video = new MediaPlayer();
+                video.SetDataSource(ApplicationContext, Intent.Data);
+                video.SetSurface(this.surface);
+                video.Prepare();
+                video.SetOnPreparedListener(this);
                 return;
             }
 
-            this.camera = Camera.Open();
+            camera = Camera.Open();
 
             // Get the camera parameters in order to set the appropriate frame size
             Camera.Parameters parameters = camera.GetParameters();
@@ -248,12 +249,8 @@ namespace FoosLiveAndroid
         {
             if ( !hsvSelected )
             {
-                if (this.image == null)
-                {
-                    this.image = new Image<Hsv, byte>(this._gameView.GetBitmap(preview_width, preview_height));
-                }
-                
-                drawButton(e);
+                image = image ?? new Image<Hsv, byte>(_gameView.GetBitmap(preview_width, preview_height));
+                DrawButton(e);
             }
             return true;
         }
@@ -262,7 +259,7 @@ namespace FoosLiveAndroid
         /// Draw the button using the attribute selectedHsv
         /// </summary>
         /// <param name="e">Holds the position of the Hsv value</param>
-        private void drawButton(MotionEvent e)
+        private void DrawButton(MotionEvent e)
         {
             // Calculate the position
             int positionX = (int)(e.GetX() / upscaleMultiplierX);
@@ -270,21 +267,14 @@ namespace FoosLiveAndroid
 
             // Get the Hsv value from the image
             selectedHsv = image[positionY, positionX];
+            // convert hsv image to rgb image sample
+            var selectedRgb = image.Convert<Rgb, Byte>()[positionY, positionX];
+            // Convert emgu rgb to android rgb
+            var selectedColor = Color.Rgb((int)selectedRgb.Red, (int)selectedRgb.Green, (int)selectedRgb.Blue);
 
-            // Create the button's background and fill it with the chosen value
-            Image<Hsv, byte> tempImage = new Image<Hsv, byte>(this._gameButton.Width,
-                                                                this._gameButton.Height,
-                                                                selectedHsv);
+            _gameButton.SetBackgroundColor(selectedColor);
 
-            // Finally, draw the background
-            Canvas canvas = new Canvas(tempImage.Bitmap);
-            this._gameButton.Background = new BitmapDrawable(tempImage.Bitmap);
-
-            // Cleanup
-            tempImage.Dispose();
-            canvas.Dispose();
-
-            this._gameButton.Text = "Start game";
+            _gameButton.Text = "Start game";
         }
 
         /// <summary>
@@ -308,22 +298,17 @@ namespace FoosLiveAndroid
         /// <param name="v">The view, from which this function is called</param>
         public void OnClick(View v)
         {
-            if (this.image != null)
-            {
-                this.hsvSelected = true;
+            if (image == null) return;
 
-                // Cleanup
-                this.image.Dispose();
+            hsvSelected = true;
+            // Cleanup
+            image.Dispose();
 
-                // If it's a video, start it again
-                if (this.video != null)
-                    this.video.Start();
+            // If it's a video, start it again
+            video?.Start();
 
-                // We don't need the button anymore, so remove it
-                this._gameButton.Visibility = ViewStates.Gone;
-            }
-            else
-                return;
+            // We don't need the button anymore, so remove it
+            _gameButton.Visibility = ViewStates.Gone;
         }
     }
 }
