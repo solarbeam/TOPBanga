@@ -24,37 +24,42 @@ namespace FoosLiveAndroid.Util.Detection
         /// Defines the current score for the blue team
         /// </summary>
         public int BlueScore { get; private set; }
-        /// <summary>
-        /// TODO Add documentation
-        /// </summary>
-        private const int SPACE_FOR_GOALS = 25;
-
-        /// <summary>
-        /// TODO Add documentation
-        /// </summary>
-        private Queue<Goal> goals = new Queue<Goal>();
 
         /// <summary>
         /// The amount of positions to hold in the queue
         /// </summary>
-        private const int MAXIMUM_BALL_COORDINATE_NUMBER = 2500;
+        private const int MAXIMUM_BALL_COORDINATE_NUMBER = 100;
         /// <summary>
         /// The minimum amount of frames in the goal zone in order for
         /// the goal to be accepted
         /// </summary>
-        private const int GOAL_FRAMES_TO_COUNT_GOAL = 3;
+        private const int GOAL_FRAMES_TO_COUNT_GOAL = 10;
         /// <summary>
         /// Holds the coordinates of the last position of the ball
         /// </summary>
         private PointF last_ball_coordinates;
 
         /// <summary>
-        /// Defines the zones, which hold the goals ( the point of no return for the ball ) and the middle
+        /// Defines the goal zones, which hold the point of no return for the ball
         /// </summary>
         private RectF zoneOne;
-        private RectF zoneTwo;
-        private RectF middleZone;
-        private const float percentageOfSide = 0.10f;
+        public RectF zoneTwo;
+
+        /// <summary>
+        /// Defines the maximum number of edges a table can have
+        /// </summary>
+        private const int TablePointNumber = 4;
+
+        /// <summary>
+        /// Defines the height of the precalculated goal zone
+        ///  using the table's side as reference
+        /// </summary>
+        private const float percentageOfSide = 0.20f;
+
+        /// <summary>
+        /// Defines the amount of frames to skip between goal checks
+        /// </summary>
+        private int cooldown = 0;
 
         /// <summary>
         /// A get and set function to assign the last position of the ball
@@ -68,7 +73,8 @@ namespace FoosLiveAndroid.Util.Detection
                 if (ballCoordinates.Count == MAXIMUM_BALL_COORDINATE_NUMBER)
                 {
                     PointF temp = ballCoordinates.Dequeue();
-                    temp.Dispose();
+
+                    temp?.Dispose();
                 }
                 last_ball_coordinates = value;
                 ballCoordinates.Enqueue(last_ball_coordinates);
@@ -82,10 +88,6 @@ namespace FoosLiveAndroid.Util.Detection
         public Queue<PointF> ballCoordinates;
 
         /// <summary>
-        /// TODO Add documentation
-        /// </summary>
-        public Path Table { get; private set; }
-        /// <summary>
         /// Set the table, which will be used for the definition of
         /// the goal zones
         /// It is pressumed, that the first point is the top left one, the second
@@ -95,25 +97,18 @@ namespace FoosLiveAndroid.Util.Detection
         /// <param name="points">The coordinates of the table</param>
         public void SetTable(PointF[] points)
         {
-            if (points.Length != 4)
+            if (points.Length != TablePointNumber)
                 return;
 
-            Table = new Path();
-            Table.MoveTo(points[0].X, points[0].Y);
-            Table.LineTo(points[1].X, points[1].Y);
-            Table.LineTo(points[2].X, points[2].Y);
-            Table.LineTo(points[3].X, points[3].Y);
-            Table.Close();
+            // Calculate the different zones, using the points given
+            this.zoneOne = new RectF(points[0].X,
+                                    points[0].Y,
+                                    points[1].X,
+                                    (points[2].Y - points[0].Y) * percentageOfSide);
 
-            // Calculate the different zones, using the values given
-            this.zoneOne = new RectF(points[0].X, points[0].Y,
-                                        points[1].X,
-                                        points[1].Y + ((points[2].Y - points[0].Y) * percentageOfSide));
             this.zoneTwo = new RectF(points[0].X, points[2].Y - (points[2].Y - points[0].Y) * percentageOfSide,
                                         points[3].X,
                                         points[3].Y);
-            this.middleZone = new RectF(points[0].X, (points[0].Y + points[2].Y) - (points[2].Y - points[0].Y) * percentageOfSide,
-                                        points[0].X, points[0].Y + points[2].Y);
         }
         /// <summary>
         /// The default constructor for the GameController class
@@ -124,124 +119,75 @@ namespace FoosLiveAndroid.Util.Detection
         }
 
         /// <summary>
-        /// Add a goal to the queue
-        /// </summary>
-        /// <param name="points">The points before a goal was made</param>
-        public void AddGoal(PointF[] points)
-        {
-            if (goals.Count == 2)
-            {
-                Goal toDispose = goals.Dequeue();
-                toDispose.Dispose();
-            }
-            var temp = new Path();
-            temp.MoveTo(points[0].X, points[0].Y);
-            temp.LineTo(points[1].X, points[1].Y);
-            temp.LineTo(points[2].X, points[2].Y);
-            temp.LineTo(points[3].X, points[3].Y);
-            temp.Close();
-            goals.Enqueue(new Goal(temp));
-        }
-
-        /// <summary>
-        /// TODO Add documentation
+        /// Defines the goal checking mechanism, which is called whenever
+        /// a new position is added to the queue
         /// </summary>
         private void OnNewFrame()
         {
+            if (cooldown != 0)
+            {
+                cooldown--;
+                return;
+            }
+
             // Check if there was a goal event for either team
             bool ballInFirstGoalZone = false;
             bool ballInSecondGoalZone = false;
-            bool ballLeftGoalZone = false;
-            bool validGoal = false;
-            int ballLostCounter = 0;
-            bool ballLostCounterLimitReached = false;
-            foreach(var ballPos in ballCoordinates)
+            int framesLost = 0;
+            foreach (var point in ballCoordinates)
             {
-                if (ballPos == null)
+                // Check if this particular point signals that the ball is lost
+                if (point == null)
                 {
-                    ballLostCounter++;
+                    // It is, so check if a goal is about to occur
+                    if (ballInFirstGoalZone && framesLost == GOAL_FRAMES_TO_COUNT_GOAL)
+                    {
+                        // Fire the goal event for the first team
+                        BlueScore++;
+                        GoalEvent(this, EventArgs.Empty);
+                        cooldown = MAXIMUM_BALL_COORDINATE_NUMBER;
+                        return;
+                    }
+                    else
+                        if (ballInSecondGoalZone && framesLost == GOAL_FRAMES_TO_COUNT_GOAL)
+                    {
+                        // Fire the goal event for the second team
+                        RedScore++;
+                        GoalEvent(this, EventArgs.Empty);
+                        cooldown = MAXIMUM_BALL_COORDINATE_NUMBER;
+                        return;
+                    }
 
-                    if (ballLostCounter == GOAL_FRAMES_TO_COUNT_GOAL)
-                        ballLostCounterLimitReached = true;
-
-                    if (ballInFirstGoalZone || ballInSecondGoalZone)
-                        validGoal = true;
-
+                    framesLost++;
                     continue;
                 }
                 else
-                    ballLostCounter = 0;
-                    
-                if (this.zoneOne.Contains(ballPos.X, ballPos.Y))
+                    // It isn't, so reset the counter
+                    framesLost = 0;
+
+                // Check if the ball is in the first zone
+                if ( zoneOne.Contains(point.X, point.Y) )
                 {
                     ballInFirstGoalZone = true;
                     ballInSecondGoalZone = false;
-                    ballLeftGoalZone = false;
                     continue;
                 }
                 else
-                    if (this.zoneTwo.Contains(ballPos.X, ballPos.Y))
+                // Check if the ball is in the second zone
+                    if ( zoneTwo.Contains(point.X, point.Y) )
                 {
                     ballInSecondGoalZone = true;
                     ballInFirstGoalZone = false;
-                    ballLeftGoalZone = false;
                     continue;
                 }
-                else
-                    if (this.middleZone.Contains(ballPos.X, ballPos.Y) && validGoal && ballLostCounterLimitReached)
-                    break;
-                else
-                    ballLeftGoalZone = true;
+
+                // The ball is in neither of the zones, so set the appropriate values
+                ballInFirstGoalZone = false;
+                ballInSecondGoalZone = false;
             }
 
-            if (ballLeftGoalZone )
-            {
-                if (validGoal && ballInFirstGoalZone && ballLostCounterLimitReached)
-                {
-                    // Fire the event, signaling a goal for the first team
-                    GoalEvent(this, EventArgs.Empty);
-                }
-                else
-                    if (validGoal && ballInSecondGoalZone && ballLostCounterLimitReached)
-                {
-                    // Fire the event, signaling a goal for the second team
-                    GoalEvent(this, EventArgs.Empty);
-                }
-            }
-        }
-    }
-
-    /// <summary>
-    /// TODO Add documentation
-    /// </summary>
-    internal class Goal : IDisposable
-    {
-        /// <summary>
-        /// TODO Add documentation
-        /// </summary>
-        public Path Path { get; set; }
-        /// <summary>
-        /// TODO Add documentation
-        /// </summary>
-        public int FramesBallInGoal { get; set; }
-
-        /// <summary>
-        /// TODO Add documentation
-        /// </summary>
-        /// <param name="path">TODO</param>
-        internal Goal(Path path)
-        {
-            Path = path;
-            FramesBallInGoal = 0;
-        }
-
-        /// <summary>
-        /// A function that is called when the object is to be
-        /// given to the garbage collector
-        /// </summary>
-        public void Dispose()
-        {
-            Path.Dispose();
+            // To avoid repetetive calculations, set a cooldown counter
+            cooldown = MAXIMUM_BALL_COORDINATE_NUMBER;
         }
     }
 }
