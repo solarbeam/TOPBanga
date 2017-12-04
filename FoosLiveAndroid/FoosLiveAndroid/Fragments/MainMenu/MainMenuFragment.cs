@@ -7,7 +7,7 @@ namespace FoosLiveAndroid.Fragments.MainMenu
 {
     public class MainMenuFragment : Fragment
     {
-        public new static string Tag = "MainMenuFragment";
+        static readonly new string Tag = typeof(MainMenuFragment).Name;
         private View _view;
 
         public static Fragment NewInstance()

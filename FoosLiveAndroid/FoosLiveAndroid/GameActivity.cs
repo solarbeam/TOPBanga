@@ -23,7 +23,7 @@ namespace FoosLiveAndroid
     public class GameActivity : Activity, TextureView.ISurfaceTextureListener, View.IOnTouchListener, MediaPlayer.IOnPreparedListener, 
     ISensorEventListener
     {
-        private const string Tag = "GameActivity";
+        static readonly string Tag = typeof(GameActivity).Name;
         private const int camera_width = 1280;
         private const int camera_height = 720;
         private const int preview_width = 320;
