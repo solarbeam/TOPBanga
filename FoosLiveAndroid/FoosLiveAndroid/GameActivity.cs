@@ -121,7 +121,6 @@ namespace FoosLiveAndroid
 
         public void OnSurfaceTextureUpdated(SurfaceTexture surface)
         {
-            Log.Debug("", .GetHistory().blueTeamName);
             /**
              * Declare temporary variables
              */
