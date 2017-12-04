@@ -158,8 +158,8 @@ namespace FoosLiveAndroid
             _gameView.LayoutParameters = new FrameLayout.LayoutParams(w, h);
 
             // Set the upscaling constant
-            upscaleMultiplierY = (float) h / preview_height;
-            upscaleMultiplierX = (float) w / preview_width;
+            upscaleMultiplierY = (float)h / preview_height;
+            upscaleMultiplierX = (float)w / preview_width;
 
             // Create the ObjectDetector class for the GameActivity
             objectDetector = new ObjectDetector(upscaleMultiplierX, upscaleMultiplierY, detector, gameController);

@@ -115,8 +115,10 @@ namespace FoosLiveAndroid.Util.Detection
                                  paintBall);
 
                 // Update the GameController class with new coordinates
-                _controller.LastBallCoordinates = new PointF(ball.X, ball.Y);
+                _controller.LastBallCoordinates = new PointF(ball.X * _mulX, ball.Y * _mulY);
             }
+            else
+                _controller.LastBallCoordinates = null;
 
             return true;
         }

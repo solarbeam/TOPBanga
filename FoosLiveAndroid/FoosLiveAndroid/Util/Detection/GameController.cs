@@ -37,12 +37,12 @@ namespace FoosLiveAndroid.Util.Detection
         /// <summary>
         /// The amount of positions to hold in the queue
         /// </summary>
-        private const int MAXIMUM_BALL_COORDINATE_NUMBER = 2500;
+        private const int MAXIMUM_BALL_COORDINATE_NUMBER = 100;
         /// <summary>
         /// The minimum amount of frames in the goal zone in order for
         /// the goal to be accepted
         /// </summary>
-        private const int GOAL_FRAMES_TO_COUNT_GOAL = 3;
+        private const int GOAL_FRAMES_TO_COUNT_GOAL = 10;
         /// <summary>
         /// Holds the coordinates of the last position of the ball
         /// </summary>
@@ -52,9 +52,9 @@ namespace FoosLiveAndroid.Util.Detection
         /// Defines the zones, which hold the goals ( the point of no return for the ball ) and the middle
         /// </summary>
         private RectF zoneOne;
-        private RectF zoneTwo;
-        private RectF middleZone;
+        public RectF zoneTwo;
         private const float percentageOfSide = 0.10f;
+        private int cooldown = 0;
 
         /// <summary>
         /// A get and set function to assign the last position of the ball
@@ -68,7 +68,9 @@ namespace FoosLiveAndroid.Util.Detection
                 if (ballCoordinates.Count == MAXIMUM_BALL_COORDINATE_NUMBER)
                 {
                     PointF temp = ballCoordinates.Dequeue();
-                    temp.Dispose();
+                    
+                    if (temp != null)
+                        temp.Dispose();
                 }
                 last_ball_coordinates = value;
                 ballCoordinates.Enqueue(last_ball_coordinates);
@@ -106,14 +108,13 @@ namespace FoosLiveAndroid.Util.Detection
             Table.Close();
 
             // Calculate the different zones, using the values given
-            this.zoneOne = new RectF(points[0].X, points[0].Y,
-                                        points[1].X,
-                                        points[1].Y + ((points[2].Y - points[0].Y) * percentageOfSide));
+            this.zoneOne = new RectF(points[0].X,
+                                    points[0].Y,
+                                    points[1].X,
+                                    (points[2].Y - points[0].Y) * percentageOfSide);
             this.zoneTwo = new RectF(points[0].X, points[2].Y - (points[2].Y - points[0].Y) * percentageOfSide,
                                         points[3].X,
                                         points[3].Y);
-            this.middleZone = new RectF(points[0].X, (points[0].Y + points[2].Y) - (points[2].Y - points[0].Y) * percentageOfSide,
-                                        points[0].X, points[0].Y + points[2].Y);
         }
         /// <summary>
         /// The default constructor for the GameController class
@@ -148,66 +149,63 @@ namespace FoosLiveAndroid.Util.Detection
         /// </summary>
         private void OnNewFrame()
         {
+            if (cooldown != 0)
+            {
+                cooldown--;
+                return;
+            }
+
             // Check if there was a goal event for either team
             bool ballInFirstGoalZone = false;
             bool ballInSecondGoalZone = false;
-            bool ballLeftGoalZone = false;
-            bool validGoal = false;
-            int ballLostCounter = 0;
-            bool ballLostCounterLimitReached = false;
-            foreach(var ballPos in ballCoordinates)
+            int framesLost = 0;
+            foreach (var point in ballCoordinates)
             {
-                if (ballPos == null)
+                if (point == null)
                 {
-                    ballLostCounter++;
+                    if (ballInFirstGoalZone == true && framesLost == GOAL_FRAMES_TO_COUNT_GOAL)
+                    {
+                        // Fire the goal event for the first team
+                        this.BlueScore++;
+                        GoalEvent(this, EventArgs.Empty);
+                        cooldown = MAXIMUM_BALL_COORDINATE_NUMBER;
+                        return;
+                    }
+                    else
+                        if (ballInSecondGoalZone == true && framesLost == GOAL_FRAMES_TO_COUNT_GOAL)
+                    {
+                        // Fire the goal event for the second team
+                        this.RedScore++;
+                        GoalEvent(this, EventArgs.Empty);
+                        cooldown = MAXIMUM_BALL_COORDINATE_NUMBER;
+                        return;
+                    }
 
-                    if (ballLostCounter == GOAL_FRAMES_TO_COUNT_GOAL)
-                        ballLostCounterLimitReached = true;
-
-                    if (ballInFirstGoalZone || ballInSecondGoalZone)
-                        validGoal = true;
-
+                    framesLost++;
                     continue;
                 }
                 else
-                    ballLostCounter = 0;
-                    
-                if (this.zoneOne.Contains(ballPos.X, ballPos.Y))
+                    framesLost = 0;
+
+                if ( zoneOne.Contains(point.X, point.Y) )
                 {
                     ballInFirstGoalZone = true;
                     ballInSecondGoalZone = false;
-                    ballLeftGoalZone = false;
                     continue;
                 }
                 else
-                    if (this.zoneTwo.Contains(ballPos.X, ballPos.Y))
+                    if ( zoneTwo.Contains(point.X, point.Y) )
                 {
                     ballInSecondGoalZone = true;
                     ballInFirstGoalZone = false;
-                    ballLeftGoalZone = false;
                     continue;
                 }
-                else
-                    if (this.middleZone.Contains(ballPos.X, ballPos.Y) && validGoal && ballLostCounterLimitReached)
-                    break;
-                else
-                    ballLeftGoalZone = true;
+
+                ballInFirstGoalZone = false;
+                ballInSecondGoalZone = false;
             }
 
-            if (ballLeftGoalZone )
-            {
-                if (validGoal && ballInFirstGoalZone && ballLostCounterLimitReached)
-                {
-                    // Fire the event, signaling a goal for the first team
-                    GoalEvent(this, EventArgs.Empty);
-                }
-                else
-                    if (validGoal && ballInSecondGoalZone && ballLostCounterLimitReached)
-                {
-                    // Fire the event, signaling a goal for the second team
-                    GoalEvent(this, EventArgs.Empty);
-                }
-            }
+            cooldown = MAXIMUM_BALL_COORDINATE_NUMBER;
         }
     }
 
