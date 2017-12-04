@@ -72,12 +72,12 @@ namespace FoosLiveAndroid.Util.Detection
         /// <summary>
         /// Defines the multipliers for the bounding box sizing algorithm
         /// </summary>
-        private const int mulDeltaX = 5;
-        private const int mulDeltaY = 5;
-        private const int mulDeltaWidth = 3;
-        private const int mulDeltaHeight = 3;
-        private const int minWidth = 30;
-        private const int minHeight = 30;
+        private const int MulDeltaX = 5;
+        private const int MulDeltaY = 5;
+        private const int MulDeltaWidth = 3;
+        private const int MulDeltaHeight = 3;
+        private const int MinWidth = 30;
+        private const int MinHeight = 30;
 
         private const int DefaultThreshold = 40;
         private const double MinTableSize = 0.6;
@@ -319,12 +319,12 @@ namespace FoosLiveAndroid.Util.Detection
             System.Drawing.Size toInflate = new System.Drawing.Size();
             if (newBlob.Area > MinBlobSize)
             {
-                toInflate = new System.Drawing.Size(newBlob.BoundingBox.Width * mulDeltaWidth + (int)toAddX * mulDeltaX,
-                                        newBlob.BoundingBox.Height * mulDeltaHeight + (int)toAddY * mulDeltaY);
+                toInflate = new System.Drawing.Size(newBlob.BoundingBox.Width * MulDeltaWidth + (int)toAddX * MulDeltaX,
+                                        newBlob.BoundingBox.Height * MulDeltaHeight + (int)toAddY * MulDeltaY);
             }
             else
             {
-                toInflate = new System.Drawing.Size(minWidth + (int)toAddX * mulDeltaX, minHeight + (int)toAddY * mulDeltaY);
+                toInflate = new System.Drawing.Size(MinWidth + (int)toAddX * MulDeltaX, MinHeight + (int)toAddY * MulDeltaY);
             }
 
             box.Inflate(toInflate);
