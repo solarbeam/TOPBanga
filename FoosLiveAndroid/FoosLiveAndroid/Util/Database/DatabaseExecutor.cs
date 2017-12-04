@@ -6,7 +6,7 @@ using System.Collections.Generic;
 
 namespace FoosLiveAndroid.Util.Database
 {
-    public static class DatabaseExecutor
+    public static class DatabaseManager
     {
 
         private const string CONNECTION_URL = "http://yu-gi-oh.lt/a.php";
