@@ -35,13 +35,14 @@ namespace FoosLiveAndroid.Util
         /// <param name="key">Configuration value key</param>
         public static string GetProperty(String key)
         {
-            string property = _properties?.GetProperty(key);
-            if (property == null)
-            {
-                Log.Error(Tag, $"Property {key} not found");
-                property = String.Empty;
-            }
-                
+            if (_properties == null)
+                throw new Exception("PropertiesManager called before initialisation");
+
+            var property = _properties.GetProperty(key);
+
+            if (property == null) 
+                throw new Exception("Property not found in configuration file");
+            
             return property;
         }
 
