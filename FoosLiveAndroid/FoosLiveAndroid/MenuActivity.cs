@@ -40,9 +40,6 @@ namespace FoosLiveAndroid
             FragmentManager.BeginTransaction()
                            .Replace(Resource.Id.menu_content, _fragment = MainMenuFragment.NewInstance())
                            .Commit();
-
-            //getting cfg values 
-            //PropertiesManager.GetProperty("test");
         }
 
         /// <summary>
