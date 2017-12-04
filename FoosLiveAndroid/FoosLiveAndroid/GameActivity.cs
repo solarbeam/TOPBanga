@@ -11,6 +11,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using Android.Graphics.Drawables;
 using Android.Util;
+using FoosLiveAndroid.Util;
 using FoosLiveAndroid.Util.Detection;
 using Android.Media;
 using System;

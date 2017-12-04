@@ -145,6 +145,7 @@
     <Compile Include="Fragments\MainMenu\MainMenuButtonsFragment.cs" />
     <Compile Include="Fragments\MainMenu\MainMenuFragment.cs" />
     <Compile Include="Fragments\MainMenu\ModeMenuButtonsFragment.cs" />
+    <Compile Include="Util\Database\DatabaseExecutor.cs" />
     <Compile Include="Util\Detection\ObjectDetector.cs" />
     <Compile Include="Util\Interface\IDetector.cs" />
     <Compile Include="Util\Interface\IGameTracker.cs" />
@@ -206,6 +207,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Resources\raw\" />
+    <Folder Include="Util\CameraUtil\" />
     <Folder Include="Util\Database\" />
   </ItemGroup>
   <ItemGroup>
