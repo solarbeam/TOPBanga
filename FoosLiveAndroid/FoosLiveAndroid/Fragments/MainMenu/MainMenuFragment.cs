@@ -1,49 +1,38 @@
-﻿using System;
-using Android;
-using Android.App;
-using Android.Content;
+﻿using Android.App;
 using Android.OS;
-using Android.Provider;
-using Android.Util;
 using Android.Views;
-using Android.Widget;
 using FoosLiveAndroid.Model;
 
-namespace FoosLiveAndroid.Fragments
+namespace FoosLiveAndroid.Fragments.MainMenu
 {
     public class MainMenuFragment : Fragment
     {
-        public static new string Tag = "MainMenuFragment";
-        private View view;
+        public new static string Tag = "MainMenuFragment";
+        private View _view;
 
         public static Fragment NewInstance()
         {
             return new MainMenuFragment();
         }
 
-        public override void OnCreate(Bundle savedInstanceState)
-        {
-            base.OnCreate(savedInstanceState);
-        }
-
         public override View OnCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
         {
-            view = inflater.Inflate(Resource.Layout.fragment_main_menu, container, false);
+            _view = inflater.Inflate(Resource.Layout.fragment_main_menu, container, false);
 
-            LoadChildFragment(FragmentId.Main_menu);
+            LoadChildFragment(FragmentId.MainMenu);
 
-            return view;
+            return _view;
         }
 
         public void LoadChildFragment(FragmentId id) {
             Fragment childFragment = null;
-            FragmentTransaction transaction = ChildFragmentManager.BeginTransaction();
+            var transaction = ChildFragmentManager.BeginTransaction();
             switch(id) 
             {
-                case FragmentId.Main_menu:
+                case FragmentId.MainMenu:
                     childFragment = MainMenuButtonsFragment.NewInstance();
                     break;
-                case FragmentId.Mode_menu:
+                case FragmentId.ModeMenu:
                     childFragment = ModeMenuButtonsFragment.NewInstance();
                     transaction.AddToBackStack(childFragment.Tag);
                     break;

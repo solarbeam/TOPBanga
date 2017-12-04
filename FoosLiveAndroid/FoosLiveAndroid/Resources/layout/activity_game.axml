@@ -51,8 +51,9 @@
                 android:background="@drawable/status_label_shape"
                 android:textColor="@color/status_text"
                 android:layout_height="wrap_content"
+                android:textSize="@dimen/score_size"
                 android:layout_weight="1"
-                android:text="0 : 0" />
+                android:text="@string/sample_score" />
             <Space
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -83,7 +84,7 @@
                 android:layout_height="wrap_content"
                 android:paddingStart="20dp"
                 android:paddingEnd="20dp"
-                android:textColor="@color/button_text"
+                android:textColor="@color/game_button_text"
                 android:stateListAnimator="@null"
                 android:text="@string/start_game" />
         </LinearLayout>

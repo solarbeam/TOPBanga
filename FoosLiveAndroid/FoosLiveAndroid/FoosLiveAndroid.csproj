@@ -141,12 +141,12 @@
     <Compile Include="Model\EFragmentId.cs" />
     <Compile Include="Fragments\InfoFragment.cs" />
     <Compile Include="Fragments\SettingsFragment.cs" />
-    <Compile Include="Interface\IFrameGrabber.cs" />
     <Compile Include="GameActivity.cs" />
     <Compile Include="Fragments\MainMenu\MainMenuButtonsFragment.cs" />
     <Compile Include="Fragments\MainMenu\MainMenuFragment.cs" />
     <Compile Include="Fragments\MainMenu\ModeMenuButtonsFragment.cs" />
     <Compile Include="Util\Database\DatabaseExecutor.cs" />
+    <Compile Include="Util\Detection\ObjectDetector.cs" />
     <Compile Include="Util\Interface\IDetector.cs" />
     <Compile Include="Util\Interface\IGameTracker.cs" />
     <Compile Include="Util\Interface\IWrite.cs" />
@@ -157,7 +157,6 @@
     <Compile Include="Util\Sounds\SoundAlerts.cs" />
     <Compile Include="Util\Interface\IAlert.cs" />
     <Compile Include="Util\Sounds\EAlert.cs" />
-    <Compile Include="Util\Database\DatabaseConnection.cs" />
     <Compile Include="Util\Sounds\PlayerOGG.cs" />
     <Compile Include="Model\ERequestId.cs" />
   </ItemGroup>
@@ -209,6 +208,7 @@
   <ItemGroup>
     <Folder Include="Resources\raw\" />
     <Folder Include="Util\CameraUtil\" />
+    <Folder Include="Util\Database\" />
   </ItemGroup>
   <ItemGroup>
     <AndroidResource Include="Resources\drawable\ic_logo.xml" />

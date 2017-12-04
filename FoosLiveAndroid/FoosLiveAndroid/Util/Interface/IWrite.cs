@@ -1,10 +1,8 @@
-﻿using System;
-
-namespace FoosLiveAndroid.TOPBanga.Interface
+﻿namespace FoosLiveAndroid.Util.Interface
 {
     public interface IWrite
     {
-        void Write(String ev);
+        void Write(string ev);
         void Close();
     }
 }

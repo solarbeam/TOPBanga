@@ -1,71 +1,120 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using Emgu.CV;
-using Emgu.CV.Structure;
-using Emgu.CV.Cvb;
-using FoosLiveAndroid.TOPBanga.Interface;
-using Emgu.CV.Util;
-using Emgu.CV.CvEnum;
 using System.Drawing;
+using System.Linq;
+using Android.Util;
+using Emgu.CV;
+using Emgu.CV.Cvb;
+using Emgu.CV.CvEnum;
+using Emgu.CV.Structure;
+using Emgu.CV.Util;
+using FoosLiveAndroid.Util.Interface;
 
-namespace FoosLiveAndroid.TOPBanga.Detection
+namespace FoosLiveAndroid.Util.Detection
 {
+    /// <summary>
+    /// The class contains functions to detect a table by contours and a blob by color
+    /// </summary>
     class ColorDetector : IDetector
     {
+        public static string Tag = "ColorDetector";
+        private const double CannyThreshold = 180.0;
+        private const double CannyThresholdLinking = 120.0;
+        private const int DefaultContourArea = 250;
+        private const int VerticeCount = 4;
+        private const int MinAngle = 80;
+        private const int MaxAngle = 100;
+        private const int DefaultThreshold = 15;
+        private const double MinTableSize = 0.6;
+
+        /// <summary>
+        /// The detector's image, used for calculations
+        /// </summary>
         public Image<Bgr, byte> image { get; set; }
 
+        /// <summary>
+        /// The threshold, which defines the range of colors
+        /// </summary>
         public int Threshold { get; set; }
 
+        [Obsolete("Not used anymore")]
         public Bgr CircleColor { get; set; }
 
+        [Obsolete("Not used anymore")]
         public int CircleWidth { get; set; }
 
-
-        public ColorDetector()
+        private int minContourArea = DefaultContourArea;
+        public int MinContourArea 
         {
-            Threshold = 35; // default threshold
+            get
+            {
+                return minContourArea;
+            }
+            set
+            {
+                if (value > DefaultThreshold)
+                    minContourArea = value;
+                else
+                    Log.Warn(Tag, "minContourArea remains default");
+            }
         }
 
-        public ColorDetector(int threshold)
+
+
+        public void SetSceenSize(int screenWidth, int screenHeight) 
+        {
+            MinContourArea = (int)(screenWidth * screenHeight * MinTableSize);
+        }
+
+        /// <summary>
+        /// Creates the ColorDetector class with the appropriate threshold
+        /// </summary>
+        /// <param name="threshold">The threshold, which will be used to define the range of colors</param>
+        public ColorDetector(int threshold = DefaultThreshold)
         {
             Threshold = threshold;
+            MinContourArea = DefaultContourArea;
+            //minContourArea = (int)(screenWidth * screenHeight * MinTableSize);
         }
 
+        /// <summary>
+        /// Detect a table, using the predefined image, stored in this class
+        /// </summary>
+        /// <param name="rect">Creates the rectangle, holding the positions</param>
+        /// <returns>True if a table was detected. False otherwise</returns>
         public bool DetectTable(out RotatedRect rect)
         {
             bool success = false;
             rect = new RotatedRect();
-            List<RotatedRect> boxList = new List<RotatedRect>();
-            UMat cannyEdges = new UMat();
-            UMat uimage = new UMat();
-            double cannyThreshold = 180.0;
-            double cannyThresholdLinking = 120.0;
-            CvInvoke.CvtColor(this.image, uimage, ColorConversion.Bgr2Gray);
-            CvInvoke.Canny(uimage, cannyEdges, cannyThreshold, cannyThresholdLinking);
+            var boxList = new List<RotatedRect>();
+            var cannyEdges = new UMat();
+            var uimage = new UMat();
+            CvInvoke.CvtColor(image, uimage, ColorConversion.Bgr2Gray);
+            CvInvoke.Canny(uimage, cannyEdges, CannyThreshold, CannyThresholdLinking);
             using (VectorOfVectorOfPoint contours = new VectorOfVectorOfPoint())
             {
                 CvInvoke.FindContours(cannyEdges, contours, null, RetrType.List, ChainApproxMethod.ChainApproxSimple);
-                int count = contours.Size;
-                for (int i = 0; i < count; i++)
+                for (int i = 0; i < contours.Size; i++)
                 {
-                    using (VectorOfPoint contour = contours[i])
-                    using (VectorOfPoint approxContour = new VectorOfPoint())
+                    using (var contour = contours[i])
+                    using (var approxContour = new VectorOfPoint())
                     {
                         CvInvoke.ApproxPolyDP(contour, approxContour, CvInvoke.ArcLength(contour, true) * 0.05, true);
-                        if (CvInvoke.ContourArea(approxContour, false) > 250) //only consider contours with area greater than 250
+
+                        // Todo: patikrinti ar ContourArea pakeista į minContourArea veikia gerai
+                        if (CvInvoke.ContourArea(approxContour) > MinContourArea)
                         {
-                            if (approxContour.Size == 4) //The contour has 4 vertices.
+                            if (approxContour.Size == VerticeCount) //The contour has 4 vertices.
                             {
                                 bool isRectangle = true;
-                                System.Drawing.Point[] pts = approxContour.ToArray();
+                                Point[] pts = approxContour.ToArray();
                                 LineSegment2D[] edges = PointCollection.PolyLine(pts, true);
 
                                 for (int j = 0; j < edges.Length; j++)
                                 {
                                     double angle = Math.Abs(
                                        edges[(j + 1) % edges.Length].GetExteriorAngleDegree(edges[j]));
-                                    if (angle < 80 || angle > 100)
+                                    if (angle < MinAngle || angle > MaxAngle)
                                     {
                                         isRectangle = false;
                                         break;
@@ -78,72 +127,86 @@ namespace FoosLiveAndroid.TOPBanga.Detection
                     }
                 }
             }
-            if (boxList.Count > 0)
+            if (success = (boxList.Count > 0))
             {
-                success = true;
                 boxList.OrderByDescending(b => b.Size);
                 rect = boxList[0];
-            }   
+            }
             return success;
         }
 
+        /// <summary>
+        /// Detects a ball using the predefined image, stored in this class,
+        /// and the specific Hsv
+        /// </summary>
+        /// <param name="ballHsv">The Hsv values, which are to be used in calculations</param>
+        /// <param name="rect">The rectangle, which holds the information about the blob, if such was found</param>
+        /// <returns>True if a ball was detected. False otherwise</returns>
         public bool DetectBall(Hsv ballHsv, out Rectangle rect)
         {
             //default returns
-            bool success = false;
             rect = new Rectangle();
-            Image<Hsv, byte> hsvImg = image.Convert<Hsv,byte>();
 
-            Image<Gray, byte> imgFiltered;
+            // Will change this in order to optimize
+            Image<Hsv, byte> hsvImg = image.Convert<Hsv, byte>();
 
+            // Define the upper and lower limits of the Hue and Saturation values
             Hsv lowerLimit = new Hsv(ballHsv.Hue - Threshold, ballHsv.Satuation - Threshold, ballHsv.Value - Threshold);
             Hsv upperLimit = new Hsv(ballHsv.Hue + Threshold, ballHsv.Satuation + Threshold, ballHsv.Value + Threshold);
 
-            imgFiltered = hsvImg.InRange(lowerLimit,upperLimit);
+            // Use an intermediary to filter on different channels
+            Image<Gray, byte>[] intermediary = hsvImg.Split();
+            intermediary[0] = intermediary[0].InRange(new Gray(lowerLimit.Hue), new Gray(upperLimit.Hue));
+            intermediary[1] = intermediary[1].InRange(new Gray(lowerLimit.Satuation), new Gray(upperLimit.Satuation));
 
-            BlobDetector detector = new BlobDetector();
-            CvBlobs points = new CvBlobs();
-            uint count;
+            // Join the two channels together
+            Image<Gray, byte> imgFiltered = intermediary[0].And(intermediary[1]);
 
-            count = detector.GetBlobs(imgFiltered, points);
+            // Cleanup
+            intermediary[0].Dispose();
+            intermediary[1].Dispose();
+            intermediary[2].Dispose();
 
+            //imgFiltered = hsvImg.InRange(lowerLimit,upperLimit);
+
+            // Will be added as an attribute to this class
+            var detector = new BlobDetector();
+
+            // Define the class, which will store information about blobs found
+            var points = new CvBlobs();
+
+            // Get the blobs found out of the filtered image and the count
+            var count = detector.GetBlobs(imgFiltered, points);
+
+            // Cleanup the filtered image, as it will not be needed anymore
             imgFiltered.Dispose();
 
+            // If there were 0 blobs, return false
             if (count == 0)
             {
-                success = false;
                 points.Dispose();
                 return false;
             }
 
-            /**
-             * Get the biggest blob
-             */
-            var enumerator = points.GetEnumerator();
+            // Get the biggest blob by going through all of them
             CvBlob biggestBlob = null;
-            int biggestArea = 0;
-            foreach(var pair in points)
+            var biggestArea = 0;
+            foreach (var pair in points)
             {
-                if ( biggestArea < pair.Value.Area )
+                if (biggestArea < pair.Value.Area)
                 {
                     biggestArea = pair.Value.Area;
                     biggestBlob = pair.Value;
                 }
             }
-
-            if (points.Count != 0)
-            {
-                //this.image.Draw(points[1].BoundingBox, new Bgr(255,255,255), 2);
-                success = true;
-            }  
+            //this.image.Draw(points[1].BoundingBox, new Bgr(255,255,255), 2);
+            var success = points.Count != 0;
 
             if (success)
             {
-                /**
-                 * Deep copy the blob
-                 */
+                // Deep copy the blob's information
                 rect = new Rectangle(new Point(biggestBlob.BoundingBox.X, biggestBlob.BoundingBox.Y),
-                                        new Size(biggestBlob.BoundingBox.Size.Width, biggestBlob.BoundingBox.Height));
+                                        new System.Drawing.Size(biggestBlob.BoundingBox.Size.Width, biggestBlob.BoundingBox.Height));
             }
 
             points.Dispose();

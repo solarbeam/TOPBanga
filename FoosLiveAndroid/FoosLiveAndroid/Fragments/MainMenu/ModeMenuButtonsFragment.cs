@@ -11,23 +11,22 @@ using Android.Views;
 using Android.Widget;
 using FoosLiveAndroid.Model;
 
-namespace FoosLiveAndroid.Fragments
+namespace FoosLiveAndroid.Fragments.MainMenu
 {
     public class ModeMenuButtonsFragment : Fragment
     {
-        // used for debugging
-        public static new string Tag = "ModeMenuButtonsFragment";
+        public new static string Tag = "ModeMenuButtonsFragment";
 
-        private View view;
-        private Button liveButton;
-        private Button fromFileButton;
+        private View _view;
+        private Button _liveButton;
+        private Button _fromFileButton;
         // target permissions list
-        readonly string [] PermissionsCamera = 
+        private readonly string [] _permissionsCamera = 
         {
-          Manifest.Permission.Camera,
+          Manifest.Permission.Camera
         };
 
-        private IOnFragmentInteractionListener interactionListener;
+        private IOnFragmentInteractionListener _interactionListener;
 
         public static Fragment NewInstance()
         {
@@ -38,12 +37,12 @@ namespace FoosLiveAndroid.Fragments
         {
             try
             {
-                interactionListener = (IOnFragmentInteractionListener)context;
+                _interactionListener = (IOnFragmentInteractionListener)context;
             }
-            catch (InvalidCastException e)
+            catch (InvalidCastException)
             {
                 Log.Error(Tag, "IOnFragmentInteractionListener not implemented in parent activity");
-                throw e;
+                throw;
             }
 
             base.OnAttach(context);
@@ -51,17 +50,17 @@ namespace FoosLiveAndroid.Fragments
 
         public override View OnCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
         {
-            interactionListener.UpdateTitle(GetString(Resource.String.choose_mode));
+            _interactionListener.UpdateTitle(GetString(Resource.String.choose_mode));
 
-            view = inflater.Inflate(Resource.Layout.mode_menu_items, container, false);
+            _view = inflater.Inflate(Resource.Layout.mode_menu_items, container, false);
 
             GetReferencesFromLayout();
 
             //set up click events
-            liveButton.Click += InitialiseCameraActivity;
-            fromFileButton.Click += StartVideoPickActivity;
+            _liveButton.Click += InitialiseCameraActivity;
+            _fromFileButton.Click += StartVideoPickActivity;
 
-            return view;
+            return _view;
         }
 
         /// <summary>
@@ -70,7 +69,7 @@ namespace FoosLiveAndroid.Fragments
         /// <param name="data">Video uri</param>
         private void StartCameraActivity(Android.Net.Uri data = null) 
         {
-            Intent intent = new Intent(Activity, typeof(GameActivity));
+            var intent = new Intent(Activity, typeof(GameActivity));
             // set video uri as game activity intent data
             if (data != null)
                 intent.SetData(data);
@@ -94,31 +93,31 @@ namespace FoosLiveAndroid.Fragments
 
         private void GetCameraPermission()
         {
-            const string CameraPermission = Manifest.Permission.Camera;
-            if (Context.CheckSelfPermission(CameraPermission) == (int)Permission.Granted)
+            const string cameraPermission = Manifest.Permission.Camera;
+            if (Context.CheckSelfPermission(cameraPermission) == (int)Permission.Granted)
             {
                 StartCameraActivity();
                 return;
             }
 
             //need to request permission
-            if (ShouldShowRequestPermissionRationale(CameraPermission))
+            if (ShouldShowRequestPermissionRationale(cameraPermission))
             {
                 //Explain to the user why we need to read the contacts
-                Android.App.AlertDialog.Builder dialog = new Android.App.AlertDialog.Builder(Context);
-                Android.App.AlertDialog alert = dialog.Create();
+                var dialog = new AlertDialog.Builder(Context);
+                var alert = dialog.Create();
                 alert.SetTitle(GetString(Resource.String.camera_request_explanation_title));
                 alert.SetMessage(GetString(Resource.String.camera_request_explanation_content));
                 alert.SetButton(GetString(Resource.String.dismiss), (c, ev) =>
                 {
                     alert.Dismiss();
-                    RequestPermissions(PermissionsCamera, (int)ERequestId.Camera);
+                    RequestPermissions(_permissionsCamera, (int)ERequestId.Camera);
                 });
                 alert.Show();
                 return;
             }
             //Finally request permissions with the list of permissions and Id
-            RequestPermissions(PermissionsCamera, (int)ERequestId.Camera);
+            RequestPermissions(_permissionsCamera, (int)ERequestId.Camera);
         }
 
         private void StartVideoPickActivity(object sender, EventArgs e)
@@ -131,8 +130,8 @@ namespace FoosLiveAndroid.Fragments
 
         private void GetReferencesFromLayout()
         {
-            liveButton = view.FindViewById<Button>(Resource.Id.liveButton);
-            fromFileButton = view.FindViewById<Button>(Resource.Id.fromFileButton);
+            _liveButton = _view.FindViewById<Button>(Resource.Id.liveButton);
+            _fromFileButton = _view.FindViewById<Button>(Resource.Id.fromFileButton);
         }
 
         public override void OnActivityResult(int requestCode, Result resultCode, Intent data)
@@ -140,9 +139,7 @@ namespace FoosLiveAndroid.Fragments
             base.OnActivityResult(requestCode, resultCode, data);
             if (resultCode == Result.Ok && requestCode == (int)ERequestId.VideoRequest)
             {
-                Snackbar.Make(view, "Not implemented", Snackbar.LengthLong)
-                        .Show();
-                //StartCameraActivity(data.Data);
+                StartCameraActivity(data.Data);
             }
         }
         /// <summary>
@@ -164,7 +161,7 @@ namespace FoosLiveAndroid.Fragments
                         else
                         {
                             // show notification about missing access
-                            Snackbar.Make(view, 
+                            Snackbar.Make(_view, 
                                           GetString(Resource.String.camera_access_missing),
                                           Snackbar.LengthLong)
                                     .Show();

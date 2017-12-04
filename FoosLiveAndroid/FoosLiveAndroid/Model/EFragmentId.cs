@@ -1,10 +1,9 @@
-﻿using System;
-namespace FoosLiveAndroid.Model
+﻿namespace FoosLiveAndroid.Model
 {
     public enum FragmentId
     {
-        Main_menu,
-        Mode_menu,
+        MainMenu,
+        ModeMenu,
         Settings,
         Info
     }
