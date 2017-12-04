@@ -70,6 +70,58 @@
                 android:layout_weight="1"
                 android:text="@string/team2" />
         </LinearLayout>
+        <ImageView
+            android:id="@+id/arrowTop"
+            android:visibility="gone"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:scaleType="fitXY"
+            android:padding="50px"
+            android:scaleX="3"
+            android:scaleY="3"
+            android:layout_marginTop="70dp"
+            android:layout_gravity="top|center_horizontal"
+            android:src="@drawable/arrow_upward"
+            android:adjustViewBounds="true" />
+        <ImageView
+            android:id="@+id/arrowLeft"
+            android:visibility="gone"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:scaleType="fitXY"
+            android:padding="50px"
+            android:scaleX="3"
+            android:scaleY="3"
+            android:layout_marginStart="50dp"
+            android:layout_gravity="center|left"
+            android:src="@drawable/arrow_back"
+            android:adjustViewBounds="true" />
+        <ImageView
+            android:id="@+id/arrowRight"
+            android:visibility="gone"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:scaleType="fitXY"
+            android:padding="50px"
+            android:scaleX="3"
+            android:scaleY="3"
+            android:layout_marginEnd="50dp"
+            android:layout_gravity="center|right"
+            android:src="@drawable/arrow_forward"
+            android:adjustViewBounds="true" />
+        <ImageView
+            android:id="@+id/arrowBot"
+            android:visibility="gone"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:scaleType="fitXY"
+            android:padding="50px"
+            android:scaleX="3"
+            android:scaleY="3"
+            android:layout_marginBottom="70dp"
+            android:layout_gravity="bottom|center_horizontal"
+            android:src="@drawable/arrow_downward"
+            android:adjustViewBounds="true" />
         <LinearLayout
             android:id="@+id/fullscreen_content_bottom_controls"
             android:layout_width="wrap_content"
