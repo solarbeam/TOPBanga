@@ -26,8 +26,8 @@ namespace FoosLiveAndroid
         private const string Tag = "GameActivity";
         private const int camera_width = 1280;
         private const int camera_height = 720;
-        private const int preview_width = 320;
-        private const int preview_height = 180;
+        private const int preview_width = 400;
+        private const int preview_height = 225;
 
         //Sensors context
         private SensorManager _sensorManager;
@@ -113,6 +113,7 @@ namespace FoosLiveAndroid
             // Open the camera
             _gameView.SurfaceTextureListener = this;
             _gameView.SetOnTouchListener(this);
+            CvInvoke.UseOptimized = true;
 
             // Set up sensors
             _sensorManager = (SensorManager)GetSystemService(SensorService);

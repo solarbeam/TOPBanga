@@ -49,7 +49,7 @@ namespace FoosLiveAndroid.Util.Detection
         /// Defines the height of the precalculated goal zone
         ///  using the table's side as reference
         /// </summary>
-        private const float percentageOfSide = 0.10f;
+        private const float percentageOfSide = 0.20f;
 
         /// <summary>
         /// Defines the amount of frames to skip between goal checks

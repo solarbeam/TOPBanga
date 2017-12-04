@@ -57,12 +57,12 @@ namespace FoosLiveAndroid.Util.Detection
         /// </summary>
         private PointF lastBlob;
         private int lastSize = 0;
-        private int sizeDiff = 5;
+        private int sizeDiff = 7;
         /// <summary>
         /// Defines the range, in which the size of the blob is permitted to be
         /// </summary>
         private const float rangeMultiplier = 1.3f;
-        private const int DefaultThreshold = 35;
+        private const int DefaultThreshold = 40;
         private const double MinTableSize = 0.6;
 
         /// <summary>
@@ -212,10 +212,11 @@ namespace FoosLiveAndroid.Util.Detection
             // If the blob was lost for an amount of frames, reset the bounding box
             if (framesLost > framesLostToNewBoundingBox || !this.boxSet)
             {
-                this.box.Width = image.Size.Width;
-                this.box.Height = boxHeight;
-                this.box.X = 0;
-                this.box.Y = image.Size.Height / 2 - boxHeight / 2;
+                this.box.Width = 0;
+                this.box.Height = 0;
+                this.box.X = image.Size.Width / 2;
+                this.box.Y = image.Size.Height / 2;
+                this.box.Inflate(new System.Drawing.Size(boxWidth, boxHeight / 2));
                 framesLost = 0;
                 this.boxSet = true;
             }
@@ -243,6 +244,7 @@ namespace FoosLiveAndroid.Util.Detection
                     biggestBlob = pair.Value;
                     updateBox(biggestBlob);
                     framesLost = 0;
+                    this.lastSize = biggestBlob.Area;
                     break;
                 }
             }
@@ -272,7 +274,6 @@ namespace FoosLiveAndroid.Util.Detection
                 rect = new Rectangle(new Point(biggestBlob.BoundingBox.X, biggestBlob.BoundingBox.Y),
                                         new System.Drawing.Size(biggestBlob.BoundingBox.Size.Width, biggestBlob.BoundingBox.Height));
                 this.lastBlob = biggestBlob.Centroid;
-                this.lastSize = biggestBlob.Area;
             }
             else
             {
@@ -303,12 +304,12 @@ namespace FoosLiveAndroid.Util.Detection
             System.Drawing.Size toInflate = new System.Drawing.Size();
             if (newBlob.Area > 10)
             {
-                toInflate = new System.Drawing.Size(newBlob.BoundingBox.Width * 3 + (int)toAddX * 4,
-                                        newBlob.BoundingBox.Height * 3 + (int)toAddY * 4);
+                toInflate = new System.Drawing.Size(newBlob.BoundingBox.Width * 3 + (int)toAddX * 5,
+                                        newBlob.BoundingBox.Height * 3 + (int)toAddY * 5);
             }
             else
             {
-                toInflate = new System.Drawing.Size(30 + (int)toAddX * 4, 20 + (int)toAddY * 4);
+                toInflate = new System.Drawing.Size(30 + (int)toAddX * 5, 30 + (int)toAddY * 5);
             }
 
             this.box.Inflate(toInflate);
