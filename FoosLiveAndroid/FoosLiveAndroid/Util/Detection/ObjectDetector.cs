@@ -36,7 +36,7 @@ namespace FoosLiveAndroid.Util.Detection
             _mulY = mulY;
 
             // Declare the outline style for the table
-            this.paintRect = new Paint
+            paintRect = new Paint
             {
                 Color = new Color(255, 0, 0)
             };
@@ -44,7 +44,7 @@ namespace FoosLiveAndroid.Util.Detection
             paintRect.StrokeWidth = 5.0f;
 
             // Declare the outline style for the ball
-            this.paintBall = new Paint
+            paintBall = new Paint
             {
                 Color = new Color(0, 255, 0)
             };
@@ -91,11 +91,10 @@ namespace FoosLiveAndroid.Util.Detection
                 var tablePoints = new float[8];
 
                 // Assign them values
-                for (int i = 0, j = 0; i < tablePoints.Length; i += 2, j++)
+                for (int i = 0, j = 0; i < tablePoints.Length; i += 2, j+= 2)
                 {
                     tablePoints[i] = table.GetVertices()[j].X * _mulX;
                     tablePoints[i + 1] = table.GetVertices()[j].Y * _mulY;
-                    j++;
                 }
 
                 // Finally, draw the rectangle

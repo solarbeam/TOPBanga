@@ -46,6 +46,11 @@ namespace FoosLiveAndroid.Util.Detection
         public RectF zoneTwo;
 
         /// <summary>
+        /// Defines the maximum number of edges a table can have
+        /// </summary>
+        private const int TablePointNumber = 4;
+
+        /// <summary>
         /// Defines the height of the precalculated goal zone
         ///  using the table's side as reference
         /// </summary>
@@ -68,9 +73,8 @@ namespace FoosLiveAndroid.Util.Detection
                 if (ballCoordinates.Count == MAXIMUM_BALL_COORDINATE_NUMBER)
                 {
                     PointF temp = ballCoordinates.Dequeue();
-                    
-                    if (temp != null)
-                        temp.Dispose();
+
+                    temp?.Dispose();
                 }
                 last_ball_coordinates = value;
                 ballCoordinates.Enqueue(last_ball_coordinates);
@@ -93,7 +97,7 @@ namespace FoosLiveAndroid.Util.Detection
         /// <param name="points">The coordinates of the table</param>
         public void SetTable(PointF[] points)
         {
-            if (points.Length != 4)
+            if (points.Length != TablePointNumber)
                 return;
 
             // Calculate the different zones, using the points given
@@ -136,19 +140,19 @@ namespace FoosLiveAndroid.Util.Detection
                 if (point == null)
                 {
                     // It is, so check if a goal is about to occur
-                    if (ballInFirstGoalZone == true && framesLost == GOAL_FRAMES_TO_COUNT_GOAL)
+                    if (ballInFirstGoalZone && framesLost == GOAL_FRAMES_TO_COUNT_GOAL)
                     {
                         // Fire the goal event for the first team
-                        this.BlueScore++;
+                        BlueScore++;
                         GoalEvent(this, EventArgs.Empty);
                         cooldown = MAXIMUM_BALL_COORDINATE_NUMBER;
                         return;
                     }
                     else
-                        if (ballInSecondGoalZone == true && framesLost == GOAL_FRAMES_TO_COUNT_GOAL)
+                        if (ballInSecondGoalZone && framesLost == GOAL_FRAMES_TO_COUNT_GOAL)
                     {
                         // Fire the goal event for the second team
-                        this.RedScore++;
+                        RedScore++;
                         GoalEvent(this, EventArgs.Empty);
                         cooldown = MAXIMUM_BALL_COORDINATE_NUMBER;
                         return;
