@@ -29,7 +29,7 @@ namespace FoosLiveAndroid
         private const int preview_width = 320;
         private const int preview_height = 180;
 
-        //Sensors area
+        //Sensors context
         private SensorManager _sensorManager;
         private Sensor _rotationSensor;
         private SensorStatus _lastAccuracy;
@@ -50,7 +50,7 @@ namespace FoosLiveAndroid
         private float _roll;
 
         private float _referencePointRoll;
-        //---------------------
+        //---------------------------------------
 
         // A constant for upscaling the positions
         private float upscaleMultiplierX;
@@ -60,6 +60,7 @@ namespace FoosLiveAndroid
         private TextView _score;
         private TextureView _gameView;
         private SurfaceView _surfaceView;
+        // Guideline UI elements
         private ImageView _arrowTop;
         private ImageView _arrowLeft;
         private ImageView _arrowRight;
@@ -116,7 +117,7 @@ namespace FoosLiveAndroid
             // Set up sensors
             _sensorManager = (SensorManager)GetSystemService(SensorService);
             _rotationSensor = _sensorManager.GetDefaultSensor(SensorType.RotationVector);
-
+            // Set up vibrator
             _vibrator = (Vibrator)GetSystemService(VibratorService);
         }
 
@@ -290,7 +291,6 @@ namespace FoosLiveAndroid
             if ( _gameButton.Visibility != ViewStates.Gone )
             {
                 //image = image ?? new Image<Hsv, byte>(_gameView.GetBitmap(preview_width, preview_height));
-                // kaskart pasiima naują
                 image = new Image<Hsv, byte>(_gameView.GetBitmap(preview_width, preview_height));
                 UpdateButton(e);
             }
@@ -445,7 +445,9 @@ namespace FoosLiveAndroid
                 }
                 else 
                 {
+                    #pragma warning disable CS0618 // Type or member is obsolete
                     _vibrator.Vibrate(_vibrationPattern, 0);
+                    #pragma warning restore CS0618 // Type or member is obsolete
                 }
                 _vibrating = true;
             }
