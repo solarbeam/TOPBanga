@@ -15,6 +15,7 @@ using System.Drawing;
 using Android.Support.V4.Content;
 using Android.Graphics.Drawables;
 using Android.Util;
+using FoosLiveAndroid.Util;
 
 namespace FoosLiveAndroid
 {
@@ -120,6 +121,7 @@ namespace FoosLiveAndroid
 
         public void OnSurfaceTextureUpdated(SurfaceTexture surface)
         {
+            Log.Debug("", .GetHistory().blueTeamName);
             /**
              * Declare temporary variables
              */
