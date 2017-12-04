@@ -144,7 +144,7 @@
     <Compile Include="Fragments\MainMenu\MainMenuButtonsFragment.cs" />
     <Compile Include="Fragments\MainMenu\MainMenuFragment.cs" />
     <Compile Include="Fragments\MainMenu\ModeMenuButtonsFragment.cs" />
-    <Compile Include="Util\Database\DatabaseExecutor.cs" />
+    <Compile Include="Util\Database\DatabaseManager.cs" />
     <Compile Include="Util\Detection\ObjectDetector.cs" />
     <Compile Include="Util\Interface\IDetector.cs" />
     <Compile Include="Util\Interface\IGameTracker.cs" />
@@ -212,9 +212,7 @@
     <AndroidResource Include="Resources\values\Dimens.xml" />
     <AndroidResource Include="Resources\values-v21\style.xml" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Util\Database\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <AndroidResource Include="Resources\drawable\ic_logo.xml" />
   </ItemGroup>
