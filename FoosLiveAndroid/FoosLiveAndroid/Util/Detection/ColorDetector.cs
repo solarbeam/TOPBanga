@@ -24,13 +24,70 @@ namespace FoosLiveAndroid.Util.Detection
         private const int VerticeCount = 4;
         private const int MinAngle = 80;
         private const int MaxAngle = 100;
-        private const int DefaultThreshold = 15;
+
+        /// <summary>
+        /// False if the box field is null
+        /// True if the box field is not null
+        /// </summary>
+        private bool boxSet = false;
+        private bool started = false;
+        private Rectangle preliminaryBlob;
+        /// <summary>
+        /// Defines the bounding box, in which we search for the blob
+        /// </summary>
+        private Rectangle box;
+        /// <summary>
+        /// Defines the starting box's width
+        /// </summary>
+        private int boxWidth = 40;
+        /// <summary>
+        /// Defines the starting box's height
+        /// </summary>
+        private int boxHeight = 40;
+        /// <summary>
+        /// Count how many frames a blob was not detected
+        /// </summary>
+        private int framesLost = 0;
+        /// <summary>
+        /// Defines the count of frames a blob is allowed to not be detected
+        /// </summary>
+        private const int framesLostToNewBoundingBox = 40;
+        /// <summary>
+        /// Defines the last calculated size of the blob
+        /// </summary>
+        private PointF lastBlob;
+        /// <summary>
+        /// Defines the last known size of the blob
+        /// </summary>
+        private int lastSize = 0;
+        /// <summary>
+        /// Defines the permitted size difference between blobs
+        /// </summary>
+        private int SizeDiff = 7;
+        /// <summary>
+        /// Defines the limit for the bounding box sizing algorithm
+        /// </summary>
+        private const int MinBlobSize = 10;
+
+        /// <summary>
+        /// Defines the multipliers for the bounding box sizing algorithm
+        /// </summary>
+        private const int MulDeltaX = 5;
+        private const int MulDeltaY = 5;
+        private const int MulDeltaWidth = 3;
+        private const int MulDeltaHeight = 3;
+        private const int MinWidth = 30;
+        private const int MinHeight = 30;
+
+        private const int DefaultThreshold = 40;
         private const double MinTableSize = 0.6;
 
         /// <summary>
         /// The detector's image, used for calculations
         /// </summary>
-        public Image<Bgr, byte> image { get; set; }
+        public Image<Hsv, byte> image { get; set; }
+
+        private BlobDetector blobDetector;
 
         /// <summary>
         /// The threshold, which defines the range of colors
@@ -74,6 +131,8 @@ namespace FoosLiveAndroid.Util.Detection
         {
             Threshold = threshold;
             MinContourArea = DefaultContourArea;
+            box = new Rectangle();
+            blobDetector = new BlobDetector();
             //minContourArea = (int)(screenWidth * screenHeight * MinTableSize);
         }
 
@@ -132,6 +191,11 @@ namespace FoosLiveAndroid.Util.Detection
                 boxList.OrderByDescending(b => b.Size);
                 rect = boxList[0];
             }
+
+            // Cleanup
+            cannyEdges.Dispose();
+            uimage.Dispose();
+
             return success;
         }
 
@@ -141,77 +205,129 @@ namespace FoosLiveAndroid.Util.Detection
         /// </summary>
         /// <param name="ballHsv">The Hsv values, which are to be used in calculations</param>
         /// <param name="rect">The rectangle, which holds the information about the blob, if such was found</param>
+        /// <param name="blobBox">Defines the rectangle, in which we search for the blob</param>
         /// <returns>True if a ball was detected. False otherwise</returns>
-        public bool DetectBall(Hsv ballHsv, out Rectangle rect)
+        public bool DetectBall(Hsv ballHsv, out Rectangle rect, out Rectangle blobBox)
         {
             //default returns
             rect = new Rectangle();
-
-            // Will change this in order to optimize
-            Image<Hsv, byte> hsvImg = image.Convert<Hsv, byte>();
 
             // Define the upper and lower limits of the Hue and Saturation values
             Hsv lowerLimit = new Hsv(ballHsv.Hue - Threshold, ballHsv.Satuation - Threshold, ballHsv.Value - Threshold);
             Hsv upperLimit = new Hsv(ballHsv.Hue + Threshold, ballHsv.Satuation + Threshold, ballHsv.Value + Threshold);
 
-            // Use an intermediary to filter on different channels
-            Image<Gray, byte>[] intermediary = hsvImg.Split();
-            intermediary[0] = intermediary[0].InRange(new Gray(lowerLimit.Hue), new Gray(upperLimit.Hue));
-            intermediary[1] = intermediary[1].InRange(new Gray(lowerLimit.Satuation), new Gray(upperLimit.Satuation));
-
-            // Join the two channels together
-            Image<Gray, byte> imgFiltered = intermediary[0].And(intermediary[1]);
-
-            // Cleanup
-            intermediary[0].Dispose();
-            intermediary[1].Dispose();
-            intermediary[2].Dispose();
-
-            //imgFiltered = hsvImg.InRange(lowerLimit,upperLimit);
-
-            // Will be added as an attribute to this class
-            var detector = new BlobDetector();
+            Image<Gray, byte> imgFiltered = image.InRange(lowerLimit, upperLimit);
 
             // Define the class, which will store information about blobs found
             var points = new CvBlobs();
 
             // Get the blobs found out of the filtered image and the count
-            var count = detector.GetBlobs(imgFiltered, points);
+            var count = blobDetector.GetBlobs(imgFiltered, points);
+
+            // If the blob was lost for an amount of frames, reset the bounding box
+            if (framesLost > framesLostToNewBoundingBox || !this.boxSet)
+            {
+                box.Width = 0;
+                box.Height = 0;
+                box.X = image.Size.Width / 2;
+                box.Y = image.Size.Height / 2;
+                box.Inflate(new System.Drawing.Size(boxWidth, boxHeight / 2));
+                framesLost = 0;
+                boxSet = true;
+            }
 
             // Cleanup the filtered image, as it will not be needed anymore
             imgFiltered.Dispose();
+
+            blobBox = box;
 
             // If there were 0 blobs, return false
             if (count == 0)
             {
                 points.Dispose();
+                framesLost++;
                 return false;
             }
-
-            // Get the biggest blob by going through all of them
+            
             CvBlob biggestBlob = null;
-            var biggestArea = 0;
-            foreach (var pair in points)
+            foreach (var pair in points.OrderByDescending(e => e.Value.Area))
             {
-                if (biggestArea < pair.Value.Area)
+                // Check if the blob is within the predefined bounding box and is of a given size
+                if (this.box.Contains((int)pair.Value.Centroid.X, (int)pair.Value.Centroid.Y))
                 {
-                    biggestArea = pair.Value.Area;
+                    // It is, so we pressume it to be the ball
                     biggestBlob = pair.Value;
+                    updateBox(biggestBlob);
+                    framesLost = 0;
+                    lastSize = biggestBlob.Area;
+                    break;
                 }
             }
-            //this.image.Draw(points[1].BoundingBox, new Bgr(255,255,255), 2);
-            var success = points.Count != 0;
+
+            // If a blob wasn't found, find the one with the area in a range close to the last one
+            if (biggestBlob == null)
+            {
+                foreach (var blob in points)
+                {
+                    if (blob.Value.Area > ( lastSize - SizeDiff ) && blob.Value.Area < ( lastSize + SizeDiff ) )
+                    {
+                        biggestBlob = blob.Value;
+                        lastBlob = biggestBlob.Centroid;
+                        updateBox(blob.Value);
+                        break;
+                    }
+                }
+            }
+
+            // Check if a blob was found
+            var success = biggestBlob != null;
+            blobBox = box;
 
             if (success)
             {
                 // Deep copy the blob's information
                 rect = new Rectangle(new Point(biggestBlob.BoundingBox.X, biggestBlob.BoundingBox.Y),
                                         new System.Drawing.Size(biggestBlob.BoundingBox.Size.Width, biggestBlob.BoundingBox.Height));
+                this.lastBlob = biggestBlob.Centroid;
+            }
+            else
+            {
+                // Welp, we tried to find the ball
+                framesLost++;
             }
 
+            // Cleanup
             points.Dispose();
 
             return success;
+        }
+        private void updateBox(CvBlob newBlob)
+        {
+            box = newBlob.BoundingBox;
+            float toAddX = 0, toAddY = 0;
+            if (lastBlob != null)
+            {
+                toAddX = lastBlob.X - newBlob.Centroid.X;
+                toAddY = lastBlob.Y - newBlob.Centroid.Y;
+
+                if (toAddX < 0)
+                    toAddX *= -1;
+                if (toAddY < 0)
+                    toAddY *= -1;
+            }
+
+            System.Drawing.Size toInflate = new System.Drawing.Size();
+            if (newBlob.Area > MinBlobSize)
+            {
+                toInflate = new System.Drawing.Size(newBlob.BoundingBox.Width * MulDeltaWidth + (int)toAddX * MulDeltaX,
+                                        newBlob.BoundingBox.Height * MulDeltaHeight + (int)toAddY * MulDeltaY);
+            }
+            else
+            {
+                toInflate = new System.Drawing.Size(MinWidth + (int)toAddX * MulDeltaX, MinHeight + (int)toAddY * MulDeltaY);
+            }
+
+            box.Inflate(toInflate);
         }
     }
 }

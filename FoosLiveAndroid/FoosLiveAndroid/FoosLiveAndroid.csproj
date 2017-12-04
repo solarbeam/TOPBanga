@@ -186,6 +186,10 @@
     <AndroidResource Include="Resources\mipmap-xhdpi\Icon_round.png" />
     <AndroidResource Include="Resources\mipmap-xxhdpi\Icon_round.png" />
     <AndroidResource Include="Resources\mipmap-xxxhdpi\Icon_round.png" />
+    <AndroidResource Include="Resources\drawable\arrow_back.xml" />
+    <AndroidResource Include="Resources\drawable\arrow_downward.xml" />
+    <AndroidResource Include="Resources\drawable\arrow_forward.xml" />
+    <AndroidResource Include="Resources\drawable\arrow_upward.xml" />
   </ItemGroup>
   <ItemGroup>
     <AndroidResource Include="Resources\mipmap-hdpi\Icon.png" />

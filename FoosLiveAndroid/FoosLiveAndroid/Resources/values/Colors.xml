@@ -14,4 +14,6 @@
 	<color name="game_button_clicked">#F6B7DCFA</color>
 	<color name="status_text">#FFFFFF</color>
 	<color name="status">#66000000</color>
+	<color name="arrow">#FFFFFF</color>
+<!--	#605E6268-->
 </resources>
