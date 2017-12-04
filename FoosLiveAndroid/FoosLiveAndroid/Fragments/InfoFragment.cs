@@ -9,7 +9,8 @@ namespace FoosLiveAndroid.Fragments
 {
     public class InfoFragment : Fragment
     {
-        private new const string Tag = "InfoFragment";
+        static readonly new string Tag = typeof(InfoFragment).Name;
+
         private View _view;
         private IOnFragmentInteractionListener _interactionListener;
 
