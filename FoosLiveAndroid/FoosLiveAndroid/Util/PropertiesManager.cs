@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using Android.Content;
+using Android.Util;
 using Java.Util;
 
 namespace FoosLiveAndroid.Util
@@ -33,24 +34,28 @@ namespace FoosLiveAndroid.Util
         /// <param name="key">Configuration value key</param>
         public static string GetProperty(String key)
         {
-            return _properties?.GetProperty(key);
+            var temp =  _properties?.GetProperty(key);
+            return temp;
         }
 
         public static int GetIntProperty(String key)
         {
             Int32.TryParse(_properties?.GetProperty(key), out var tempVal);
+            Log.Debug("Properties", $"int {key}: {tempVal}");
             return tempVal;
         } 
 
         public static float GetFloatProperty(String key)
         {
             float.TryParse(_properties?.GetProperty(key), out var tempVal);
+            Log.Debug("Properties", $"float {key}: {tempVal}");
             return tempVal;
         } 
 
         public static double GetDoubleProperty(String key)
         {
             double.TryParse(_properties?.GetProperty(key), out var tempVal);
+            Log.Debug("Properties", $"double {key}: {tempVal}");
             return tempVal;
         } 
     }       

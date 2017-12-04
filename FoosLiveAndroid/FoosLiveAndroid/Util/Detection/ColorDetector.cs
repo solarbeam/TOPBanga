@@ -80,7 +80,6 @@ namespace FoosLiveAndroid.Util.Detection
         private readonly int MulDeltaHeight = PropertiesManager.GetIntProperty("multiplier_delta_height");
         private readonly int MinWidth = PropertiesManager.GetIntProperty("min_width");
         private readonly int MinHeight = PropertiesManager.GetIntProperty("min_height");
-        private readonly double MinTableSize = PropertiesManager.GetDoubleProperty("min_table_size");
 
         /// <summary>
         /// The detector's image, used for calculations
@@ -95,27 +94,7 @@ namespace FoosLiveAndroid.Util.Detection
         public int Threshold { get; set; }
 
         private int minContourArea;
-        public int MinContourArea 
-        {
-            get
-            {
-                return minContourArea;
-            }
-            set
-            {
-                if (value > DefaultThreshold)
-                    minContourArea = value;
-                else
-                    Log.Warn(Tag, "minContourArea remains default");
-            }
-        }
-
-
-
-        public void SetSceenSize(int screenWidth, int screenHeight) 
-        {
-            MinContourArea = (int)(screenWidth * screenHeight * MinTableSize);
-        }
+        public int MinContourArea { get; set; }
 
         /// <summary>
         /// Creates the ColorDetector class with the appropriate threshold
@@ -126,7 +105,6 @@ namespace FoosLiveAndroid.Util.Detection
             MinContourArea = DefaultContourArea;
             box = new Rectangle();
             blobDetector = new BlobDetector();
-            //minContourArea = (int)(screenWidth * screenHeight * MinTableSize);
         }
 
         /// <summary>
