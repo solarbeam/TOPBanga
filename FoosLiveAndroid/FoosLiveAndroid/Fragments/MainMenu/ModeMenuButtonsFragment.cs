@@ -15,7 +15,7 @@ namespace FoosLiveAndroid.Fragments.MainMenu
 {
     public class ModeMenuButtonsFragment : Fragment
     {
-        public new static string Tag = "ModeMenuButtonsFragment";
+        static readonly new string Tag = typeof(ModeMenuButtonsFragment).Name;
 
         private View _view;
         private Button _liveButton;

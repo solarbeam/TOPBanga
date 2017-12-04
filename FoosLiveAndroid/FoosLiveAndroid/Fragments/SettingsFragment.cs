@@ -10,7 +10,7 @@ namespace FoosLiveAndroid.Fragments
 {
     public class SettingsFragment : Fragment
     {
-        private new const string Tag = "SettingsFragment";
+        static readonly new string Tag = typeof(SettingsFragment).Name;
 
         private View _view;
         private Button _team1ScoreSoundButton;
@@ -48,7 +48,7 @@ namespace FoosLiveAndroid.Fragments
             _view = inflater.Inflate(Resource.Layout.fragment_settings, container, false);
 
             GetReferencesFromLayout();
-            
+
             // Todo: set up button click events
 
             //Todo: set up sound adapter from model
@@ -92,7 +92,8 @@ namespace FoosLiveAndroid.Fragments
             if (adapter == null) throw new ArgumentNullException(nameof(adapter));
             _dialogBuilder = _dialogBuilder ?? new AlertDialog.Builder(Context);
             _dialogBuilder.SetTitle($"Choose {title}");
-            _dialogBuilder.SetAdapter(adapter, (dialog, item) => {
+            _dialogBuilder.SetAdapter(adapter, (dialog, item) =>
+            {
 
             });
             var soundPickDialog = _dialogBuilder.Create();

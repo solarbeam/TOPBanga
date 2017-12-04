@@ -7,14 +7,15 @@ using FoosLiveAndroid.Model;
 using FoosLiveAndroid.Fragments;
 using Android.Content.PM;
 using FoosLiveAndroid.Fragments.MainMenu;
+using FoosLiveAndroid.Util;
 
 namespace FoosLiveAndroid
 {
-    [Activity(Label = "Fooslive", MainLauncher = true, Icon = "@mipmap/icon_round",
+    [Activity(Label = "Fooslive", Icon = "@mipmap/icon_round",
               ScreenOrientation = ScreenOrientation.Portrait)]
     public class MenuActivity : AppCompatActivity, IOnFragmentInteractionListener
     {
-        private const string Tag = "MenuActivity";
+        static readonly string Tag = typeof(MenuActivity).Name;
 
         // Todo: replace with fragmentmanager 
         private Fragment _previousFragment;

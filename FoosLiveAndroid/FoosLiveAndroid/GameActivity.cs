@@ -24,7 +24,7 @@ namespace FoosLiveAndroid
     public class GameActivity : Activity, TextureView.ISurfaceTextureListener, View.IOnTouchListener, MediaPlayer.IOnPreparedListener, 
     ISensorEventListener
     {
-        private const string Tag = "GameActivity";
+        static readonly string Tag = typeof(GameActivity).Name;
         private const int camera_width = 1280;
         private const int camera_height = 720;
         private const int preview_width = 400;
@@ -243,7 +243,9 @@ namespace FoosLiveAndroid
             else
                 // We use a camera, so release it
                 camera.Release();
-
+            
+            _sensorManager.UnregisterListener(this);
+            StopVibration();
             return true;
         }
 
@@ -409,7 +411,7 @@ namespace FoosLiveAndroid
                 _roll = orientation[2] * -57;
 
                 ProcessPosition();
-                Log.Debug("ROTATION", $"Pitch: {_pitch}, roll: {_roll}");
+                //Log.Debug("ROTATION", $"Pitch: {_pitch}, roll: {_roll}");
             }
         }
 
