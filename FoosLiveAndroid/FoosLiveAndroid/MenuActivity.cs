@@ -7,6 +7,7 @@ using FoosLiveAndroid.Model;
 using FoosLiveAndroid.Fragments;
 using Android.Content.PM;
 using FoosLiveAndroid.Fragments.MainMenu;
+using FoosLiveAndroid.Util;
 
 namespace FoosLiveAndroid
 {
@@ -39,6 +40,9 @@ namespace FoosLiveAndroid
             FragmentManager.BeginTransaction()
                            .Replace(Resource.Id.menu_content, _fragment = MainMenuFragment.NewInstance())
                            .Commit();
+
+            //getting cfg values 
+            //PropertiesManager.GetProperty("test");
         }
 
         /// <summary>

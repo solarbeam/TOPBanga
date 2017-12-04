@@ -240,7 +240,9 @@ namespace FoosLiveAndroid
             else
                 // We use a camera, so release it
                 camera.Release();
-
+            
+            _sensorManager.UnregisterListener(this);
+            StopVibration();
             return true;
         }
 
@@ -407,7 +409,7 @@ namespace FoosLiveAndroid
                 _roll = orientation[2] * -57;
 
                 ProcessPosition();
-                Log.Debug("ROTATION", $"Pitch: {_pitch}, roll: {_roll}");
+                //Log.Debug("ROTATION", $"Pitch: {_pitch}, roll: {_roll}");
             }
         }
 

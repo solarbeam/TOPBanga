@@ -2,6 +2,7 @@
 using Android.App;
 using Android.Content;
 using Android.Support.V7.App;
+using FoosLiveAndroid.Util;
 
 namespace FoosLiveAndroid
 {
@@ -22,8 +23,9 @@ namespace FoosLiveAndroid
         async void LoadResources()
         {
             // Todo: initialise resources here
+            PropertiesManager.Initialise(this);
 
-            await Task.Delay(1000);// simulate loading
+            await Task.Delay(500);// simulate loading
 
             StartActivity(new Intent(Application.Context, typeof(MenuActivity)));
         }
