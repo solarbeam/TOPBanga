@@ -25,10 +25,10 @@ namespace FoosLiveAndroid
     ISensorEventListener
     {
         static readonly string Tag = typeof(GameActivity).Name;
-        private const int camera_width = 1280;
-        private const int camera_height = 720;
-        private const int preview_width = 400;
-        private const int preview_height = 225;
+        private readonly int camera_width = PropertiesManager.GetIntProperty("camera_width");
+        private readonly int camera_height = PropertiesManager.GetIntProperty("camera_height");
+        private readonly int preview_width = PropertiesManager.GetIntProperty("preview_width");
+        private readonly int preview_height = PropertiesManager.GetIntProperty("preview_height");
 
         //Sensors context
         private SensorManager _sensorManager;
@@ -36,16 +36,21 @@ namespace FoosLiveAndroid
         private SensorStatus _lastAccuracy;
 
         private Vibrator _vibrator;
-        private long[] _vibrationPattern = { 0, 100, 1000 };
+        private readonly long[] _vibrationPattern = 
+        { 
+            PropertiesManager.GetIntProperty("vibration_pattern_timing1"), 
+            PropertiesManager.GetIntProperty("vibration_pattern_timing2"), 
+            PropertiesManager.GetIntProperty("vibration_pattern_timing3")
+        };
+
+        private readonly int vibrationRepeatIndex = PropertiesManager.GetIntProperty("vibration_repeat_index");
         private bool _vibrating = false;
 
-        private const int PitchOffset = 2;
-        private const int RollOffset = 2;
-
-        private const int SuggestedPitchMin = 35;
-        private const int SuggestedPitchMax = 50;
-
-        private const int MaxRollDeviaton = 4;
+        private readonly int PitchOffset = PropertiesManager.GetIntProperty("pitch_offset");
+        private readonly int RollOffset = PropertiesManager.GetIntProperty("roll_offset");
+        private readonly int SuggestedPitchMin = PropertiesManager.GetIntProperty("suggested_pitch_min");
+        private readonly int SuggestedPitchMax = PropertiesManager.GetIntProperty("suggested_pitch_max");
+        private readonly int MaxRollDeviaton = PropertiesManager.GetIntProperty("max_roll_deviation");
 
         private float _pitch;
         private float _roll;
@@ -94,6 +99,7 @@ namespace FoosLiveAndroid
         protected override void OnCreate(Bundle savedInstanceState)
         {
             base.OnCreate(savedInstanceState);
+
             SetContentView(Resource.Layout.activity_game);
 
             //hides notification bar
@@ -445,7 +451,7 @@ namespace FoosLiveAndroid
                 // Todo: optimise checking
                 if ((int)Build.VERSION.SdkInt >= 26)
                 {
-                    _vibrator.Vibrate(VibrationEffect.CreateWaveform(_vibrationPattern, 2));
+                    _vibrator.Vibrate(VibrationEffect.CreateWaveform(_vibrationPattern, vibrationRepeatIndex));
                 }
                 else 
                 {

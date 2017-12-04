@@ -56,7 +56,7 @@ namespace FoosLiveAndroid.Fragments.MainMenu
 
             GetReferencesFromLayout();
 
-            //set up click events
+            //Set up click events
             _liveButton.Click += InitialiseCameraActivity;
             _fromFileButton.Click += StartVideoPickActivity;
 
@@ -70,7 +70,7 @@ namespace FoosLiveAndroid.Fragments.MainMenu
         private void StartCameraActivity(Android.Net.Uri data = null) 
         {
             var intent = new Intent(Activity, typeof(GameActivity));
-            // set video uri as game activity intent data
+            // Set video uri as game activity intent data
             if (data != null)
                 intent.SetData(data);
             StartActivity(intent);
@@ -103,7 +103,7 @@ namespace FoosLiveAndroid.Fragments.MainMenu
             //need to request permission
             if (ShouldShowRequestPermissionRationale(cameraPermission))
             {
-                //Explain to the user why we need to read the contacts
+                //Explain to the user why we need to use the camera
                 var dialog = new AlertDialog.Builder(Context);
                 var alert = dialog.Create();
                 alert.SetTitle(GetString(Resource.String.camera_request_explanation_title));
@@ -134,6 +134,12 @@ namespace FoosLiveAndroid.Fragments.MainMenu
             _fromFileButton = _view.FindViewById<Button>(Resource.Id.fromFileButton);
         }
 
+        /// <summary>
+        /// Called on result of VideoPickActivity 
+        /// </summary>
+        /// <param name="requestCode">Request code.</param>
+        /// <param name="resultCode">Result code.</param>
+        /// <param name="data">Data.</param>
         public override void OnActivityResult(int requestCode, Result resultCode, Intent data)
         {
             base.OnActivityResult(requestCode, resultCode, data);

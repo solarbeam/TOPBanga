@@ -1,7 +1,6 @@
 ﻿using System;
 using System.IO;
 using Android.Content;
-using Android.Util;
 using Java.Util;
 
 namespace FoosLiveAndroid.Util
@@ -36,5 +35,23 @@ namespace FoosLiveAndroid.Util
         {
             return _properties?.GetProperty(key);
         }
+
+        public static int GetIntProperty(String key)
+        {
+            Int32.TryParse(_properties?.GetProperty(key), out var tempVal);
+            return tempVal;
+        } 
+
+        public static float GetFloatProperty(String key)
+        {
+            float.TryParse(_properties?.GetProperty(key), out var tempVal);
+            return tempVal;
+        } 
+
+        public static double GetDoubleProperty(String key)
+        {
+            double.TryParse(_properties?.GetProperty(key), out var tempVal);
+            return tempVal;
+        } 
     }       
 }
