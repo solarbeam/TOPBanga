@@ -118,6 +118,7 @@ namespace FoosLiveAndroid.Util.Detection
                 _controller.LastBallCoordinates = new PointF(ball.X * _mulX, ball.Y * _mulY);
             }
             else
+                // No ball was detected, so we let the GameController know that we lost it
                 _controller.LastBallCoordinates = null;
 
             return true;
