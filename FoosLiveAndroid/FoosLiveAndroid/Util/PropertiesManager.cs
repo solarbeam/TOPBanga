@@ -8,12 +8,16 @@ namespace FoosLiveAndroid.Util
 {
     public static class PropertiesManager
     {
-        private const string configFileName = "app.properties";
+        private const string ConfigFileName = "app.properties";
         private static Properties _properties;
 
+        /// <summary>
+        /// Initialise _properties attribute 
+        /// </summary>
+        /// <param name="context">Context.</param>
         public static void Initialise(Context context)
         {
-            using (var streamReader = new StreamReader(context.Assets.Open(configFileName)))
+            using (var streamReader = new StreamReader(context.Assets.Open(ConfigFileName)))
             {
                 var rawResource = streamReader.BaseStream;
                 _properties = new Properties();
