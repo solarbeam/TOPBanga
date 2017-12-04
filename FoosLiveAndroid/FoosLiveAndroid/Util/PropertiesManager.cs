@@ -8,6 +8,7 @@ namespace FoosLiveAndroid.Util
 {
     public static class PropertiesManager
     {
+        static readonly string Tag = typeof(PropertiesManager).Name;
         private const string ConfigFileName = "app.properties";
         private static Properties _properties;
 
@@ -28,35 +29,52 @@ namespace FoosLiveAndroid.Util
         }
 
         /// <summary>
-        /// Search value using a key from config file
+        /// Searches value using a key from config file
         /// </summary>
         /// <returns>The configuration value OR null if value not found or manager not initialised</returns>
         /// <param name="key">Configuration value key</param>
         public static string GetProperty(String key)
         {
-            var temp =  _properties?.GetProperty(key);
-            return temp;
+            string property = _properties?.GetProperty(key);
+            if (property == null)
+            {
+                Log.Error(Tag, $"Property {key} not found");
+                property = String.Empty;
+            }
+                
+            return property;
         }
 
+        /// <summary>
+        /// Searches value using a key from config file and parses it to int
+        /// </summary>
+        /// <returns>Int property</returns>
+        /// <param name="key">Configuration value key</param>
         public static int GetIntProperty(String key)
         {
-            Int32.TryParse(_properties?.GetProperty(key), out var tempVal);
-            Log.Debug("Properties", $"int {key}: {tempVal}");
-            return tempVal;
+            var property = _properties?.GetProperty(key);
+            return Int32.Parse(property);
         } 
-
+        /// <summary>
+        /// Searches value using a key from config file and parses it to float
+        /// </summary>
+        /// <returns>Float property</returns>
+        /// <param name="key">Configuration value key</param>
         public static float GetFloatProperty(String key)
         {
-            float.TryParse(_properties?.GetProperty(key), out var tempVal);
-            Log.Debug("Properties", $"float {key}: {tempVal}");
-            return tempVal;
+            var property = _properties?.GetProperty(key);
+            return float.Parse(property);
         } 
 
+        /// <summary>
+        /// Searches value using a key from config file and parses it to double
+        /// </summary>
+        /// <returns>Double property</returns>
+        /// <param name="key">Configuration value key</param>
         public static double GetDoubleProperty(String key)
         {
-            double.TryParse(_properties?.GetProperty(key), out var tempVal);
-            Log.Debug("Properties", $"double {key}: {tempVal}");
-            return tempVal;
+            var property = _properties?.GetProperty(key);
+            return double.Parse(property);
         } 
     }       
 }

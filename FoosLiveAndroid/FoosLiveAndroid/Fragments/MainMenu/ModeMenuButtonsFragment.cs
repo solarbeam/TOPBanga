@@ -151,9 +151,9 @@ namespace FoosLiveAndroid.Fragments.MainMenu
         /// <summary>
         /// Called when permission request result is received
         /// </summary>
-        /// <param name="requestCode">Request code.</param>
-        /// <param name="permissions">Permissions.</param>
-        /// <param name="grantResults">Grant results.</param>
+        /// <param name="requestCode">The request code passed in RequestPermissions(permission, code)</param>
+        /// <param name="permissions">The requested permissions</param>
+        /// <param name="grantResults">The grant results for the corresponding permissions which is either Permission.Granted or Permission.Denied</param>
         public override void OnRequestPermissionsResult(int requestCode, string[] permissions, Permission[] grantResults)
         {
             switch (requestCode)
