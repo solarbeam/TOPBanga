@@ -464,6 +464,7 @@ namespace FoosLiveAndroid
         {
             base.OnPause();
             _sensorManager.UnregisterListener(this);
+            StopVibration();
         }
 
         protected override void OnResume()
