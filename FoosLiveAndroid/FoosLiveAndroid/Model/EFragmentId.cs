@@ -5,6 +5,7 @@
         MainMenu,
         ModeMenu,
         Settings,
+        History,
         Info
     }
 }

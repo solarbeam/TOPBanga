@@ -161,6 +161,10 @@
     <Compile Include="SplashActivity.cs" />
     <Compile Include="Resources\Resource.Designer.cs" />
     <Compile Include="Util\PropertiesManager.cs" />
+    <Compile Include="Fragments\HistoryFragment.cs" />
+    <Compile Include="Model\History.cs" />
+    <Compile Include="Model\Interface\IHistory.cs" />
+    <Compile Include="Fragments\HistoryListAdapter.cs" />
   </ItemGroup>
   <ItemGroup>
     <AndroidNativeLibrary Include="lib\armeabi-v7a\libcvextern.so" />
@@ -193,6 +197,8 @@
     <AndroidResource Include="Resources\drawable\arrow_forward.xml" />
     <AndroidResource Include="Resources\drawable\arrow_upward.xml" />
     <AndroidResource Include="Resources\drawable\splash_screen.xml" />
+    <AndroidResource Include="Resources\layout\fragment_history.axml" />
+    <AndroidResource Include="Resources\layout\fragment_history_item.axml" />
   </ItemGroup>
   <ItemGroup>
     <AndroidResource Include="Resources\mipmap-hdpi\Icon.png" />
@@ -218,6 +224,9 @@
   </ItemGroup>
   <ItemGroup>
     <AndroidAsset Include="Assets\app.properties" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Model\Interface\" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\Android\Xamarin.Android.CSharp.targets" />
   <Import Project="..\packages\Xamarin.Android.Support.Annotations.26.1.0.1\build\MonoAndroid80\Xamarin.Android.Support.Annotations.targets" Condition="Exists('..\packages\Xamarin.Android.Support.Annotations.26.1.0.1\build\MonoAndroid80\Xamarin.Android.Support.Annotations.targets')" />

@@ -1,6 +1,8 @@
 ﻿using System.Net;
 using System.IO;
 using System.Collections.Generic;
+using FoosLiveAndroid.Model.Interface;
+using FoosLiveAndroid.Model;
 
 namespace FoosLiveAndroid.Util.Database
 {
@@ -23,8 +25,8 @@ namespace FoosLiveAndroid.Util.Database
             return (response != null && response.Equals(OperationSuccess));
         }
 
-        public static List<History> GetHistory() {
-            List<History> toReturn = new List<History>();
+        public static List<IHistory> GetHistory() {
+            List<IHistory> toReturn = new List<IHistory>();
             HttpWebRequest httpWebRequest = (HttpWebRequest)WebRequest.Create(ConnectionUrl);
             httpWebRequest.Method = "POST";
             StreamWriter streamWriter = new StreamWriter(httpWebRequest.GetRequestStream());
@@ -39,22 +41,6 @@ namespace FoosLiveAndroid.Util.Database
                 toReturn.Add(new History(splitted));
             }
             return toReturn;
-        }
-    }
-
-    public class History
-    {
-        public string blueTeamName;
-        public string redTeamName;
-        public int blueTeamPoints;
-        public int redTeamPoints;
-
-        public History(string[] input)
-        {
-            this.blueTeamName = input[0];
-            this.redTeamName = input[1];
-            this.blueTeamPoints = int.Parse(input[2]);
-            this.redTeamPoints = int.Parse(input[3]);
         }
     }
 }

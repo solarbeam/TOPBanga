@@ -87,6 +87,9 @@ namespace FoosLiveAndroid
                 case FragmentId.Settings:
                     _fragment = SettingsFragment.NewInstance();
                     break;
+                case FragmentId.History:
+                    _fragment = HistoryFragment.NewInstance();
+                    break;
                 case FragmentId.Info:
                     _fragment = InfoFragment.NewInstance();
                     break;
