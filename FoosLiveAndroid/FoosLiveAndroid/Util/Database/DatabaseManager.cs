@@ -45,5 +45,8 @@ namespace FoosLiveAndroid.Util.Database
             }
             return toReturn;
         }
+
+        //Todo: transfer & replace
+        public static List<IHistory> tempDataStorage;
     }
 }

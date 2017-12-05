@@ -20,7 +20,8 @@
     <string name="team1_win_sound_label">TEAM 1 win sound</string>
     <string name="team2_win_sound_label">TEAM 2 win sound</string>
 	<!--History-->
-	
+	<string name="error_loading">Oops! Something went wrong.</string>
+    <string name="history_empty">No records found.</string>
     <!--Game-->
     <string name="start_game">Start game</string>
     <string name="end_game">End game</string>
