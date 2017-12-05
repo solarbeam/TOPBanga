@@ -3,6 +3,8 @@ using System.IO;
 using System.Collections.Generic;
 using FoosLiveAndroid.Model.Interface;
 using FoosLiveAndroid.Model;
+using System.Threading.Tasks;
+using Android.Util;
 
 namespace FoosLiveAndroid.Util.Database
 {
@@ -25,18 +27,19 @@ namespace FoosLiveAndroid.Util.Database
             return (response != null && response.Equals(OperationSuccess));
         }
 
-        public static List<IHistory> GetHistory() {
+        public static async Task<List<IHistory>> GetHistory() {
             List<IHistory> toReturn = new List<IHistory>();
             HttpWebRequest httpWebRequest = (HttpWebRequest)WebRequest.Create(ConnectionUrl);
             httpWebRequest.Method = "POST";
             StreamWriter streamWriter = new StreamWriter(httpWebRequest.GetRequestStream());
             streamWriter.Write("GetHistory");
             streamWriter.Flush();
-            HttpWebResponse httpWebResponse = (HttpWebResponse)httpWebRequest.GetResponse();
+            HttpWebResponse httpWebResponse = (HttpWebResponse) await httpWebRequest.GetResponseAsync();
             StreamReader streamReader = new StreamReader(httpWebResponse.GetResponseStream());
             string response;
             while ((response = streamReader.ReadLine()) != null)
             {
+                Log.Debug("", response);
                 string[] splitted = response.Split(';');
                 toReturn.Add(new History(splitted));
             }

@@ -18,6 +18,7 @@ namespace FoosLiveAndroid.Fragments
         private View _view;
         private IOnFragmentInteractionListener _interactionListener;
         private RecyclerView _historyRecyclerView;
+        private HistoryListAdapter adapter;
 
         public static Fragment NewInstance()
         {
@@ -41,6 +42,8 @@ namespace FoosLiveAndroid.Fragments
 
         public override View OnCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
         {
+
+            
             _interactionListener.UpdateTitle(GetString(Resource.String.history));
             _view = inflater.Inflate(Resource.Layout.fragment_history, container, false);
 
@@ -49,15 +52,22 @@ namespace FoosLiveAndroid.Fragments
             var layoutManager = new LinearLayoutManager(Activity);
             _historyRecyclerView.SetLayoutManager(layoutManager);
 
-            List<IHistory> historyList = DatabaseManager.GetHistory();
+
 
             // Instantiate the adapter and pass in its data source:
-            HistoryListAdapter adapter = new HistoryListAdapter(historyList);
+
 
             // Plug the adapter into the RecyclerView:
+            SetUpHistory();
             _historyRecyclerView.SetAdapter(adapter);
-
             return _view;
+        }
+
+        private async void SetUpHistory() {
+            List<IHistory> historyList = await DatabaseManager.GetHistory();
+            Log.Debug("LIST SIZE", historyList.Count.ToString());
+            adapter = new HistoryListAdapter(historyList);
+            adapter.NotifyDataSetChanged();
         }
 
         private void GetReferencesFromLayout()
