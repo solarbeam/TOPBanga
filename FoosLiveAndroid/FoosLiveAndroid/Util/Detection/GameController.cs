@@ -1,8 +1,6 @@
 using Android.Graphics;
-using Emgu.CV.Structure;
 using System;
 using System.Collections.Generic;
-using Android.Graphics;
 
 namespace FoosLiveAndroid.Util.Detection
 {
@@ -28,16 +26,16 @@ namespace FoosLiveAndroid.Util.Detection
         /// <summary>
         /// The amount of positions to hold in the queue
         /// </summary>
-        private const int MAXIMUM_BALL_COORDINATE_NUMBER = 100;
+        private readonly int MaximumBallCoordinatesNumber = PropertiesManager.GetIntProperty("maximum_ball_coordinate_number");
         /// <summary>
         /// The minimum amount of frames in the goal zone in order for
         /// the goal to be accepted
         /// </summary>
-        private const int GOAL_FRAMES_TO_COUNT_GOAL = 10;
+        private readonly int GoalFramesToCountGoal = PropertiesManager.GetIntProperty("goal_frames_to_count_goal");
         /// <summary>
         /// Holds the coordinates of the last position of the ball
         /// </summary>
-        private PointF last_ball_coordinates;
+        private PointF lastBallCoordinates;
 
         /// <summary>
         /// Defines the goal zones, which hold the point of no return for the ball
@@ -54,7 +52,7 @@ namespace FoosLiveAndroid.Util.Detection
         /// Defines the height of the precalculated goal zone
         ///  using the table's side as reference
         /// </summary>
-        private const float percentageOfSide = 0.20f;
+        private readonly float percentageOfSide = PropertiesManager.GetFloatProperty("percentage_of_side");
 
         /// <summary>
         /// Defines the amount of frames to skip between goal checks
@@ -66,18 +64,18 @@ namespace FoosLiveAndroid.Util.Detection
         /// </summary>
         public PointF LastBallCoordinates
         {
-            get => last_ball_coordinates;
+            get => lastBallCoordinates;
 
             set
             {
-                if (ballCoordinates.Count == MAXIMUM_BALL_COORDINATE_NUMBER)
+                if (ballCoordinates.Count == MaximumBallCoordinatesNumber)
                 {
                     PointF temp = ballCoordinates.Dequeue();
 
                     temp?.Dispose();
                 }
-                last_ball_coordinates = value;
-                ballCoordinates.Enqueue(last_ball_coordinates);
+                lastBallCoordinates = value;
+                ballCoordinates.Enqueue(lastBallCoordinates);
                 OnNewFrame();
             }
         }
@@ -140,21 +138,21 @@ namespace FoosLiveAndroid.Util.Detection
                 if (point == null)
                 {
                     // It is, so check if a goal is about to occur
-                    if (ballInFirstGoalZone && framesLost == GOAL_FRAMES_TO_COUNT_GOAL)
+                    if (ballInFirstGoalZone && framesLost == GoalFramesToCountGoal)
                     {
                         // Fire the goal event for the first team
                         BlueScore++;
                         GoalEvent(this, EventArgs.Empty);
-                        cooldown = MAXIMUM_BALL_COORDINATE_NUMBER;
+                        cooldown = MaximumBallCoordinatesNumber;
                         return;
                     }
                     else
-                        if (ballInSecondGoalZone && framesLost == GOAL_FRAMES_TO_COUNT_GOAL)
+                        if (ballInSecondGoalZone && framesLost == GoalFramesToCountGoal)
                     {
                         // Fire the goal event for the second team
                         RedScore++;
                         GoalEvent(this, EventArgs.Empty);
-                        cooldown = MAXIMUM_BALL_COORDINATE_NUMBER;
+                        cooldown = MaximumBallCoordinatesNumber;
                         return;
                     }
 
@@ -187,7 +185,7 @@ namespace FoosLiveAndroid.Util.Detection
             }
 
             // To avoid repetetive calculations, set a cooldown counter
-            cooldown = MAXIMUM_BALL_COORDINATE_NUMBER;
+            cooldown = MaximumBallCoordinatesNumber;
         }
     }
 }

@@ -1,7 +1,5 @@
 ﻿using System.Net;
 using System.IO;
-using System.Text;
-using System.Threading;
 using System.Collections.Generic;
 
 namespace FoosLiveAndroid.Util.Database
@@ -9,12 +7,12 @@ namespace FoosLiveAndroid.Util.Database
     public static class DatabaseManager
     {
 
-        private const string CONNECTION_URL = "http://yu-gi-oh.lt/a.php";
-        private const string OPERATION_SUCCESS = "SUCCESS";
+        private static readonly string ConnectionUrl = PropertiesManager.GetProperty("connection_url");
+        private static readonly string OperationSuccess = PropertiesManager.GetProperty("operation_success");
 
         public static bool InsertIntoHistory(string blueTeamName, string redTeamName, int bluePoints, int redPoints)
         {
-            HttpWebRequest httpWebRequest = (HttpWebRequest)WebRequest.Create(CONNECTION_URL);
+            HttpWebRequest httpWebRequest = (HttpWebRequest)WebRequest.Create(ConnectionUrl);
             httpWebRequest.Method = "POST";
             StreamWriter streamWriter = new StreamWriter(httpWebRequest.GetRequestStream());
             streamWriter.Write($"InsertIntoHistory;{blueTeamName};{redTeamName};{bluePoints};{redPoints}");
@@ -22,12 +20,12 @@ namespace FoosLiveAndroid.Util.Database
             HttpWebResponse httpWebResponse = (HttpWebResponse)httpWebRequest.GetResponse();
             StreamReader streamReader = new StreamReader(httpWebResponse.GetResponseStream());
             string response = streamReader.ReadLine();
-            return (response != null && response.Equals(OPERATION_SUCCESS));
+            return (response != null && response.Equals(OperationSuccess));
         }
 
         public static List<History> GetHistory() {
             List<History> toReturn = new List<History>();
-            HttpWebRequest httpWebRequest = (HttpWebRequest)WebRequest.Create(CONNECTION_URL);
+            HttpWebRequest httpWebRequest = (HttpWebRequest)WebRequest.Create(ConnectionUrl);
             httpWebRequest.Method = "POST";
             StreamWriter streamWriter = new StreamWriter(httpWebRequest.GetRequestStream());
             streamWriter.Write("GetHistory");

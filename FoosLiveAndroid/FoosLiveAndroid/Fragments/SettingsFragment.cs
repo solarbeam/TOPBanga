@@ -53,7 +53,7 @@ namespace FoosLiveAndroid.Fragments
 
             //Todo: set up sound adapter from model
             var scoreSoundsAdapter = new ArrayAdapter<string>(
-                Context, Android.Resource.Layout.SimpleSelectableListItem, new string[] { "sound1", "sound2" });
+                Context, Android.Resource.Layout.SimpleListItem1, new string[] { "sound1", "sound2" });
 
             var winSoundsAdapter = new ArrayAdapter<string>(
                 Context, Android.Resource.Layout.SimpleListItem1, new string[] { "sound1", "sound2" });
