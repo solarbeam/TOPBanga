@@ -44,6 +44,11 @@ namespace FoosLiveAndroid.Util.Detection
         public RectF zoneTwo;
 
         /// <summary>
+        /// Defines the rows of foosmen
+        /// </summary>
+        public RectF[] rows;
+
+        /// <summary>
         /// Defines the maximum number of edges a table can have
         /// </summary>
         private const int TablePointNumber = 4;

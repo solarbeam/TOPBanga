@@ -146,6 +146,7 @@
     <Compile Include="Fragments\MainMenu\ModeMenuButtonsFragment.cs" />
     <Compile Include="Util\Database\DatabaseManager.cs" />
     <Compile Include="Util\Detection\ObjectDetector.cs" />
+    <Compile Include="Util\Drawing\AlignZones.cs" />
     <Compile Include="Util\Interface\IDetector.cs" />
     <Compile Include="Util\Interface\IGameTracker.cs" />
     <Compile Include="Util\Interface\IWrite.cs" />

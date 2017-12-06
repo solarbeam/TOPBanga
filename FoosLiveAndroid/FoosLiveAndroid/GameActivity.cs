@@ -16,7 +16,7 @@ using Android.Media;
 using System;
 using Android.Hardware;
 using Android.Runtime;
-
+using FoosLiveAndroid.Util.Drawing;
 
 namespace FoosLiveAndroid
 {
@@ -198,6 +198,10 @@ namespace FoosLiveAndroid
                 video.SetOnPreparedListener(this);
                 return;
             }
+
+            // Draw the align zones
+            Canvas canvas = AlignZones.DrawZones(holder.LockCanvas(), gameController);
+            holder.UnlockCanvasAndPost(canvas);
 
             camera = Camera.Open();
 

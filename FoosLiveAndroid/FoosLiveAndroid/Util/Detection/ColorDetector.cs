@@ -108,69 +108,6 @@ namespace FoosLiveAndroid.Util.Detection
         }
 
         /// <summary>
-        /// Detect a table, using the predefined image, stored in this class
-        /// </summary>
-        /// <param name="rect">Creates the rectangle, holding the positions</param>
-        /// <returns>True if a table was detected. False otherwise</returns>
-        public bool DetectTable(out RotatedRect rect)
-        {
-            bool success = false;
-            rect = new RotatedRect();
-            var boxList = new List<RotatedRect>();
-            var cannyEdges = new UMat();
-            var uimage = new UMat();
-            CvInvoke.CvtColor(image, uimage, ColorConversion.Bgr2Gray);
-            CvInvoke.Canny(uimage, cannyEdges, CannyThreshold, CannyThresholdLinking);
-            using (VectorOfVectorOfPoint contours = new VectorOfVectorOfPoint())
-            {
-                CvInvoke.FindContours(cannyEdges, contours, null, RetrType.List, ChainApproxMethod.ChainApproxSimple);
-                for (int i = 0; i < contours.Size; i++)
-                {
-                    using (var contour = contours[i])
-                    using (var approxContour = new VectorOfPoint())
-                    {
-                        CvInvoke.ApproxPolyDP(contour, approxContour, CvInvoke.ArcLength(contour, true) * 0.05, true);
-
-                        // Todo: patikrinti ar ContourArea pakeista į minContourArea veikia gerai
-                        if (CvInvoke.ContourArea(approxContour) > MinContourArea)
-                        {
-                            if (approxContour.Size == VerticeCount) //The contour has 4 vertices.
-                            {
-                                bool isRectangle = true;
-                                Point[] pts = approxContour.ToArray();
-                                LineSegment2D[] edges = PointCollection.PolyLine(pts, true);
-
-                                for (int j = 0; j < edges.Length; j++)
-                                {
-                                    double angle = Math.Abs(
-                                       edges[(j + 1) % edges.Length].GetExteriorAngleDegree(edges[j]));
-                                    if (angle < MinAngle || angle > MaxAngle)
-                                    {
-                                        isRectangle = false;
-                                        break;
-                                    }
-                                }
-
-                                if (isRectangle) boxList.Add(CvInvoke.MinAreaRect(approxContour));
-                            }
-                        }
-                    }
-                }
-            }
-            if (success = (boxList.Count > 0))
-            {
-                boxList.OrderByDescending(b => b.Size);
-                rect = boxList[0];
-            }
-
-            // Cleanup
-            cannyEdges.Dispose();
-            uimage.Dispose();
-
-            return success;
-        }
-
-        /// <summary>
         /// Detects a ball using the predefined image, stored in this class,
         /// and the specific Hsv
         /// </summary>
@@ -188,6 +125,8 @@ namespace FoosLiveAndroid.Util.Detection
             Hsv upperLimit = new Hsv(ballHsv.Hue + Threshold, ballHsv.Satuation + Threshold, ballHsv.Value + Threshold);
 
             Image<Gray, byte> imgFiltered = image.InRange(lowerLimit, upperLimit);
+            imgFiltered.Erode(1);
+            imgFiltered.Dilate(1);
 
             // Define the class, which will store information about blobs found
             var points = new CvBlobs();
