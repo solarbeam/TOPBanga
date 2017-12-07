@@ -4,6 +4,17 @@ using System.Collections.Generic;
 
 namespace FoosLiveAndroid.Util.Detection
 {
+    public enum Row
+    {
+        RedGoalie,
+        RedDefence,
+        BlueAttack,
+        RedMidfield,
+        BlueMidfield,
+        RedAttack,
+        BlueDefence,
+        BlueGoalie
+    }
     /// <summary>
     /// The class holds the primary functions, required for goal detection
     /// and the predefined attributes for them
@@ -14,6 +25,8 @@ namespace FoosLiveAndroid.Util.Detection
         /// Fired whenever a goal event occurs
         /// </summary>
         public event EventHandler<EventArgs> GoalEvent;
+        public event EventHandler<EventArgs> PositionEvent;
+        public Row currentRow;
         /// <summary>
         /// Defines the current score for the red team
         /// </summary>
@@ -79,7 +92,51 @@ namespace FoosLiveAndroid.Util.Detection
 
                     temp?.Dispose();
                 }
+                
+                // Check which row has the ball
+
                 lastBallCoordinates = value;
+
+                if (lastBallCoordinates != null && rows != null)
+                {
+                    for (int i = 0; i < rows.Length; i++)
+                    {
+                        if (rows[i].Contains(lastBallCoordinates.X, lastBallCoordinates.Y))
+                        {
+                            switch (i)
+                            {
+                                case 0:
+                                    currentRow = Row.RedGoalie;
+                                    break;
+                                case 1:
+                                    currentRow = Row.RedDefence;
+                                    break;
+                                case 2:
+                                    currentRow = Row.BlueAttack;
+                                    break;
+                                case 3:
+                                    currentRow = Row.RedMidfield;
+                                    break;
+                                case 4:
+                                    currentRow = Row.BlueMidfield;
+                                    break;
+                                case 5:
+                                    currentRow = Row.RedAttack;
+                                    break;
+                                case 6:
+                                    currentRow = Row.BlueDefence;
+                                    break;
+                                case 7:
+                                    currentRow = Row.BlueGoalie;
+                                    break;
+                            }
+
+                            PositionEvent(this, EventArgs.Empty);
+                            break;
+                        }
+                    }
+                }
+
                 ballCoordinates.Enqueue(lastBallCoordinates);
                 OnNewFrame();
             }
@@ -119,6 +176,37 @@ namespace FoosLiveAndroid.Util.Detection
         public GameController()
         {
             ballCoordinates = new Queue<PointF>();
+        }
+
+        public void CalculateRows(System.Drawing.Rectangle tableZone)
+        {
+            // Declare constants
+            float[] multipliers = new float[8];
+            multipliers[0] = 0.1158f;
+            multipliers[1] = 0.0623f;
+            multipliers[2] = 0.0865f;
+            multipliers[3] = 0.1005f;
+            multipliers[4] = 0.1145f;
+            multipliers[5] = 0.1348f;
+            multipliers[6] = 0.1832f;
+            multipliers[7] = 0.2124f;
+
+            rows = new RectF[8];
+
+            rows[0] = new RectF(tableZone.Left, tableZone.Top,
+                                tableZone.Right, tableZone.Top + (tableZone.Height * multipliers[0]));
+            
+            for (int i = 1; i < 8; i ++)
+            {
+                float toAdd = 0;
+                for(int j = i; j != 0; j --)
+                {
+                    Console.WriteLine(j);
+                    toAdd += rows[j - 1].Height();
+;                }
+                rows[i] = new RectF(tableZone.Left, rows[i - 1].Bottom,
+                                    tableZone.Right, tableZone.Top + toAdd + (tableZone.Height * multipliers[i]));
+            }
         }
 
         /// <summary>

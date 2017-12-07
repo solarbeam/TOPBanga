@@ -109,6 +109,7 @@ namespace FoosLiveAndroid
             detector = new ColorDetector();
             gameController = new GameController();
             gameController.GoalEvent += GameController_GoalEvent;
+            gameController.PositionEvent += GameController_PositionEvent;
 
             _surfaceView.SetZOrderOnTop(true);
             _surfaceView.Holder.SetFormat(Format.Transparent);
@@ -155,6 +156,11 @@ namespace FoosLiveAndroid
             _score.Text = gameController.BlueScore + " : " + gameController.RedScore;
         }
 
+        private void GameController_PositionEvent(object sender, EventArgs e)
+        {
+            Console.WriteLine(gameController.currentRow);
+        }
+
         /// <summary>
         /// Called whenever the SurfaceTexture is created
         /// </summary>
@@ -188,6 +194,9 @@ namespace FoosLiveAndroid
                 new PointF(w,h)
             });
 
+            Canvas canvas = AlignZones.DrawZones(holder.LockCanvas(), gameController);
+            holder.UnlockCanvasAndPost(canvas);
+
             if ( Intent.Data != null )
             {
                 this.surface = new Surface(surface);
@@ -200,8 +209,7 @@ namespace FoosLiveAndroid
             }
 
             // Draw the align zones
-            Canvas canvas = AlignZones.DrawZones(holder.LockCanvas(), gameController);
-            holder.UnlockCanvasAndPost(canvas);
+            
 
             camera = Camera.Open();
 
