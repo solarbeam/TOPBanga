@@ -1,12 +1,15 @@
 ﻿using System.Threading.Tasks;
 using Android.App;
 using Android.Content;
+using Android.Content.PM;
 using Android.Support.V7.App;
 using FoosLiveAndroid.Util;
 
 namespace FoosLiveAndroid
 {
-    [Activity(Theme = "@style/FoosbalTheme.Splash", MainLauncher = true, NoHistory = true, Label = "Fooslive", Icon = "@mipmap/icon_round")]
+    [Activity(Theme = "@style/FoosbalTheme.Splash", MainLauncher = true,
+              NoHistory = true, Label = "Fooslive", Icon = "@mipmap/icon_round",
+              ScreenOrientation = ScreenOrientation.Portrait)]
     public class SplashActivity : AppCompatActivity
     {
         static readonly string TAG = typeof(SplashActivity).Name;

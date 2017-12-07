@@ -138,7 +138,6 @@ namespace FoosLiveAndroid
             _gameView = FindViewById<TextureView>(Resource.Id.game_content);
             _score = FindViewById<TextView>(Resource.Id.score);
             _surfaceView = FindViewById<SurfaceView>(Resource.Id.surfaceView);
-
             _arrowTop = FindViewById<ImageView>(Resource.Id.arrowTop);
             _arrowLeft = FindViewById<ImageView>(Resource.Id.arrowLeft);
             _arrowRight = FindViewById<ImageView>(Resource.Id.arrowRight);
@@ -479,13 +478,16 @@ namespace FoosLiveAndroid
         protected override void OnPause()
         {
             base.OnPause();
+            // terminate sensor input while not in game activity
             _sensorManager.UnregisterListener(this);
+            // terminate vibration if it's active
             StopVibration();
         }
 
         protected override void OnResume()
         {
             base.OnResume();
+            // renew sensor input on activity resume
             _sensorManager.RegisterListener(this, _rotationSensor, SensorDelay.Normal);
         }
     }
