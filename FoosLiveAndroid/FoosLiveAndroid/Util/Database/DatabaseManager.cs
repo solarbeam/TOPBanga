@@ -1,6 +1,10 @@
 ﻿using System.Net;
 using System.IO;
 using System.Collections.Generic;
+using FoosLiveAndroid.Model.Interface;
+using FoosLiveAndroid.Model;
+using System.Threading.Tasks;
+using Android.Util;
 
 namespace FoosLiveAndroid.Util.Database
 {
@@ -9,6 +13,7 @@ namespace FoosLiveAndroid.Util.Database
 
         private static readonly string ConnectionUrl = PropertiesManager.GetProperty("connection_url");
         private static readonly string OperationSuccess = PropertiesManager.GetProperty("operation_success");
+        private static readonly int GetTimeout = PropertiesManager.GetIntProperty("get_timeout");
 
         public static bool InsertIntoHistory(string blueTeamName, string redTeamName, int bluePoints, int redPoints)
         {
@@ -23,38 +28,24 @@ namespace FoosLiveAndroid.Util.Database
             return (response != null && response.Equals(OperationSuccess));
         }
 
-        public static List<History> GetHistory() {
-            List<History> toReturn = new List<History>();
-            HttpWebRequest httpWebRequest = (HttpWebRequest)WebRequest.Create(ConnectionUrl);
-            httpWebRequest.Method = "POST";
-            StreamWriter streamWriter = new StreamWriter(httpWebRequest.GetRequestStream());
+        public static async Task<List<IHistory>> GetHistory() {
+            var historyData = new List<IHistory>();
+            var request = (HttpWebRequest)WebRequest.Create(ConnectionUrl);
+            request.Method = WebRequestMethods.Http.Post;
+            request.Timeout = GetTimeout;
+            var streamWriter = new StreamWriter(request.GetRequestStream());
             streamWriter.Write("GetHistory");
             streamWriter.Flush();
-            HttpWebResponse httpWebResponse = (HttpWebResponse)httpWebRequest.GetResponse();
-            StreamReader streamReader = new StreamReader(httpWebResponse.GetResponseStream());
+            var httpWebResponse = (HttpWebResponse) await request.GetResponseAsync();
+            var streamReader = new StreamReader(httpWebResponse.GetResponseStream());
             string response;
             while ((response = streamReader.ReadLine()) != null)
             {
+                //Log.Debug("", response);
                 string[] splitted = response.Split(';');
-                toReturn.Add(new History(splitted));
+                historyData.Add(new History(splitted));
             }
-            return toReturn;
-        }
-    }
-
-    public class History
-    {
-        public string blueTeamName;
-        public string redTeamName;
-        public int blueTeamPoints;
-        public int redTeamPoints;
-
-        public History(string[] input)
-        {
-            this.blueTeamName = input[0];
-            this.redTeamName = input[1];
-            this.blueTeamPoints = int.Parse(input[2]);
-            this.redTeamPoints = int.Parse(input[3]);
+            return historyData;
         }
     }
 }

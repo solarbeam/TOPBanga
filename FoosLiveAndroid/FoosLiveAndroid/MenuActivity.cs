@@ -7,7 +7,6 @@ using FoosLiveAndroid.Model;
 using FoosLiveAndroid.Fragments;
 using Android.Content.PM;
 using FoosLiveAndroid.Fragments.MainMenu;
-using FoosLiveAndroid.Util;
 
 namespace FoosLiveAndroid
 {
@@ -75,7 +74,9 @@ namespace FoosLiveAndroid
         /// <summary>
         /// Load the fragment on top of activity view
         /// </summary>
-        public void LoadFragment(FragmentId id)
+        /// <param name="id">Fragment identifier</param>
+        /// <param name="saveState">If set to <c>true</c> save state for navigation</param>
+        public void LoadFragment(FragmentId id, bool saveState = true)
         {
             _previousFragment = _fragment;
             _fragment = null;
@@ -87,6 +88,9 @@ namespace FoosLiveAndroid
                 case FragmentId.Settings:
                     _fragment = SettingsFragment.NewInstance();
                     break;
+                case FragmentId.History:
+                    _fragment = HistoryFragment.NewInstance();
+                    break;
                 case FragmentId.Info:
                     _fragment = InfoFragment.NewInstance();
                     break;
@@ -97,10 +101,11 @@ namespace FoosLiveAndroid
 
             if (_fragment != null)
             {
-                FragmentManager.BeginTransaction()
-                               .Replace(Resource.Id.menu_content, _fragment)
-                               .AddToBackStack(_fragment.Tag)
-                               .Commit();
+                var transaction = FragmentManager.BeginTransaction();
+                transaction.Replace(Resource.Id.menu_content, _fragment);
+                if (saveState)
+                    transaction.AddToBackStack(_fragment.Tag);
+                transaction.Commit();
             }
         }
         /// <summary>
