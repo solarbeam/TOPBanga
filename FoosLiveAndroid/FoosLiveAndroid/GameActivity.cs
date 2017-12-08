@@ -181,7 +181,6 @@ namespace FoosLiveAndroid
                         tempView.Append(' ');
 
                     _eventText.Text = tempView.ToString();
-                    tempView.EnsureCapacity(tempView.Capacity);
                     await Task.Delay(150);
                 }
 
@@ -234,20 +233,18 @@ namespace FoosLiveAndroid
 
             holder.SetFixedSize(w, h);
 
-            // Set temporary points for now
-            gameController.SetTable(new PointF[]
-            {
-                new PointF(0,0),
-                new PointF(w,0),
-                new PointF(0,h),
-                new PointF(w,h)
-            });
-
-            Canvas canvas = AlignZones.DrawZones(holder.LockCanvas(), gameController);
-            holder.UnlockCanvasAndPost(canvas);
-
+            // Check if we use video mode
             if ( Intent.Data != null )
             {
+                // We do, so set the table according to display size
+                gameController.SetTable(new PointF[]
+                {
+                    new PointF(0,0),
+                    new PointF(w,0),
+                    new PointF(0,h),
+                    new PointF(w,h)
+                });
+
                 this.surface = new Surface(surface);
                 video = new MediaPlayer();
                 video.SetDataSource(ApplicationContext, Intent.Data);
@@ -258,7 +255,8 @@ namespace FoosLiveAndroid
             }
 
             // Draw the align zones
-            
+            Canvas canvas = AlignZones.DrawZones(holder.LockCanvas(), gameController);
+            holder.UnlockCanvasAndPost(canvas);
 
             camera = Camera.Open();
 

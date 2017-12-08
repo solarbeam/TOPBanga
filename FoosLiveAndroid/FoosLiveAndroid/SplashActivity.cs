@@ -4,6 +4,9 @@ using Android.Content;
 using Android.Content.PM;
 using Android.Support.V7.App;
 using FoosLiveAndroid.Util;
+using Emgu.CV;
+using Emgu.CV.Structure;
+using Emgu.CV.Cvb;
 
 namespace FoosLiveAndroid
 {
@@ -28,7 +31,18 @@ namespace FoosLiveAndroid
             // Todo: initialise resources here
             PropertiesManager.Initialise(this);
 
-            await Task.Delay(500);// simulate loading
+            // Initialize EmguCv. Trust me, it works
+            Image<Bgr, byte> tempImage = new Image<Bgr, byte>(200, 200, new Bgr(255, 0, 100));
+            Image<Gray, byte> filtered = tempImage.InRange(new Bgr(100, 0, 0), new Bgr(200, 0, 0));
+            CvBlobDetector tempDetector = new CvBlobDetector();
+            CvBlobs blobs = new CvBlobs();
+            tempDetector.Detect(filtered, blobs);
+
+            tempImage.Dispose();
+            filtered.Dispose();
+            blobs.Dispose();
+            tempDetector.Dispose();
+            // Initialization end
 
             StartActivity(new Intent(Application.Context, typeof(MenuActivity)));
         }

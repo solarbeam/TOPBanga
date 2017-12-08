@@ -1,4 +1,5 @@
 using Android.Graphics;
+using Android.Util;
 using System;
 using System.Collections.Generic;
 
@@ -33,6 +34,10 @@ namespace FoosLiveAndroid.Util.Detection
         /// </summary>
         public event EventHandler<EventArgs> GoalEvent;
         public event EventHandler<EventArgs> PositionEvent;
+
+        /// <summary>
+        /// Defines the row the ball is currently in
+        /// </summary>
         public Row currentRow;
         /// <summary>
         /// Defines the current score for the red team
@@ -69,6 +74,19 @@ namespace FoosLiveAndroid.Util.Detection
         /// Defines the rows of foosmen
         /// </summary>
         public RectF[] rows;
+
+        /// <summary>
+        /// Defines whether the ball is in the first goal zone
+        /// </summary>
+        private bool ballInFirstGoalZone = false;
+        /// <summary>
+        /// Defines whether the ball is in the second ball zone
+        /// </summary>
+        private bool ballInSecondGoalZone = false;
+        /// <summary>
+        /// Defines the lost frame counter
+        /// </summary>
+        private int framesLost = 0;
 
         /// <summary>
         /// Defines the maximum number of edges a table can have
@@ -173,12 +191,12 @@ namespace FoosLiveAndroid.Util.Detection
                 return;
 
             // Calculate the different zones, using the points given
-            this.zoneOne = new RectF(points[0].X,
+            zoneOne = new RectF(points[0].X,
                                     points[0].Y,
                                     points[1].X,
                                     (points[2].Y - points[0].Y) * percentageOfSide);
 
-            this.zoneTwo = new RectF(points[0].X, points[2].Y - (points[2].Y - points[0].Y) * percentageOfSide,
+            zoneTwo = new RectF(points[0].X, zoneOne.Bottom,
                                         points[3].X,
                                         points[3].Y);
         }
@@ -227,72 +245,68 @@ namespace FoosLiveAndroid.Util.Detection
         /// </summary>
         private void OnNewFrame()
         {
-            if (cooldown != 0)
+            // Check if this particular point signals that the ball is lost
+            if (lastBallCoordinates == null)
             {
-                cooldown--;
-                return;
-            }
-
-            // Check if there was a goal event for either team
-            bool ballInFirstGoalZone = false;
-            bool ballInSecondGoalZone = false;
-            int framesLost = 0;
-            foreach (var point in ballCoordinates)
-            {
-                // Check if this particular point signals that the ball is lost
-                if (point == null)
+                if (framesLost == GoalFramesToCountGoal)
                 {
                     // It is, so check if a goal is about to occur
-                    if (ballInFirstGoalZone && framesLost == GoalFramesToCountGoal)
+                    if (ballInFirstGoalZone)
                     {
                         // Fire the goal event for the first team
                         BlueScore++;
                         currentEvent = CurrentEvent.BlueGoalOccured;
                         GoalEvent(this, EventArgs.Empty);
-                        cooldown = MaximumBallCoordinatesNumber;
+
+                        // Reset variables to their starting values
+                        framesLost = 0;
+                        ballInFirstGoalZone = false;
+                        ballInSecondGoalZone = false;
+
                         return;
                     }
                     else
-                        if (ballInSecondGoalZone && framesLost == GoalFramesToCountGoal)
+                        if (ballInSecondGoalZone)
                     {
                         // Fire the goal event for the second team
                         RedScore++;
                         currentEvent = CurrentEvent.RedGoalOccured;
                         GoalEvent(this, EventArgs.Empty);
-                        cooldown = MaximumBallCoordinatesNumber;
+
+                        // Reset variables to their starting values
+                        framesLost = 0;
+                        ballInFirstGoalZone = false;
+                        ballInSecondGoalZone = false;
+
                         return;
                     }
-
-                    framesLost++;
-                    continue;
                 }
-                else
-                    // It isn't, so reset the counter
-                    framesLost = 0;
 
-                // Check if the ball is in the first zone
-                if ( zoneOne.Contains(point.X, point.Y) )
-                {
-                    ballInFirstGoalZone = true;
-                    ballInSecondGoalZone = false;
-                    continue;
-                }
-                else
+                framesLost++;
+                return;
+            }
+            else
+                // It isn't, so reset the counter
+                framesLost = 0;
+
+            // Check if the ball is in the first zone
+            if (zoneOne.Contains(lastBallCoordinates.X, lastBallCoordinates.Y))
+            {
+                ballInFirstGoalZone = true;
+                ballInSecondGoalZone = false;
+            }
+            else
                 // Check if the ball is in the second zone
-                    if ( zoneTwo.Contains(point.X, point.Y) )
-                {
-                    ballInSecondGoalZone = true;
-                    ballInFirstGoalZone = false;
-                    continue;
-                }
-
-                // The ball is in neither of the zones, so set the appropriate values
+                if (zoneTwo.Contains(lastBallCoordinates.X, lastBallCoordinates.Y))
+            {
+                ballInSecondGoalZone = true;
+                ballInFirstGoalZone = false;
+            }
+            else
+            {
                 ballInFirstGoalZone = false;
                 ballInSecondGoalZone = false;
             }
-
-            // To avoid repetetive calculations, set a cooldown counter
-            cooldown = MaximumBallCoordinatesNumber;
         }
     }
 }

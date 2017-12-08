@@ -62,6 +62,15 @@ namespace FoosLiveAndroid.Util.Drawing
             // Finally, draw the path
             canvas.DrawPath(contour, paint);
 
+            // Calculate the table based on the outline
+            gameController.SetTable(new Android.Graphics.PointF[]
+            {
+                new Android.Graphics.PointF(0, topY),
+                new Android.Graphics.PointF(canvas.Width, topY),
+                new Android.Graphics.PointF(0, bottomY),
+                new Android.Graphics.PointF(canvas.Width, bottomY)
+            });
+
             return canvas;
         }
     }
