@@ -1,10 +1,11 @@
 ﻿using System;
 using Android.Hardware;
 using Android.Runtime;
+using FoosLiveAndroid.Util.Interface;
 
 namespace FoosLiveAndroid.Util.Sensors
 {
-    public class PositionManager : Java.Lang.Object, ISensorEventListener
+    public class PositionManager : Java.Lang.Object, ISensorEventListener, IPositionManager
     {
 
         private Vibration _vibration;
