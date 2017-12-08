@@ -13,6 +13,7 @@ namespace FoosLiveAndroid.Util.Database
 
         private static readonly string ConnectionUrl = PropertiesManager.GetProperty("connection_url");
         private static readonly string OperationSuccess = PropertiesManager.GetProperty("operation_success");
+        private static readonly int GetTimeout = PropertiesManager.GetIntProperty("get_timeout");
 
         public static bool InsertIntoHistory(string blueTeamName, string redTeamName, int bluePoints, int redPoints)
         {
@@ -28,22 +29,23 @@ namespace FoosLiveAndroid.Util.Database
         }
 
         public static async Task<List<IHistory>> GetHistory() {
-            List<IHistory> toReturn = new List<IHistory>();
-            HttpWebRequest httpWebRequest = (HttpWebRequest)WebRequest.Create(ConnectionUrl);
-            httpWebRequest.Method = "POST";
-            StreamWriter streamWriter = new StreamWriter(httpWebRequest.GetRequestStream());
+            var historyData = new List<IHistory>();
+            var request = (HttpWebRequest)WebRequest.Create(ConnectionUrl);
+            request.Method = WebRequestMethods.Http.Post;
+            request.Timeout = GetTimeout;
+            var streamWriter = new StreamWriter(request.GetRequestStream());
             streamWriter.Write("GetHistory");
             streamWriter.Flush();
-            HttpWebResponse httpWebResponse = (HttpWebResponse) await httpWebRequest.GetResponseAsync();
-            StreamReader streamReader = new StreamReader(httpWebResponse.GetResponseStream());
+            var httpWebResponse = (HttpWebResponse) await request.GetResponseAsync();
+            var streamReader = new StreamReader(httpWebResponse.GetResponseStream());
             string response;
             while ((response = streamReader.ReadLine()) != null)
             {
-                Log.Debug("", response);
+                //Log.Debug("", response);
                 string[] splitted = response.Split(';');
-                toReturn.Add(new History(splitted));
+                historyData.Add(new History(splitted));
             }
-            return toReturn;
+            return historyData;
         }
 
         //Todo: transfer & replace

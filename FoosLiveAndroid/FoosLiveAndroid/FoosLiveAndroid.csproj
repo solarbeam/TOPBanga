@@ -167,6 +167,10 @@
     <Compile Include="Resources\Resource.Designer.cs" />
     <Compile Include="Fragments\LoadingFragment.cs" />
     <Compile Include="Model\TempDataStorage.cs" />
+    <Compile Include="Util\Sensors\PositionManager.cs" />
+    <Compile Include="Util\Interface\IVibration.cs" />
+    <Compile Include="Util\Interface\IPositionManager.cs" />
+    <Compile Include="Util\Vibration.cs" />
   </ItemGroup>
   <ItemGroup>
     <AndroidNativeLibrary Include="lib\armeabi-v7a\libcvextern.so" />
@@ -230,6 +234,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Model\Interface\" />
+    <Folder Include="Util\Sensors\" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\Android\Xamarin.Android.CSharp.targets" />
   <Import Project="..\packages\Xamarin.Android.Support.Annotations.26.1.0.1\build\MonoAndroid80\Xamarin.Android.Support.Annotations.targets" Condition="Exists('..\packages\Xamarin.Android.Support.Annotations.26.1.0.1\build\MonoAndroid80\Xamarin.Android.Support.Annotations.targets')" />

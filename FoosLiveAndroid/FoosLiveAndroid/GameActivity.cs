@@ -16,47 +16,19 @@ using Android.Media;
 using System;
 using Android.Hardware;
 using Android.Runtime;
-
+using FoosLiveAndroid.Util.Sensors;
+using FoosLiveAndroid.Util.Interface;
 
 namespace FoosLiveAndroid
 {
     [Activity(ScreenOrientation = ScreenOrientation.Portrait)]
-    public class GameActivity : Activity, TextureView.ISurfaceTextureListener, View.IOnTouchListener, MediaPlayer.IOnPreparedListener, 
-    ISensorEventListener
+    public class GameActivity : Activity, TextureView.ISurfaceTextureListener, View.IOnTouchListener, MediaPlayer.IOnPreparedListener
     {
         static readonly string Tag = typeof(GameActivity).Name;
         private readonly int camera_width = PropertiesManager.GetIntProperty("camera_width");
         private readonly int camera_height = PropertiesManager.GetIntProperty("camera_height");
         private readonly int preview_width = PropertiesManager.GetIntProperty("preview_width");
         private readonly int preview_height = PropertiesManager.GetIntProperty("preview_height");
-
-        //Sensors context
-        private SensorManager _sensorManager;
-        private Sensor _rotationSensor;
-        private SensorStatus _lastAccuracy;
-
-        private Vibrator _vibrator;
-        private readonly long[] _vibrationPattern = 
-        { 
-            PropertiesManager.GetIntProperty("vibration_pattern_timing1"), 
-            PropertiesManager.GetIntProperty("vibration_pattern_timing2"), 
-            PropertiesManager.GetIntProperty("vibration_pattern_timing3")
-        };
-
-        private readonly int vibrationRepeatIndex = PropertiesManager.GetIntProperty("vibration_repeat_index");
-        private bool _vibrating = false;
-
-        private readonly int PitchOffset = PropertiesManager.GetIntProperty("pitch_offset");
-        private readonly int RollOffset = PropertiesManager.GetIntProperty("roll_offset");
-        private readonly int SuggestedPitchMin = PropertiesManager.GetIntProperty("suggested_pitch_min");
-        private readonly int SuggestedPitchMax = PropertiesManager.GetIntProperty("suggested_pitch_max");
-        private readonly int MaxRollDeviaton = PropertiesManager.GetIntProperty("max_roll_deviation");
-
-        private float _pitch;
-        private float _roll;
-
-        private float _referencePointRoll;
-        //---------------------------------------
 
         // A constant for upscaling the positions
         private float upscaleMultiplierX;
@@ -92,6 +64,8 @@ namespace FoosLiveAndroid
         private bool hsvSelected;
         private Image<Hsv, byte> image;
 
+        private IPositionManager positionManager;
+
         /// <summary>
         /// Called whenever the view is created
         /// </summary>
@@ -122,11 +96,10 @@ namespace FoosLiveAndroid
             _gameView.SetOnTouchListener(this);
             CvInvoke.UseOptimized = true;
 
-            // Set up sensors
-            _sensorManager = (SensorManager)GetSystemService(SensorService);
-            _rotationSensor = _sensorManager.GetDefaultSensor(SensorType.RotationVector);
-            // Set up vibrator
-            _vibrator = (Vibrator)GetSystemService(VibratorService);
+            // Set up sensors & vibration
+            var sensorManager = (SensorManager)GetSystemService(SensorService);
+            var _vibration = new Vibration((Vibrator)GetSystemService(VibratorService));
+            positionManager = new PositionManager(this, sensorManager, _vibration);
         }
 
         /// <summary>
@@ -249,9 +222,8 @@ namespace FoosLiveAndroid
             else
                 // We use a camera, so release it
                 camera.Release();
-            
-            _sensorManager.UnregisterListener(this);
-            StopVibration();
+
+            positionManager.StopListening();
             return true;
         }
 
@@ -365,124 +337,32 @@ namespace FoosLiveAndroid
             _gameButton.Visibility = ViewStates.Gone;
 
             // Base point to check roll value changes 
-            _referencePointRoll = _roll;
-        }
-
-        /// <summary>
-        /// Called on change of sensors accuracy
-        /// </summary>
-        /// <param name="sensor">Sensor</param>
-        /// <param name="accuracy">Accuracy</param>
-        public void OnAccuracyChanged(Sensor sensor, [GeneratedEnum] SensorStatus accuracy)
-        {
-            _lastAccuracy = accuracy;
-        }
-
-        /// <summary>
-        /// Called on change of sensors values
-        /// </summary>
-        /// <param name="e">Sensor event</param>
-        public void OnSensorChanged(SensorEvent e)
-        {
-            // Do not handle low accuracy / unreliable data
-            if (_lastAccuracy == SensorStatus.AccuracyLow || _lastAccuracy == SensorStatus.Unreliable) return;
-
-            if (e.Sensor.Type == SensorType.RotationVector)
-            {
-                float[] rotationMatrix = new float[9];
-                float[] rotationVector = new float[e.Values.Count];
-
-                // extract raw data
-                for (int i = 0; i < rotationVector.Length; i++)
-                    rotationVector[i] = e.Values[i];
-
-                // parse raw data
-                SensorManager.GetRotationMatrixFromVector(rotationMatrix, rotationVector);
-
-                // values for calibration
-                var worldAxisForDeviceAxisX = Android.Hardware.Axis.X;
-                var worldAxisForDeviceAxisY = Android.Hardware.Axis.Y;
-
-                //Calibration 
-                float[] adjustedRotationMatrix = new float[9];
-                SensorManager.RemapCoordinateSystem(rotationMatrix, worldAxisForDeviceAxisX,
-                    worldAxisForDeviceAxisY, adjustedRotationMatrix);
-
-                //Retrieve calibrated data
-                float[] orientation = new float[3];
-                SensorManager.GetOrientation(adjustedRotationMatrix, orientation);
-
-                //Todo: find out what the hell is -57
-                _pitch = orientation[1] * -57;
-                _roll = orientation[2] * -57;
-
-                ProcessPosition();
-                //Log.Debug("ROTATION", $"Pitch: {_pitch}, roll: {_roll}");
-            }
-        }
-
-        private void ProcessPosition()
-        {
-            bool exceedsTop = _pitch > SuggestedPitchMax - PitchOffset;
-            bool exceedsBot = _pitch < SuggestedPitchMin + PitchOffset;
-
-            _arrowTop.Visibility = (exceedsBot) ? ViewStates.Visible : ViewStates.Gone;
-            _arrowBot.Visibility = (exceedsTop) ? ViewStates.Visible : ViewStates.Gone;
-
-            if (_gameButton.Visibility != ViewStates.Gone) return;
-
-            bool exceedsLeft = _roll < _referencePointRoll - MaxRollDeviaton - RollOffset;
-            bool exceedsRight = _roll > _referencePointRoll + MaxRollDeviaton + RollOffset;
-
-            _arrowLeft.Visibility = (exceedsRight) ? ViewStates.Visible : ViewStates.Gone;
-            _arrowRight.Visibility = (exceedsLeft) ? ViewStates.Visible : ViewStates.Gone;
-
-
-            if (exceedsTop || exceedsLeft || exceedsRight || exceedsBot)
-                StartVibration();
-            else
-                StopVibration();
-        }
-
-        private void StartVibration() 
-        {
-            if (!_vibrating)
-            {
-                // Todo: optimise checking
-                if ((int)Build.VERSION.SdkInt >= 26)
-                {
-                    _vibrator.Vibrate(VibrationEffect.CreateWaveform(_vibrationPattern, vibrationRepeatIndex));
-                }
-                else 
-                {
-                    #pragma warning disable CS0618 // Type or member is obsolete
-                    _vibrator.Vibrate(_vibrationPattern, 0);
-                    #pragma warning restore CS0618 // Type or member is obsolete
-                }
-                _vibrating = true;
-            }
-        }
-
-        private void StopVibration()
-        {
-            if (_vibrating)
-            {
-                _vibrator.Cancel();
-                _vibrating = false;
-            }
+            positionManager.CapturePosition();
         }
 
         protected override void OnPause()
         {
             base.OnPause();
-            _sensorManager.UnregisterListener(this);
-            StopVibration();
+            positionManager.StopListening();
         }
 
         protected override void OnResume()
         {
             base.OnResume();
-            _sensorManager.RegisterListener(this, _rotationSensor, SensorDelay.Normal);
+            positionManager.StartListening();
+        }
+
+        public void UpdateGuideline(bool exceedsTop, 
+                                    bool exceedsBot, 
+                                    bool? exceedsLeft = null, 
+                                    bool? exceedsRight = null)
+        {
+            _arrowTop.Visibility = (exceedsBot) ? ViewStates.Visible : ViewStates.Gone;
+            _arrowBot.Visibility = (exceedsTop) ? ViewStates.Visible : ViewStates.Gone;
+
+            if (exceedsLeft == null || exceedsRight == null) return;
+            _arrowLeft.Visibility = (exceedsRight ?? false) ? ViewStates.Visible : ViewStates.Gone;
+            _arrowRight.Visibility = (exceedsLeft ?? false) ? ViewStates.Visible : ViewStates.Gone;
         }
     }
 }
