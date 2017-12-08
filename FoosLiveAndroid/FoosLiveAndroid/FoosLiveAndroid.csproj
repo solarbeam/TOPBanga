@@ -165,7 +165,6 @@
     <Compile Include="Model\Interface\IHistory.cs" />
     <Compile Include="Fragments\HistoryListAdapter.cs" />
     <Compile Include="Resources\Resource.Designer.cs" />
-    <Compile Include="Model\TempDataStorage.cs" />
     <Compile Include="Util\Sensors\PositionManager.cs" />
     <Compile Include="Util\Interface\IVibration.cs" />
     <Compile Include="Util\Interface\IPositionManager.cs" />
