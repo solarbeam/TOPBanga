@@ -17,6 +17,9 @@ using System;
 using Android.Hardware;
 using Android.Runtime;
 using FoosLiveAndroid.Util.Drawing;
+using System.Text;
+using System.Threading.Tasks;
+using System.Threading;
 
 namespace FoosLiveAndroid
 {
@@ -29,6 +32,8 @@ namespace FoosLiveAndroid
         private readonly int camera_height = PropertiesManager.GetIntProperty("camera_height");
         private readonly int preview_width = PropertiesManager.GetIntProperty("preview_width");
         private readonly int preview_height = PropertiesManager.GetIntProperty("preview_height");
+
+        private bool textThreadStarted = false;
 
         //Sensors context
         private SensorManager _sensorManager;
@@ -62,6 +67,7 @@ namespace FoosLiveAndroid
         private float upscaleMultiplierX;
         private float upscaleMultiplierY;
 
+        private TextView _eventText;
         private Button _gameButton;
         private TextView _score;
         private TextureView _gameView;
@@ -143,6 +149,44 @@ namespace FoosLiveAndroid
             _arrowLeft = FindViewById<ImageView>(Resource.Id.arrowLeft);
             _arrowRight = FindViewById<ImageView>(Resource.Id.arrowRight);
             _arrowBot = FindViewById<ImageView>(Resource.Id.arrowBot);
+            _eventText = FindViewById<TextView>(Resource.Id.statusText);
+        }
+
+        private void slideText(String text)
+        {
+            if (textThreadStarted)
+                return;
+
+            textThreadStarted = true;
+
+            RunOnUiThread(async () =>
+            {
+                String temp = text;
+                StringBuilder tempView = new StringBuilder(temp.Length);
+
+                for (int i = 0; i < tempView.Capacity; i++)
+                {
+                    tempView.Append(' ');
+                }
+                _eventText.Text = tempView.ToString();
+
+                for (int i = 0; i < temp.Length * 2; i++)
+                {
+                    tempView.Remove(1, 1);
+                    if (i < temp.Length)
+                    {
+                        tempView.Append(temp[i]);
+                    }
+                    else
+                        tempView.Append(' ');
+
+                    _eventText.Text = tempView.ToString();
+                    tempView.EnsureCapacity(tempView.Capacity);
+                    await Task.Delay(150);
+                }
+
+                textThreadStarted = false;
+            });
         }
 
         /// <summary>
@@ -152,6 +196,11 @@ namespace FoosLiveAndroid
         /// <param name="e">Arguments, which are passed to this function</param>
         private void GameController_GoalEvent(object sender, EventArgs e)
         {
+            if (gameController.currentEvent == CurrentEvent.BlueGoalOccured)
+                slideText("Blue team scored!");
+            else
+                slideText("Red team scored!");
+
             _score.Text = gameController.BlueScore + " : " + gameController.RedScore;
         }
 
@@ -168,6 +217,7 @@ namespace FoosLiveAndroid
         /// <param name="h">The height of the surface, defined as an integer</param>
         public void OnSurfaceTextureAvailable(SurfaceTexture surface, int w, int h)
         {
+            slideText("test test 123");
             _gameView.LayoutParameters = new FrameLayout.LayoutParams(w, h);
 
             // Set the upscaling constant

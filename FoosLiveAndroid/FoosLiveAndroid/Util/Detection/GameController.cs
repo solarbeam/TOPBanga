@@ -15,6 +15,13 @@ namespace FoosLiveAndroid.Util.Detection
         BlueDefence,
         BlueGoalie
     }
+    public enum CurrentEvent
+    {
+        PositionChanged,
+        RedGoalOccured,
+        BlueGoalOccured,
+        None
+    }
     /// <summary>
     /// The class holds the primary functions, required for goal detection
     /// and the predefined attributes for them
@@ -49,6 +56,8 @@ namespace FoosLiveAndroid.Util.Detection
         /// Holds the coordinates of the last position of the ball
         /// </summary>
         private PointF lastBallCoordinates;
+
+        public CurrentEvent currentEvent;
 
         /// <summary>
         /// Defines the goal zones, which hold the point of no return for the ball
@@ -130,6 +139,9 @@ namespace FoosLiveAndroid.Util.Detection
                                     currentRow = Row.BlueGoalie;
                                     break;
                             }
+
+                            if (currentEvent == CurrentEvent.None)
+                                currentEvent = CurrentEvent.PositionChanged;
 
                             PositionEvent(this, EventArgs.Empty);
                             break;
@@ -235,6 +247,7 @@ namespace FoosLiveAndroid.Util.Detection
                     {
                         // Fire the goal event for the first team
                         BlueScore++;
+                        currentEvent = CurrentEvent.BlueGoalOccured;
                         GoalEvent(this, EventArgs.Empty);
                         cooldown = MaximumBallCoordinatesNumber;
                         return;
@@ -244,6 +257,7 @@ namespace FoosLiveAndroid.Util.Detection
                     {
                         // Fire the goal event for the second team
                         RedScore++;
+                        currentEvent = CurrentEvent.RedGoalOccured;
                         GoalEvent(this, EventArgs.Empty);
                         cooldown = MaximumBallCoordinatesNumber;
                         return;
