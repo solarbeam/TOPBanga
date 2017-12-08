@@ -165,7 +165,6 @@
     <Compile Include="Model\Interface\IHistory.cs" />
     <Compile Include="Fragments\HistoryListAdapter.cs" />
     <Compile Include="Resources\Resource.Designer.cs" />
-    <Compile Include="Fragments\LoadingFragment.cs" />
     <Compile Include="Model\TempDataStorage.cs" />
     <Compile Include="Util\Sensors\PositionManager.cs" />
     <Compile Include="Util\Interface\IVibration.cs" />
@@ -205,7 +204,6 @@
     <AndroidResource Include="Resources\drawable\splash_screen.xml" />
     <AndroidResource Include="Resources\layout\fragment_history.axml" />
     <AndroidResource Include="Resources\layout\fragment_history_item.axml" />
-    <AndroidResource Include="Resources\layout\fragment_loading.axml" />
   </ItemGroup>
   <ItemGroup>
     <AndroidResource Include="Resources\mipmap-hdpi\Icon.png" />

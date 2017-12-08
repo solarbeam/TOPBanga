@@ -27,7 +27,6 @@ namespace FoosLiveAndroid.Util.Sensors
         // 0 - left, 1 - right
         private bool?[] _exceedsRoll;
 
-
         private GameActivity _activity;
 
         private bool gameStarted = false;

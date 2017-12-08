@@ -1,17 +1,40 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
+    <RelativeLayout
+        android:id="@+id/loadingLayout"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <ProgressBar
+            android:id="@+id/loadingBar"
+            style="?android:attr/progressBarStyleLarge"
+            android:layout_centerInParent="true"
+            android:layout_width="match_parent"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:indeterminate="true"
+            android:layout_height="wrap_content" />
+        <TextView
+            android:text="@string/error_loading"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:visibility="gone"
+            android:id="@+id/loadingStatusLabel" />
+    </RelativeLayout>
     <android.support.v7.widget.RecyclerView
         android:id="@+id/historyRecyclerView"
         android:scrollbars="vertical"
-        android:layout_marginTop="50px"
+        android:layout_marginTop="20px"
         android:layout_marginStart="50px"
         android:layout_marginEnd="50px"
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
+        android:visibility="gone"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         tools:listitem="@layout/fragment_history_item" />
-</LinearLayout>
+</FrameLayout>

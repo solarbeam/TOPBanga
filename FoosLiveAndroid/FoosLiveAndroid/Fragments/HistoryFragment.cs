@@ -5,6 +5,7 @@ using Android.OS;
 using Android.Support.V7.Widget;
 using Android.Util;
 using Android.Views;
+using Android.Widget;
 using FoosLiveAndroid.Util.Database;
 
 namespace FoosLiveAndroid.Fragments
@@ -13,6 +14,9 @@ namespace FoosLiveAndroid.Fragments
     {
         static readonly new string Tag = typeof(InfoFragment).Name;
 
+        private TextView _loadingStatusLabel;
+        private ProgressBar _progressBar;
+        private RelativeLayout _loadingLayout;
         private View _view;
         private IOnFragmentInteractionListener _interactionListener;
         private RecyclerView _historyRecyclerView;
@@ -37,6 +41,39 @@ namespace FoosLiveAndroid.Fragments
             base.OnAttach(context);
         }
 
+        public async override void OnCreate(Bundle savedInstanceState)
+        {
+            base.OnCreate(savedInstanceState);
+            var _historyList = await DatabaseManager.GetHistory();
+
+            //Todo: replace temporary solution
+            DatabaseManager.tempDataStorage = _historyList;
+
+            Log.Debug("LIST SIZE", _historyList.Count.ToString());
+            // If no data were retrieved, display error and ignore list initialisation
+            if (_historyList == null)
+            {
+                DisplayError();
+                return;
+            }
+
+            // If there are no records, display message and ignore list initialisation
+            if (_historyList.Count == 0)
+            {
+                _loadingStatusLabel.Text = GetString(Resource.String.history_empty);
+                DisplayError();
+                return;
+            }
+            // Hides loading layout and shows history list
+            _loadingLayout.Visibility = ViewStates.Gone;
+            _historyRecyclerView.Visibility = ViewStates.Visible;
+                // Creates adapter for recycler view
+            var adapter = new HistoryListAdapter(DatabaseManager.tempDataStorage);
+            adapter.NotifyDataSetChanged();
+            // Plug the adapter into the RecyclerView:
+            _historyRecyclerView.SetAdapter(adapter);
+        }
+
         public override View OnCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
         {
             _interactionListener.UpdateTitle(GetString(Resource.String.history));
@@ -45,19 +82,29 @@ namespace FoosLiveAndroid.Fragments
 
             var layoutManager = new LinearLayoutManager(Activity);
             _historyRecyclerView.SetLayoutManager(layoutManager);
-            //Todo: change temp solution
-            var adapter = new HistoryListAdapter(DatabaseManager.tempDataStorage);
 
-            // Plug the adapter into the RecyclerView:
-            _historyRecyclerView.SetAdapter(adapter);
+
             return _view;
         }
 
-
-
         private void GetReferencesFromLayout()
         {
+            _loadingLayout = _view.FindViewById<RelativeLayout>(Resource.Id.loadingLayout);
+            //_loadingStatusLabel = _view.FindViewById<TextView>(Resource.Id.loadingStatusLabel);
+            _progressBar = _view.FindViewById<ProgressBar>(Resource.Id.loadingBar);
             _historyRecyclerView = _view.FindViewById<RecyclerView>(Resource.Id.historyRecyclerView);
         }
+
+        /// <summary>
+        /// Displays the loading error.
+        /// </summary>
+        private void DisplayError()
+        {
+            // Hide progress bar
+            _progressBar.Visibility = ViewStates.Gone;
+            // Show message
+            _loadingStatusLabel.Visibility = ViewStates.Visible;
+        }
+
     }
 }

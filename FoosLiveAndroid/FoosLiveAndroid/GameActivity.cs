@@ -334,7 +334,7 @@ namespace FoosLiveAndroid
             // We don't need the button anymore, so hide it
             _gameButton.Visibility = ViewStates.Gone;
 
-            // capture aligned position to show guidelines accordingly
+            // Capture aligned position to show guidelines accordingly
             positionManager.CapturePosition();
         }
 
@@ -356,6 +356,7 @@ namespace FoosLiveAndroid
             _arrowBot.Visibility = (exceedsPitch[0]) ? ViewStates.Visible : ViewStates.Gone;
             _arrowTop.Visibility = (exceedsPitch[1]) ? ViewStates.Visible : ViewStates.Gone;
 
+            // If game is not started, roll guidelines are ignored
             if (exceedsRoll == null) return;
             _arrowRight.Visibility = (exceedsRoll[0] ?? false) ? ViewStates.Visible : ViewStates.Gone;
             _arrowLeft.Visibility = (exceedsRoll[1] ?? false) ? ViewStates.Visible : ViewStates.Gone;

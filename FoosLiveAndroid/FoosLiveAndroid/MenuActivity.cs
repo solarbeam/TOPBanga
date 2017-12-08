@@ -89,10 +89,7 @@ namespace FoosLiveAndroid
                     _fragment = SettingsFragment.NewInstance();
                     break;
                 case FragmentId.History:
-                    if (_previousFragment is LoadingFragment)
-                        _fragment = HistoryFragment.NewInstance();
-                    else 
-                        _fragment = LoadingFragment.NewInstance();
+                    _fragment = HistoryFragment.NewInstance();
                     break;
                 case FragmentId.Info:
                     _fragment = InfoFragment.NewInstance();
