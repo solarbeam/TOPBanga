@@ -22,13 +22,22 @@ namespace FoosLiveAndroid.Util
         public void Start()
         {
             if (_vibrating) return;
-            _vibrator.Vibrate(VibrationEffect.CreateWaveform(_vibrationPattern, vibrationRepeatIndex));
+            if ((int)Build.VERSION.SdkInt >= 26)
+            {
+                _vibrator.Vibrate(VibrationEffect.CreateWaveform(_vibrationPattern, vibrationRepeatIndex));
+            }
+            else 
+            {
+                #pragma warning disable CS0618 // Type or member is obsolete
+                _vibrator.Vibrate(_vibrationPattern, 0);
+                #pragma warning restore CS0618 // Type or member is obsolete
+            }
             _vibrating = true;
         }
 
         public void Stop()
         {
-            if (_vibrating) return;
+            if (!_vibrating) return;
             _vibrator.Cancel();
             _vibrating = false;
         }

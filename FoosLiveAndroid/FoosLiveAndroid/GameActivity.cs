@@ -269,10 +269,9 @@ namespace FoosLiveAndroid
         /// <returns>True if the Touch was accepted. False otherwise</returns>
         public bool OnTouch(View v, MotionEvent e)
         {
-            // if game is not started
+            // If game is not started, take sample image
             if ( _gameButton.Visibility != ViewStates.Gone )
             {
-                //image = image ?? new Image<Hsv, byte>(_gameView.GetBitmap(preview_width, preview_height));
                 image = new Image<Hsv, byte>(_gameView.GetBitmap(preview_width, preview_height));
                 UpdateButton(e);
             }
@@ -293,8 +292,7 @@ namespace FoosLiveAndroid
             selectedHsv = image[positionY, positionX];
             // convert hsv image to rgb image sample
             var selectedRgb = image.Convert<Rgb, Byte>()[positionY, positionX];
-
-            //Todo: check whether it causes glitches
+            // image won't be used anymore
             image.Dispose();
             // Convert emgu rgb to android rgb
             var selectedColor = Color.Rgb((int)selectedRgb.Red, (int)selectedRgb.Green, (int)selectedRgb.Blue);
@@ -333,10 +331,10 @@ namespace FoosLiveAndroid
             // If it's a video, start it again
             video?.Start();
 
-            // We don't need the button anymore, so remove it
+            // We don't need the button anymore, so hide it
             _gameButton.Visibility = ViewStates.Gone;
 
-            // Base point to check roll value changes 
+            // capture aligned position to show guidelines accordingly
             positionManager.CapturePosition();
         }
 
@@ -352,17 +350,16 @@ namespace FoosLiveAndroid
             positionManager.StartListening();
         }
 
-        public void UpdateGuideline(bool exceedsTop, 
-                                    bool exceedsBot, 
-                                    bool? exceedsLeft = null, 
-                                    bool? exceedsRight = null)
+        public void UpdateGuideline(bool[] exceedsPitch, 
+                                    bool?[] exceedsRoll = null)
         {
-            _arrowTop.Visibility = (exceedsBot) ? ViewStates.Visible : ViewStates.Gone;
-            _arrowBot.Visibility = (exceedsTop) ? ViewStates.Visible : ViewStates.Gone;
+            _arrowBot.Visibility = (exceedsPitch[0]) ? ViewStates.Visible : ViewStates.Gone;
+            _arrowTop.Visibility = (exceedsPitch[1]) ? ViewStates.Visible : ViewStates.Gone;
 
-            if (exceedsLeft == null || exceedsRight == null) return;
-            _arrowLeft.Visibility = (exceedsRight ?? false) ? ViewStates.Visible : ViewStates.Gone;
-            _arrowRight.Visibility = (exceedsLeft ?? false) ? ViewStates.Visible : ViewStates.Gone;
+            if (exceedsRoll == null) return;
+            _arrowRight.Visibility = (exceedsRoll[0] ?? false) ? ViewStates.Visible : ViewStates.Gone;
+            _arrowLeft.Visibility = (exceedsRoll[1] ?? false) ? ViewStates.Visible : ViewStates.Gone;
+
         }
     }
 }

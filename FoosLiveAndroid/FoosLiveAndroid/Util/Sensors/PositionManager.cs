@@ -1,10 +1,11 @@
 ﻿using System;
 using Android.Hardware;
 using Android.Runtime;
+using FoosLiveAndroid.Util.Interface;
 
 namespace FoosLiveAndroid.Util.Sensors
 {
-    public class PositionManager : Java.Lang.Object, ISensorEventListener
+    public class PositionManager : Java.Lang.Object, ISensorEventListener, IPositionManager
     {
 
         private Vibration _vibration;
@@ -21,6 +22,11 @@ namespace FoosLiveAndroid.Util.Sensors
         private float _pitch;
         private float _roll;
         private float _referencePointRoll;
+        // 0 - top, 1 - bot
+        private bool[] _exceedsPitch;
+        // 0 - left, 1 - right
+        private bool?[] _exceedsRoll;
+
 
         private GameActivity _activity;
 
@@ -31,10 +37,11 @@ namespace FoosLiveAndroid.Util.Sensors
             _activity = activity;
             _rotationSensor = sensorManager.GetDefaultSensor(SensorType.RotationVector);
             _vibration = vibration;
+            _sensorManager = sensorManager;
         }
 
         /// <summary>
-        /// Called on change of sensors accuracy
+        /// Called on change of sensors accuracy. Captures accuracy status.
         /// </summary>
         /// <param name="sensor">Sensor</param>
         /// <param name="accuracy">Accuracy</param>
@@ -44,7 +51,7 @@ namespace FoosLiveAndroid.Util.Sensors
         }
 
         /// <summary>
-        /// Called on change of sensors values
+        /// Called on change of sensors values. Analyses value changes.
         /// </summary>
         /// <param name="e">Sensor event</param>
         public void OnSensorChanged(SensorEvent e)
@@ -57,15 +64,14 @@ namespace FoosLiveAndroid.Util.Sensors
                 float[] rotationMatrix = new float[9];
                 float[] rotationVector = new float[e.Values.Count];
 
-                // extract raw data
+                // Extract raw data
                 for (int i = 0; i < rotationVector.Length; i++)
                     rotationVector[i] = e.Values[i];
 
-                // parse raw data
+                // Parse raw data
                 SensorManager.GetRotationMatrixFromVector(rotationMatrix, rotationVector);
 
-
-                //Calibration 
+                // Calibration 
                 float[] adjustedRotationMatrix = new float[9];
                 SensorManager.RemapCoordinateSystem(rotationMatrix, Axis.X,
                                                     Axis.Y, adjustedRotationMatrix);
@@ -83,42 +89,55 @@ namespace FoosLiveAndroid.Util.Sensors
             }
         }
 
+        /// <summary>
+        /// Processes the position: analyses pitch and roll data
+        /// </summary>
         private void ProcessPosition()
         {
-            bool exceedsTop = _pitch > SuggestedPitchMax - PitchOffset;
-            bool exceedsBot = _pitch < SuggestedPitchMin + PitchOffset;
-
+            _exceedsPitch = new bool[2];
+            _exceedsPitch[0] = _pitch > SuggestedPitchMax - PitchOffset; // top
+            _exceedsPitch[1] = _pitch < SuggestedPitchMin + PitchOffset; // bot
             if (!gameStarted)
             {
-                _activity.UpdateGuideline(exceedsTop, exceedsBot);
+                _activity.UpdateGuideline(_exceedsPitch);
                 return;
             }
 
-            bool exceedsLeft = _roll < _referencePointRoll - MaxRollDeviaton - RollOffset;
-            bool exceedsRight = _roll > _referencePointRoll + MaxRollDeviaton + RollOffset;
+            _exceedsRoll = new bool?[2];
+            _exceedsRoll[0] = _roll < _referencePointRoll - MaxRollDeviaton - RollOffset; //left
+            _exceedsRoll[1] = _roll > _referencePointRoll + MaxRollDeviaton + RollOffset; //right
+             
+            _activity.UpdateGuideline(_exceedsPitch, _exceedsRoll);
 
-            _activity.UpdateGuideline(exceedsTop, exceedsBot, exceedsLeft, exceedsRight);
-
-            if (exceedsTop || exceedsLeft || exceedsRight || exceedsBot)
-                _vibration.Start();
+            if (_exceedsPitch[0] || _exceedsPitch[1] || _exceedsRoll[0].Value || _exceedsRoll[1].Value)
+                _vibration?.Start();
             else
-                _vibration.Stop();
+                _vibration?.Stop();
         }
 
+        /// <summary>
+        /// Captures the position at the time game was started
+        /// </summary>
         public void CapturePosition()
         {
             _referencePointRoll = _roll;
             gameStarted = true;
         }
 
+        /// <summary>
+        /// Make rotation sensors active
+        /// </summary>
         public void StartListening()
         {
             _sensorManager.RegisterListener(this, _rotationSensor, SensorDelay.Normal);
         }
 
+        /// <summary>
+        /// Make rotation sensors inactive
+        /// </summary>
         public void StopListening()
         {
-            _vibration.Stop();
+            _vibration?.Stop();
             _sensorManager.UnregisterListener(this);
         }
     }
