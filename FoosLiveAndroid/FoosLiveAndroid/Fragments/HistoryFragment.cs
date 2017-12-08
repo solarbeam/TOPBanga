@@ -21,6 +21,7 @@ namespace FoosLiveAndroid.Fragments
         private IOnFragmentInteractionListener _interactionListener;
         private RecyclerView _historyRecyclerView;
 
+
         public static Fragment NewInstance()
         {
             return new HistoryFragment();
@@ -46,11 +47,7 @@ namespace FoosLiveAndroid.Fragments
             base.OnCreate(savedInstanceState);
             var _historyList = await DatabaseManager.GetHistory();
 
-            //Todo: replace temporary solution
-            DatabaseManager.tempDataStorage = _historyList;
-
-            Log.Debug("LIST SIZE", _historyList.Count.ToString());
-            // If no data were retrieved, display error and ignore list initialisation
+            // If no data was retrieved, display error and ignore list initialisation
             if (_historyList == null)
             {
                 DisplayError();
@@ -68,7 +65,7 @@ namespace FoosLiveAndroid.Fragments
             _loadingLayout.Visibility = ViewStates.Gone;
             _historyRecyclerView.Visibility = ViewStates.Visible;
                 // Creates adapter for recycler view
-            var adapter = new HistoryListAdapter(DatabaseManager.tempDataStorage);
+            var adapter = new HistoryListAdapter(_historyList);
             adapter.NotifyDataSetChanged();
             // Plug the adapter into the RecyclerView:
             _historyRecyclerView.SetAdapter(adapter);
@@ -83,14 +80,13 @@ namespace FoosLiveAndroid.Fragments
             var layoutManager = new LinearLayoutManager(Activity);
             _historyRecyclerView.SetLayoutManager(layoutManager);
 
-
             return _view;
         }
 
         private void GetReferencesFromLayout()
         {
             _loadingLayout = _view.FindViewById<RelativeLayout>(Resource.Id.loadingLayout);
-            //_loadingStatusLabel = _view.FindViewById<TextView>(Resource.Id.loadingStatusLabel);
+            _loadingStatusLabel = _view.FindViewById<TextView>(Resource.Id.loadingStatusLabel);
             _progressBar = _view.FindViewById<ProgressBar>(Resource.Id.loadingBar);
             _historyRecyclerView = _view.FindViewById<RecyclerView>(Resource.Id.historyRecyclerView);
         }
