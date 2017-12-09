@@ -21,6 +21,8 @@
     <string name="team2_win_sound_label">TEAM 2 win sound</string>
     <!--Game-->
     <string name="start_game">Start game</string>
+    <string name="red_team_goal">Red team scored!</string>
+    <string name="blue_team_goal">Blue team scored!</string>
     <string name="end_game">End game</string>
     <string name="team1">TEAM 1</string>
     <string name="team2">TEAM 2</string>

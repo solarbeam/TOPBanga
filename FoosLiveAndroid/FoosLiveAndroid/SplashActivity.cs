@@ -16,6 +16,7 @@ namespace FoosLiveAndroid
     public class SplashActivity : AppCompatActivity
     {
         static readonly string TAG = typeof(SplashActivity).Name;
+        private static int Iterations = 1;
 
         /// Launches the startup task
         protected override void OnResume()
@@ -32,8 +33,10 @@ namespace FoosLiveAndroid
             PropertiesManager.Initialise(this);
 
             // Initialize EmguCv. Trust me, it works
-            Image<Bgr, byte> tempImage = new Image<Bgr, byte>(200, 200, new Bgr(255, 0, 100));
-            Image<Gray, byte> filtered = tempImage.InRange(new Bgr(100, 0, 0), new Bgr(200, 0, 0));
+            var tempImage = new Image<Bgr, byte>(200, 200, new Bgr(255, 0, 100));
+            var filtered = tempImage.InRange(new Bgr(100, 0, 0), new Bgr(200, 0, 0));
+            filtered.Erode(Iterations).Dispose();
+            filtered.Dilate(Iterations).Dispose();
             CvBlobDetector tempDetector = new CvBlobDetector();
             CvBlobs blobs = new CvBlobs();
             tempDetector.Detect(filtered, blobs);

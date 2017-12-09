@@ -85,7 +85,7 @@ namespace FoosLiveAndroid.Util.GameControl
                 // Check which row has the ball
                 if (lastBallCoordinates != null && rowChecker.rows != null)
                 {
-                    rowChecker.checkRow(lastBallCoordinates, ref currentEvent);
+                    rowChecker.CheckRow(lastBallCoordinates, ref currentEvent);
                 }
 
                 ballCoordinates.Enqueue(lastBallCoordinates);

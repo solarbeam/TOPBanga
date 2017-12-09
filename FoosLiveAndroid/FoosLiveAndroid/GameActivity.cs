@@ -34,9 +34,10 @@ namespace FoosLiveAndroid
         private readonly int camera_height = PropertiesManager.GetIntProperty("camera_height");
         private readonly int preview_width = PropertiesManager.GetIntProperty("preview_width");
         private readonly int preview_height = PropertiesManager.GetIntProperty("preview_height");
+        private readonly int sliding_text_delay = PropertiesManager.GetIntProperty("sliding_text_delay");
 
-        private bool textThreadStarted = false;
-        private bool waitForSpeed = false;
+        private bool _textThreadStarted = false;
+        private bool _waitForSpeed = false;
 
         //Sensors context
         private SensorManager _sensorManager;
@@ -67,8 +68,8 @@ namespace FoosLiveAndroid
         //---------------------------------------
 
         // A constant for upscaling the positions
-        private float upscaleMultiplierX;
-        private float upscaleMultiplierY;
+        private float _upscaleMultiplierX;
+        private float _upscaleMultiplierY;
 
         private TextView _eventText;
         private Button _gameButton;
@@ -88,8 +89,6 @@ namespace FoosLiveAndroid
         private ColorDetector detector;
         private ObjectDetector objectDetector;
         private GameController gameController;
-
-        private PointF rectangle;
 
         // Todo: change Camera to Camera2
         private Camera camera;
@@ -117,8 +116,8 @@ namespace FoosLiveAndroid
 
             detector = new ColorDetector();
             gameController = new GameController();
-            gameController.GoalEvent += GameController_GoalEvent;
-            gameController.PositionEvent += GameController_PositionEvent;
+            gameController.GoalEvent += GameControllerGoalEvent;
+            gameController.PositionEvent += GameControllerPositionEvent;
 
             _surfaceView.SetZOrderOnTop(true);
             _surfaceView.Holder.SetFormat(Format.Transparent);
@@ -155,17 +154,17 @@ namespace FoosLiveAndroid
             _eventText = FindViewById<TextView>(Resource.Id.statusText);
         }
 
-        private void slideText(String text)
+        private void SlideText(String text)
         {
-            if (textThreadStarted)
+            if (_textThreadStarted)
                 return;
 
-            textThreadStarted = true;
+            _textThreadStarted = true;
 
             RunOnUiThread(async () =>
             {
                 String temp = text;
-                StringBuilder tempView = new StringBuilder(temp.Length);
+                var tempView = new StringBuilder(temp.Length);
 
                 for (int i = 0; i < tempView.Capacity; i++)
                 {
@@ -184,10 +183,10 @@ namespace FoosLiveAndroid
                         tempView.Append(' ');
 
                     _eventText.Text = tempView.ToString();
-                    await Task.Delay(120);
+                    await Task.Delay(sliding_text_delay);
                 }
 
-                textThreadStarted = false;
+                _textThreadStarted = false;
             });
         }
 
@@ -196,13 +195,13 @@ namespace FoosLiveAndroid
         /// </summary>
         /// <param name="sender">The class, which called this function</param>
         /// <param name="e">Arguments, which are passed to this function</param>
-        private void GameController_GoalEvent(object sender, EventArgs e)
+        private void GameControllerGoalEvent(object sender, EventArgs e)
         {
             // Check which event occured
             if (gameController.currentEvent == CurrentEvent.BlueGoalOccured)
-                slideText("Blue team scored!");
+                SlideText(ApplicationContext.Resources.GetString(Resource.String.blue_team_goal));
             else
-                slideText("Red team scored!");
+                SlideText(ApplicationContext.Resources.GetString(Resource.String.red_team_goal));
 
             _score.Text = gameController.BlueScore + " : " + gameController.RedScore;
         }
@@ -212,19 +211,19 @@ namespace FoosLiveAndroid
         /// </summary>
         /// <param name="sender">The class, which called this function</param>
         /// <param name="e">Arguments, which are passed to this function</param>
-        private void GameController_PositionEvent(object sender, EventArgs e)
+        private void GameControllerPositionEvent(object sender, EventArgs e)
         {
             // Check if sliding text is active or the delay is still on
-            if (!textThreadStarted && !waitForSpeed)
+            if (!_textThreadStarted && !_waitForSpeed)
             {
                 _eventText.Text = "" + Math.Round(gameController.CurrentSpeed, 2) + " cm/s";
-                waitForSpeed = true;
+                _waitForSpeed = true;
 
                 // Delay the new speed information
                 RunOnUiThread(async () =>
                 {
                     await Task.Delay(50);
-                    waitForSpeed = false;
+                    _waitForSpeed = false;
                 });
             }
         }
@@ -240,11 +239,11 @@ namespace FoosLiveAndroid
             _gameView.LayoutParameters = new FrameLayout.LayoutParams(w, h);
 
             // Set the upscaling constant
-            upscaleMultiplierY = (float)h / preview_height;
-            upscaleMultiplierX = (float)w / preview_width;
+            _upscaleMultiplierY = (float)h / preview_height;
+            _upscaleMultiplierX = (float)w / preview_width;
 
             // Create the ObjectDetector class for the GameActivity
-            objectDetector = new ObjectDetector(upscaleMultiplierX, upscaleMultiplierY, detector, gameController);
+            objectDetector = new ObjectDetector(_upscaleMultiplierX, _upscaleMultiplierY, detector, gameController);
 
             // Create a template alpha bitmap for repeated drawing
             var tempBitmap = new BitmapDrawable(Bitmap.CreateBitmap(w, h, Bitmap.Config.Argb8888));
@@ -393,8 +392,8 @@ namespace FoosLiveAndroid
         private void UpdateButton(MotionEvent e)
         {
             // Calculate the position
-            int positionX = (int)(e.GetX() / upscaleMultiplierX);
-            int positionY = (int)(e.GetY() / upscaleMultiplierY);
+            int positionX = (int)(e.GetX() / _upscaleMultiplierX);
+            int positionY = (int)(e.GetY() / _upscaleMultiplierY);
 
             // Get the Hsv value from the image
             selectedHsv = image[positionY, positionX];

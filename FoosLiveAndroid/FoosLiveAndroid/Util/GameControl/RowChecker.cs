@@ -26,16 +26,16 @@ namespace FoosLiveAndroid.Util.GameControl
         /// </summary>
         public Row currentRow;
 
-        private int RedGoalieZone;
-        private int RedDefenceZone;
-        private int BlueAttackZone;
-        private int RedMidfieldZone;
-        private int BlueMidfieldZone;
-        private int RedAttackZone;
-        private int BlueDefenceZone;
-        private int BlueGoalieZone;
+        private int _RedGoalieZone;
+        private int _RedDefenceZone;
+        private int _BlueAttackZone;
+        private int _RedMidfieldZone;
+        private int _BlueMidfieldZone;
+        private int _RedAttackZone;
+        private int _BlueDefenceZone;
+        private int _BlueGoalieZone;
 
-        public void checkRow(PointF lastBallCoordinates, ref CurrentEvent currentEvent)
+        public void CheckRow(PointF lastBallCoordinates, ref CurrentEvent currentEvent)
         {
             for (int i = 0; i < rows.Length; i++)
             {
@@ -45,35 +45,35 @@ namespace FoosLiveAndroid.Util.GameControl
                     {
                         case 0:
                             currentRow = Row.RedGoalie;
-                            RedGoalieZone++;
+                            _RedGoalieZone++;
                             break;
                         case 1:
                             currentRow = Row.RedDefence;
-                            RedDefenceZone++;
+                            _RedDefenceZone++;
                             break;
                         case 2:
                             currentRow = Row.BlueAttack;
-                            BlueAttackZone++;
+                            _BlueAttackZone++;
                             break;
                         case 3:
                             currentRow = Row.RedMidfield;
-                            RedMidfieldZone++;
+                            _RedMidfieldZone++;
                             break;
                         case 4:
                             currentRow = Row.BlueMidfield;
-                            BlueMidfieldZone++;
+                            _BlueMidfieldZone++;
                             break;
                         case 5:
                             currentRow = Row.RedAttack;
-                            RedAttackZone++;
+                            _RedAttackZone++;
                             break;
                         case 6:
                             currentRow = Row.BlueDefence;
-                            BlueDefenceZone++;
+                            _BlueDefenceZone++;
                             break;
                         case 7:
                             currentRow = Row.BlueGoalie;
-                            BlueGoalieZone++;
+                            _BlueGoalieZone++;
                             break;
                     }
 
@@ -89,27 +89,34 @@ namespace FoosLiveAndroid.Util.GameControl
         {
             // Declare constants
             float[] multipliers = new float[8];
-            multipliers[0] = 0.1158f;
-            multipliers[1] = 0.0623f;
-            multipliers[2] = 0.0865f;
-            multipliers[3] = 0.1005f;
-            multipliers[4] = 0.1145f;
-            multipliers[5] = 0.1348f;
-            multipliers[6] = 0.1832f;
-            multipliers[7] = 0.2124f;
+            multipliers[0] = PropertiesManager.GetFloatProperty("rowOne");
+            multipliers[1] = PropertiesManager.GetFloatProperty("rowTwo");
+            multipliers[2] = PropertiesManager.GetFloatProperty("rowThree");
+            multipliers[3] = PropertiesManager.GetFloatProperty("rowFour");
+            multipliers[4] = PropertiesManager.GetFloatProperty("rowFive");
+            multipliers[5] = PropertiesManager.GetFloatProperty("rowSix");
+            multipliers[6] = PropertiesManager.GetFloatProperty("rowSeven");
+            multipliers[7] = PropertiesManager.GetFloatProperty("rowEight");
 
             rows = new RectF[8];
 
+            // Assign the first row values, because we'll use it in the for cycle
             rows[0] = new RectF(tableZone.Left, tableZone.Top,
                                 tableZone.Right, tableZone.Top + (tableZone.Height * multipliers[0]));
 
-            for (int i = 1; i < 8; i++)
+            // Assign the rows values
+            for (int i = 1; i < rows.Length; i++)
             {
+                // We calculate Y values based on the previous rows
                 float toAdd = 0;
+
+                // Here, we add to toAdd the Y values of the previous rows
                 for (int j = i; j != 0; j--)
                 {
                     toAdd += rows[j - 1].Height();
                 }
+
+                // Finally, we assign the new row values
                 rows[i] = new RectF(tableZone.Left, rows[i - 1].Bottom,
                                     tableZone.Right, tableZone.Top + toAdd + (tableZone.Height * multipliers[i]));
             }

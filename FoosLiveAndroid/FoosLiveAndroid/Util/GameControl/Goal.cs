@@ -18,36 +18,38 @@ namespace FoosLiveAndroid.Util.GameControl
     class Goal
     {
         // Defines the real height of the table in meters
-        private const double realWidth = 1.4224f;
+        private readonly double RealWidth = PropertiesManager.GetDoubleProperty("realWidth");
 
         // Defines the real width of the table in meters
-        private const double realHeight = 0.7620f;
+        private readonly double RealHeight = PropertiesManager.GetDoubleProperty("realHeight");
 
-        private int startingFrame;
-        private int endingFrame;
+        /// <summary>
+        /// Defines the amount of centimeters in a meter
+        /// </summary>
+        private readonly int CentimetersInAMeter = PropertiesManager.GetIntProperty("centimetersInAMeter");
 
-        private PointF[] points;
+        private PointF[] _points;
 
-        public double[] speeds;
-        public double maxSpeed;
+        public double[] _speeds;
+        public double _maxSpeed;
         public Goal(Queue<PointF> positions, RectF tablePoints)
         {
-            points = new PointF[positions.Count];
-            speeds = new double[positions.Count];
+            _points = new PointF[positions.Count];
+            _speeds = new double[positions.Count];
 
             // Fill the points array with positions
             int i = 0;
             foreach (var point in positions)
             {
-                points[i] = point;
+                _points[i] = point;
             }
 
-            double mulX = realWidth / (tablePoints.Right - tablePoints.Left);
-            double mulY = realHeight / (tablePoints.Bottom - tablePoints.Top);
+            double mulX = RealWidth / (tablePoints.Right - tablePoints.Left);
+            double mulY = RealHeight / (tablePoints.Bottom - tablePoints.Top);
 
             // Convert meters into centimeters
-            mulX *= 100;
-            mulY *= 100;
+            mulX *= CentimetersInAMeter;
+            mulY *= CentimetersInAMeter;
 
             // Calculate the speeds
             PointF lastPoint = null;
@@ -69,9 +71,9 @@ namespace FoosLiveAndroid.Util.GameControl
                 }
                 else
                 {
-                    speeds[i] = Math.Sqrt( ( ( (point.X - lastPoint.X) * (point.X - lastPoint.X) ) * mulX + 
-                                            ( (point.Y - lastPoint.Y) * (point.Y - lastPoint.Y) ) * mulY ) );
-                    speeds[i] /= ((double)lostFrameCounter + 1.0f);
+                    _speeds[i] = Math.Sqrt( (point.X * mulX - lastPoint.X * mulX) * (point.X * mulX - lastPoint.X * mulX) + 
+                                            (point.Y * mulY - lastPoint.Y * mulY) * (point.Y * mulY - lastPoint.Y * mulY) );
+                    _speeds[i] /= (lostFrameCounter + 1.0f);
 
                     i++;
 

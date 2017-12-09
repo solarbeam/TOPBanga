@@ -26,6 +26,7 @@ namespace FoosLiveAndroid.Util.Detection
         private readonly double CannyThresholdLinking = PropertiesManager.GetDoubleProperty("canny_threshold_linking");
         private readonly int MinAngle = PropertiesManager.GetIntProperty("min_angle");
         private readonly int MaxAngle = PropertiesManager.GetIntProperty("max_angle");
+        private const int Iterations = 1;
 
         /// <summary>
         /// False if the box field is null
@@ -125,8 +126,8 @@ namespace FoosLiveAndroid.Util.Detection
             Hsv upperLimit = new Hsv(ballHsv.Hue + Threshold, ballHsv.Satuation + Threshold, ballHsv.Value + Threshold);
 
             Image<Gray, byte> imgFiltered = image.InRange(lowerLimit, upperLimit);
-            imgFiltered.Erode(1);
-            imgFiltered.Dilate(1);
+            imgFiltered.Erode(Iterations);
+            imgFiltered.Dilate(Iterations);
 
             // Define the class, which will store information about blobs found
             var points = new CvBlobs();

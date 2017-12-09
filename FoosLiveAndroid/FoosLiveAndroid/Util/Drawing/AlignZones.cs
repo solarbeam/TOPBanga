@@ -6,11 +6,9 @@ namespace FoosLiveAndroid.Util.Drawing
 {
     class AlignZones
     {
-        private static int RowCount = 8;
+        private static readonly int RowCount = 8;
         public static Canvas DrawZones(Canvas canvas, GameController gameController)
         {
-            Rectangle[] rows = new Rectangle[RowCount];
-
             // Declare the paint style of the guidelines
             Paint paint = new Paint
             {
@@ -23,21 +21,21 @@ namespace FoosLiveAndroid.Util.Drawing
             // Paint the guideline
             Path contour = new Path();
 
-            float bottomLeftX = canvas.Width * 0.25f;
-            float bottomRightX = canvas.Width * 0.75f;
-            float bottomY = canvas.Height * 0.9209f;
+            float bottomLeftX = canvas.Width * PropertiesManager.GetFloatProperty("bottomLeftXMul");
+            float bottomRightX = canvas.Width * PropertiesManager.GetFloatProperty("bottomRightXMul");
+            float bottomY = canvas.Height * PropertiesManager.GetFloatProperty("bottomYMul");
 
-            float upperBottomLeftX = canvas.Width * 0.03f;
-            float upperBottomRightX = canvas.Width * 0.97f;
-            float upperBottomY = canvas.Height * 0.8023f;
+            float upperBottomLeftX = canvas.Width * PropertiesManager.GetFloatProperty("upperBottomLeftXMul");
+            float upperBottomRightX = canvas.Width * PropertiesManager.GetFloatProperty("upperBottomRightXMul");
+            float upperBottomY = canvas.Height * PropertiesManager.GetFloatProperty("upperBottomYMul");
 
-            float lowerTopLeftX = canvas.Width * 0.20f;
-            float lowerTopRightX = canvas.Width * 0.80f;
-            float lowerTopY = canvas.Height * 0.35f;
+            float lowerTopLeftX = canvas.Width * PropertiesManager.GetFloatProperty("lowerTopLeftXMul");
+            float lowerTopRightX = canvas.Width * PropertiesManager.GetFloatProperty("lowerTopRightXMul");
+            float lowerTopY = canvas.Height * PropertiesManager.GetFloatProperty("lowerTopYMul");
 
-            float topLeftX = canvas.Width * 0.42f;
-            float topRightX = canvas.Width * 0.58f;
-            float topY = canvas.Height * 0.2994f;
+            float topLeftX = canvas.Width * PropertiesManager.GetFloatProperty("topLeftXMul");
+            float topRightX = canvas.Width * PropertiesManager.GetFloatProperty("topRightXMul");
+            float topY = canvas.Height * PropertiesManager.GetFloatProperty("topYMul");
                 
             // apacios vidurio taskas
             contour.MoveTo(bottomLeftX, bottomY);
