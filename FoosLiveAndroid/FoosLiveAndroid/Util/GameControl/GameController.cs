@@ -45,8 +45,6 @@ namespace FoosLiveAndroid.Util.GameControl
         private PointF lastBallCoordinates;
         private PointF lastLastBallCoordinates;
 
-        
-
         /// <summary>
         /// Defines the current speed of the ball in centimeters per second
         /// </summary>
@@ -120,7 +118,7 @@ namespace FoosLiveAndroid.Util.GameControl
         /// bottom right
         /// </summary>
         /// <param name="points">The coordinates of the table</param>
-        public void SetTable(PointF[] points)
+        public void SetTable(PointF[] points, CaptureMode mode)
         {
             if (points.Length != TablePointNumber)
                 return;
@@ -134,6 +132,9 @@ namespace FoosLiveAndroid.Util.GameControl
             posChecker.zoneTwo = new RectF(points[0].X, posChecker.zoneOne.Bottom + (1.0f - percentageOfSide * 2) * (points[2].Y - points[0].Y),
                                         points[3].X,
                                         points[3].Y);
+
+            rowChecker.CalculateRows(new System.Drawing.Rectangle((int)posChecker.zoneOne.Left, (int)posChecker.zoneOne.Top,
+                                                (int)posChecker.zoneTwo.Right, (int)posChecker.zoneTwo.Bottom), mode);
         }
         /// <summary>
         /// The default constructor for the GameController class

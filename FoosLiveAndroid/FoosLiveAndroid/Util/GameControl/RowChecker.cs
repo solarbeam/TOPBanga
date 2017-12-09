@@ -85,19 +85,29 @@ namespace FoosLiveAndroid.Util.GameControl
             }
         }
 
-        public void CalculateRows(System.Drawing.Rectangle tableZone)
+        public void CalculateRows(System.Drawing.Rectangle tableZone, CaptureMode mode)
         {
             // Declare constants
             float[] multipliers = new float[8];
-            multipliers[0] = PropertiesManager.GetFloatProperty("rowOne");
-            multipliers[1] = PropertiesManager.GetFloatProperty("rowTwo");
-            multipliers[2] = PropertiesManager.GetFloatProperty("rowThree");
-            multipliers[3] = PropertiesManager.GetFloatProperty("rowFour");
-            multipliers[4] = PropertiesManager.GetFloatProperty("rowFive");
-            multipliers[5] = PropertiesManager.GetFloatProperty("rowSix");
-            multipliers[6] = PropertiesManager.GetFloatProperty("rowSeven");
-            multipliers[7] = PropertiesManager.GetFloatProperty("rowEight");
 
+            if (mode == CaptureMode.Video)
+            {
+                float toAssign = PropertiesManager.GetFloatProperty("percentageVideo");
+                for (int i = 0; i < multipliers.Length; i ++)
+                    multipliers[i] = toAssign;
+            }
+            else
+            {
+                multipliers[0] = PropertiesManager.GetFloatProperty("rowOne");
+                multipliers[1] = PropertiesManager.GetFloatProperty("rowTwo");
+                multipliers[2] = PropertiesManager.GetFloatProperty("rowThree");
+                multipliers[3] = PropertiesManager.GetFloatProperty("rowFour");
+                multipliers[4] = PropertiesManager.GetFloatProperty("rowFive");
+                multipliers[5] = PropertiesManager.GetFloatProperty("rowSix");
+                multipliers[6] = PropertiesManager.GetFloatProperty("rowSeven");
+                multipliers[7] = PropertiesManager.GetFloatProperty("rowEight");
+            }
+            
             rows = new RectF[8];
 
             // Assign the first row values, because we'll use it in the for cycle

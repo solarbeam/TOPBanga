@@ -262,7 +262,7 @@ namespace FoosLiveAndroid
                     new PointF(w,0),
                     new PointF(0,h),
                     new PointF(w,h)
-                });
+                }, CaptureMode.Video);
 
                 this.surface = new Surface(surface);
                 video = new MediaPlayer();

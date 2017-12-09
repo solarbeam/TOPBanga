@@ -1,12 +1,12 @@
 ﻿using Android.Graphics;
 using FoosLiveAndroid.Util.GameControl;
 using System.Drawing;
+using static FoosLiveAndroid.Util.GameControl.Enums;
 
 namespace FoosLiveAndroid.Util.Drawing
 {
     class AlignZones
     {
-        private static readonly int RowCount = 8;
         public static Canvas DrawZones(Canvas canvas, GameController gameController)
         {
             // Declare the paint style of the guidelines
@@ -67,7 +67,7 @@ namespace FoosLiveAndroid.Util.Drawing
                 new Android.Graphics.PointF(canvas.Width, topY),
                 new Android.Graphics.PointF(0, bottomY),
                 new Android.Graphics.PointF(canvas.Width, bottomY)
-            });
+            }, CaptureMode.Camera);
 
             return canvas;
         }
