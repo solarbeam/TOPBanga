@@ -198,6 +198,7 @@ namespace FoosLiveAndroid
         /// <param name="e">Arguments, which are passed to this function</param>
         private void GameController_GoalEvent(object sender, EventArgs e)
         {
+            // Check which event occured
             if (gameController.currentEvent == CurrentEvent.BlueGoalOccured)
                 slideText("Blue team scored!");
             else
@@ -206,13 +207,20 @@ namespace FoosLiveAndroid
             _score.Text = gameController.BlueScore + " : " + gameController.RedScore;
         }
 
+        /// <summary>
+        /// Fired whenever the ball's position changes
+        /// </summary>
+        /// <param name="sender">The class, which called this function</param>
+        /// <param name="e">Arguments, which are passed to this function</param>
         private void GameController_PositionEvent(object sender, EventArgs e)
         {
+            // Check if sliding text is active or the delay is still on
             if (!textThreadStarted && !waitForSpeed)
             {
                 _eventText.Text = "" + Math.Round(gameController.CurrentSpeed, 2) + " cm/s";
                 waitForSpeed = true;
 
+                // Delay the new speed information
                 RunOnUiThread(async () =>
                 {
                     await Task.Delay(50);

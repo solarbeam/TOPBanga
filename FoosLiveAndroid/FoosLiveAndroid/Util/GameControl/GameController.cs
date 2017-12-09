@@ -79,11 +79,10 @@ namespace FoosLiveAndroid.Util.GameControl
                     temp?.Dispose();
                 }
 
-                // Check which row has the ball
-
                 lastLastBallCoordinates = lastBallCoordinates;
                 lastBallCoordinates = value;
 
+                // Check which row has the ball
                 if (lastBallCoordinates != null && rowChecker.rows != null)
                 {
                     rowChecker.checkRow(lastBallCoordinates, ref currentEvent);
@@ -103,6 +102,7 @@ namespace FoosLiveAndroid.Util.GameControl
                                         },
                                         GoalEvent,
                                         ballCoordinates);
+
                 CurrentSpeed = posChecker.calculateSpeed(lastBallCoordinates, lastLastBallCoordinates, PositionEvent);
             }
         }
