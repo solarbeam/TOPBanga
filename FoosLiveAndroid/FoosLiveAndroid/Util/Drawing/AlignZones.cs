@@ -1,5 +1,5 @@
 ﻿using Android.Graphics;
-using FoosLiveAndroid.Util.Detection;
+using FoosLiveAndroid.Util.GameControl;
 using System.Drawing;
 
 namespace FoosLiveAndroid.Util.Drawing

@@ -21,6 +21,8 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Threading;
 using Android.Content;
+using FoosLiveAndroid.Util.GameControl;
+using static FoosLiveAndroid.Util.GameControl.Enums;
 
 namespace FoosLiveAndroid
 {
@@ -182,7 +184,7 @@ namespace FoosLiveAndroid
                         tempView.Append(' ');
 
                     _eventText.Text = tempView.ToString();
-                    await Task.Delay(150);
+                    await Task.Delay(120);
                 }
 
                 textThreadStarted = false;
@@ -206,7 +208,10 @@ namespace FoosLiveAndroid
 
         private void GameController_PositionEvent(object sender, EventArgs e)
         {
-            Console.WriteLine(gameController.currentRow);
+            if (!textThreadStarted)
+            {
+                _eventText.Text = "" + Math.Round(gameController.CurrentSpeed, 2) + " cm/s";
+            }
         }
 
         /// <summary>

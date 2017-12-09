@@ -1,6 +1,7 @@
 ﻿using Android.Graphics;
 using Emgu.CV;
 using Emgu.CV.Structure;
+using FoosLiveAndroid.Util.GameControl;
 using FoosLiveAndroid.Util.Interface;
 using System;
 
