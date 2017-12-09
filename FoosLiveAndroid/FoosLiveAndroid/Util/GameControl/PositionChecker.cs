@@ -54,12 +54,13 @@ namespace FoosLiveAndroid.Util.GameControl
         /// Defines the goal checking mechanism, which is called whenever
         /// a new position is added to the queue
         /// </summary>
-        /// <param name="lastBallCoordinates"></param>
-        /// <param name="BlueScore"></param>
-        /// <param name="RedScore"></param>
-        /// <param name="currentEvent"></param>
-        /// <param name="setter"></param>
-        /// <param name="GoalEvent"></param>
+        /// <param name="lastBallCoordinates">Defines the last point of the ball</param>
+        /// <param name="BlueScore">Defines the current score for the blue team</param>
+        /// <param name="RedScore">Defines the current score for the red team</param>
+        /// <param name="currentEvent">Defines the current event</param>
+        /// <param name="setter">Defines the setter function for the GameController class's attributes</param>
+        /// <param name="GoalEvent">Defines the goal event, which is fired whenever a goal occurs</param>
+        /// <param name="ballCoordinates">Defines the queue, holding the historical points of the ball</param>
         public void OnNewFrame(PointF lastBallCoordinates, int BlueScore, int RedScore,
                                 CurrentEvent currentEvent, Action<int,int,CurrentEvent> setter,
                                 EventHandler<EventArgs> GoalEvent, Queue<PointF> ballCoordinates)

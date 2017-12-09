@@ -19,7 +19,6 @@ using Android.Runtime;
 using FoosLiveAndroid.Util.Drawing;
 using System.Text;
 using System.Threading.Tasks;
-using System.Threading;
 using Android.Content;
 using FoosLiveAndroid.Util.GameControl;
 using static FoosLiveAndroid.Util.GameControl.Enums;
@@ -37,6 +36,7 @@ namespace FoosLiveAndroid
         private readonly int preview_height = PropertiesManager.GetIntProperty("preview_height");
 
         private bool textThreadStarted = false;
+        private bool waitForSpeed = false;
 
         //Sensors context
         private SensorManager _sensorManager;
@@ -208,9 +208,16 @@ namespace FoosLiveAndroid
 
         private void GameController_PositionEvent(object sender, EventArgs e)
         {
-            if (!textThreadStarted)
+            if (!textThreadStarted && !waitForSpeed)
             {
                 _eventText.Text = "" + Math.Round(gameController.CurrentSpeed, 2) + " cm/s";
+                waitForSpeed = true;
+
+                RunOnUiThread(async () =>
+                {
+                    await Task.Delay(50);
+                    waitForSpeed = false;
+                });
             }
         }
 
