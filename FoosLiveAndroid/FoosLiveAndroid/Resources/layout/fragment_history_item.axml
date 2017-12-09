@@ -18,7 +18,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1.5"
-        android:textSize="@dimen/score_size"
+        android:textSize="@dimen/score_size_history"
         android:textColor="@color/status_text"
         android:text="@string/team1" />
     <Space
@@ -47,7 +47,7 @@
         android:paddingBottom="@dimen/status_padding"
         android:layout_width="0dp"
         android:textColor="@color/status_text"
-        android:textSize="@dimen/score_size"
+        android:textSize="@dimen/score_size_history"
         android:layout_height="wrap_content"
         android:layout_weight="1.5"
         android:text="@string/team2" />

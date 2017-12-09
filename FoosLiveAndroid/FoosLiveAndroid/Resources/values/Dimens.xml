@@ -6,5 +6,7 @@
 	<dimen name="status_radius">15dp</dimen>
 	<dimen name="status_padding">5dp</dimen>
 	<dimen name="info_margin">15dp</dimen>
-    <dimen name="score_size">20dp</dimen>
+    <dimen name="score_size">20sp</dimen>
+    <dimen name="score_size_history">15sp</dimen>
+    
 </resources>

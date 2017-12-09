@@ -13,10 +13,12 @@ namespace FoosLiveAndroid.Fragments
         static readonly new string Tag = typeof(SettingsFragment).Name;
 
         private View _view;
-        private Button _team1ScoreSoundButton;
-        private Button _team1WinSoundButton;
-        private Button _team2ScoreSoundButton;
-        private Button _team2WinSoundButton;
+        private Switch syncSwitch;
+        private Switch soundSwitch;
+        private RelativeLayout _team1ScoreSoundItem;
+        private RelativeLayout _team1WinSoundItem;
+        private RelativeLayout _team2ScoreSoundItem;
+        private RelativeLayout _team2WinSoundItem;
 
         private AlertDialog.Builder _dialogBuilder;
 
@@ -59,14 +61,33 @@ namespace FoosLiveAndroid.Fragments
                 Context, Android.Resource.Layout.SimpleListItem1, new string[] { "sound1", "sound2" });
 
             // Todo: set up button click events
-            _team1ScoreSoundButton.Click += delegate
+            _team1ScoreSoundItem.Click += delegate
             {
-                OpenSoundPicker("title", scoreSoundsAdapter);
+                OpenSoundPicker("sound", scoreSoundsAdapter);
             };
 
-            _team1WinSoundButton.Click += delegate
+            _team1WinSoundItem.Click += delegate
             {
-                OpenSoundPicker("title", winSoundsAdapter);
+                OpenSoundPicker("sound", winSoundsAdapter);
+            };
+
+            _team2ScoreSoundItem.Click += delegate
+            {
+                OpenSoundPicker("sound", scoreSoundsAdapter);
+            };
+
+            _team2WinSoundItem.Click += delegate
+            {
+                OpenSoundPicker("sound", winSoundsAdapter);
+            };
+
+            //Todo: bind switches with evens
+            syncSwitch.CheckedChange += delegate {
+                Toast.MakeText(Context, "sync event", ToastLength.Short).Show();
+            };
+
+            soundSwitch.CheckedChange += delegate {
+                Toast.MakeText(Context, "sound event", ToastLength.Short).Show();
             };
 
             return _view;
@@ -74,10 +95,12 @@ namespace FoosLiveAndroid.Fragments
 
         private void GetReferencesFromLayout()
         {
-            _team1ScoreSoundButton = _view.FindViewById<Button>(Resource.Id.team1ScoreSoundButton);
-            _team1WinSoundButton = _view.FindViewById<Button>(Resource.Id.team1WinSoundButton);
-            _team2ScoreSoundButton = _view.FindViewById<Button>(Resource.Id.team2ScoreSoundButton);
-            _team2WinSoundButton = _view.FindViewById<Button>(Resource.Id.team2WinSoundButton);
+            syncSwitch = _view.FindViewById<Switch>(Resource.Id.syncSwitch);
+            soundSwitch = _view.FindViewById<Switch>(Resource.Id.soundSwitch);
+            _team1ScoreSoundItem = _view.FindViewById<RelativeLayout>(Resource.Id.team1ScoreSoundItem);
+            _team1WinSoundItem = _view.FindViewById<RelativeLayout>(Resource.Id.team1WinSoundItem);
+            _team2ScoreSoundItem = _view.FindViewById<RelativeLayout>(Resource.Id.team2ScoreSoundItem);
+            _team2WinSoundItem = _view.FindViewById<RelativeLayout>(Resource.Id.team2WinSoundItem);
         }
 
         //Todo set values from model/cfg/shared pref
