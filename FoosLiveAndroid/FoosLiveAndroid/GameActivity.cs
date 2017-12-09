@@ -20,6 +20,7 @@ using FoosLiveAndroid.Util.Drawing;
 using System.Text;
 using System.Threading.Tasks;
 using System.Threading;
+using Android.Content;
 
 namespace FoosLiveAndroid
 {
@@ -216,7 +217,6 @@ namespace FoosLiveAndroid
         /// <param name="h">The height of the surface, defined as an integer</param>
         public void OnSurfaceTextureAvailable(SurfaceTexture surface, int w, int h)
         {
-            slideText("test test 123");
             _gameView.LayoutParameters = new FrameLayout.LayoutParams(w, h);
 
             // Set the upscaling constant

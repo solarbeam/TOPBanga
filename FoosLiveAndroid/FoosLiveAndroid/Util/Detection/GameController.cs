@@ -1,5 +1,6 @@
 using Android.Graphics;
 using Android.Util;
+using FoosLiveAndroid.Util.GameControl;
 using System;
 using System.Collections.Generic;
 
@@ -65,6 +66,11 @@ namespace FoosLiveAndroid.Util.Detection
         public CurrentEvent currentEvent;
 
         /// <summary>
+        /// Holds the goals, which occured during the session
+        /// </summary>
+        private Queue<Goal> goals;
+
+        /// <summary>
         /// Defines the goal zones, which hold the point of no return for the ball
         /// </summary>
         private RectF zoneOne;
@@ -98,11 +104,6 @@ namespace FoosLiveAndroid.Util.Detection
         ///  using the table's side as reference
         /// </summary>
         private readonly float percentageOfSide = PropertiesManager.GetFloatProperty("percentage_of_side");
-
-        /// <summary>
-        /// Defines the amount of frames to skip between goal checks
-        /// </summary>
-        private int cooldown = 0;
 
         /// <summary>
         /// A get and set function to assign the last position of the ball
@@ -196,7 +197,7 @@ namespace FoosLiveAndroid.Util.Detection
                                     points[1].X,
                                     (points[2].Y - points[0].Y) * percentageOfSide);
 
-            zoneTwo = new RectF(points[0].X, zoneOne.Bottom,
+            zoneTwo = new RectF(points[0].X, zoneOne.Bottom + (1.0f - percentageOfSide * 2) * (points[2].Y - points[0].Y),
                                         points[3].X,
                                         points[3].Y);
         }
@@ -206,6 +207,7 @@ namespace FoosLiveAndroid.Util.Detection
         public GameController()
         {
             ballCoordinates = new Queue<PointF>();
+            goals = new Queue<Goal>();
         }
 
         public void CalculateRows(System.Drawing.Rectangle tableZone)
@@ -231,7 +233,6 @@ namespace FoosLiveAndroid.Util.Detection
                 float toAdd = 0;
                 for(int j = i; j != 0; j --)
                 {
-                    Console.WriteLine(j);
                     toAdd += rows[j - 1].Height();
 ;                }
                 rows[i] = new RectF(tableZone.Left, rows[i - 1].Bottom,
@@ -258,6 +259,8 @@ namespace FoosLiveAndroid.Util.Detection
                         currentEvent = CurrentEvent.BlueGoalOccured;
                         GoalEvent(this, EventArgs.Empty);
 
+                        goals.Enqueue(new Goal(ballCoordinates, new RectF(zoneOne.Left, zoneOne.Top, zoneTwo.Right, zoneTwo.Bottom)));
+
                         // Reset variables to their starting values
                         framesLost = 0;
                         ballInFirstGoalZone = false;
@@ -272,6 +275,8 @@ namespace FoosLiveAndroid.Util.Detection
                         RedScore++;
                         currentEvent = CurrentEvent.RedGoalOccured;
                         GoalEvent(this, EventArgs.Empty);
+
+                        goals.Enqueue(new Goal(ballCoordinates, new RectF(zoneOne.Left, zoneOne.Top, zoneTwo.Right, zoneTwo.Bottom)));
 
                         // Reset variables to their starting values
                         framesLost = 0;
