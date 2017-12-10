@@ -136,7 +136,7 @@ namespace FoosLiveAndroid.Util.Detection
                 _box.Height = 0;
                 _box.X = image.Size.Width / 2;
                 _box.Y = image.Size.Height / 2;
-                _box.Inflate(new System.Drawing.Size(BoxWidth, BoxHeight / 2));
+                _box.Inflate(new Size(BoxWidth, BoxHeight / 2));
                 _framesLost = 0;
                 _boxSet = true;
             }

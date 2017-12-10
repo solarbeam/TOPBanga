@@ -64,6 +64,9 @@ namespace FoosLiveAndroid.Util.GameControl
                                             (point.Y * mulY - lastPoint.Y * mulY) * (point.Y * mulY - lastPoint.Y * mulY) );
                     _speeds[i] /= (lostFrameCounter + 1.0f);
 
+                    if (_maxSpeed < _speeds[i])
+                        _maxSpeed = _speeds[i];
+
                     i++;
 
                     lastPoint = point;
