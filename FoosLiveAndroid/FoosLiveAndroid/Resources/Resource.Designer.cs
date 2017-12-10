@@ -2510,14 +2510,14 @@ namespace FoosLiveAndroid
 			// aapt resource value: 0x7f080037
 			public const int always = 2131230775;
 			
-			// aapt resource value: 0x7f0800b1
-			public const int appDescription = 2131230897;
-			
-			// aapt resource value: 0x7f0800b4
-			public const int appLogo = 2131230900;
+			// aapt resource value: 0x7f0800b2
+			public const int appDescription = 2131230898;
 			
 			// aapt resource value: 0x7f0800af
-			public const int appVersion = 2131230895;
+			public const int appLogo = 2131230895;
+			
+			// aapt resource value: 0x7f0800b0
+			public const int appVersion = 2131230896;
 			
 			// aapt resource value: 0x7f080093
 			public const int arrowBot = 2131230867;
@@ -2591,8 +2591,8 @@ namespace FoosLiveAndroid
 			// aapt resource value: 0x7f08009c
 			public const int coordinator = 2131230876;
 			
-			// aapt resource value: 0x7f0800b0
-			public const int credits = 2131230896;
+			// aapt resource value: 0x7f0800b1
+			public const int credits = 2131230897;
 			
 			// aapt resource value: 0x7f08006c
 			public const int custom = 2131230828;
@@ -2756,11 +2756,11 @@ namespace FoosLiveAndroid
 			// aapt resource value: 0x7f0800a9
 			public const int loadingStatusLabel = 2131230889;
 			
-			// aapt resource value: 0x7f0800b3
-			public const int logoTitle = 2131230899;
+			// aapt resource value: 0x7f0800b4
+			public const int logoTitle = 2131230900;
 			
-			// aapt resource value: 0x7f0800b2
-			public const int main_menu = 2131230898;
+			// aapt resource value: 0x7f0800b3
+			public const int main_menu = 2131230899;
 			
 			// aapt resource value: 0x7f0800e5
 			public const int masked = 2131230949;
