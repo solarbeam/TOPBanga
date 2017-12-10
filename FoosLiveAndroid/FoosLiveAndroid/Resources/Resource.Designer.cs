@@ -2546,6 +2546,9 @@ namespace FoosLiveAndroid
 			// aapt resource value: 0x7f08003c
 			public const int bottom = 2131230780;
 			
+			// aapt resource value: 0x7f080094
+			public const int bottomControls = 2131230868;
+			
 			// aapt resource value: 0x7f080062
 			public const int buttonPanel = 2131230818;
 			
@@ -2665,9 +2668,6 @@ namespace FoosLiveAndroid
 			
 			// aapt resource value: 0x7f0800cf
 			public const int fromFileButton = 2131230927;
-			
-			// aapt resource value: 0x7f080094
-			public const int fullscreen_content_bottom_controls = 2131230868;
 			
 			// aapt resource value: 0x7f08008c
 			public const int fullscreen_content_top_status_bar = 2131230860;
@@ -2960,6 +2960,9 @@ namespace FoosLiveAndroid
 			// aapt resource value: 0x7f0800c9
 			public const int startButton = 2131230921;
 			
+			// aapt resource value: 0x7f08008f
+			public const int statusText = 2131230863;
+			
 			// aapt resource value: 0x7f0800d5
 			public const int status_bar_latest_event_content = 2131230933;
 			
@@ -3004,9 +3007,6 @@ namespace FoosLiveAndroid
 			
 			// aapt resource value: 0x7f0800be
 			public const int team1WinSoundValue = 2131230910;
-			
-			// aapt resource value: 0x7f08008f
-			public const int team2Label = 2131230863;
 			
 			// aapt resource value: 0x7f0800c5
 			public const int team2ScoreSoundItem = 2131230917;
@@ -3501,8 +3501,8 @@ namespace FoosLiveAndroid
 			// aapt resource value: 0x7f090012
 			public const int abc_toolbar_collapse_description = 2131296274;
 			
-			// aapt resource value: 0x7f090045
-			public const int app_description = 2131296325;
+			// aapt resource value: 0x7f090047
+			public const int app_description = 2131296327;
 			
 			// aapt resource value: 0x7f090029
 			public const int app_name = 2131296297;
@@ -3513,17 +3513,20 @@ namespace FoosLiveAndroid
 			// aapt resource value: 0x7f090021
 			public const int appbar_scrolling_view_behavior = 2131296289;
 			
+			// aapt resource value: 0x7f090041
+			public const int blue_team_goal = 2131296321;
+			
 			// aapt resource value: 0x7f090022
 			public const int bottom_sheet_behavior = 2131296290;
 			
+			// aapt resource value: 0x7f09004b
+			public const int camera_access_missing = 2131296331;
+			
+			// aapt resource value: 0x7f09004a
+			public const int camera_request_explanation_content = 2131296330;
+			
 			// aapt resource value: 0x7f090049
-			public const int camera_access_missing = 2131296329;
-			
-			// aapt resource value: 0x7f090048
-			public const int camera_request_explanation_content = 2131296328;
-			
-			// aapt resource value: 0x7f090047
-			public const int camera_request_explanation_title = 2131296327;
+			public const int camera_request_explanation_title = 2131296329;
 			
 			// aapt resource value: 0x7f090023
 			public const int character_counter_pattern = 2131296291;
@@ -3531,14 +3534,14 @@ namespace FoosLiveAndroid
 			// aapt resource value: 0x7f09002e
 			public const int choose_mode = 2131296302;
 			
-			// aapt resource value: 0x7f090046
-			public const int credits = 2131296326;
+			// aapt resource value: 0x7f090048
+			public const int credits = 2131296328;
 			
 			// aapt resource value: 0x7f09002b
 			public const int dismiss = 2131296299;
 			
-			// aapt resource value: 0x7f090040
-			public const int end_game = 2131296320;
+			// aapt resource value: 0x7f090042
+			public const int end_game = 2131296322;
 			
 			// aapt resource value: 0x7f09003d
 			public const int error_loading = 2131296317;
@@ -3579,17 +3582,20 @@ namespace FoosLiveAndroid
 			// aapt resource value: 0x7f090028
 			public const int path_password_strike_through = 2131296296;
 			
-			// aapt resource value: 0x7f09004a
-			public const int sample_score = 2131296330;
+			// aapt resource value: 0x7f090040
+			public const int red_team_goal = 2131296320;
 			
-			// aapt resource value: 0x7f090043
-			public const int score_format = 2131296323;
+			// aapt resource value: 0x7f09004c
+			public const int sample_score = 2131296332;
+			
+			// aapt resource value: 0x7f090045
+			public const int score_format = 2131296325;
 			
 			// aapt resource value: 0x7f090013
 			public const int search_menu_title = 2131296275;
 			
-			// aapt resource value: 0x7f090044
-			public const int select_ball_color = 2131296324;
+			// aapt resource value: 0x7f090046
+			public const int select_ball_color = 2131296326;
 			
 			// aapt resource value: 0x7f090030
 			public const int settings = 2131296304;
@@ -3615,8 +3621,8 @@ namespace FoosLiveAndroid
 			// aapt resource value: 0x7f090039
 			public const int sync_settings_title = 2131296313;
 			
-			// aapt resource value: 0x7f090041
-			public const int team1 = 2131296321;
+			// aapt resource value: 0x7f090043
+			public const int team1 = 2131296323;
 			
 			// aapt resource value: 0x7f090035
 			public const int team1_score_sound_label = 2131296309;
@@ -3624,8 +3630,8 @@ namespace FoosLiveAndroid
 			// aapt resource value: 0x7f090037
 			public const int team1_win_sound_label = 2131296311;
 			
-			// aapt resource value: 0x7f090042
-			public const int team2 = 2131296322;
+			// aapt resource value: 0x7f090044
+			public const int team2 = 2131296324;
 			
 			// aapt resource value: 0x7f090036
 			public const int team2_score_sound_label = 2131296310;
