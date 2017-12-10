@@ -13,12 +13,16 @@ namespace FoosLiveAndroid.Fragments
         static readonly new string Tag = typeof(SettingsFragment).Name;
 
         private View _view;
-        private Switch syncSwitch;
-        private Switch soundSwitch;
+        private Switch _syncSwitch;
+        private Switch _soundSwitch;
         private RelativeLayout _team1ScoreSoundItem;
+        private TextView _team1ScoreSoundValue;
         private RelativeLayout _team1WinSoundItem;
+        private TextView _team1WinSoundValue;
         private RelativeLayout _team2ScoreSoundItem;
+        private TextView _team2ScoreSoundValue;
         private RelativeLayout _team2WinSoundItem;
+        private TextView _team2WinSoundValue;
 
         private AlertDialog.Builder _dialogBuilder;
 
@@ -82,11 +86,11 @@ namespace FoosLiveAndroid.Fragments
             };
 
             //Todo: bind switches with evens
-            syncSwitch.CheckedChange += delegate {
+            _syncSwitch.CheckedChange += delegate {
                 Toast.MakeText(Context, "sync event", ToastLength.Short).Show();
             };
 
-            soundSwitch.CheckedChange += delegate {
+            _soundSwitch.CheckedChange += delegate {
                 Toast.MakeText(Context, "sound event", ToastLength.Short).Show();
             };
 
@@ -95,18 +99,27 @@ namespace FoosLiveAndroid.Fragments
 
         private void GetReferencesFromLayout()
         {
-            syncSwitch = _view.FindViewById<Switch>(Resource.Id.syncSwitch);
-            soundSwitch = _view.FindViewById<Switch>(Resource.Id.soundSwitch);
+            _syncSwitch = _view.FindViewById<Switch>(Resource.Id.syncSwitch);
+            _soundSwitch = _view.FindViewById<Switch>(Resource.Id.soundSwitch);
+
             _team1ScoreSoundItem = _view.FindViewById<RelativeLayout>(Resource.Id.team1ScoreSoundItem);
             _team1WinSoundItem = _view.FindViewById<RelativeLayout>(Resource.Id.team1WinSoundItem);
             _team2ScoreSoundItem = _view.FindViewById<RelativeLayout>(Resource.Id.team2ScoreSoundItem);
             _team2WinSoundItem = _view.FindViewById<RelativeLayout>(Resource.Id.team2WinSoundItem);
+
+            _team1ScoreSoundValue = _view.FindViewById<TextView>(Resource.Id.team1ScoreSoundValue);
+            _team1WinSoundValue = _view.FindViewById<TextView>(Resource.Id.team1WinSoundValue);
+            _team2ScoreSoundValue = _view.FindViewById<TextView>(Resource.Id.team2ScoreSoundValue);
+            _team2WinSoundValue = _view.FindViewById<TextView>(Resource.Id.team2WinSoundValue);
         }
 
         //Todo set values from model/cfg/shared pref
         private void RestoreCurrentSoundValues()
         {
-
+            _team1ScoreSoundValue.Text = "Demo sound";
+            _team1WinSoundValue.Text = "Demo sound";
+            _team2ScoreSoundValue.Text = "Demo sound";
+            _team2WinSoundValue.Text = "Demo sound";
         }
 
         // Todo: fully implement Alertdialog and selection events
