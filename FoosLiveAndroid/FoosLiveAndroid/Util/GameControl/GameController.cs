@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using static FoosLiveAndroid.Util.GameControl.Enums;
 using FoosLiveAndroid.Util.Interface;
+using Android.Util;
 
 namespace FoosLiveAndroid.Util.GameControl
 {
@@ -48,6 +49,11 @@ namespace FoosLiveAndroid.Util.GameControl
         /// Defines the current speed of the ball in centimeters per second
         /// </summary>
         public double CurrentSpeed;
+        /// <summary>
+        /// Defines the average speed during the match at any given moment
+        /// </summary>
+        public double AverageSpeed;
+        private int _avgSpeedCounter;
 
         /// <summary>
         /// Defines the maximum number of edges a table can have
@@ -99,6 +105,13 @@ namespace FoosLiveAndroid.Util.GameControl
                                         },
                                         GoalEvent,
                                         ballCoordinates);
+
+                // Calculate the average speed
+                if (lastBallCoordinates != null)
+                {
+                    AverageSpeed = ((AverageSpeed * _avgSpeedCounter) + CurrentSpeed) / (_avgSpeedCounter + 1);
+                    _avgSpeedCounter++;
+                }
 
                 CurrentSpeed = _posChecker.CalculateSpeed(lastBallCoordinates, lastLastBallCoordinates, PositionEvent);
             }

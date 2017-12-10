@@ -46,6 +46,22 @@ namespace FoosLiveAndroid
             blobs.Dispose();
             tempDetector.Dispose();
 
+            // Check if the shared preference file exists
+            var preferences = Application.Context.GetSharedPreferences("FoosliveAndroid.dat", FileCreationMode.Private);
+            if ( !( preferences.Contains("team1Score") && preferences.Contains("team1Win") &&
+                preferences.Contains("team2Score") && preferences.Contains("team2Win") ) )
+            {
+                // It doesnt exist, so assign default values
+                var prefsEditor = preferences.Edit();
+                prefsEditor.PutString("team1Score", "defaultMarioGoal").Apply();
+                prefsEditor.PutString("team1Win", "defaultMarioWin").Apply();
+                prefsEditor.PutString("team2Score", "defaultMarioGoal").Apply();
+                prefsEditor.PutString("team2Win", "defaultMarioWin").Apply();
+                prefsEditor.Commit();
+                prefsEditor.Dispose();
+            }
+            preferences.Dispose();
+
             // Start application
             StartActivity(new Intent(Application.Context, typeof(MenuActivity)));
         }
