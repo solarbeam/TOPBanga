@@ -7,10 +7,10 @@ namespace FoosLiveAndroid.Util.GameControl
     class Goal
     {
         // Defines the real height of the table in meters
-        private readonly double RealWidth = PropertiesManager.GetDoubleProperty("realWidth");
+        private readonly double RealWidth = PropertiesManager.GetDoubleProperty("real_width");
 
         // Defines the real width of the table in meters
-        private readonly double RealHeight = PropertiesManager.GetDoubleProperty("realHeight");
+        private readonly double RealHeight = PropertiesManager.GetDoubleProperty("real_height");
 
         /// <summary>
         /// Defines the amount of centimeters in a meter

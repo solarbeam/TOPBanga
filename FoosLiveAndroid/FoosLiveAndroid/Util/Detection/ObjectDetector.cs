@@ -31,7 +31,7 @@ namespace FoosLiveAndroid.Util.Detection
         /// <param name="mulY">The upscaling multiplier for the Y axis</param>
         /// <param name="detector">The detector used to detect the ball</param>
         /// <param name="controller">The Game Controller, which fires specific events, related to the game</param>
-        public ObjectDetector(float mulX, float mulY, ColorDetector detector, GameController controller)
+        public ObjectDetector(float mulX, float mulY, IColorDetector detector, GameController controller)
         {
             _controller = controller;
             _detector = detector;
