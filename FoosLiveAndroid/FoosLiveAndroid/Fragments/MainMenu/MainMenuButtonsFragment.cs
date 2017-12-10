@@ -5,6 +5,7 @@ using Android.OS;
 using Android.Util;
 using Android.Views;
 using Android.Widget;
+using FoosLiveAndroid.Fragments.Interface;
 using FoosLiveAndroid.Model;
 
 namespace FoosLiveAndroid.Fragments.MainMenu

@@ -4,6 +4,7 @@ using Android.Content;
 using Android.OS;
 using Android.Util;
 using Android.Views;
+using FoosLiveAndroid.Fragments.Interface;
 
 namespace FoosLiveAndroid.Fragments
 {

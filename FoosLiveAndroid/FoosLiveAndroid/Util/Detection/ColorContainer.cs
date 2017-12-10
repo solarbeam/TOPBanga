@@ -1,11 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using Emgu.CV.Structure;
+using FoosLiveAndroid.Util.Interface;
 
 namespace FoosLiveAndroid.Util.Detection
 {
-    class ColorContainer
+    class ColorContainer : IColorContainer
     {
         public List<Hsv> List { get; }
 
@@ -16,10 +16,7 @@ namespace FoosLiveAndroid.Util.Detection
 
         public bool Add(Hsv hsv)
         {
-            /**
-             * Check if the specific value exists already
-             * in the list
-             */
+            // Check if the specific value exists already in the list
             if (List.Any(i => hsv.Hue == i.Hue && hsv.Satuation == i.Satuation && hsv.Value == i.Value))
             {
                 return false;
