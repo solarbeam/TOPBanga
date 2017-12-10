@@ -15,7 +15,6 @@ using FoosLiveAndroid.Util.Detection;
 using Android.Media;
 using System;
 using Android.Hardware;
-using Android.Runtime;
 using FoosLiveAndroid.Util.Drawing;
 using System.Text;
 using System.Threading.Tasks;
@@ -24,6 +23,7 @@ using FoosLiveAndroid.Util.GameControl;
 using static FoosLiveAndroid.Util.GameControl.Enums;
 using FoosLiveAndroid.Util.Sensors;
 using FoosLiveAndroid.Util.Interface;
+using FoosLiveAndroid.Fragments;
 
 namespace FoosLiveAndroid
 {
@@ -40,34 +40,6 @@ namespace FoosLiveAndroid
         private bool _textThreadStarted = false;
         private bool _waitForSpeed = false;
 
-        //Sensors context
-        private SensorManager _sensorManager;
-        private Sensor _rotationSensor;
-        private SensorStatus _lastAccuracy;
-
-        private Vibrator _vibrator;
-        private static readonly long[] VibrationPattern = 
-        { 
-            PropertiesManager.GetIntProperty("vibration_pattern_timing1"), 
-            PropertiesManager.GetIntProperty("vibration_pattern_timing2"), 
-            PropertiesManager.GetIntProperty("vibration_pattern_timing3")
-        };
-
-        private static readonly int VibrationRepeatIndex = PropertiesManager.GetIntProperty("vibration_repeat_index");
-        private bool _vibrating = false;
-
-        private static readonly int PitchOffset = PropertiesManager.GetIntProperty("pitch_offset");
-        private static readonly int RollOffset = PropertiesManager.GetIntProperty("roll_offset");
-        private static readonly int SuggestedPitchMin = PropertiesManager.GetIntProperty("suggested_pitch_min");
-        private static readonly int SuggestedPitchMax = PropertiesManager.GetIntProperty("suggested_pitch_max");
-        private static readonly int MaxRollDeviaton = PropertiesManager.GetIntProperty("max_roll_deviation");
-
-        private float _pitch;
-        private float _roll;
-
-        private float _referencePointRoll;
-        //---------------------------------------
-
         // A constant for upscaling the positions
         private float _upscaleMultiplierX;
         private float _upscaleMultiplierY;
@@ -77,11 +49,15 @@ namespace FoosLiveAndroid
         private TextView _score;
         private TextureView _gameView;
         private SurfaceView _surfaceView;
+
         // Guideline UI elements
         private ImageView _arrowTop;
         private ImageView _arrowLeft;
         private ImageView _arrowRight;
         private ImageView _arrowBot;
+
+        private FrameLayout _infoLayout;
+        private RelativeLayout _topBar;
 
         private ISurfaceHolder _surfaceHolder;
 
@@ -101,7 +77,7 @@ namespace FoosLiveAndroid
         private bool _hsvSelected;
         private Image<Hsv, byte> _image;
 
-        private IPositionManager positionManager;
+        private IPositionManager _positionManager;
 
         /// <summary>
         /// Called whenever the view is created
@@ -113,8 +89,10 @@ namespace FoosLiveAndroid
 
             SetContentView(Resource.Layout.activity_game);
 
-            //hides notification bar
+            //Hide notification bar
             Window.SetFlags(WindowManagerFlags.Fullscreen, WindowManagerFlags.Fullscreen);
+            //Prevent from sleeping
+            Window.SetFlags(WindowManagerFlags.KeepScreenOn, WindowManagerFlags.KeepScreenOn);
             GetReferencesFromLayout();
 
             _colorDetector = new ColorDetector();
@@ -137,7 +115,14 @@ namespace FoosLiveAndroid
             // Set up sensors & vibration
             var sensorManager = (SensorManager)GetSystemService(SensorService);
             var _vibration = new Vibration((Vibrator)GetSystemService(VibratorService));
-            positionManager = new PositionManager(this, sensorManager, _vibration);
+            _positionManager = new PositionManager(this, sensorManager, _vibration);
+
+            //temp
+            _topBar.Visibility = ViewStates.Gone;
+            var transaction = FragmentManager.BeginTransaction();
+            transaction.Add(Resource.Id.infoLayout, EndGameFragment.NewInstance());
+            transaction.Commit();
+
         }
 
         /// <summary>
@@ -145,6 +130,8 @@ namespace FoosLiveAndroid
         /// </summary>
         private void GetReferencesFromLayout()
         {
+            _topBar = FindViewById<RelativeLayout>(Resource.Id.fullscreen_content_top_status_bar);
+            _infoLayout = FindViewById<FrameLayout>(Resource.Id.infoLayout);
             _gameButton = FindViewById<Button>(Resource.Id.gameButton);
             _gameView = FindViewById<TextureView>(Resource.Id.game_content);
             _score = FindViewById<TextView>(Resource.Id.score);
@@ -330,7 +317,7 @@ namespace FoosLiveAndroid
                 // We use a camera, so release it
                 _camera.Release();
 
-            positionManager.StopListening();
+            _positionManager.StopListening();
             return true;
         }
 
@@ -405,7 +392,6 @@ namespace FoosLiveAndroid
             var selectedColor = Color.Rgb((int)selectedRgb.Red, (int)selectedRgb.Green, (int)selectedRgb.Blue);
 
             _gameButton.SetBackgroundColor(selectedColor);
-
             _gameButton.Text = GetString(Resource.String.start_game);
         }
 
@@ -442,19 +428,19 @@ namespace FoosLiveAndroid
             _gameButton.Visibility = ViewStates.Gone;
 
             // Capture aligned position to show guidelines accordingly
-            positionManager.CapturePosition();
+            _positionManager.CapturePosition();
         }
 
         protected override void OnPause()
         {
             base.OnPause();
-            positionManager.StopListening();
+            _positionManager.StopListening();
         }
 
         protected override void OnResume()
         {
             base.OnResume();
-            positionManager.StartListening();
+            _positionManager.StartListening();
         }
 
         public void UpdateGuideline(bool[] exceedsPitch, 

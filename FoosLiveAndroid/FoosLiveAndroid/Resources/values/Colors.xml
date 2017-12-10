@@ -10,9 +10,10 @@
     <color name="menu_button_clicked">#DDDFD8</color>
     <color name="settings_button_text">#000000</color>
 	<color name="game_button">#66000000</color>
-	<color name="game_button_clicked">#F6B7DCFA</color>
+	<color name="game_button_clicked">#60FFFFFF</color>
 	<color name="status_text">#FFFFFF</color>
 	<color name="status">#66000000</color>
+    <color name="end_game_status">#A0000000</color>
 	<color name="arrow">#60FFFFFF</color>
 	<color name="splash_background">#E7F1CD</color>
 </resources>
