@@ -1,17 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-using Android.App;
-using Android.Content;
-using Android.OS;
-using Android.Runtime;
-using Android.Views;
-using Android.Widget;
-using System.Collections;
 using Android.Graphics;
-using Android.Util;
 
 namespace FoosLiveAndroid.Util.GameControl
 {
@@ -26,7 +15,7 @@ namespace FoosLiveAndroid.Util.GameControl
         /// <summary>
         /// Defines the amount of centimeters in a meter
         /// </summary>
-        private readonly int CentimetersInAMeter = PropertiesManager.GetIntProperty("centimetersInAMeter");
+        private const int CentimetersInMeter = 100;
 
         private PointF[] _points;
 
@@ -48,8 +37,8 @@ namespace FoosLiveAndroid.Util.GameControl
             double mulY = RealHeight / (tablePoints.Bottom - tablePoints.Top);
 
             // Convert meters into centimeters
-            mulX *= CentimetersInAMeter;
-            mulY *= CentimetersInAMeter;
+            mulX *= CentimetersInMeter;
+            mulY *= CentimetersInMeter;
 
             // Calculate the speeds
             PointF lastPoint = null;

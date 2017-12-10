@@ -22,17 +22,17 @@ namespace FoosLiveAndroid
         protected override void OnResume()
         {
             base.OnResume();
-            Task startupWork = new Task(LoadResources);
-            startupWork.Start();
+            Task startupLoading = new Task(LoadResources);
+            startupLoading.Start();
         }
 
         /// Background work behind the splash screen
         async void LoadResources()
         {
-            // Todo: initialise resources here
+            // Initialize config file manager
             PropertiesManager.Initialise(this);
 
-            // Initialize EmguCv. Trust me, it works
+            // Initialize EmguCv
             var tempImage = new Image<Bgr, byte>(200, 200, new Bgr(255, 0, 100));
             var filtered = tempImage.InRange(new Bgr(100, 0, 0), new Bgr(200, 0, 0));
             filtered.Erode(Iterations).Dispose();
@@ -45,8 +45,8 @@ namespace FoosLiveAndroid
             filtered.Dispose();
             blobs.Dispose();
             tempDetector.Dispose();
-            // Initialization end
 
+            // Start application
             StartActivity(new Intent(Application.Context, typeof(MenuActivity)));
         }
     }

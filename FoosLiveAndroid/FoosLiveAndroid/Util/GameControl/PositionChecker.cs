@@ -1,82 +1,72 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-using Android.App;
-using Android.Content;
-using Android.OS;
-using Android.Runtime;
-using Android.Views;
-using Android.Widget;
 using Android.Graphics;
+using FoosLiveAndroid.Util.Interface;
 using static FoosLiveAndroid.Util.GameControl.Enums;
 
 namespace FoosLiveAndroid.Util.GameControl
 {
-    class PositionChecker
+    class PositionChecker : IPositionChecker
     {
         // Defines the real height of the table in meters
-        private readonly double RealWidth = PropertiesManager.GetDoubleProperty("realWidth");
+        private readonly double RealWidth = PropertiesManager.GetDoubleProperty("real_width");
 
         // Defines the real width of the table in meters
-        private readonly double RealHeight = PropertiesManager.GetDoubleProperty("realHeight");
+        private readonly double RealHeight = PropertiesManager.GetDoubleProperty("real_height");
 
-        private readonly int CentimetersInAMeter = PropertiesManager.GetIntProperty("centimetersInAMeter");
+        private const int CentimetersInMeter = 100;
 
         private double _mulX;
         private double _mulY;
 
-        private RectF _zoneOne;
-        private RectF _zoneTwo;
+        private RectF zoneOne;
+        private RectF zoneTwo;
 
         /// <summary>
         /// Defines the goal zones, which hold the point of no return for the ball
         /// </summary>
-        public RectF zoneOne
+        public RectF ZoneOne
         {
-            get => _zoneOne;
+            get => zoneOne;
 
             set
             {
-                _zoneOne = value;
+                zoneOne = value;
                 CalculateMultipliers();
             }
         }
-        public RectF zoneTwo
+        public RectF ZoneTwo
         {
-            get => _zoneTwo;
+            get => zoneTwo;
 
             set
             {
-                _zoneTwo = value;
+                zoneTwo = value;
                 CalculateMultipliers();
             }
         }
 
-        public bool ballInFirstGoalZone
+        public bool BallInFirstGoalZone
         {
-            get => _ballInFirstGoalZone;
+            get => ballInFirstGoalZone;
 
             set
             {
-                if (value)
-                    _ballInSecondGoalZone = false;
+                ballInSecondGoalZone &= !value;
 
-                _ballInFirstGoalZone = value;
+                ballInFirstGoalZone = value;
             }
         }
 
-        public bool ballInSecondGoalZone
+        public bool BallInSecondGoalZone
         {
-            get => _ballInSecondGoalZone;
+            get => ballInSecondGoalZone;
 
             set
             {
-                if (value)
-                    _ballInFirstGoalZone = false;
+                ballInFirstGoalZone &= !value;
 
-                _ballInSecondGoalZone = value;
+                ballInSecondGoalZone = value;
             }
         }
 
@@ -88,11 +78,11 @@ namespace FoosLiveAndroid.Util.GameControl
         /// <summary>
         /// Defines whether the ball is in the first goal zone
         /// </summary>
-        private bool _ballInFirstGoalZone = false;
+        private bool ballInFirstGoalZone = false;
         /// <summary>
         /// Defines whether the ball is in the second ball zone
         /// </summary>
-        private bool _ballInSecondGoalZone = false;
+        private bool ballInSecondGoalZone = false;
         /// <summary>
         /// Defines the lost frame counter
         /// </summary>
@@ -110,11 +100,11 @@ namespace FoosLiveAndroid.Util.GameControl
 
         private void CalculateMultipliers()
         {
-            if (_zoneOne == null || _zoneTwo == null)
+            if (zoneOne == null || zoneTwo == null)
                 return;
 
-            _mulX = CentimetersInAMeter * ( RealWidth / (_zoneTwo.Right - _zoneTwo.Left) );
-            _mulY = CentimetersInAMeter * ( RealHeight / (_zoneTwo.Bottom - _zoneOne.Top) );
+            _mulX = CentimetersInMeter * ( RealWidth / (zoneTwo.Right - zoneTwo.Left) );
+            _mulY = CentimetersInMeter * ( RealHeight / (zoneTwo.Bottom - zoneOne.Top) );
         }
 
         /// <summary>
@@ -129,8 +119,8 @@ namespace FoosLiveAndroid.Util.GameControl
         /// <param name="GoalEvent">Defines the goal event, which is fired whenever a goal occurs</param>
         /// <param name="ballCoordinates">Defines the queue, holding the historical points of the ball</param>
         public void OnNewFrame(PointF lastBallCoordinates, int BlueScore, int RedScore,
-                                CurrentEvent currentEvent, Action<int,int,CurrentEvent> setter,
-                                EventHandler<EventArgs> GoalEvent, Queue<PointF> ballCoordinates)
+                               CurrentEvent currentEvent, Action<int,int,CurrentEvent> setter,
+                               EventHandler<EventArgs> GoalEvent, Queue<PointF> ballCoordinates)
         {
             // Check if this particular point signals that the ball is lost
             if (lastBallCoordinates == null)
@@ -138,34 +128,34 @@ namespace FoosLiveAndroid.Util.GameControl
                 if (_framesLost == GoalFramesToCountGoal)
                 {
                     // It is, so check if a goal is about to occur
-                    if (_ballInFirstGoalZone)
+                    if (ballInFirstGoalZone)
                     {
                         // Fire the goal event for the first team
                         setter(BlueScore + 1, RedScore, CurrentEvent.BlueGoalOccured);
                         GoalEvent(this, EventArgs.Empty);
 
-                        _goals.Enqueue(new Goal(ballCoordinates, new RectF(zoneOne.Left, zoneOne.Top, zoneTwo.Right, zoneTwo.Bottom)));
+                        _goals.Enqueue(new Goal(ballCoordinates, new RectF(ZoneOne.Left, ZoneOne.Top, ZoneTwo.Right, ZoneTwo.Bottom)));
 
                         // Reset variables to their starting values
                         _framesLost = 0;
-                        _ballInFirstGoalZone = false;
-                        _ballInSecondGoalZone = false;
+                        ballInFirstGoalZone = false;
+                        ballInSecondGoalZone = false;
 
                         return;
                     }
                     else
-                        if (_ballInSecondGoalZone)
+                        if (ballInSecondGoalZone)
                     {
                         // Fire the goal event for the second team
                         setter(BlueScore, RedScore + 1, CurrentEvent.BlueGoalOccured);
                         GoalEvent(this, EventArgs.Empty);
 
-                        _goals.Enqueue(new Goal(ballCoordinates, new RectF(zoneOne.Left, zoneOne.Top, zoneTwo.Right, zoneTwo.Bottom)));
+                        _goals.Enqueue(new Goal(ballCoordinates, new RectF(ZoneOne.Left, ZoneOne.Top, ZoneTwo.Right, ZoneTwo.Bottom)));
 
                         // Reset variables to their starting values
                         _framesLost = 0;
-                        _ballInFirstGoalZone = false;
-                        _ballInSecondGoalZone = false;
+                        ballInFirstGoalZone = false;
+                        ballInSecondGoalZone = false;
 
                         return;
                     }
@@ -179,37 +169,35 @@ namespace FoosLiveAndroid.Util.GameControl
                 _framesLost = 0;
 
                 // Check if the ball is in the first zone
-                if (zoneOne.Contains(lastBallCoordinates.X, lastBallCoordinates.Y))
+                if (ZoneOne.Contains(lastBallCoordinates.X, lastBallCoordinates.Y))
                 {
-                    ballInFirstGoalZone = true;
+                    BallInFirstGoalZone = true;
                 }
                 else
                     // Check if the ball is in the second zone
-                    if (zoneTwo.Contains(lastBallCoordinates.X, lastBallCoordinates.Y))
+                    if (ZoneTwo.Contains(lastBallCoordinates.X, lastBallCoordinates.Y))
                 {
-                    ballInSecondGoalZone = true;
+                    BallInSecondGoalZone = true;
                 }
                 else
                 {
-                    ballInFirstGoalZone = false;
+                    BallInFirstGoalZone = false;
                 }
             }
 
             return;
         }
 
-        public double calculateSpeed(PointF one, PointF two, EventHandler<EventArgs> PositionEvent)
+        public double CalculateSpeed(PointF one, PointF two, EventHandler<EventArgs> PositionEvent)
         {
             if (one != null && two != null)
             {
                 PositionEvent(this, EventArgs.Empty);
                 return Math.Sqrt(
                     (one.X * _mulX - two.X * _mulX) * (one.X * _mulX - two.X * _mulX) +
-                    (one.Y * _mulY - two.Y * _mulY) * (one.Y * _mulY - two.Y * _mulY)
-                    );
+                    (one.Y * _mulY - two.Y * _mulY) * (one.Y * _mulY - two.Y * _mulY));
             }
-            else
-                return 0;
+            return 0;
         }
     }
 }

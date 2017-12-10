@@ -1,18 +1,17 @@
 using Android.Graphics;
-using Android.Util;
-using FoosLiveAndroid.Util.GameControl;
 using System;
 using System.Collections.Generic;
 using static FoosLiveAndroid.Util.GameControl.Enums;
+using FoosLiveAndroid.Util.Interface;
 
 namespace FoosLiveAndroid.Util.GameControl
 {
-    
+
     /// <summary>
     /// The class holds the primary functions, required for goal detection
     /// and the predefined attributes for them
     /// </summary>
-    public class GameController
+    public class GameController : IGameController
     {
         /// <summary>
         /// Fired whenever a goal event occurs
@@ -36,8 +35,8 @@ namespace FoosLiveAndroid.Util.GameControl
         
         public CurrentEvent currentEvent;
 
-        private PositionChecker posChecker;
-        private RowChecker rowChecker;
+        private PositionChecker _posChecker;
+        private RowChecker _rowChecker;
 
         /// <summary>
         /// Holds the coordinates of the last position of the ball
@@ -81,14 +80,14 @@ namespace FoosLiveAndroid.Util.GameControl
                 lastBallCoordinates = value;
 
                 // Check which row has the ball
-                if (lastBallCoordinates != null && rowChecker.rows != null)
+                if (lastBallCoordinates != null && _rowChecker.rows != null)
                 {
-                    rowChecker.CheckRow(lastBallCoordinates, ref currentEvent);
+                    _rowChecker.CheckRow(lastBallCoordinates, ref currentEvent);
                 }
 
                 ballCoordinates.Enqueue(lastBallCoordinates);
 
-                posChecker.OnNewFrame(lastBallCoordinates,
+                _posChecker.OnNewFrame(lastBallCoordinates,
                                         BlueScore,
                                         RedScore,
                                         currentEvent,
@@ -101,7 +100,7 @@ namespace FoosLiveAndroid.Util.GameControl
                                         GoalEvent,
                                         ballCoordinates);
 
-                CurrentSpeed = posChecker.calculateSpeed(lastBallCoordinates, lastLastBallCoordinates, PositionEvent);
+                CurrentSpeed = _posChecker.CalculateSpeed(lastBallCoordinates, lastLastBallCoordinates, PositionEvent);
             }
         }
 
@@ -124,17 +123,17 @@ namespace FoosLiveAndroid.Util.GameControl
                 return;
 
             // Calculate the different zones, using the points given
-            posChecker.zoneOne = new RectF(points[0].X,
+            _posChecker.ZoneOne = new RectF(points[0].X,
                                     points[0].Y,
                                     points[1].X,
                                     (points[2].Y - points[0].Y) * percentageOfSide);
 
-            posChecker.zoneTwo = new RectF(points[0].X, posChecker.zoneOne.Bottom + (1.0f - percentageOfSide * 2) * (points[2].Y - points[0].Y),
+            _posChecker.ZoneTwo = new RectF(points[0].X, _posChecker.ZoneOne.Bottom + (1.0f - percentageOfSide * 2) * (points[2].Y - points[0].Y),
                                         points[3].X,
                                         points[3].Y);
 
-            rowChecker.CalculateRows(new System.Drawing.Rectangle((int)posChecker.zoneOne.Left, (int)posChecker.zoneOne.Top,
-                                                (int)posChecker.zoneTwo.Right, (int)posChecker.zoneTwo.Bottom), mode);
+            _rowChecker.CalculateRows(new System.Drawing.Rectangle((int)_posChecker.ZoneOne.Left, (int)_posChecker.ZoneOne.Top,
+                                                (int)_posChecker.ZoneTwo.Right, (int)_posChecker.ZoneTwo.Bottom), mode);
         }
         /// <summary>
         /// The default constructor for the GameController class
@@ -142,8 +141,8 @@ namespace FoosLiveAndroid.Util.GameControl
         public GameController()
         {
             ballCoordinates = new Queue<PointF>();
-            rowChecker = new RowChecker();
-            posChecker = new PositionChecker();
+            _rowChecker = new RowChecker();
+            _posChecker = new PositionChecker();
         }
     }
 }

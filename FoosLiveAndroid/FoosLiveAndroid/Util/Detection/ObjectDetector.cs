@@ -3,7 +3,6 @@ using Emgu.CV;
 using Emgu.CV.Structure;
 using FoosLiveAndroid.Util.GameControl;
 using FoosLiveAndroid.Util.Interface;
-using System;
 
 namespace FoosLiveAndroid.Util.Detection
 {
@@ -11,17 +10,20 @@ namespace FoosLiveAndroid.Util.Detection
     /// A class, which detects the table and ball, and, if detected,
     /// draws them on the given canvas
     /// </summary>
-    class ObjectDetector
+    class ObjectDetector : IObjectDetector
     {
         /// <summary>
         /// Defines the detector 
         /// </summary>
-        private IDetector _detector;
+        private IColorDetector _detector;
         private GameController _controller;
         private float _mulX;
         private float _mulY;
-        private Paint paintRect;
-        private Paint paintBall;
+        private Paint _paintRect;
+        private Paint _paintBall;
+        private static readonly float BallStrokeWidth = PropertiesManager.GetFloatProperty("ball_stroke_width");
+        private static readonly float RectStrokeWidth = PropertiesManager.GetFloatProperty("rect_stroke_width");
+
         /// <summary>
         /// The default constructor for the ObjectDetector class
         /// </summary>
@@ -37,20 +39,20 @@ namespace FoosLiveAndroid.Util.Detection
             _mulY = mulY;
 
             // Declare the outline style for the table
-            paintRect = new Paint
+            _paintRect = new Paint
             {
                 Color = new Color(255, 0, 0)
             };
-            paintRect.SetStyle(Paint.Style.Stroke);
-            paintRect.StrokeWidth = 5.0f;
+            _paintRect.SetStyle(Paint.Style.Stroke);
+            _paintRect.StrokeWidth = RectStrokeWidth;
 
             // Declare the outline style for the ball
-            paintBall = new Paint
+            _paintBall = new Paint
             {
                 Color = new Color(0, 255, 0)
             };
-            paintBall.SetStyle(Paint.Style.Stroke);
-            paintBall.StrokeWidth = 5.0f;
+            _paintBall.SetStyle(Paint.Style.Stroke);
+            _paintBall.StrokeWidth = BallStrokeWidth;
         }
         public bool Detect(Canvas canvas, Hsv ballHsv, Bitmap bitmap, Bitmap bgBitmap)
         {
@@ -75,7 +77,7 @@ namespace FoosLiveAndroid.Util.Detection
                                  (int)(bBox.Top * _mulY),
                                  (int)(bBox.Right * _mulX),
                                  (int)(bBox.Bottom * _mulY),
-                                 paintRect);
+                                 _paintRect);
 
             // Free unused resources
             _detector.image.Dispose();
@@ -87,7 +89,7 @@ namespace FoosLiveAndroid.Util.Detection
                                  (int)(ball.Top * _mulY),
                                  (int)(ball.Right * _mulX),
                                  (int)(ball.Bottom * _mulY),
-                                 paintBall);
+                                 _paintBall);
 
                 // Update the GameController class with new coordinates
                 _controller.LastBallCoordinates = new PointF(ball.X * _mulX, ball.Y * _mulY);

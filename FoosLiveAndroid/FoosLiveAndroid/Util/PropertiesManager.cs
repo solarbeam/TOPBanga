@@ -41,7 +41,7 @@ namespace FoosLiveAndroid.Util
             var property = _properties.GetProperty(key);
 
             if (property == null) 
-                throw new Exception("Property not found in configuration file");
+                throw new Exception($"Property not found in configuration file. Key {key}");
             
             return property;
         }
@@ -53,7 +53,7 @@ namespace FoosLiveAndroid.Util
         /// <param name="key">Configuration value key</param>
         public static int GetIntProperty(String key)
         {
-            var property = _properties?.GetProperty(key);
+            var property = _properties.GetProperty(key);
             return Int32.Parse(property);
         } 
         /// <summary>
@@ -63,7 +63,7 @@ namespace FoosLiveAndroid.Util
         /// <param name="key">Configuration value key</param>
         public static float GetFloatProperty(String key)
         {
-            var property = _properties?.GetProperty(key);
+            var property = _properties.GetProperty(key);
             return float.Parse(property);
         } 
 
@@ -74,7 +74,7 @@ namespace FoosLiveAndroid.Util
         /// <param name="key">Configuration value key</param>
         public static double GetDoubleProperty(String key)
         {
-            var property = _properties?.GetProperty(key);
+            var property = _properties.GetProperty(key);
             return double.Parse(property);
         } 
     }       

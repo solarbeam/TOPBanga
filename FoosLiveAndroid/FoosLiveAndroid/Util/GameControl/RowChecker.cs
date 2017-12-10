@@ -1,20 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-using Android.App;
-using Android.Content;
-using Android.OS;
-using Android.Runtime;
-using Android.Views;
-using Android.Widget;
-using Android.Graphics;
+﻿using Android.Graphics;
+using FoosLiveAndroid.Util.Interface;
 using static FoosLiveAndroid.Util.GameControl.Enums;
 
 namespace FoosLiveAndroid.Util.GameControl
 {
-    class RowChecker
+    class RowChecker : IRowChecker
     {
         /// <summary>
         /// Defines the rows of foosmen
@@ -92,20 +82,20 @@ namespace FoosLiveAndroid.Util.GameControl
 
             if (mode == CaptureMode.Video)
             {
-                float toAssign = PropertiesManager.GetFloatProperty("percentageVideo");
+                float toAssign = PropertiesManager.GetFloatProperty("percentage_video");
                 for (int i = 0; i < multipliers.Length; i ++)
                     multipliers[i] = toAssign;
             }
             else
             {
-                multipliers[0] = PropertiesManager.GetFloatProperty("rowOne");
-                multipliers[1] = PropertiesManager.GetFloatProperty("rowTwo");
-                multipliers[2] = PropertiesManager.GetFloatProperty("rowThree");
-                multipliers[3] = PropertiesManager.GetFloatProperty("rowFour");
-                multipliers[4] = PropertiesManager.GetFloatProperty("rowFive");
-                multipliers[5] = PropertiesManager.GetFloatProperty("rowSix");
-                multipliers[6] = PropertiesManager.GetFloatProperty("rowSeven");
-                multipliers[7] = PropertiesManager.GetFloatProperty("rowEight");
+                multipliers[0] = PropertiesManager.GetFloatProperty("row_one");
+                multipliers[1] = PropertiesManager.GetFloatProperty("row_two");
+                multipliers[2] = PropertiesManager.GetFloatProperty("row_three");
+                multipliers[3] = PropertiesManager.GetFloatProperty("row_four");
+                multipliers[4] = PropertiesManager.GetFloatProperty("row_five");
+                multipliers[5] = PropertiesManager.GetFloatProperty("row_six");
+                multipliers[6] = PropertiesManager.GetFloatProperty("row_seven");
+                multipliers[7] = PropertiesManager.GetFloatProperty("row_eight");
             }
             
             rows = new RectF[8];

@@ -51,10 +51,10 @@ namespace FoosLiveAndroid.Util.Database
 
         public History(string[] input)
         {
-            this.blueTeamName = input[0];
-            this.redTeamName = input[1];
-            this.blueTeamPoints = int.Parse(input[2]);
-            this.redTeamPoints = int.Parse(input[3]);
+            blueTeamName = input[0];
+            redTeamName = input[1];
+            blueTeamPoints = int.Parse(input[2]);
+            redTeamPoints = int.Parse(input[3]);
         }
     }
 }
