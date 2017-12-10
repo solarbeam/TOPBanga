@@ -225,7 +225,7 @@
             android:id="@+id/team2ScoreSoundItem"
             android:paddingTop="5dp"
             android:background="?android:attr/selectableItemBackground"
-            android:paddingBottom="5dp"
+            android:paddingBottom=" 10dp"
             android:clickable="true"
             android:orientation="horizontal">
             <TextView

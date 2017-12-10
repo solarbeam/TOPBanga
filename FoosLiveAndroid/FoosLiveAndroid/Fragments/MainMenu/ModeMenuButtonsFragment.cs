@@ -159,7 +159,7 @@ namespace FoosLiveAndroid.Fragments.MainMenu
         {
             switch (requestCode)
             {
-                case (int)ERequestId.VideoRequest:
+                case (int)ERequestId.Camera:
                     {
                         if (grantResults[0] == Permission.Granted)
                         {

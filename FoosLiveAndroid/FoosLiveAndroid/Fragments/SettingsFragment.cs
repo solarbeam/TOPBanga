@@ -5,8 +5,6 @@ using Android.OS;
 using Android.Util;
 using Android.Views;
 using Android.Widget;
-using Java.IO;
-using Android.Content.Res;
 using FoosLiveAndroid.Fragments.Interface;
 
 namespace FoosLiveAndroid.Fragments
