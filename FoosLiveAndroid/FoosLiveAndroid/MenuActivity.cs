@@ -7,6 +7,7 @@ using FoosLiveAndroid.Model;
 using FoosLiveAndroid.Fragments;
 using Android.Content.PM;
 using FoosLiveAndroid.Fragments.MainMenu;
+using FoosLiveAndroid.Fragments.Interface;
 
 namespace FoosLiveAndroid
 {

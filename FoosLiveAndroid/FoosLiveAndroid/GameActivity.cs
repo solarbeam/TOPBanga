@@ -16,6 +16,12 @@ using Android.Media;
 using System;
 using Android.Hardware;
 using Android.Runtime;
+using FoosLiveAndroid.Util.Drawing;
+using System.Text;
+using System.Threading.Tasks;
+using Android.Content;
+using FoosLiveAndroid.Util.GameControl;
+using static FoosLiveAndroid.Util.GameControl.Enums;
 using FoosLiveAndroid.Util.Sensors;
 using FoosLiveAndroid.Util.Interface;
 
@@ -25,15 +31,48 @@ namespace FoosLiveAndroid
     public class GameActivity : Activity, TextureView.ISurfaceTextureListener, View.IOnTouchListener, MediaPlayer.IOnPreparedListener
     {
         static readonly string Tag = typeof(GameActivity).Name;
-        private readonly int camera_width = PropertiesManager.GetIntProperty("camera_width");
-        private readonly int camera_height = PropertiesManager.GetIntProperty("camera_height");
-        private readonly int preview_width = PropertiesManager.GetIntProperty("preview_width");
-        private readonly int preview_height = PropertiesManager.GetIntProperty("preview_height");
+        private static readonly int CameraWidth = PropertiesManager.GetIntProperty("camera_width");
+        private static readonly int CameraHeight = PropertiesManager.GetIntProperty("camera_height");
+        private static readonly int PreviewWidth = PropertiesManager.GetIntProperty("preview_width");
+        private static readonly int PreviewHeight = PropertiesManager.GetIntProperty("preview_height");
+        private static readonly int SlidingTextDelay = PropertiesManager.GetIntProperty("sliding_text_delay");
+
+        private bool _textThreadStarted = false;
+        private bool _waitForSpeed = false;
+
+        //Sensors context
+        private SensorManager _sensorManager;
+        private Sensor _rotationSensor;
+        private SensorStatus _lastAccuracy;
+
+        private Vibrator _vibrator;
+        private static readonly long[] VibrationPattern = 
+        { 
+            PropertiesManager.GetIntProperty("vibration_pattern_timing1"), 
+            PropertiesManager.GetIntProperty("vibration_pattern_timing2"), 
+            PropertiesManager.GetIntProperty("vibration_pattern_timing3")
+        };
+
+        private static readonly int VibrationRepeatIndex = PropertiesManager.GetIntProperty("vibration_repeat_index");
+        private bool _vibrating = false;
+
+        private static readonly int PitchOffset = PropertiesManager.GetIntProperty("pitch_offset");
+        private static readonly int RollOffset = PropertiesManager.GetIntProperty("roll_offset");
+        private static readonly int SuggestedPitchMin = PropertiesManager.GetIntProperty("suggested_pitch_min");
+        private static readonly int SuggestedPitchMax = PropertiesManager.GetIntProperty("suggested_pitch_max");
+        private static readonly int MaxRollDeviaton = PropertiesManager.GetIntProperty("max_roll_deviation");
+
+        private float _pitch;
+        private float _roll;
+
+        private float _referencePointRoll;
+        //---------------------------------------
 
         // A constant for upscaling the positions
-        private float upscaleMultiplierX;
-        private float upscaleMultiplierY;
+        private float _upscaleMultiplierX;
+        private float _upscaleMultiplierY;
 
+        private TextView _eventText;
         private Button _gameButton;
         private TextView _score;
         private TextureView _gameView;
@@ -44,25 +83,23 @@ namespace FoosLiveAndroid
         private ImageView _arrowRight;
         private ImageView _arrowBot;
 
-        private ISurfaceHolder holder;
+        private ISurfaceHolder _surfaceHolder;
 
-        private Bitmap alphaBitmap;
+        private Bitmap _alphaBitmap;
 
-        private ColorDetector detector;
-        private ObjectDetector objectDetector;
-        private GameController gameController;
-
-        private PointF rectangle;
+        private IColorDetector _colorDetector;
+        private IObjectDetector _objectDetector;
+        private GameController _gameController;
 
         // Todo: change Camera to Camera2
-        private Camera camera;
+        private Camera _camera;
 
-        private MediaPlayer video;
-        private Surface surface;
+        private MediaPlayer _video;
+        private Surface _surface;
 
-        private Hsv selectedHsv;
-        private bool hsvSelected;
-        private Image<Hsv, byte> image;
+        private Hsv _selectedHsv;
+        private bool _hsvSelected;
+        private Image<Hsv, byte> _image;
 
         private IPositionManager positionManager;
 
@@ -80,13 +117,14 @@ namespace FoosLiveAndroid
             Window.SetFlags(WindowManagerFlags.Fullscreen, WindowManagerFlags.Fullscreen);
             GetReferencesFromLayout();
 
-            detector = new ColorDetector();
-            gameController = new GameController();
-            gameController.GoalEvent += GameController_GoalEvent;
+            _colorDetector = new ColorDetector();
+            _gameController = new GameController();
+            _gameController.GoalEvent += GameControllerGoalEvent;
+            _gameController.PositionEvent += GameControllerPositionEvent;
 
             _surfaceView.SetZOrderOnTop(true);
             _surfaceView.Holder.SetFormat(Format.Transparent);
-            holder = _surfaceView.Holder;
+            _surfaceHolder = _surfaceView.Holder;
 
             _gameButton.Text = GetString(Resource.String.select_ball_color);
             _gameButton.Click += StartGame;
@@ -111,11 +149,47 @@ namespace FoosLiveAndroid
             _gameView = FindViewById<TextureView>(Resource.Id.game_content);
             _score = FindViewById<TextView>(Resource.Id.score);
             _surfaceView = FindViewById<SurfaceView>(Resource.Id.surfaceView);
-
             _arrowTop = FindViewById<ImageView>(Resource.Id.arrowTop);
             _arrowLeft = FindViewById<ImageView>(Resource.Id.arrowLeft);
             _arrowRight = FindViewById<ImageView>(Resource.Id.arrowRight);
             _arrowBot = FindViewById<ImageView>(Resource.Id.arrowBot);
+            _eventText = FindViewById<TextView>(Resource.Id.statusText);
+        }
+
+        private void SlideText(String text)
+        {
+            if (_textThreadStarted)
+                return;
+
+            _textThreadStarted = true;
+
+            RunOnUiThread(async () =>
+            {
+                String temp = text;
+                var tempView = new StringBuilder(temp.Length);
+
+                for (int i = 0; i < tempView.Capacity; i++)
+                {
+                    tempView.Append(' ');
+                }
+                _eventText.Text = tempView.ToString();
+
+                for (int i = 0; i < temp.Length * 2; i++)
+                {
+                    tempView.Remove(1, 1);
+                    if (i < temp.Length)
+                    {
+                        tempView.Append(temp[i]);
+                    }
+                    else
+                        tempView.Append(' ');
+
+                    _eventText.Text = tempView.ToString();
+                    await Task.Delay(SlidingTextDelay);
+                }
+
+                _textThreadStarted = false;
+            });
         }
 
         /// <summary>
@@ -123,9 +197,37 @@ namespace FoosLiveAndroid
         /// </summary>
         /// <param name="sender">The class, which called this function</param>
         /// <param name="e">Arguments, which are passed to this function</param>
-        private void GameController_GoalEvent(object sender, EventArgs e)
+        private void GameControllerGoalEvent(object sender, EventArgs e)
         {
-            _score.Text = gameController.BlueScore + " : " + gameController.RedScore;
+            // Check which event occured
+            if (_gameController.currentEvent == CurrentEvent.BlueGoalOccured)
+                SlideText(ApplicationContext.Resources.GetString(Resource.String.blue_team_goal));
+            else
+                SlideText(ApplicationContext.Resources.GetString(Resource.String.red_team_goal));
+
+            _score.Text = _gameController.BlueScore + " : " + _gameController.RedScore;
+        }
+
+        /// <summary>
+        /// Fired whenever the ball's position changes
+        /// </summary>
+        /// <param name="sender">The class, which called this function</param>
+        /// <param name="e">Arguments, which are passed to this function</param>
+        private void GameControllerPositionEvent(object sender, EventArgs e)
+        {
+            // Check if sliding text is active or the delay is still on
+            if (!_textThreadStarted && !_waitForSpeed)
+            {
+                _eventText.Text = "" + Math.Round(_gameController.CurrentSpeed, 2) + " cm/s";
+                _waitForSpeed = true;
+
+                // Delay the new speed information
+                RunOnUiThread(async () =>
+                {
+                    await Task.Delay(50);
+                    _waitForSpeed = false;
+                });
+            }
         }
 
         /// <summary>
@@ -139,49 +241,54 @@ namespace FoosLiveAndroid
             _gameView.LayoutParameters = new FrameLayout.LayoutParams(w, h);
 
             // Set the upscaling constant
-            upscaleMultiplierY = (float)h / preview_height;
-            upscaleMultiplierX = (float)w / preview_width;
+            _upscaleMultiplierY = (float)h / PreviewHeight;
+            _upscaleMultiplierX = (float)w / PreviewWidth;
 
             // Create the ObjectDetector class for the GameActivity
-            objectDetector = new ObjectDetector(upscaleMultiplierX, upscaleMultiplierY, detector, gameController);
+            _objectDetector = new ObjectDetector(_upscaleMultiplierX, _upscaleMultiplierY, _colorDetector, _gameController);
 
             // Create a template alpha bitmap for repeated drawing
             var tempBitmap = new BitmapDrawable(Bitmap.CreateBitmap(w, h, Bitmap.Config.Argb8888));
             tempBitmap.SetAlpha(0);
-            alphaBitmap = tempBitmap.Bitmap;
+            _alphaBitmap = tempBitmap.Bitmap;
 
-            holder.SetFixedSize(w, h);
+            _surfaceHolder.SetFixedSize(w, h);
 
-            // Set temporary points for now
-            gameController.SetTable(new PointF[]
-            {
-                new PointF(0,0),
-                new PointF(w,0),
-                new PointF(0,h),
-                new PointF(w,h)
-            });
-
+            // Check if we use video mode
             if ( Intent.Data != null )
             {
-                this.surface = new Surface(surface);
-                video = new MediaPlayer();
-                video.SetDataSource(ApplicationContext, Intent.Data);
-                video.SetSurface(this.surface);
-                video.Prepare();
-                video.SetOnPreparedListener(this);
+                // We do, so set the table according to display size
+                _gameController.SetTable(new PointF[]
+                {
+                    new PointF(0,0),
+                    new PointF(w,0),
+                    new PointF(0,h),
+                    new PointF(w,h)
+                }, CaptureMode.Video);
+
+                this._surface = new Surface(surface);
+                _video = new MediaPlayer();
+                _video.SetDataSource(ApplicationContext, Intent.Data);
+                _video.SetSurface(this._surface);
+                _video.Prepare();
+                _video.SetOnPreparedListener(this);
                 return;
             }
 
-            camera = Camera.Open();
+            // Draw the align zones
+            Canvas canvas = AlignZones.DrawZones(_surfaceHolder.LockCanvas(), _gameController);
+            _surfaceHolder.UnlockCanvasAndPost(canvas);
+
+            _camera = Camera.Open();
 
             // Get the camera parameters in order to set the appropriate frame size
-            Camera.Parameters parameters = camera.GetParameters();
-            IList<Camera.Size> list = camera.GetParameters().SupportedPreviewSizes;
+            Camera.Parameters parameters = _camera.GetParameters();
+            IList<Camera.Size> list = _camera.GetParameters().SupportedPreviewSizes;
 
             // Go through all of the sizes until we find an appropriate one
             foreach (Camera.Size size in list)
             {
-                if ( size.Width <= camera_width && size.Height <= camera_height )
+                if ( size.Width <= CameraWidth && size.Height <= CameraHeight )
                 {
                     // The size matches or is lower than that of the constants camera_width, camera_height 
                     parameters.SetPreviewSize(size.Width,size.Height);
@@ -189,8 +296,8 @@ namespace FoosLiveAndroid
                 }
             }
 
-            camera.SetParameters(parameters);
-            camera.SetDisplayOrientation(90);
+            _camera.SetParameters(parameters);
+            _camera.SetDisplayOrientation(90);
 
             try
             {
@@ -198,8 +305,8 @@ namespace FoosLiveAndroid
                  * Set the surface on which frames are drawn
                  * In this case, it's the surface, which was created for _gameview
                  */
-                camera.SetPreviewTexture(surface);
-                camera.StartPreview();
+                _camera.SetPreviewTexture(surface);
+                _camera.StartPreview();
             }
             catch (Java.IO.IOException e)
             {
@@ -216,12 +323,12 @@ namespace FoosLiveAndroid
         public bool OnSurfaceTextureDestroyed(SurfaceTexture surface)
         {
             // Check if we use a video file for getting frames or the camera
-            if (video != null)
+            if (_video != null)
                 // We use a video file, so release it's resources
-                video.Release();
+                _video.Release();
             else
                 // We use a camera, so release it
-                camera.Release();
+                _camera.Release();
 
             positionManager.StopListening();
             return true;
@@ -245,18 +352,18 @@ namespace FoosLiveAndroid
         public void OnSurfaceTextureUpdated(SurfaceTexture surface)
         {
             // The table is currently drawn only if an Hsv value is selected
-            if ( hsvSelected )
+            if ( _hsvSelected )
             {
-                Canvas canvas = holder.LockCanvas();
+                Canvas canvas = _surfaceHolder.LockCanvas();
 
-                if ( ! objectDetector.Detect(canvas, selectedHsv,
-                                            _gameView.GetBitmap(preview_width, preview_height),
-                                            alphaBitmap) )
+                if ( ! _objectDetector.Detect(canvas, _selectedHsv,
+                                            _gameView.GetBitmap(PreviewWidth, PreviewHeight),
+                                            _alphaBitmap) )
                 {
-                    canvas.DrawBitmap(alphaBitmap, 0, 0, null);
+                    canvas.DrawBitmap(_alphaBitmap, 0, 0, null);
                 }
 
-                holder.UnlockCanvasAndPost(canvas);
+                _surfaceHolder.UnlockCanvasAndPost(canvas);
                 canvas.Dispose();
             }
         }
@@ -272,7 +379,7 @@ namespace FoosLiveAndroid
             // If game is not started, take sample image
             if ( _gameButton.Visibility != ViewStates.Gone )
             {
-                image = new Image<Hsv, byte>(_gameView.GetBitmap(preview_width, preview_height));
+                _image = new Image<Hsv, byte>(_gameView.GetBitmap(PreviewWidth, PreviewHeight));
                 UpdateButton(e);
             }
             return true;
@@ -285,15 +392,15 @@ namespace FoosLiveAndroid
         private void UpdateButton(MotionEvent e)
         {
             // Calculate the position
-            int positionX = (int)(e.GetX() / upscaleMultiplierX);
-            int positionY = (int)(e.GetY() / upscaleMultiplierY);
+            int positionX = (int)(e.GetX() / _upscaleMultiplierX);
+            int positionY = (int)(e.GetY() / _upscaleMultiplierY);
 
             // Get the Hsv value from the image
-            selectedHsv = image[positionY, positionX];
+            _selectedHsv = _image[positionY, positionX];
             // convert hsv image to rgb image sample
-            var selectedRgb = image.Convert<Rgb, Byte>()[positionY, positionX];
+            var selectedRgb = _image.Convert<Rgb, Byte>()[positionY, positionX];
             // image won't be used anymore
-            image.Dispose();
+            _image.Dispose();
             // Convert emgu rgb to android rgb
             var selectedColor = Color.Rgb((int)selectedRgb.Red, (int)selectedRgb.Green, (int)selectedRgb.Blue);
 
@@ -322,14 +429,14 @@ namespace FoosLiveAndroid
         /// </summary>
         public void StartGame(object sender, EventArgs e)
         {
-            if (image == null) return;
+            if (_image == null) return;
 
-            hsvSelected = true;
+            _hsvSelected = true;
             // Cleanup
-            image.Dispose();
+            _image.Dispose();
 
             // If it's a video, start it again
-            video?.Start();
+            _video?.Start();
 
             // We don't need the button anymore, so hide it
             _gameButton.Visibility = ViewStates.Gone;

@@ -1,6 +1,6 @@
 ﻿using FoosLiveAndroid.Model;
 
-namespace FoosLiveAndroid.Fragments
+namespace FoosLiveAndroid.Fragments.Interface
 {
     /// <summary>
     /// This interface is used for communication between fragments and activitie
