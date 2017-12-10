@@ -122,12 +122,10 @@ namespace FoosLiveAndroid.Util.Detection
             rect = new Rectangle();
 
             // Define the upper and lower limits of the Hue and Saturation values
-            Hsv lowerLimit = new Hsv(ballHsv.Hue - Threshold, ballHsv.Satuation - Threshold, ballHsv.Value - Threshold);
-            Hsv upperLimit = new Hsv(ballHsv.Hue + Threshold, ballHsv.Satuation + Threshold, ballHsv.Value + Threshold);
+            Hsv lowerLimit = new Hsv(ballHsv.Hue - Threshold / 2, ballHsv.Satuation - Threshold * 1.3f, ballHsv.Value - Threshold * 1.3f);
+            Hsv upperLimit = new Hsv(ballHsv.Hue + Threshold / 2, ballHsv.Satuation + Threshold * 1.3f, ballHsv.Value + Threshold * 1.3f);
 
             Image<Gray, byte> imgFiltered = image.InRange(lowerLimit, upperLimit);
-            imgFiltered.Erode(Iterations);
-            imgFiltered.Dilate(Iterations);
 
             // Define the class, which will store information about blobs found
             var points = new CvBlobs();
