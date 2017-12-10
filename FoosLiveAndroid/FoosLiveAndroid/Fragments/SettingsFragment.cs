@@ -15,6 +15,11 @@ namespace FoosLiveAndroid.Fragments
     {
         static readonly new string Tag = typeof(SettingsFragment).Name;
 
+        private const int GoalSoundMario = 0;
+        private const int WinSoundMario = 1;
+        private const String GoalSoundMarioPath = "defaultMarioGoal";
+        private const String WinSoundMarioPath = "defaultMarioWin";
+
         private View _view;
         private Switch _syncSwitch;
         private Switch _soundSwitch;
@@ -70,25 +75,25 @@ namespace FoosLiveAndroid.Fragments
             // Todo: set up button click events
             _team1ScoreSoundItem.Click += delegate
             {
-                OpenSoundPicker("sound", scoreSoundsAdapter);
+                OpenSoundPicker("team1Score", scoreSoundsAdapter);
             };
 
             _team1WinSoundItem.Click += delegate
             {
-                OpenSoundPicker("sound", winSoundsAdapter);
+                OpenSoundPicker("team1Win", winSoundsAdapter);
             };
 
             _team2ScoreSoundItem.Click += delegate
             {
-                OpenSoundPicker("sound", scoreSoundsAdapter);
+                OpenSoundPicker("team2Score", scoreSoundsAdapter);
             };
 
             _team2WinSoundItem.Click += delegate
             {
-                OpenSoundPicker("sound", winSoundsAdapter);
+                OpenSoundPicker("team2Win", winSoundsAdapter);
             };
 
-            //Todo: bind switches with evens
+            //Todo: bind switches with events
             _syncSwitch.CheckedChange += delegate {
                 Toast.MakeText(Context, "sync event", ToastLength.Short).Show();
             };
@@ -128,13 +133,38 @@ namespace FoosLiveAndroid.Fragments
         // Todo: fully implement Alertdialog and selection events
         private void OpenSoundPicker(string title, ArrayAdapter<string> adapter)
         {
-            if (adapter == null) throw new ArgumentNullException(nameof(adapter));
+            if (adapter == null)
+                throw new ArgumentNullException(nameof(adapter));
+
             _dialogBuilder = _dialogBuilder ?? new AlertDialog.Builder(Context);
             _dialogBuilder.SetTitle($"Choose {title}");
+
             _dialogBuilder.SetAdapter(adapter, (dialog, item) =>
             {
-                
+                ISharedPreferences preferences = Context.GetSharedPreferences("FoosliveAndroid.dat", FileCreationMode.WorldReadable);
+                ISharedPreferencesEditor prefsEditor = preferences.Edit();
+                switch(item.Which)
+                {
+                    case WinSoundMario:
+                        {
+                            prefsEditor.PutString(title, WinSoundMarioPath);
+                            break;
+                        }
+                    case GoalSoundMario:
+                        {
+                            prefsEditor.PutString(title, GoalSoundMarioPath);
+                            break;
+                        }
+                    default:
+                            break;
+                }
+                prefsEditor.Commit();
+                Log.Debug("Suceeded?: ", title);
+                prefsEditor.Apply();
+                prefsEditor.Dispose();
+                preferences.Dispose();
             });
+
             var soundPickDialog = _dialogBuilder.Create();
             soundPickDialog.Show();
         }

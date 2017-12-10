@@ -24,6 +24,7 @@ using FoosLiveAndroid.Util.GameControl;
 using static FoosLiveAndroid.Util.GameControl.Enums;
 using FoosLiveAndroid.Util.Sensors;
 using FoosLiveAndroid.Util.Interface;
+using FoosLiveAndroid.Util.Sounds;
 
 namespace FoosLiveAndroid
 {
@@ -87,6 +88,8 @@ namespace FoosLiveAndroid
 
         private Bitmap _alphaBitmap;
 
+        private SoundAlerts _soundAlerts;
+
         private IColorDetector _colorDetector;
         private IObjectDetector _objectDetector;
         private GameController _gameController;
@@ -128,6 +131,14 @@ namespace FoosLiveAndroid
 
             _gameButton.Text = GetString(Resource.String.select_ball_color);
             _gameButton.Click += StartGame;
+
+            // Assign the sound file paths
+            ISharedPreferences prefs = GetSharedPreferences("FoosliveAndroid.dat", FileCreationMode.Private);
+            _soundAlerts = new SoundAlerts();
+            _soundAlerts.BlueTeamWins = new PlayerOGG(this, FilePathResolver.getFile(this, prefs.GetString("team1Win", "")));
+            _soundAlerts.BlueTeamGoal = new PlayerOGG(this, FilePathResolver.getFile(this, prefs.GetString("team1Score", "")));
+            _soundAlerts.RedTeamWins = new PlayerOGG(this, FilePathResolver.getFile(this, prefs.GetString("team2Win", "")));
+            _soundAlerts.RedTeamGoal = new PlayerOGG(this, FilePathResolver.getFile(this, prefs.GetString("team2Score", "")));
 
             // Open the camera
             _gameView.SurfaceTextureListener = this;
@@ -201,9 +212,15 @@ namespace FoosLiveAndroid
         {
             // Check which event occured
             if (_gameController.currentEvent == CurrentEvent.BlueGoalOccured)
+            {
+                _soundAlerts.Play(EAlert.BlueGoal);
                 SlideText(ApplicationContext.Resources.GetString(Resource.String.blue_team_goal));
+            }
             else
+            {
+                _soundAlerts.Play(EAlert.RedGoal);
                 SlideText(ApplicationContext.Resources.GetString(Resource.String.red_team_goal));
+            }
 
             _score.Text = _gameController.BlueScore + " : " + _gameController.RedScore;
         }
