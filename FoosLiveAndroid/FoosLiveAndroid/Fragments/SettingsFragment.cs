@@ -147,20 +147,18 @@ namespace FoosLiveAndroid.Fragments
                 {
                     case WinSoundMario:
                         {
-                            prefsEditor.PutString(title, WinSoundMarioPath);
+                            prefsEditor.PutString(title, WinSoundMarioPath).Apply();
                             break;
                         }
                     case GoalSoundMario:
                         {
-                            prefsEditor.PutString(title, GoalSoundMarioPath);
+                            prefsEditor.PutString(title, GoalSoundMarioPath).Apply();
                             break;
                         }
                     default:
                             break;
                 }
                 prefsEditor.Commit();
-                Log.Debug("Suceeded?: ", title);
-                prefsEditor.Apply();
                 prefsEditor.Dispose();
                 preferences.Dispose();
             });
