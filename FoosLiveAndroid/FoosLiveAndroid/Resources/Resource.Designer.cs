@@ -2296,26 +2296,26 @@ namespace FoosLiveAndroid
 			// aapt resource value: 0x7f020057
 			public const int avd_hide_password = 2130837591;
 			
-			// aapt resource value: 0x7f020077
-			public const int avd_hide_password_1 = 2130837623;
-			
 			// aapt resource value: 0x7f020078
-			public const int avd_hide_password_2 = 2130837624;
+			public const int avd_hide_password_1 = 2130837624;
 			
 			// aapt resource value: 0x7f020079
-			public const int avd_hide_password_3 = 2130837625;
+			public const int avd_hide_password_2 = 2130837625;
+			
+			// aapt resource value: 0x7f02007a
+			public const int avd_hide_password_3 = 2130837626;
 			
 			// aapt resource value: 0x7f020058
 			public const int avd_show_password = 2130837592;
 			
-			// aapt resource value: 0x7f02007a
-			public const int avd_show_password_1 = 2130837626;
-			
 			// aapt resource value: 0x7f02007b
-			public const int avd_show_password_2 = 2130837627;
+			public const int avd_show_password_1 = 2130837627;
 			
 			// aapt resource value: 0x7f02007c
-			public const int avd_show_password_3 = 2130837628;
+			public const int avd_show_password_2 = 2130837628;
+			
+			// aapt resource value: 0x7f02007d
+			public const int avd_show_password_3 = 2130837629;
 			
 			// aapt resource value: 0x7f020059
 			public const int design_bottom_navigation_item_background = 2130837593;
@@ -2348,64 +2348,67 @@ namespace FoosLiveAndroid
 			public const int ic_logo = 2130837602;
 			
 			// aapt resource value: 0x7f020063
-			public const int menu_button_selector = 2130837603;
+			public const int ic_sound = 2130837603;
 			
 			// aapt resource value: 0x7f020064
-			public const int menu_button_shape = 2130837604;
+			public const int menu_button_selector = 2130837604;
 			
 			// aapt resource value: 0x7f020065
-			public const int menu_button_shape_clicked = 2130837605;
+			public const int menu_button_shape = 2130837605;
 			
 			// aapt resource value: 0x7f020066
-			public const int navigation_empty_icon = 2130837606;
+			public const int menu_button_shape_clicked = 2130837606;
 			
 			// aapt resource value: 0x7f020067
-			public const int notification_action_background = 2130837607;
+			public const int navigation_empty_icon = 2130837607;
 			
 			// aapt resource value: 0x7f020068
-			public const int notification_bg = 2130837608;
+			public const int notification_action_background = 2130837608;
 			
 			// aapt resource value: 0x7f020069
-			public const int notification_bg_low = 2130837609;
+			public const int notification_bg = 2130837609;
 			
 			// aapt resource value: 0x7f02006a
-			public const int notification_bg_low_normal = 2130837610;
+			public const int notification_bg_low = 2130837610;
 			
 			// aapt resource value: 0x7f02006b
-			public const int notification_bg_low_pressed = 2130837611;
+			public const int notification_bg_low_normal = 2130837611;
 			
 			// aapt resource value: 0x7f02006c
-			public const int notification_bg_normal = 2130837612;
+			public const int notification_bg_low_pressed = 2130837612;
 			
 			// aapt resource value: 0x7f02006d
-			public const int notification_bg_normal_pressed = 2130837613;
+			public const int notification_bg_normal = 2130837613;
 			
 			// aapt resource value: 0x7f02006e
-			public const int notification_icon_background = 2130837614;
-			
-			// aapt resource value: 0x7f020075
-			public const int notification_template_icon_bg = 2130837621;
-			
-			// aapt resource value: 0x7f020076
-			public const int notification_template_icon_low_bg = 2130837622;
+			public const int notification_bg_normal_pressed = 2130837614;
 			
 			// aapt resource value: 0x7f02006f
-			public const int notification_tile_bg = 2130837615;
+			public const int notification_icon_background = 2130837615;
+			
+			// aapt resource value: 0x7f020076
+			public const int notification_template_icon_bg = 2130837622;
+			
+			// aapt resource value: 0x7f020077
+			public const int notification_template_icon_low_bg = 2130837623;
 			
 			// aapt resource value: 0x7f020070
-			public const int notify_panel_notification_icon_bg = 2130837616;
+			public const int notification_tile_bg = 2130837616;
 			
 			// aapt resource value: 0x7f020071
-			public const int splash_screen = 2130837617;
+			public const int notify_panel_notification_icon_bg = 2130837617;
 			
 			// aapt resource value: 0x7f020072
-			public const int status_label_shape = 2130837618;
+			public const int splash_screen = 2130837618;
 			
 			// aapt resource value: 0x7f020073
-			public const int tooltip_frame_dark = 2130837619;
+			public const int status_label_shape = 2130837619;
 			
 			// aapt resource value: 0x7f020074
-			public const int tooltip_frame_light = 2130837620;
+			public const int tooltip_frame_dark = 2130837620;
+			
+			// aapt resource value: 0x7f020075
+			public const int tooltip_frame_light = 2130837621;
 			
 			static Drawable()
 			{
@@ -2438,8 +2441,8 @@ namespace FoosLiveAndroid
 			// aapt resource value: 0x7f080036
 			public const int SYM = 2131230774;
 			
-			// aapt resource value: 0x7f0800d3
-			public const int action0 = 2131230931;
+			// aapt resource value: 0x7f0800d8
+			public const int action0 = 2131230936;
 			
 			// aapt resource value: 0x7f08007b
 			public const int action_bar = 2131230843;
@@ -2462,17 +2465,17 @@ namespace FoosLiveAndroid
 			// aapt resource value: 0x7f080059
 			public const int action_bar_title = 2131230809;
 			
-			// aapt resource value: 0x7f0800d0
-			public const int action_container = 2131230928;
+			// aapt resource value: 0x7f0800d5
+			public const int action_container = 2131230933;
 			
 			// aapt resource value: 0x7f08007c
 			public const int action_context_bar = 2131230844;
 			
-			// aapt resource value: 0x7f0800d7
-			public const int action_divider = 2131230935;
+			// aapt resource value: 0x7f0800dc
+			public const int action_divider = 2131230940;
 			
-			// aapt resource value: 0x7f0800d1
-			public const int action_image = 2131230929;
+			// aapt resource value: 0x7f0800d6
+			public const int action_image = 2131230934;
 			
 			// aapt resource value: 0x7f080003
 			public const int action_menu_divider = 2131230723;
@@ -2489,11 +2492,11 @@ namespace FoosLiveAndroid
 			// aapt resource value: 0x7f08005b
 			public const int action_mode_close_button = 2131230811;
 			
-			// aapt resource value: 0x7f0800d2
-			public const int action_text = 2131230930;
+			// aapt resource value: 0x7f0800d7
+			public const int action_text = 2131230935;
 			
-			// aapt resource value: 0x7f0800e0
-			public const int actions = 2131230944;
+			// aapt resource value: 0x7f0800e5
+			public const int actions = 2131230949;
 			
 			// aapt resource value: 0x7f08005c
 			public const int activity_chooser_view_content = 2131230812;
@@ -2510,26 +2513,26 @@ namespace FoosLiveAndroid
 			// aapt resource value: 0x7f080037
 			public const int always = 2131230775;
 			
-			// aapt resource value: 0x7f0800b2
-			public const int appDescription = 2131230898;
-			
-			// aapt resource value: 0x7f0800af
-			public const int appLogo = 2131230895;
+			// aapt resource value: 0x7f0800b3
+			public const int appDescription = 2131230899;
 			
 			// aapt resource value: 0x7f0800b0
-			public const int appVersion = 2131230896;
+			public const int appLogo = 2131230896;
 			
-			// aapt resource value: 0x7f080093
-			public const int arrowBot = 2131230867;
+			// aapt resource value: 0x7f0800b1
+			public const int appVersion = 2131230897;
 			
-			// aapt resource value: 0x7f080091
-			public const int arrowLeft = 2131230865;
+			// aapt resource value: 0x7f080094
+			public const int arrowBot = 2131230868;
 			
 			// aapt resource value: 0x7f080092
-			public const int arrowRight = 2131230866;
+			public const int arrowLeft = 2131230866;
 			
-			// aapt resource value: 0x7f080090
-			public const int arrowTop = 2131230864;
+			// aapt resource value: 0x7f080093
+			public const int arrowRight = 2131230867;
+			
+			// aapt resource value: 0x7f080091
+			public const int arrowTop = 2131230865;
 			
 			// aapt resource value: 0x7f080055
 			public const int async = 2131230805;
@@ -2549,14 +2552,14 @@ namespace FoosLiveAndroid
 			// aapt resource value: 0x7f080062
 			public const int buttonPanel = 2131230818;
 			
-			// aapt resource value: 0x7f0800c8
-			public const int buttonsMain = 2131230920;
-			
 			// aapt resource value: 0x7f0800cd
-			public const int buttonsMode = 2131230925;
+			public const int buttonsMain = 2131230925;
 			
-			// aapt resource value: 0x7f0800d4
-			public const int cancel_action = 2131230932;
+			// aapt resource value: 0x7f0800d2
+			public const int buttonsMode = 2131230930;
+			
+			// aapt resource value: 0x7f0800d9
+			public const int cancel_action = 2131230937;
 			
 			// aapt resource value: 0x7f080044
 			public const int center = 2131230788;
@@ -2570,8 +2573,8 @@ namespace FoosLiveAndroid
 			// aapt resource value: 0x7f080072
 			public const int checkbox = 2131230834;
 			
-			// aapt resource value: 0x7f0800dc
-			public const int chronometer = 2131230940;
+			// aapt resource value: 0x7f0800e1
+			public const int chronometer = 2131230945;
 			
 			// aapt resource value: 0x7f08004d
 			public const int clip_horizontal = 2131230797;
@@ -2582,17 +2585,17 @@ namespace FoosLiveAndroid
 			// aapt resource value: 0x7f080038
 			public const int collapseActionView = 2131230776;
 			
-			// aapt resource value: 0x7f08009b
-			public const int container = 2131230875;
+			// aapt resource value: 0x7f08009c
+			public const int container = 2131230876;
 			
 			// aapt resource value: 0x7f080065
 			public const int contentPanel = 2131230821;
 			
-			// aapt resource value: 0x7f08009c
-			public const int coordinator = 2131230876;
+			// aapt resource value: 0x7f08009d
+			public const int coordinator = 2131230877;
 			
-			// aapt resource value: 0x7f0800b1
-			public const int credits = 2131230897;
+			// aapt resource value: 0x7f0800b2
+			public const int credits = 2131230898;
 			
 			// aapt resource value: 0x7f08006c
 			public const int custom = 2131230828;
@@ -2606,20 +2609,20 @@ namespace FoosLiveAndroid
 			// aapt resource value: 0x7f08005f
 			public const int default_activity_button = 2131230815;
 			
-			// aapt resource value: 0x7f08009e
-			public const int design_bottom_sheet = 2131230878;
+			// aapt resource value: 0x7f08009f
+			public const int design_bottom_sheet = 2131230879;
+			
+			// aapt resource value: 0x7f0800a6
+			public const int design_menu_item_action_area = 2131230886;
 			
 			// aapt resource value: 0x7f0800a5
-			public const int design_menu_item_action_area = 2131230885;
+			public const int design_menu_item_action_area_stub = 2131230885;
 			
 			// aapt resource value: 0x7f0800a4
-			public const int design_menu_item_action_area_stub = 2131230884;
+			public const int design_menu_item_text = 2131230884;
 			
 			// aapt resource value: 0x7f0800a3
-			public const int design_menu_item_text = 2131230883;
-			
-			// aapt resource value: 0x7f0800a2
-			public const int design_navigation_view = 2131230882;
+			public const int design_navigation_view = 2131230883;
 			
 			// aapt resource value: 0x7f08001f
 			public const int disableHome = 2131230751;
@@ -2630,8 +2633,8 @@ namespace FoosLiveAndroid
 			// aapt resource value: 0x7f08002f
 			public const int end = 2131230767;
 			
-			// aapt resource value: 0x7f0800e2
-			public const int end_padder = 2131230946;
+			// aapt resource value: 0x7f0800e7
+			public const int end_padder = 2131230951;
 			
 			// aapt resource value: 0x7f08003e
 			public const int enterAlways = 2131230782;
@@ -2663,17 +2666,17 @@ namespace FoosLiveAndroid
 			// aapt resource value: 0x7f080057
 			public const int forever = 2131230807;
 			
-			// aapt resource value: 0x7f0800cf
-			public const int fromFileButton = 2131230927;
+			// aapt resource value: 0x7f0800d4
+			public const int fromFileButton = 2131230932;
 			
-			// aapt resource value: 0x7f080094
-			public const int fullscreen_content_bottom_controls = 2131230868;
+			// aapt resource value: 0x7f080095
+			public const int fullscreen_content_bottom_controls = 2131230869;
 			
 			// aapt resource value: 0x7f08008c
 			public const int fullscreen_content_top_status_bar = 2131230860;
 			
-			// aapt resource value: 0x7f080095
-			public const int gameButton = 2131230869;
+			// aapt resource value: 0x7f080096
+			public const int gameButton = 2131230870;
 			
 			// aapt resource value: 0x7f08008a
 			public const int game_content = 2131230858;
@@ -2681,20 +2684,20 @@ namespace FoosLiveAndroid
 			// aapt resource value: 0x7f08000a
 			public const int ghost_view = 2131230730;
 			
-			// aapt resource value: 0x7f0800cb
-			public const int historyButton = 2131230923;
-			
-			// aapt resource value: 0x7f0800aa
-			public const int historyRecyclerView = 2131230890;
-			
-			// aapt resource value: 0x7f0800ac
-			public const int history_score = 2131230892;
+			// aapt resource value: 0x7f0800d0
+			public const int historyButton = 2131230928;
 			
 			// aapt resource value: 0x7f0800ab
-			public const int history_team1Name = 2131230891;
+			public const int historyRecyclerView = 2131230891;
 			
 			// aapt resource value: 0x7f0800ad
-			public const int history_team2Name = 2131230893;
+			public const int history_score = 2131230893;
+			
+			// aapt resource value: 0x7f0800ac
+			public const int history_team1Name = 2131230892;
+			
+			// aapt resource value: 0x7f0800ae
+			public const int history_team2Name = 2131230894;
 			
 			// aapt resource value: 0x7f080005
 			public const int home = 2131230725;
@@ -2705,8 +2708,8 @@ namespace FoosLiveAndroid
 			// aapt resource value: 0x7f080061
 			public const int icon = 2131230817;
 			
-			// aapt resource value: 0x7f0800e1
-			public const int icon_group = 2131230945;
+			// aapt resource value: 0x7f0800e6
+			public const int icon_group = 2131230950;
 			
 			// aapt resource value: 0x7f080039
 			public const int ifRoom = 2131230777;
@@ -2714,11 +2717,11 @@ namespace FoosLiveAndroid
 			// aapt resource value: 0x7f08005e
 			public const int image = 2131230814;
 			
-			// aapt resource value: 0x7f0800dd
-			public const int info = 2131230941;
+			// aapt resource value: 0x7f0800e2
+			public const int info = 2131230946;
 			
-			// aapt resource value: 0x7f0800cc
-			public const int infoButton = 2131230924;
+			// aapt resource value: 0x7f0800d1
+			public const int infoButton = 2131230929;
 			
 			// aapt resource value: 0x7f080058
 			public const int italic = 2131230808;
@@ -2726,8 +2729,8 @@ namespace FoosLiveAndroid
 			// aapt resource value: 0x7f080000
 			public const int item_touch_helper_previous_elevation = 2131230720;
 			
-			// aapt resource value: 0x7f08009a
-			public const int largeLabel = 2131230874;
+			// aapt resource value: 0x7f08009b
+			public const int largeLabel = 2131230875;
 			
 			// aapt resource value: 0x7f080048
 			public const int left = 2131230792;
@@ -2744,38 +2747,38 @@ namespace FoosLiveAndroid
 			// aapt resource value: 0x7f080060
 			public const int list_item = 2131230816;
 			
-			// aapt resource value: 0x7f0800ce
-			public const int liveButton = 2131230926;
-			
-			// aapt resource value: 0x7f0800a8
-			public const int loadingBar = 2131230888;
-			
-			// aapt resource value: 0x7f0800a7
-			public const int loadingLayout = 2131230887;
+			// aapt resource value: 0x7f0800d3
+			public const int liveButton = 2131230931;
 			
 			// aapt resource value: 0x7f0800a9
-			public const int loadingStatusLabel = 2131230889;
+			public const int loadingBar = 2131230889;
 			
-			// aapt resource value: 0x7f0800b4
-			public const int logoTitle = 2131230900;
+			// aapt resource value: 0x7f0800a8
+			public const int loadingLayout = 2131230888;
 			
-			// aapt resource value: 0x7f0800b3
-			public const int main_menu = 2131230899;
-			
-			// aapt resource value: 0x7f0800e5
-			public const int masked = 2131230949;
-			
-			// aapt resource value: 0x7f0800d6
-			public const int media_actions = 2131230934;
-			
-			// aapt resource value: 0x7f080098
-			public const int menu_content = 2131230872;
+			// aapt resource value: 0x7f0800aa
+			public const int loadingStatusLabel = 2131230890;
 			
 			// aapt resource value: 0x7f0800b5
-			public const int menu_items = 2131230901;
+			public const int logoTitle = 2131230901;
 			
-			// aapt resource value: 0x7f0800e3
-			public const int message = 2131230947;
+			// aapt resource value: 0x7f0800b4
+			public const int main_menu = 2131230900;
+			
+			// aapt resource value: 0x7f0800ea
+			public const int masked = 2131230954;
+			
+			// aapt resource value: 0x7f0800db
+			public const int media_actions = 2131230939;
+			
+			// aapt resource value: 0x7f080099
+			public const int menu_content = 2131230873;
+			
+			// aapt resource value: 0x7f0800b6
+			public const int menu_items = 2131230902;
+			
+			// aapt resource value: 0x7f0800e8
+			public const int message = 2131230952;
 			
 			// aapt resource value: 0x7f080030
 			public const int middle = 2131230768;
@@ -2786,8 +2789,8 @@ namespace FoosLiveAndroid
 			// aapt resource value: 0x7f080026
 			public const int multiply = 2131230758;
 			
-			// aapt resource value: 0x7f0800a1
-			public const int navigation_header_container = 2131230881;
+			// aapt resource value: 0x7f0800a2
+			public const int navigation_header_container = 2131230882;
 			
 			// aapt resource value: 0x7f08003a
 			public const int never = 2131230778;
@@ -2798,14 +2801,14 @@ namespace FoosLiveAndroid
 			// aapt resource value: 0x7f08001d
 			public const int normal = 2131230749;
 			
-			// aapt resource value: 0x7f0800df
-			public const int notification_background = 2131230943;
+			// aapt resource value: 0x7f0800e4
+			public const int notification_background = 2131230948;
 			
-			// aapt resource value: 0x7f0800d9
-			public const int notification_main_column = 2131230937;
+			// aapt resource value: 0x7f0800de
+			public const int notification_main_column = 2131230942;
 			
-			// aapt resource value: 0x7f0800d8
-			public const int notification_main_column_container = 2131230936;
+			// aapt resource value: 0x7f0800dd
+			public const int notification_main_column_container = 2131230941;
 			
 			// aapt resource value: 0x7f08004b
 			public const int parallax = 2131230795;
@@ -2831,11 +2834,11 @@ namespace FoosLiveAndroid
 			// aapt resource value: 0x7f080049
 			public const int right = 2131230793;
 			
-			// aapt resource value: 0x7f0800de
-			public const int right_icon = 2131230942;
+			// aapt resource value: 0x7f0800e3
+			public const int right_icon = 2131230947;
 			
-			// aapt resource value: 0x7f0800da
-			public const int right_side = 2131230938;
+			// aapt resource value: 0x7f0800df
+			public const int right_side = 2131230943;
 			
 			// aapt resource value: 0x7f08000c
 			public const int save_image_matrix = 2131230732;
@@ -2900,11 +2903,11 @@ namespace FoosLiveAndroid
 			// aapt resource value: 0x7f080089
 			public const int select_dialog_listview = 2131230857;
 			
-			// aapt resource value: 0x7f0800ae
-			public const int settings = 2131230894;
+			// aapt resource value: 0x7f0800af
+			public const int settings = 2131230895;
 			
-			// aapt resource value: 0x7f0800ca
-			public const int settingsButton = 2131230922;
+			// aapt resource value: 0x7f0800cf
+			public const int settingsButton = 2131230927;
 			
 			// aapt resource value: 0x7f080073
 			public const int shortcut = 2131230835;
@@ -2918,26 +2921,26 @@ namespace FoosLiveAndroid
 			// aapt resource value: 0x7f080024
 			public const int showTitle = 2131230756;
 			
-			// aapt resource value: 0x7f080099
-			public const int smallLabel = 2131230873;
+			// aapt resource value: 0x7f08009a
+			public const int smallLabel = 2131230874;
+			
+			// aapt resource value: 0x7f0800a1
+			public const int snackbar_action = 2131230881;
 			
 			// aapt resource value: 0x7f0800a0
-			public const int snackbar_action = 2131230880;
-			
-			// aapt resource value: 0x7f08009f
-			public const int snackbar_text = 2131230879;
+			public const int snackbar_text = 2131230880;
 			
 			// aapt resource value: 0x7f080042
 			public const int snap = 2131230786;
 			
+			// aapt resource value: 0x7f0800bc
+			public const int soundActiveDescription = 2131230908;
+			
 			// aapt resource value: 0x7f0800bb
-			public const int soundActiveDescription = 2131230907;
+			public const int soundActiveTitle = 2131230907;
 			
-			// aapt resource value: 0x7f0800ba
-			public const int soundActiveTitle = 2131230906;
-			
-			// aapt resource value: 0x7f0800b7
-			public const int soundSwitch = 2131230903;
+			// aapt resource value: 0x7f0800b8
+			public const int soundSwitch = 2131230904;
 			
 			// aapt resource value: 0x7f080063
 			public const int spacer = 2131230819;
@@ -2957,11 +2960,14 @@ namespace FoosLiveAndroid
 			// aapt resource value: 0x7f08004a
 			public const int start = 2131230794;
 			
-			// aapt resource value: 0x7f0800c9
-			public const int startButton = 2131230921;
+			// aapt resource value: 0x7f0800ce
+			public const int startButton = 2131230926;
 			
-			// aapt resource value: 0x7f0800d5
-			public const int status_bar_latest_event_content = 2131230933;
+			// aapt resource value: 0x7f080090
+			public const int statusText = 2131230864;
+			
+			// aapt resource value: 0x7f0800da
+			public const int status_bar_latest_event_content = 2131230938;
 			
 			// aapt resource value: 0x7f080075
 			public const int submenuarrow = 2131230837;
@@ -2972,14 +2978,14 @@ namespace FoosLiveAndroid
 			// aapt resource value: 0x7f08008b
 			public const int surfaceView = 2131230859;
 			
-			// aapt resource value: 0x7f0800b8
-			public const int syncSettingsDescription = 2131230904;
-			
-			// aapt resource value: 0x7f0800b6
-			public const int syncSettingsTitle = 2131230902;
-			
 			// aapt resource value: 0x7f0800b9
-			public const int syncSwitch = 2131230905;
+			public const int syncSettingsDescription = 2131230905;
+			
+			// aapt resource value: 0x7f0800b7
+			public const int syncSettingsTitle = 2131230903;
+			
+			// aapt resource value: 0x7f0800ba
+			public const int syncSwitch = 2131230906;
 			
 			// aapt resource value: 0x7f08001e
 			public const int tabMode = 2131230750;
@@ -2987,44 +2993,56 @@ namespace FoosLiveAndroid
 			// aapt resource value: 0x7f08008d
 			public const int team1Label = 2131230861;
 			
-			// aapt resource value: 0x7f0800c2
-			public const int team1ScoreSoundItem = 2131230914;
+			// aapt resource value: 0x7f0800c5
+			public const int team1ScoreSoundItem = 2131230917;
 			
-			// aapt resource value: 0x7f0800c3
-			public const int team1ScoreSoundTitle = 2131230915;
+			// aapt resource value: 0x7f0800c6
+			public const int team1ScoreSoundTitle = 2131230918;
 			
-			// aapt resource value: 0x7f0800c4
-			public const int team1ScoreSoundValue = 2131230916;
+			// aapt resource value: 0x7f0800c8
+			public const int team1ScoreSoundValue = 2131230920;
 			
-			// aapt resource value: 0x7f0800bc
-			public const int team1WinSoundItem = 2131230908;
+			// aapt resource value: 0x7f0800c7
+			public const int team1ScoreSoundValueIcon = 2131230919;
 			
 			// aapt resource value: 0x7f0800bd
-			public const int team1WinSoundTitle = 2131230909;
+			public const int team1WinSoundItem = 2131230909;
 			
 			// aapt resource value: 0x7f0800be
-			public const int team1WinSoundValue = 2131230910;
+			public const int team1WinSoundTitle = 2131230910;
+			
+			// aapt resource value: 0x7f0800c0
+			public const int team1WinSoundValue = 2131230912;
+			
+			// aapt resource value: 0x7f0800bf
+			public const int team1WinSoundValueIcon = 2131230911;
 			
 			// aapt resource value: 0x7f08008f
 			public const int team2Label = 2131230863;
 			
-			// aapt resource value: 0x7f0800c5
-			public const int team2ScoreSoundItem = 2131230917;
+			// aapt resource value: 0x7f0800c9
+			public const int team2ScoreSoundItem = 2131230921;
 			
-			// aapt resource value: 0x7f0800c6
-			public const int team2ScoreSoundTitle = 2131230918;
+			// aapt resource value: 0x7f0800ca
+			public const int team2ScoreSoundTitle = 2131230922;
 			
-			// aapt resource value: 0x7f0800c7
-			public const int team2ScoreSoundValue = 2131230919;
+			// aapt resource value: 0x7f0800cc
+			public const int team2ScoreSoundValue = 2131230924;
 			
-			// aapt resource value: 0x7f0800bf
-			public const int team2WinSoundItem = 2131230911;
-			
-			// aapt resource value: 0x7f0800c0
-			public const int team2WinSoundTitle = 2131230912;
+			// aapt resource value: 0x7f0800cb
+			public const int team2ScoreSoundValueIcon = 2131230923;
 			
 			// aapt resource value: 0x7f0800c1
-			public const int team2WinSoundValue = 2131230913;
+			public const int team2WinSoundItem = 2131230913;
+			
+			// aapt resource value: 0x7f0800c2
+			public const int team2WinSoundTitle = 2131230914;
+			
+			// aapt resource value: 0x7f0800c4
+			public const int team2WinSoundValue = 2131230916;
+			
+			// aapt resource value: 0x7f0800c3
+			public const int team2WinSoundValueIcon = 2131230915;
 			
 			// aapt resource value: 0x7f080019
 			public const int text = 2131230745;
@@ -3038,8 +3056,8 @@ namespace FoosLiveAndroid
 			// aapt resource value: 0x7f080068
 			public const int textSpacerNoTitle = 2131230824;
 			
-			// aapt resource value: 0x7f0800a6
-			public const int text_input_password_toggle = 2131230886;
+			// aapt resource value: 0x7f0800a7
+			public const int text_input_password_toggle = 2131230887;
 			
 			// aapt resource value: 0x7f080014
 			public const int textinput_counter = 2131230740;
@@ -3047,8 +3065,8 @@ namespace FoosLiveAndroid
 			// aapt resource value: 0x7f080015
 			public const int textinput_error = 2131230741;
 			
-			// aapt resource value: 0x7f0800db
-			public const int time = 2131230939;
+			// aapt resource value: 0x7f0800e0
+			public const int time = 2131230944;
 			
 			// aapt resource value: 0x7f08001b
 			public const int title = 2131230747;
@@ -3059,11 +3077,11 @@ namespace FoosLiveAndroid
 			// aapt resource value: 0x7f08006e
 			public const int title_template = 2131230830;
 			
-			// aapt resource value: 0x7f080096
-			public const int toolbar = 2131230870;
-			
 			// aapt resource value: 0x7f080097
-			public const int toolbarTitle = 2131230871;
+			public const int toolbar = 2131230871;
+			
+			// aapt resource value: 0x7f080098
+			public const int toolbarTitle = 2131230872;
 			
 			// aapt resource value: 0x7f08003d
 			public const int top = 2131230781;
@@ -3071,8 +3089,8 @@ namespace FoosLiveAndroid
 			// aapt resource value: 0x7f08006d
 			public const int topPanel = 2131230829;
 			
-			// aapt resource value: 0x7f08009d
-			public const int touch_outside = 2131230877;
+			// aapt resource value: 0x7f08009e
+			public const int touch_outside = 2131230878;
 			
 			// aapt resource value: 0x7f08000f
 			public const int transition_current_scene = 2131230735;
@@ -3101,8 +3119,8 @@ namespace FoosLiveAndroid
 			// aapt resource value: 0x7f080016
 			public const int view_offset_helper = 2131230742;
 			
-			// aapt resource value: 0x7f0800e4
-			public const int visible = 2131230948;
+			// aapt resource value: 0x7f0800e9
+			public const int visible = 2131230953;
 			
 			// aapt resource value: 0x7f08003b
 			public const int withText = 2131230779;

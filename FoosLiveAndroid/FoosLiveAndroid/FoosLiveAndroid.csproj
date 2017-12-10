@@ -203,6 +203,8 @@
     <AndroidResource Include="Resources\drawable\splash_screen.xml" />
     <AndroidResource Include="Resources\layout\fragment_history.axml" />
     <AndroidResource Include="Resources\layout\fragment_history_item.axml" />
+    <AndroidResource Include="Resources\drawable\ic_sound.xml" />
+    <AndroidResource Include="Resources\layout\activity_end_game.xml" />
   </ItemGroup>
   <ItemGroup>
     <AndroidResource Include="Resources\mipmap-hdpi\Icon.png" />

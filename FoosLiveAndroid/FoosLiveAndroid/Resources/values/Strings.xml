@@ -15,10 +15,10 @@
     <string name="from_file">From file</string>
     <string name="main_menu_title">Title</string>
     <!--Settings-->
-    <string name="team1_score_sound_label">Team 1 score sound</string>
-    <string name="team2_score_sound_label">Team 2 score sound</string>
-    <string name="team1_win_sound_label">Team 1 win sound</string>
-    <string name="team2_win_sound_label">Team 2 win sound</string>
+    <string name="team1_score_sound_label">Team 1 score</string>
+    <string name="team2_score_sound_label">Team 2 score</string>
+    <string name="team1_win_sound_label">Team 1 win</string>
+    <string name="team2_win_sound_label">Team 2 win</string>
     <string name="sync_settings_title">History</string>
     <string name="sync_settings_description">Sync game results with web automatically</string>
     <string name="sound_active_title">Sounds</string>

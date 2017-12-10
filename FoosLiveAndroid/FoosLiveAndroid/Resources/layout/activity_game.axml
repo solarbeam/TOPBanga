@@ -58,6 +58,16 @@
                 android:layout_alignTop="@+id/score"
                 android:layout_alignBottom="@+id/score"
                 android:layout_alignParentEnd="true" />
+            <TextView
+                android:id="@+id/statusText"
+                android:gravity="center"
+                android:paddingStart="@dimen/status_padding"
+                android:paddingEnd="@dimen/status_padding"
+                android:textColor="@color/status_text"
+                android:layout_below="@id/score"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Slider text" />
         </RelativeLayout>
         <ImageView
             android:id="@+id/arrowTop"

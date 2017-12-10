@@ -113,15 +113,25 @@
                 android:text="@string/team1_win_sound_label"
                 android:textAppearance="?android:attr/textAppearanceMedium"
                 android:textSize="15sp" />
+            <ImageView
+                android:id="@+id/team1WinSoundValueIcon"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_sound"
+                android:layout_below="@id/team1WinSoundTitle"
+                android:paddingTop="1dp"
+                android:layout_alignParentStart="true" />
             <TextView
                 android:id="@+id/team1WinSoundValue"
                 android:text="Mario-coin"
                 android:paddingStart="2dp"
+                android:layout_centerVertical="true"
                 android:textAppearance="@android:style/TextAppearance.Material.Caption"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/team1WinSoundTitle"
-                android:layout_alignParentStart="true" />
+                android:layout_toRightOf="@id/team1WinSoundValueIcon"
+                android:layout_alignTop="@id/team1WinSoundValueIcon"
+                android:layout_alignBottom="@id/team1WinSoundValueIcon" />
         </RelativeLayout>
         <RelativeLayout
             android:layout_width="match_parent"
@@ -144,15 +154,26 @@
                 android:text="@string/team2_win_sound_label"
                 android:textAppearance="?android:attr/textAppearanceMedium"
                 android:textSize="15sp" />
+            <ImageView
+                android:id="@+id/team2WinSoundValueIcon"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_sound"
+                android:layout_below="@id/team2WinSoundTitle"
+                android:paddingTop="1dp"
+                android:layout_alignParentStart="true" />
             <TextView
                 android:id="@+id/team2WinSoundValue"
                 android:text="Mario-coin"
                 android:paddingStart="2dp"
+                android:layout_centerVertical="true"
                 android:textAppearance="@android:style/TextAppearance.Material.Caption"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/team2WinSoundTitle"
-                android:layout_alignParentStart="true" />
+                android:layout_toRightOf="@id/team2WinSoundValueIcon"
+                android:layout_alignTop="@id/team2WinSoundValueIcon"
+                android:layout_alignBottom="@id/team2WinSoundValueIcon" />
         </RelativeLayout>
         <RelativeLayout
             android:layout_width="match_parent"
@@ -175,15 +196,26 @@
                 android:text="@string/team1_score_sound_label"
                 android:textAppearance="?android:attr/textAppearanceMedium"
                 android:textSize="15sp" />
+            <ImageView
+                android:id="@+id/team1ScoreSoundValueIcon"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_sound"
+                android:layout_below="@id/team1ScoreSoundTitle"
+                android:paddingTop="1dp"
+                android:layout_alignParentStart="true" />
             <TextView
                 android:id="@+id/team1ScoreSoundValue"
                 android:text="Mario-coin"
                 android:paddingStart="2dp"
+                android:layout_centerVertical="true"
                 android:textAppearance="@android:style/TextAppearance.Material.Caption"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/team1ScoreSoundTitle"
-                android:layout_alignParentStart="true" />
+                android:layout_toRightOf="@id/team1ScoreSoundValueIcon"
+                android:layout_alignTop="@id/team1ScoreSoundValueIcon"
+                android:layout_alignBottom="@id/team1ScoreSoundValueIcon" />
         </RelativeLayout>
         <RelativeLayout
             android:layout_width="match_parent"
@@ -206,15 +238,26 @@
                 android:text="@string/team2_score_sound_label"
                 android:textAppearance="?android:attr/textAppearanceMedium"
                 android:textSize="15sp" />
+            <ImageView
+                android:id="@+id/team2ScoreSoundValueIcon"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_sound"
+                android:layout_below="@id/team2ScoreSoundTitle"
+                android:paddingTop="1dp"
+                android:layout_alignParentStart="true" />
             <TextView
                 android:id="@+id/team2ScoreSoundValue"
                 android:text="Mario-coin"
                 android:paddingStart="2dp"
+                android:layout_centerVertical="true"
                 android:textAppearance="@android:style/TextAppearance.Material.Caption"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/team2ScoreSoundTitle"
-                android:layout_alignParentStart="true" />
+                android:layout_toRightOf="@id/team2ScoreSoundValueIcon"
+                android:layout_alignTop="@id/team2ScoreSoundValueIcon"
+                android:layout_alignBottom="@id/team2ScoreSoundValueIcon" />
         </RelativeLayout>
         <View
             android:layout_width="match_parent"
