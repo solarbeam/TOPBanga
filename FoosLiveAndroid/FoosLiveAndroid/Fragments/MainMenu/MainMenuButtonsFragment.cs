@@ -18,6 +18,8 @@ namespace FoosLiveAndroid.Fragments.MainMenu
         private Button _startButton;
         private Button _settingsButton;
         private Button _infoButton;
+        private Button _historyButton;
+
 
         private IOnFragmentInteractionListener _interactionListener;
 
@@ -58,6 +60,11 @@ namespace FoosLiveAndroid.Fragments.MainMenu
                 _interactionListener.LoadFragment(FragmentId.Settings);
             };
 
+            _historyButton.Click += delegate
+            {
+                _interactionListener.LoadFragment(FragmentId.History);
+            };
+
             _infoButton.Click += delegate
             {
                 _interactionListener.LoadFragment(FragmentId.Info);
@@ -70,7 +77,9 @@ namespace FoosLiveAndroid.Fragments.MainMenu
         {
             _startButton = _view.FindViewById<Button>(Resource.Id.startButton);
             _settingsButton = _view.FindViewById<Button>(Resource.Id.settingsButton);
+            _historyButton = _view.FindViewById<Button>(Resource.Id.historyButton);
             _infoButton = _view.FindViewById<Button>(Resource.Id.infoButton);
+
         }
     }
 }

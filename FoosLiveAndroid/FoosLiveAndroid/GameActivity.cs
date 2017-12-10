@@ -22,13 +22,13 @@ using System.Threading.Tasks;
 using Android.Content;
 using FoosLiveAndroid.Util.GameControl;
 using static FoosLiveAndroid.Util.GameControl.Enums;
+using FoosLiveAndroid.Util.Sensors;
 using FoosLiveAndroid.Util.Interface;
 
 namespace FoosLiveAndroid
 {
     [Activity(ScreenOrientation = ScreenOrientation.Portrait)]
-    public class GameActivity : Activity, TextureView.ISurfaceTextureListener, View.IOnTouchListener, MediaPlayer.IOnPreparedListener, 
-    ISensorEventListener
+    public class GameActivity : Activity, TextureView.ISurfaceTextureListener, View.IOnTouchListener, MediaPlayer.IOnPreparedListener
     {
         static readonly string Tag = typeof(GameActivity).Name;
         private static readonly int CameraWidth = PropertiesManager.GetIntProperty("camera_width");
@@ -101,6 +101,8 @@ namespace FoosLiveAndroid
         private bool _hsvSelected;
         private Image<Hsv, byte> _image;
 
+        private IPositionManager positionManager;
+
         /// <summary>
         /// Called whenever the view is created
         /// </summary>
@@ -132,11 +134,10 @@ namespace FoosLiveAndroid
             _gameView.SetOnTouchListener(this);
             CvInvoke.UseOptimized = true;
 
-            // Set up sensors
-            _sensorManager = (SensorManager)GetSystemService(SensorService);
-            _rotationSensor = _sensorManager.GetDefaultSensor(SensorType.RotationVector);
-            // Set up vibrator
-            _vibrator = (Vibrator)GetSystemService(VibratorService);
+            // Set up sensors & vibration
+            var sensorManager = (SensorManager)GetSystemService(SensorService);
+            var _vibration = new Vibration((Vibrator)GetSystemService(VibratorService));
+            positionManager = new PositionManager(this, sensorManager, _vibration);
         }
 
         /// <summary>
@@ -328,9 +329,8 @@ namespace FoosLiveAndroid
             else
                 // We use a camera, so release it
                 _camera.Release();
-            
-            _sensorManager.UnregisterListener(this);
-            StopVibration();
+
+            positionManager.StopListening();
             return true;
         }
 
@@ -376,10 +376,9 @@ namespace FoosLiveAndroid
         /// <returns>True if the Touch was accepted. False otherwise</returns>
         public bool OnTouch(View v, MotionEvent e)
         {
-            // if game is not started
+            // If game is not started, take sample image
             if ( _gameButton.Visibility != ViewStates.Gone )
             {
-                //image = image ?? new Image<Hsv, byte>(_gameView.GetBitmap(preview_width, preview_height));
                 _image = new Image<Hsv, byte>(_gameView.GetBitmap(PreviewWidth, PreviewHeight));
                 UpdateButton(e);
             }
@@ -400,8 +399,7 @@ namespace FoosLiveAndroid
             _selectedHsv = _image[positionY, positionX];
             // convert hsv image to rgb image sample
             var selectedRgb = _image.Convert<Rgb, Byte>()[positionY, positionX];
-
-            //Todo: check whether it causes glitches
+            // image won't be used anymore
             _image.Dispose();
             // Convert emgu rgb to android rgb
             var selectedColor = Color.Rgb((int)selectedRgb.Red, (int)selectedRgb.Green, (int)selectedRgb.Blue);
@@ -440,131 +438,36 @@ namespace FoosLiveAndroid
             // If it's a video, start it again
             _video?.Start();
 
-            // We don't need the button anymore, so remove it
+            // We don't need the button anymore, so hide it
             _gameButton.Visibility = ViewStates.Gone;
 
-            // Base point to check roll value changes 
-            _referencePointRoll = _roll;
-        }
-
-        /// <summary>
-        /// Called on change of sensors accuracy
-        /// </summary>
-        /// <param name="sensor">Sensor</param>
-        /// <param name="accuracy">Accuracy</param>
-        public void OnAccuracyChanged(Sensor sensor, [GeneratedEnum] SensorStatus accuracy)
-        {
-            _lastAccuracy = accuracy;
-        }
-
-        /// <summary>
-        /// Called on change of sensors values
-        /// </summary>
-        /// <param name="e">Sensor event</param>
-        public void OnSensorChanged(SensorEvent e)
-        {
-            // Do not handle low accuracy / unreliable data
-            if (_lastAccuracy == SensorStatus.AccuracyLow || _lastAccuracy == SensorStatus.Unreliable) return;
-
-            if (e.Sensor.Type == SensorType.RotationVector)
-            {
-                float[] rotationMatrix = new float[9];
-                float[] rotationVector = new float[e.Values.Count];
-
-                // extract raw data
-                for (int i = 0; i < rotationVector.Length; i++)
-                    rotationVector[i] = e.Values[i];
-
-                // parse raw data
-                SensorManager.GetRotationMatrixFromVector(rotationMatrix, rotationVector);
-
-                // values for calibration
-                var worldAxisForDeviceAxisX = Android.Hardware.Axis.X;
-                var worldAxisForDeviceAxisY = Android.Hardware.Axis.Y;
-
-                //Calibration 
-                float[] adjustedRotationMatrix = new float[9];
-                SensorManager.RemapCoordinateSystem(rotationMatrix, worldAxisForDeviceAxisX,
-                    worldAxisForDeviceAxisY, adjustedRotationMatrix);
-
-                //Retrieve calibrated data
-                float[] orientation = new float[3];
-                SensorManager.GetOrientation(adjustedRotationMatrix, orientation);
-
-                //Todo: find out what the hell is -57
-                _pitch = orientation[1] * -57;
-                _roll = orientation[2] * -57;
-
-                ProcessPosition();
-                //Log.Debug("ROTATION", $"Pitch: {_pitch}, roll: {_roll}");
-            }
-        }
-
-        private void ProcessPosition()
-        {
-            bool exceedsTop = _pitch > SuggestedPitchMax - PitchOffset;
-            bool exceedsBot = _pitch < SuggestedPitchMin + PitchOffset;
-
-            _arrowTop.Visibility = (exceedsBot) ? ViewStates.Visible : ViewStates.Gone;
-            _arrowBot.Visibility = (exceedsTop) ? ViewStates.Visible : ViewStates.Gone;
-
-            if (_gameButton.Visibility != ViewStates.Gone) return;
-
-            bool exceedsLeft = _roll < _referencePointRoll - MaxRollDeviaton - RollOffset;
-            bool exceedsRight = _roll > _referencePointRoll + MaxRollDeviaton + RollOffset;
-
-            _arrowLeft.Visibility = (exceedsRight) ? ViewStates.Visible : ViewStates.Gone;
-            _arrowRight.Visibility = (exceedsLeft) ? ViewStates.Visible : ViewStates.Gone;
-
-
-            if (exceedsTop || exceedsLeft || exceedsRight || exceedsBot)
-                StartVibration();
-            else
-                StopVibration();
-        }
-
-        private void StartVibration() 
-        {
-            if (!_vibrating)
-            {
-                // Todo: optimise checking
-                if ((int)Build.VERSION.SdkInt >= 26)
-                {
-                    _vibrator.Vibrate(VibrationEffect.CreateWaveform(VibrationPattern, VibrationRepeatIndex));
-                }
-                else 
-                {
-                    #pragma warning disable CS0618 // Type or member is obsolete
-                    _vibrator.Vibrate(VibrationPattern, 0);
-                    #pragma warning restore CS0618 // Type or member is obsolete
-                }
-                _vibrating = true;
-            }
-        }
-
-        private void StopVibration()
-        {
-            if (_vibrating)
-            {
-                _vibrator.Cancel();
-                _vibrating = false;
-            }
+            // Capture aligned position to show guidelines accordingly
+            positionManager.CapturePosition();
         }
 
         protected override void OnPause()
         {
             base.OnPause();
-            // terminate sensor input while not in game activity
-            _sensorManager.UnregisterListener(this);
-            // terminate vibration if it's active
-            StopVibration();
+            positionManager.StopListening();
         }
 
         protected override void OnResume()
         {
             base.OnResume();
-            // renew sensor input on activity resume
-            _sensorManager.RegisterListener(this, _rotationSensor, SensorDelay.Normal);
+            positionManager.StartListening();
+        }
+
+        public void UpdateGuideline(bool[] exceedsPitch, 
+                                    bool?[] exceedsRoll = null)
+        {
+            _arrowBot.Visibility = (exceedsPitch[0]) ? ViewStates.Visible : ViewStates.Gone;
+            _arrowTop.Visibility = (exceedsPitch[1]) ? ViewStates.Visible : ViewStates.Gone;
+
+            // If game is not started, roll guidelines are ignored
+            if (exceedsRoll == null) return;
+            _arrowRight.Visibility = (exceedsRoll[0] ?? false) ? ViewStates.Visible : ViewStates.Gone;
+            _arrowLeft.Visibility = (exceedsRoll[1] ?? false) ? ViewStates.Visible : ViewStates.Gone;
+
         }
     }
 }

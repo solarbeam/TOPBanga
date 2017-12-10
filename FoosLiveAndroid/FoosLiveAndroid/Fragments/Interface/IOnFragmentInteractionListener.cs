@@ -7,7 +7,7 @@ namespace FoosLiveAndroid.Fragments.Interface
     /// </summary>
     public interface IOnFragmentInteractionListener
     {
-        void LoadFragment(FragmentId id);
         void UpdateTitle(string title);
+        void LoadFragment(FragmentId id, bool saveState = true);
     }
 }
