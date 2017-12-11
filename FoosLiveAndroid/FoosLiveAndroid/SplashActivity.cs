@@ -49,7 +49,8 @@ namespace FoosLiveAndroid
             // Check if the shared preference file exists
             var preferences = Application.Context.GetSharedPreferences("FoosliveAndroid.dat", FileCreationMode.Private);
             if ( !( preferences.Contains("team1Score") && preferences.Contains("team1Win") &&
-                preferences.Contains("team2Score") && preferences.Contains("team2Win") ) )
+                preferences.Contains("team2Score") && preferences.Contains("team2Win") && preferences.Contains("soundEnabled")
+                && preferences.Contains("syncEnabled") ) )
             {
                 // It doesnt exist, so assign default values
                 var prefsEditor = preferences.Edit();

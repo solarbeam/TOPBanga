@@ -134,13 +134,19 @@ namespace FoosLiveAndroid
 
             // Assign the sound file paths
             ISharedPreferences prefs = GetSharedPreferences("FoosliveAndroid.dat", FileCreationMode.Private);
-            _soundAlerts = new SoundAlerts
+
+            if (prefs.GetBoolean("soundEnabled", true))
             {
-                BlueTeamWins = new PlayerOGG(this, FilePathResolver.getFile(this, prefs.GetString("team1Win", ""))),
-                BlueTeamGoal = new PlayerOGG(this, FilePathResolver.getFile(this, prefs.GetString("team1Score", ""))),
-                RedTeamWins = new PlayerOGG(this, FilePathResolver.getFile(this, prefs.GetString("team2Win", ""))),
-                RedTeamGoal = new PlayerOGG(this, FilePathResolver.getFile(this, prefs.GetString("team2Score", "")))
-            };
+                _soundAlerts = new SoundAlerts
+                {
+                    BlueTeamWins = new PlayerOGG(this, FilePathResolver.getFile(this, prefs.GetString("team1Win", ""))),
+                    BlueTeamGoal = new PlayerOGG(this, FilePathResolver.getFile(this, prefs.GetString("team1Score", ""))),
+                    RedTeamWins = new PlayerOGG(this, FilePathResolver.getFile(this, prefs.GetString("team2Win", ""))),
+                    RedTeamGoal = new PlayerOGG(this, FilePathResolver.getFile(this, prefs.GetString("team2Score", "")))
+                };
+            }
+
+            prefs.Dispose();
 
             // Open the camera
             _gameView.SurfaceTextureListener = this;
@@ -237,15 +243,15 @@ namespace FoosLiveAndroid
                 var temp = text;
                 var tempView = new StringBuilder(temp.Length);
 
-                for (var i = 0; i < 10; i++)
+                for (var i = 0; i < _eventText.Length(); i++)
                 {
                     tempView.Append(' ');
                 }
                 _eventText.Text = tempView.ToString();
 
-                for (var i = 0; i < temp.Length * 2; i++)
+                for (var i = 0; i < tempView.Length * 3; i ++)
                 {
-                    tempView.Remove(1, 1);
+                    tempView.Remove(0, 1);
                     tempView.Append(i < temp.Length ? temp[i] : ' ');
 
                     _eventText.Text = tempView.ToString();
@@ -266,13 +272,13 @@ namespace FoosLiveAndroid
             // Check which event occured
             if (e == CurrentEvent.BlueGoalOccured)
             {
-                _soundAlerts.Play(EAlert.BlueGoal);
+                _soundAlerts?.Play(EAlert.BlueGoal);
                 SlideText(ApplicationContext.Resources.GetString(Resource.String.blue_team_goal));
             }
             else
                 if (e == CurrentEvent.RedGoalOccured)
             {
-                _soundAlerts.Play(EAlert.RedGoal);
+                _soundAlerts?.Play(EAlert.RedGoal);
                 SlideText(ApplicationContext.Resources.GetString(Resource.String.red_team_goal));
             }
 
@@ -498,7 +504,7 @@ namespace FoosLiveAndroid
 
             // We only need the frames from the video, so mute the sound
             mp.SetVolume(0, 0);
-            mp.PlaybackParams.SetSpeed(1.0f);
+            mp.PlaybackParams = mp.PlaybackParams.SetSpeed(1.0f);
 
             // Pause the video to let the user choose an Hsv value
             mp.Pause();
@@ -519,7 +525,6 @@ namespace FoosLiveAndroid
             if (_image == null) return;
 
             _hsvSelected = true;
-
 
             // Cleanup
             _image.Dispose();
