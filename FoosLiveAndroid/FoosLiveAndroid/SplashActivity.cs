@@ -57,6 +57,8 @@ namespace FoosLiveAndroid
                 prefsEditor.PutString("team1Win", "defaultMarioWin").Apply();
                 prefsEditor.PutString("team2Score", "defaultMarioGoal").Apply();
                 prefsEditor.PutString("team2Win", "defaultMarioWin").Apply();
+                prefsEditor.PutBoolean("soundEnabled", true).Apply();
+                prefsEditor.PutBoolean("syncEnabled", true).Apply();
                 prefsEditor.Commit();
                 prefsEditor.Dispose();
             }

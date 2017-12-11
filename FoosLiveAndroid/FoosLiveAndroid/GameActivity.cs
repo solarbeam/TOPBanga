@@ -49,6 +49,7 @@ namespace FoosLiveAndroid
         private float _upscaleMultiplierY;
 
         private TextView _eventText;
+        private TextView _timerText;
         private Button _gameButton;
         private TextView _score;
         private TextureView _gameView;
@@ -145,6 +146,9 @@ namespace FoosLiveAndroid
             _gameView.SurfaceTextureListener = this;
             _gameView.SetOnTouchListener(this);
             CvInvoke.UseOptimized = true;
+
+            // Add a timer event
+            _gameTimer.OnUpdated += UpdateTimer;
         }
 
         private void ShowEndGameScreen()
@@ -163,7 +167,6 @@ namespace FoosLiveAndroid
             Canvas canvas = _surfaceHolder.LockCanvas();
             canvas.DrawBitmap(_alphaBitmap, 0, 0, null);
             _surfaceHolder.UnlockCanvasAndPost(canvas);
-
 
             // Hide top bar
             _topBar.Visibility = ViewStates.Gone;
@@ -191,7 +194,6 @@ namespace FoosLiveAndroid
             _surfaceHolder.UnlockCanvasAndPost(toDraw);
         }
 
-
         /// <summary>
         /// Set the instances according to the layout, defined in Resources/layout/activity_game.axml
         /// </summary>
@@ -208,6 +210,15 @@ namespace FoosLiveAndroid
             _arrowRight = FindViewById<ImageView>(Resource.Id.arrowRight);
             _arrowBot = FindViewById<ImageView>(Resource.Id.arrowBot);
             _eventText = FindViewById<TextView>(Resource.Id.statusText);
+            _timerText = FindViewById<TextView>(Resource.Id.timerText);
+        }
+
+        private void UpdateTimer(object sender, EventArgs e)
+        {
+            RunOnUiThread(() =>
+            {
+                    _timerText.Text = Math.Round(GameTimer.Time * 0.001f, 2).ToString("0.00 s");
+            });
         }
 
         /// <summary>
@@ -226,7 +237,7 @@ namespace FoosLiveAndroid
                 var temp = text;
                 var tempView = new StringBuilder(temp.Length);
 
-                for (var i = 0; i < tempView.Capacity; i++)
+                for (var i = 0; i < 10; i++)
                 {
                     tempView.Append(' ');
                 }
@@ -487,6 +498,7 @@ namespace FoosLiveAndroid
 
             // We only need the frames from the video, so mute the sound
             mp.SetVolume(0, 0);
+            mp.PlaybackParams.SetSpeed(1.0f);
 
             // Pause the video to let the user choose an Hsv value
             mp.Pause();

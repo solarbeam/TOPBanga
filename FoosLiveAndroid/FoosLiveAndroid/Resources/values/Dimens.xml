@@ -8,5 +8,4 @@
 	<dimen name="info_margin">15dp</dimen>
     <dimen name="score_size">20sp</dimen>
     <dimen name="score_size_history">15sp</dimen>
-    
 </resources>

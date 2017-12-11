@@ -65,10 +65,10 @@ namespace FoosLiveAndroid.Fragments
 
             //Todo: set up sound adapter from model
             var scoreSoundsAdapter = new ArrayAdapter<string>(
-                Context, Android.Resource.Layout.SimpleListItem1, new string[] { "sound1", "sound2" });
+                Context, Android.Resource.Layout.SimpleListItem1, new string[] { "Mario Win Sound", "Mario Goal Sound" });
 
             var winSoundsAdapter = new ArrayAdapter<string>(
-                Context, Android.Resource.Layout.SimpleListItem1, new string[] { "sound1", "sound2" });
+                Context, Android.Resource.Layout.SimpleListItem1, new string[] { "Mario Win Sound", "Mario Goal Sound" });
 
             // Todo: set up button click events
             _team1ScoreSoundItem.Click += delegate
@@ -91,16 +91,41 @@ namespace FoosLiveAndroid.Fragments
                 OpenSoundPicker("team2Win", winSoundsAdapter);
             };
 
+            UpdateSelection();
+
             //Todo: bind switches with events
             _syncSwitch.CheckedChange += delegate {
-                Toast.MakeText(Context, "sync event", ToastLength.Short).Show();
+                ISharedPreferences preferences = Context.GetSharedPreferences("FoosliveAndroid.dat", FileCreationMode.Private);
+                ISharedPreferencesEditor editor = preferences.Edit();
+                editor.PutBoolean("syncEnabled", !_syncSwitch.Checked).Apply();
+                editor.Commit();
+                editor.Dispose();
+                preferences.Dispose();
             };
 
             _soundSwitch.CheckedChange += delegate {
-                Toast.MakeText(Context, "sound event", ToastLength.Short).Show();
+                ISharedPreferences preferences = Context.GetSharedPreferences("FoosliveAndroid.dat", FileCreationMode.Private);
+                ISharedPreferencesEditor editor = preferences.Edit();
+                editor.PutBoolean("soundEnabled", !_soundSwitch.Checked).Apply();
+                editor.Commit();
+                editor.Dispose();
+                preferences.Dispose();
             };
 
             return _view;
+        }
+
+        private void UpdateSelection()
+        {
+            // Assign preexisting values
+            ISharedPreferences preferences = Context.GetSharedPreferences("FoosliveAndroid.dat", FileCreationMode.Private);
+            _team1ScoreSoundValue.Text = preferences.GetString("team1Score", "");
+            _team1WinSoundValue.Text = preferences.GetString("team1Win", "");
+            _team2ScoreSoundValue.Text = preferences.GetString("team2Score", "");
+            _team2WinSoundValue.Text = preferences.GetString("team2Win", "");
+            _soundSwitch.Checked = preferences.GetBoolean("soundEnabled", true);
+            _syncSwitch.Checked = preferences.GetBoolean("syncEnabled", true);
+            preferences.Dispose();
         }
 
         private void GetReferencesFromLayout()
@@ -139,18 +164,18 @@ namespace FoosLiveAndroid.Fragments
 
             _dialogBuilder.SetAdapter(adapter, (dialog, item) =>
             {
-                ISharedPreferences preferences = Context.GetSharedPreferences("FoosliveAndroid.dat", FileCreationMode.WorldReadable);
+                ISharedPreferences preferences = Context.GetSharedPreferences("FoosliveAndroid.dat", FileCreationMode.Private);
                 ISharedPreferencesEditor prefsEditor = preferences.Edit();
                 switch(item.Which)
                 {
                     case WinSoundMario:
                         {
-                            prefsEditor.PutString(title, WinSoundMarioPath).Apply();
+                            prefsEditor.PutString(title, GoalSoundMarioPath).Apply();
                             break;
                         }
                     case GoalSoundMario:
                         {
-                            prefsEditor.PutString(title, GoalSoundMarioPath).Apply();
+                            prefsEditor.PutString(title, WinSoundMarioPath).Apply();
                             break;
                         }
                     default:
@@ -159,6 +184,7 @@ namespace FoosLiveAndroid.Fragments
                 prefsEditor.Commit();
                 prefsEditor.Dispose();
                 preferences.Dispose();
+                UpdateSelection();
             });
 
             var soundPickDialog = _dialogBuilder.Create();

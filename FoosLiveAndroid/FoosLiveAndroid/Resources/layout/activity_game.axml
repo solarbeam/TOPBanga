@@ -48,7 +48,7 @@
                 android:textSize="@dimen/score_size"
                 android:text="@string/sample_score" />
             <TextView
-                android:id="@+id/statusText"
+                android:id="@+id/team2Label"
                 android:gravity="center"
                 android:paddingEnd="10dp"
                 android:layout_width="wrap_content"
@@ -60,14 +60,23 @@
                 android:layout_alignParentEnd="true" />
             <TextView
                 android:id="@+id/statusText"
-                android:gravity="center"
-                android:paddingStart="@dimen/status_padding"
+                android:gravity="left"
+                android:paddingStart="10dp"
+                android:textColor="@color/status_text"
+                android:maxLength="@integer/max_chars"
+                android:layout_below="@id/score"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Slider text" />
+            <TextView
+                android:id="@+id/timerText"
+                android:gravity="right"
                 android:paddingEnd="@dimen/status_padding"
                 android:textColor="@color/status_text"
                 android:layout_below="@id/score"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Slider text" />
+                android:text="0:00 s" />
         </RelativeLayout>
         <ImageView
             android:id="@+id/arrowTop"

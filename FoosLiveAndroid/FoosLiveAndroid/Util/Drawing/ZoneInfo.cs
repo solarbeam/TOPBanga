@@ -3,17 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-using Android.App;
-using Android.Content;
-using Android.OS;
-using Android.Runtime;
-using Android.Views;
-using Android.Widget;
 using Android.Graphics;
-using Emgu.CV;
-using Emgu.CV.Structure;
-using System.Drawing;
-using Android.Util;
 
 namespace FoosLiveAndroid.Util.Drawing
 {
@@ -38,19 +28,21 @@ namespace FoosLiveAndroid.Util.Drawing
 
             System.Drawing.Size sizeOfBitmap = new System.Drawing.Size((int)(toDraw.Width * 0.4f),
                                                                         (int)(toDraw.Height * 0.26f));
-            Android.Graphics.PointF topLeftCorner = new Android.Graphics.PointF((toDraw.Width / 2) - sizeOfBitmap.Width / 2,
+            PointF topLeftCorner = new PointF((toDraw.Width / 2) - sizeOfBitmap.Width / 2,
                                                                                 toDraw.Height * 0.48f);
 
             float toAdd = 0;
             for (int i = 0; i < zoneInfo.Length; i ++)
             {
                 Paint paint = new Paint();
-                paint.Color = new Android.Graphics.Color((int)(200 * values[i]), (int)(200 * (1.0f - values[i])), 0, 100);
+                paint.Color = new Color((int)(200 * values[i]), (int)(200 * (1.0f - values[i])), 0, 100);
                 toDraw.DrawRect(topLeftCorner.X, topLeftCorner.Y + toAdd,
                                 topLeftCorner.X + sizeOfBitmap.Width, topLeftCorner.Y + toAdd + sizeOfBitmap.Height / 8, paint);
                 toAdd += sizeOfBitmap.Height / 8.0f;
                 paint.Dispose();
             }
+
+            topLeftCorner.Dispose();
 
             return toDraw;
         }
