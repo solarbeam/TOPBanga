@@ -72,6 +72,7 @@ namespace FoosLiveAndroid
         private IColorDetector _colorDetector;
         private IObjectDetector _objectDetector;
         private GameController _gameController;
+        private GameTimer _gameTimer;
 
         private ECaptureMode _gameMode;
         private bool gameEnd;
@@ -121,6 +122,7 @@ namespace FoosLiveAndroid
             _gameController = new GameController();
             _gameController.GoalEvent += GameControllerGoalEvent;
             _gameController.PositionEvent += GameControllerPositionEvent;
+            _gameTimer = new GameTimer(10);
 
             _surfaceView.SetZOrderOnTop(true);
             _surfaceView.Holder.SetFormat(Format.Transparent);
@@ -177,7 +179,7 @@ namespace FoosLiveAndroid
                             "Team 2", _gameController.RedScore,
                             _gameController.MaxSpeed,
                             _gameController.AverageSpeed,
-                            _gameController.zones, "05:32");
+                            _gameController.zones, TimeSpan.FromMilliseconds(GameTimer.Time).TotalSeconds.ToString());
 
             // Show pop-up fragment, holding all of the match's info
             FragmentManager.BeginTransaction()
@@ -284,7 +286,7 @@ namespace FoosLiveAndroid
                 // Delay the new speed information
                 RunOnUiThread(async () =>
                 {
-                    await Task.Delay(50);
+                    await Task.Delay(80);
                     _waitForSpeed = false;
                 });
             }
@@ -390,7 +392,7 @@ namespace FoosLiveAndroid
                 // We use a camera, so release it
                 _camera.Release();
 
-            _positionManager.StopListening();
+            _positionManager?.StopListening();
             return true;
         }
 
@@ -493,6 +495,7 @@ namespace FoosLiveAndroid
         {
             if (_gameButton.Text == GetString(Resource.String.end_game))
             {
+                _gameTimer.Stop();
                 ShowEndGameScreen();
                 return;
             }
@@ -513,6 +516,8 @@ namespace FoosLiveAndroid
             // If game is live, capture aligned position to show guidelines accordingly
             if (_gameMode == ECaptureMode.Live)
                 _positionManager.CapturePosition();
+
+            _gameTimer.Start();
         }
 
         protected override void OnPause()
