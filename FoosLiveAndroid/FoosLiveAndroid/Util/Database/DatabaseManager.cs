@@ -44,7 +44,7 @@ namespace FoosLiveAndroid.Util.Database
         /// otherwise the method might not work correctly or at all.</param>
         /// <param name="teamName">The team name of the team who scored.</param>
         /// <returns></returns>
-        public static async Task InsertGoal(int gameId, string teamName)
+        public static async Task<bool> InsertGoal(int gameId, string teamName)
         {
             var request = (HttpWebRequest)WebRequest.Create(ConnectionUrl);
             request.Method = WebRequestMethods.Http.Post;
@@ -52,11 +52,13 @@ namespace FoosLiveAndroid.Util.Database
             var streamWriter = new StreamWriter(await request.GetRequestStreamAsync());
             streamWriter.Write($"InsertGoal;{gameId};{teamName}");
             streamWriter.Flush();
-            /* The following two lines are only invoked because the request does not get handled
-             * if the caller does not open a response steam. The stream is otherwise unused.
-             */
             var httpWebResponse = (HttpWebResponse)await request.GetResponseAsync();
             var streamReader = new StreamReader(httpWebResponse.GetResponseStream());
+            string response = await streamReader.ReadToEndAsync();
+            if (response.Equals(OperationSuccess))
+                return true;
+            else
+                return false;
         }
 
         /// <summary>
@@ -66,7 +68,7 @@ namespace FoosLiveAndroid.Util.Database
         /// otherwise the method might not work correctly or at all.</param>
         /// <param name="details">The details of the event, in string form.</param>
         /// <returns></returns>
-        public static async Task InsertEvent(int gameId, string details)
+        public static async Task<bool> InsertEvent(int gameId, string details)
         {
             var request = (HttpWebRequest)WebRequest.Create(ConnectionUrl);
             request.Method = WebRequestMethods.Http.Post;
@@ -74,11 +76,13 @@ namespace FoosLiveAndroid.Util.Database
             var streamWriter = new StreamWriter(request.GetRequestStream());
             streamWriter.Write($"InsertEvent;{gameId};{details}");
             streamWriter.Flush();
-            /* The following two lines are only invoked because the request does not get handled
-             * if the caller does not open a response steam. The stream is otherwise unused.
-             */
             var httpWebResponse = (HttpWebResponse)await request.GetResponseAsync();
             var streamReader = new StreamReader(httpWebResponse.GetResponseStream());
+            string response = await streamReader.ReadToEndAsync();
+            if (response.Equals(OperationSuccess))
+                return true;
+            else
+                return false;
         }
 
         /// <summary>
@@ -98,8 +102,8 @@ namespace FoosLiveAndroid.Util.Database
             string response;
             while ((response = streamReader.ReadLine()) != null)
             {
-                string[] splitted = response.Split(';');
-                historyData.Add(new History(splitted));
+                string[] splittedResponse = response.Split(';');
+                historyData.Add(new History(splittedResponse));
             }
             return historyData;
         }
