@@ -97,7 +97,7 @@ namespace FoosLiveAndroid.Fragments
             _syncSwitch.CheckedChange += delegate {
                 ISharedPreferences preferences = Context.GetSharedPreferences("FoosliveAndroid.dat", FileCreationMode.Private);
                 ISharedPreferencesEditor editor = preferences.Edit();
-                editor.PutBoolean("syncEnabled", !_syncSwitch.Checked).Apply();
+                editor.PutBoolean("syncEnabled", _syncSwitch.Checked).Apply();
                 editor.Commit();
                 editor.Dispose();
                 preferences.Dispose();
@@ -106,7 +106,7 @@ namespace FoosLiveAndroid.Fragments
             _soundSwitch.CheckedChange += delegate {
                 ISharedPreferences preferences = Context.GetSharedPreferences("FoosliveAndroid.dat", FileCreationMode.Private);
                 ISharedPreferencesEditor editor = preferences.Edit();
-                editor.PutBoolean("soundEnabled", !_soundSwitch.Checked).Apply();
+                editor.PutBoolean("soundEnabled", _soundSwitch.Checked).Apply();
                 editor.Commit();
                 editor.Dispose();
                 preferences.Dispose();
