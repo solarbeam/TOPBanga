@@ -55,10 +55,7 @@ namespace FoosLiveAndroid.Util.Database
             var httpWebResponse = (HttpWebResponse)await request.GetResponseAsync();
             var streamReader = new StreamReader(httpWebResponse.GetResponseStream());
             string response = await streamReader.ReadToEndAsync();
-            if (response.Equals(OperationSuccess))
-                return true;
-            else
-                return false;
+            return response.Equals(OperationSuccess);
         }
 
         /// <summary>
@@ -79,10 +76,7 @@ namespace FoosLiveAndroid.Util.Database
             var httpWebResponse = (HttpWebResponse)await request.GetResponseAsync();
             var streamReader = new StreamReader(httpWebResponse.GetResponseStream());
             string response = await streamReader.ReadToEndAsync();
-            if (response.Equals(OperationSuccess))
-                return true;
-            else
-                return false;
+            return response.Equals(OperationSuccess);
         }
 
         /// <summary>
@@ -102,8 +96,7 @@ namespace FoosLiveAndroid.Util.Database
             string response;
             while ((response = streamReader.ReadLine()) != null)
             {
-                string[] splittedResponse = response.Split(';');
-                historyData.Add(new History(splittedResponse));
+                historyData.Add(new History(response.Split(';')));
             }
             return historyData;
         }
