@@ -1,6 +1,8 @@
-﻿using Android.Graphics;
+﻿using System.Drawing;
+using Android.Graphics;
 using FoosLiveAndroid.Util.Interface;
-using static FoosLiveAndroid.Util.GameControl.Enums;
+using FoosLiveAndroid.Util.Model;
+using PointF = Android.Graphics.PointF;
 
 namespace FoosLiveAndroid.Util.GameControl
 {
@@ -75,12 +77,12 @@ namespace FoosLiveAndroid.Util.GameControl
             }
         }
 
-        public void CalculateRows(System.Drawing.Rectangle tableZone, CaptureMode mode)
+        public void CalculateRows(Rectangle tableZone, ECaptureMode mode)
         {
             // Declare constants
             float[] multipliers = new float[8];
 
-            if (mode == CaptureMode.Video)
+            if (mode == ECaptureMode.Recording)
             {
                 float toAssign = PropertiesManager.GetFloatProperty("percentage_video");
                 for (int i = 0; i < multipliers.Length; i ++)

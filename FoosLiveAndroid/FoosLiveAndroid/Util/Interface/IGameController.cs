@@ -1,6 +1,6 @@
 ﻿using System;
 using Android.Graphics;
-using static FoosLiveAndroid.Util.GameControl.Enums;
+using FoosLiveAndroid.Util.Model;
 
 namespace FoosLiveAndroid.Util.Interface
 {
@@ -13,6 +13,6 @@ namespace FoosLiveAndroid.Util.Interface
         int BlueScore { get; }
         PointF LastBallCoordinates { get; set; }
 
-        void SetTable(PointF[] points, CaptureMode mode);
+        void SetTable(PointF[] points, ECaptureMode mode);
     }
 }

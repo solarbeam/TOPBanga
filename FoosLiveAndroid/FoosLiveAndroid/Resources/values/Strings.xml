@@ -42,7 +42,6 @@
 	<string name="camera_request_explanation_title">Camera access request</string>
 	<string name="camera_request_explanation_content">Camera access is required to record and analyse live game.</string>
 	<string name="camera_access_missing">The application does not have access to record live game.</string>
-
 	<!--Temporary-->
 	<string name="sample_score">0 : 0</string>
 </resources>
