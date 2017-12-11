@@ -20,7 +20,7 @@ namespace FoosLiveAndroid.Util.Database
         /// </summary>
         /// <param name="blueTeamName"> Blue team name</param>
         /// <param name="redTeamName">Red team name</param>
-        /// <returns>A task that returns int. The int is the id of the inserted game.
+        /// <returns>A task that returns int. The int is the id of the inserted game, or -1 if error happens.
         /// This id is used to specify which game to add goals and events to.</returns>
         public static async Task<int> InsertGame(string blueTeamName, string redTeamName) {
             var request = (HttpWebRequest)WebRequest.Create(ConnectionUrl);
@@ -32,7 +32,10 @@ namespace FoosLiveAndroid.Util.Database
             var httpWebResponse = (HttpWebResponse)await request.GetResponseAsync();
             var streamReader = new StreamReader(httpWebResponse.GetResponseStream());
             string idUnconverted = await streamReader.ReadToEndAsync();
-            return int.Parse(idUnconverted);
+            if (int.TryParse(idUnconverted, out int id))
+                return id;
+            else
+                return -1;
         }
         /// <summary>
         /// Inserts a goal into the remote database.
@@ -55,6 +58,7 @@ namespace FoosLiveAndroid.Util.Database
             var httpWebResponse = (HttpWebResponse)await request.GetResponseAsync();
             var streamReader = new StreamReader(httpWebResponse.GetResponseStream());
         }
+
         /// <summary>
         /// Inserts an event into the remote database.
         /// </summary>
@@ -76,6 +80,7 @@ namespace FoosLiveAndroid.Util.Database
             var httpWebResponse = (HttpWebResponse)await request.GetResponseAsync();
             var streamReader = new StreamReader(httpWebResponse.GetResponseStream());
         }
+
         /// <summary>
         /// Gets the full history of games played.
         /// </summary>
