@@ -24,11 +24,14 @@ using static FoosLiveAndroid.Util.GameControl.Enums;
 using FoosLiveAndroid.Util.Sensors;
 using FoosLiveAndroid.Util.Interface;
 using FoosLiveAndroid.Fragments;
+using FoosLiveAndroid.Util.Sounds;
+using FoosLiveAndroid.Model;
 
 namespace FoosLiveAndroid
 {
     [Activity(ScreenOrientation = ScreenOrientation.Portrait)]
-    public class GameActivity : Activity, TextureView.ISurfaceTextureListener, View.IOnTouchListener, MediaPlayer.IOnPreparedListener
+    public class GameActivity : Activity, TextureView.ISurfaceTextureListener, View.IOnTouchListener, MediaPlayer.IOnPreparedListener,
+            MediaPlayer.IOnCompletionListener
     {
         static readonly string Tag = typeof(GameActivity).Name;
         private static readonly int CameraWidth = PropertiesManager.GetIntProperty("camera_width");
@@ -111,11 +114,13 @@ namespace FoosLiveAndroid
 
             // Assign the sound file paths
             ISharedPreferences prefs = GetSharedPreferences("FoosliveAndroid.dat", FileCreationMode.Private);
-            _soundAlerts = new SoundAlerts();
-            _soundAlerts.BlueTeamWins = new PlayerOGG(this, FilePathResolver.getFile(this, prefs.GetString("team1Win", "")));
-            _soundAlerts.BlueTeamGoal = new PlayerOGG(this, FilePathResolver.getFile(this, prefs.GetString("team1Score", "")));
-            _soundAlerts.RedTeamWins = new PlayerOGG(this, FilePathResolver.getFile(this, prefs.GetString("team2Win", "")));
-            _soundAlerts.RedTeamGoal = new PlayerOGG(this, FilePathResolver.getFile(this, prefs.GetString("team2Score", "")));
+            _soundAlerts = new SoundAlerts
+            {
+                BlueTeamWins = new PlayerOGG(this, FilePathResolver.getFile(this, prefs.GetString("team1Win", ""))),
+                BlueTeamGoal = new PlayerOGG(this, FilePathResolver.getFile(this, prefs.GetString("team1Score", ""))),
+                RedTeamWins = new PlayerOGG(this, FilePathResolver.getFile(this, prefs.GetString("team2Win", ""))),
+                RedTeamGoal = new PlayerOGG(this, FilePathResolver.getFile(this, prefs.GetString("team2Score", "")))
+            };
 
             // Open the camera
             _gameView.SurfaceTextureListener = this;
@@ -129,10 +134,22 @@ namespace FoosLiveAndroid
 
             //temp
             _topBar.Visibility = ViewStates.Gone;
+        }
+
+        private void ShowEndGameScreen()
+        {
+            // Show popup, holding all of the match's info
+
+            //Collect data from GameController
+            MatchInfo info = new MatchInfo("Team 1", _gameController.BlueScore,
+                                            "Team 2", _gameController.RedScore,
+                                            _gameController.AverageSpeed,
+                                            _gameController.MaxSpeed,
+                                            _gameController.zones);
+
             var transaction = FragmentManager.BeginTransaction();
             transaction.Add(Resource.Id.infoLayout, EndGameFragment.NewInstance());
             transaction.Commit();
-
         }
 
         /// <summary>
@@ -153,6 +170,10 @@ namespace FoosLiveAndroid
             _eventText = FindViewById<TextView>(Resource.Id.statusText);
         }
 
+        /// <summary>
+        /// Defines a sliding text effect for a given string of text
+        /// </summary>
+        /// <param name="text">The text, to which the effect will be applied</param>
         private void SlideText(String text)
         {
             if (_textThreadStarted)
@@ -221,7 +242,13 @@ namespace FoosLiveAndroid
             // Check if sliding text is active or the delay is still on
             if (!_textThreadStarted && !_waitForSpeed)
             {
-                _eventText.Text = "" + Math.Round(_gameController.CurrentSpeed, 2) + " cm/s";
+                if (_gameController.CurrentSpeed >= 10.0f)
+                {
+                    _eventText.Text = "" + Math.Round(_gameController.CurrentSpeed, 1) + " cm/s";
+                }
+                else
+                    _eventText.Text = "" + Math.Round(_gameController.CurrentSpeed, 2) + " cm/s";
+
                 _waitForSpeed = true;
 
                 // Delay the new speed information
@@ -269,12 +296,13 @@ namespace FoosLiveAndroid
                     new PointF(w,h)
                 }, CaptureMode.Video);
 
-                this._surface = new Surface(surface);
+                _surface = new Surface(surface);
                 _video = new MediaPlayer();
                 _video.SetDataSource(ApplicationContext, Intent.Data);
-                _video.SetSurface(this._surface);
+                _video.SetSurface(_surface);
                 _video.Prepare();
                 _video.SetOnPreparedListener(this);
+                _video.SetOnCompletionListener(this);
                 return;
             }
 
@@ -470,6 +498,11 @@ namespace FoosLiveAndroid
             _arrowRight.Visibility = (exceedsRoll[0] ?? false) ? ViewStates.Visible : ViewStates.Gone;
             _arrowLeft.Visibility = (exceedsRoll[1] ?? false) ? ViewStates.Visible : ViewStates.Gone;
 
+        }
+
+        public void OnCompletion(MediaPlayer mp)
+        {
+            ShowEndGameScreen();
         }
     }
 }

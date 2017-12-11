@@ -121,5 +121,24 @@ namespace FoosLiveAndroid.Util.GameControl
                                     tableZone.Right, tableZone.Top + toAdd + (tableZone.Height * multipliers[i]));
             }
         }
+
+        /// <summary>
+        /// Returns all of the zone counters in an array
+        /// </summary>
+        /// <returns>An array, holding all of the zone counters</returns>
+        public int[] GetRowInformation()
+        {
+            return new int[]
+            {
+                _RedGoalieZone,
+                _RedDefenceZone,
+                _BlueAttackZone,
+                _RedMidfieldZone,
+                _BlueMidfieldZone,
+                _RedAttackZone,
+                _BlueDefenceZone,
+                _BlueGoalieZone
+            };
+        }
     }
 }

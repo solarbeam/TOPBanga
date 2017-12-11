@@ -22,7 +22,6 @@ namespace FoosLiveAndroid.Fragments
         private IOnFragmentInteractionListener _interactionListener;
         private RecyclerView _historyRecyclerView;
 
-
         public static Fragment NewInstance()
         {
             return new HistoryFragment();
@@ -65,7 +64,7 @@ namespace FoosLiveAndroid.Fragments
             // Hides loading layout and shows history list
             _loadingLayout.Visibility = ViewStates.Gone;
             _historyRecyclerView.Visibility = ViewStates.Visible;
-                // Creates adapter for recycler view
+            // Creates adapter for recycler view
             var adapter = new HistoryListAdapter(_historyList);
             adapter.NotifyDataSetChanged();
             // Plug the adapter into the RecyclerView:

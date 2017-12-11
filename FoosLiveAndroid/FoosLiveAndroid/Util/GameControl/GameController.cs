@@ -20,6 +20,11 @@ namespace FoosLiveAndroid.Util.GameControl
         public event EventHandler<EventArgs> GoalEvent;
         public event EventHandler<EventArgs> PositionEvent;
 
+        public int[] zones
+        {
+            get => _rowChecker.GetRowInformation();
+        }
+
         /// <summary>
         /// Defines the current score for the red team
         /// </summary>
@@ -54,6 +59,8 @@ namespace FoosLiveAndroid.Util.GameControl
         /// </summary>
         public double AverageSpeed;
         private int _avgSpeedCounter;
+
+        public double MaxSpeed;
 
         /// <summary>
         /// Defines the maximum number of edges a table can have
@@ -114,6 +121,9 @@ namespace FoosLiveAndroid.Util.GameControl
                 }
 
                 CurrentSpeed = _posChecker.CalculateSpeed(lastBallCoordinates, lastLastBallCoordinates, PositionEvent);
+
+                if (MaxSpeed < CurrentSpeed)
+                    MaxSpeed = CurrentSpeed;
             }
         }
 

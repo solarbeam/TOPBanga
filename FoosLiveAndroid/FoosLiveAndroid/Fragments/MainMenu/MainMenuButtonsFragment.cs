@@ -20,7 +20,6 @@ namespace FoosLiveAndroid.Fragments.MainMenu
         private Button _infoButton;
         private Button _historyButton;
 
-
         private IOnFragmentInteractionListener _interactionListener;
 
         public static Fragment NewInstance()
