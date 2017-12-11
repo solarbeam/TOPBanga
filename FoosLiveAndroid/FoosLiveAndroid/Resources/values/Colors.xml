@@ -13,7 +13,7 @@
 	<color name="game_button_clicked">#60FFFFFF</color>
 	<color name="status_text">#FFFFFF</color>
 	<color name="status">#66000000</color>
-    <color name="end_game_status">#A0000000</color>
+    <color name="end_game_status">#80000000</color>
 	<color name="arrow">#60FFFFFF</color>
 	<color name="splash_background">#E7F1CD</color>
 </resources>

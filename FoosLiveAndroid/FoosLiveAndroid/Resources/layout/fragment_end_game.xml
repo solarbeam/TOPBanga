@@ -48,7 +48,7 @@
         android:textSize="24sp"
         android:textColor="#ffffffff" />
     <TextView
-        android:id="@+id/team1Score"
+        android:id="@+id/teamScore"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/team1Name"
@@ -58,20 +58,11 @@
         android:textSize="45sp"
         android:textColor="#ffffffff" />
     <TextView
-        android:id="@+id/team2Score"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/team2Name"
-        android:layout_marginTop="16dp"
-        android:layout_toStartOf="@+id/team2Name"
-        android:textAppearance="@android:style/TextAppearance.Material"
-        android:textSize="45sp" />
-    <TextView
         android:id="@+id/durationLabel"
         android:layout_marginTop="15dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/team1Score"
+        android:layout_below="@+id/teamScore"
         android:layout_centerHorizontal="true"
         android:text="Duration"
         android:textColor="#ffffffff" />

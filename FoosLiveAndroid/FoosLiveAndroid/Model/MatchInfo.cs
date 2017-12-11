@@ -1,42 +1,33 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-using Android.App;
-using Android.Content;
-using Android.OS;
-using Android.Runtime;
-using Android.Views;
-using Android.Widget;
-
-namespace FoosLiveAndroid.Model
+﻿namespace FoosLiveAndroid.Model
 {
-    [Serializable]
-    class MatchInfo
+    public static class MatchInfo
     {
-        public string teamOne { get; set; }
-        public string teamTwo { get; set; }
-        public int teamOneScore { get; set; }
-        public int teamTwoScore { get; set; }
-        public double maxSpeed { get; set; }
-        public double avgSpeed { get; set; }
-        public int[] zones { get; set; }
-        public MatchInfo(string teamOneName, int teamOneScoreAchieved, string teamTwoName, int teamTwoScoreAchieved,
-                            double maxSpeedAchieved, double avgSpeedAchieved, int[] zoneInfo)
+        public static string Team1Name { get; set; }
+        public static string Team2Name { get; set; }
+        public static int Team1Score { get; set; }
+        public static int Team2Score { get; set; }
+        public static double MaxSpeed { get; set; }
+        public static double AvgSpeed { get; set; }
+        public static string Duration { get; set; }
+        public static int[] Zones { get; set; }
+
+        public static void SetUp(string team1Name, int team1Score, string team2Name, int team2Score,
+                            double maxSpeedAchieved, double avgSpeedAchieved, int[] zoneInfo, string duration)
         {
             // Assign team one info
-            teamOne = teamOneName;
-            teamOneScore = teamOneScoreAchieved;
+            Team1Name = team1Name;
+            Team1Score = team1Score;
 
             // Assign team two info
-            teamTwo = teamTwoName;
-            teamTwoScore = teamTwoScoreAchieved;
+            Team2Name = team2Name;
+            Team2Score = team2Score;
 
             // Assign match info
-            maxSpeed = maxSpeedAchieved;
-            avgSpeed = avgSpeedAchieved;
-            zones = zoneInfo;
+            MaxSpeed = maxSpeedAchieved;
+            AvgSpeed = avgSpeedAchieved;
+            Zones = zoneInfo;
+
+            Duration = duration;
         }
     }
 }

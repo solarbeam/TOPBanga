@@ -26,11 +26,12 @@ using FoosLiveAndroid.Fragments;
 using FoosLiveAndroid.Util.Model;
 using FoosLiveAndroid.Util.Sounds;
 using FoosLiveAndroid.Model;
+using Android.Support.V7.App;
 
 namespace FoosLiveAndroid
 {
     [Activity(ScreenOrientation = ScreenOrientation.Portrait)]
-    public class GameActivity : Activity, TextureView.ISurfaceTextureListener, View.IOnTouchListener, MediaPlayer.IOnPreparedListener,
+    public class GameActivity : AppCompatActivity, TextureView.ISurfaceTextureListener, View.IOnTouchListener, MediaPlayer.IOnPreparedListener,
             MediaPlayer.IOnCompletionListener
     {
         static readonly string Tag = typeof(GameActivity).Name;
@@ -73,6 +74,7 @@ namespace FoosLiveAndroid
         private GameController _gameController;
 
         private ECaptureMode _gameMode;
+        private bool gameEnd;
 
         // Todo: change Camera to Camera2
         private Camera _camera;
@@ -106,7 +108,6 @@ namespace FoosLiveAndroid
                 var vibration = new Vibration((Vibrator)GetSystemService(VibratorService));
                 _positionManager = new PositionManager(this, sensorManager, vibration);
             }
-                
             
             SetContentView(Resource.Layout.activity_game);
 
@@ -126,7 +127,7 @@ namespace FoosLiveAndroid
             _surfaceHolder = _surfaceView.Holder;
 
             _gameButton.Text = GetString(Resource.String.select_ball_color);
-            _gameButton.Click += StartGame;
+            _gameButton.Click += GameButtonClicked;
 
             // Assign the sound file paths
             ISharedPreferences prefs = GetSharedPreferences("FoosliveAndroid.dat", FileCreationMode.Private);
@@ -142,26 +143,48 @@ namespace FoosLiveAndroid
             _gameView.SurfaceTextureListener = this;
             _gameView.SetOnTouchListener(this);
             CvInvoke.UseOptimized = true;
-
-            //temp
-            _topBar.Visibility = ViewStates.Gone;
         }
 
         private void ShowEndGameScreen()
         {
-            // Show popup, holding all of the match's info
+            gameEnd = true;
+            // Terminate recognition
+            _hsvSelected = false;
 
+            // Hide guideline arrows
+            _arrowBot.Visibility = ViewStates.Gone;
+            _arrowTop.Visibility = ViewStates.Gone;
+            _arrowRight.Visibility = ViewStates.Gone;
+            _arrowLeft.Visibility = ViewStates.Gone;
+
+            // Remove drawable lefovers
+            Canvas canvas = _surfaceHolder.LockCanvas();
+            canvas.DrawBitmap(_alphaBitmap, 0, 0, null);
+            _surfaceHolder.UnlockCanvasAndPost(canvas);
+
+
+            // Hide top bar
+            _topBar.Visibility = ViewStates.Gone;
+            // Hide game button
+            _gameButton.Visibility = ViewStates.Gone;
+
+            // Disable sensors
+            if (_gameMode == ECaptureMode.Live)
+                _positionManager.StopListening();
+            
             //Collect data from GameController
-            MatchInfo info = new MatchInfo("Team 1", _gameController.BlueScore,
-                                            "Team 2", _gameController.RedScore,
-                                            _gameController.AverageSpeed,
-                                            _gameController.MaxSpeed,
-                                            _gameController.zones);
+            MatchInfo.SetUp("Team 1", _gameController.BlueScore,
+                            "Team 2", _gameController.RedScore,
+                            _gameController.MaxSpeed,
+                            _gameController.AverageSpeed,
+                            _gameController.zones, "05:32");
 
-            var transaction = FragmentManager.BeginTransaction();
-            transaction.Add(Resource.Id.infoLayout, EndGameFragment.NewInstance());
-            transaction.Commit();
+            // Show pop-up fragment, holding all of the match's info
+            FragmentManager.BeginTransaction()
+                           .Add(Resource.Id.infoLayout, EndGameFragment.NewInstance())
+                           .Commit();
         }
+
 
         /// <summary>
         /// Set the instances according to the layout, defined in Resources/layout/activity_game.axml
@@ -397,6 +420,7 @@ namespace FoosLiveAndroid
                                             _gameView.GetBitmap(PreviewWidth, PreviewHeight),
                                             _alphaBitmap) )
                 {
+                    // Remove all drawings
                     canvas.DrawBitmap(_alphaBitmap, 0, 0, null);
                 }
 
@@ -413,6 +437,8 @@ namespace FoosLiveAndroid
         /// <returns>True if the Touch was accepted. False otherwise</returns>
         public bool OnTouch(View v, MotionEvent e)
         {
+            // If game has ended, ignore touch
+            if (gameEnd) return false;
             // If game is not started, take sample image
             if ( _gameButton.Visibility != ViewStates.Gone && _hsvSelected != true )
             {
@@ -463,8 +489,14 @@ namespace FoosLiveAndroid
         /// <summary>
         /// Called whenever the _gameButton is clicked
         /// </summary>
-        public void StartGame(object sender, EventArgs e)
+        public void GameButtonClicked(object sender, EventArgs e)
         {
+            if (_gameButton.Text == GetString(Resource.String.end_game))
+            {
+                ShowEndGameScreen();
+                return;
+            }
+            
             if (_image == null) return;
 
             _hsvSelected = true;
