@@ -501,6 +501,7 @@ namespace FoosLiveAndroid
 
             _hsvSelected = true;
 
+
             // Cleanup
             _image.Dispose();
 
@@ -509,6 +510,7 @@ namespace FoosLiveAndroid
 
             // Change button function to stop the game
             _gameButton.Text = GetString(Resource.String.end_game);
+            _gameButton.SetBackgroundResource(Resource.Drawable.game_button_selector);
 
             // If game is live, capture aligned position to show guidelines accordingly
             if (_gameMode == ECaptureMode.Live)
