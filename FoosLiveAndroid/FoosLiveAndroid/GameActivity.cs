@@ -215,10 +215,10 @@ namespace FoosLiveAndroid
         /// </summary>
         /// <param name="sender">The class, which called this function</param>
         /// <param name="e">Arguments, which are passed to this function</param>
-        private void GameControllerGoalEvent(object sender, EventArgs e)
+        private void GameControllerGoalEvent(object sender, CurrentEvent e)
         {
             // Check which event occured
-            if (_gameController.currentEvent == CurrentEvent.BlueGoalOccured)
+            if (e == CurrentEvent.BlueGoalOccured)
             {
                 _soundAlerts.Play(EAlert.BlueGoal);
                 SlideText(ApplicationContext.Resources.GetString(Resource.String.blue_team_goal));

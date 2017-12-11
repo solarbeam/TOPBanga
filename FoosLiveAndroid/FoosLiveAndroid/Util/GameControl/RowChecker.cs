@@ -25,7 +25,7 @@ namespace FoosLiveAndroid.Util.GameControl
         private int _BlueDefenceZone;
         private int _BlueGoalieZone;
 
-        public void CheckRow(PointF lastBallCoordinates, ref CurrentEvent currentEvent)
+        public void CheckRow(PointF lastBallCoordinates)
         {
             for (int i = 0; i < rows.Length; i++)
             {
@@ -66,9 +66,6 @@ namespace FoosLiveAndroid.Util.GameControl
                             _BlueGoalieZone++;
                             break;
                     }
-
-                    if (currentEvent == CurrentEvent.None)
-                        currentEvent = CurrentEvent.PositionChanged;
 
                     break;
                 }

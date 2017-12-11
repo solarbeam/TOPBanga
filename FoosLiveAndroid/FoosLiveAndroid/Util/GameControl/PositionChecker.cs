@@ -119,8 +119,8 @@ namespace FoosLiveAndroid.Util.GameControl
         /// <param name="GoalEvent">Defines the goal event, which is fired whenever a goal occurs</param>
         /// <param name="ballCoordinates">Defines the queue, holding the historical points of the ball</param>
         public void OnNewFrame(PointF lastBallCoordinates, int BlueScore, int RedScore,
-                               CurrentEvent currentEvent, Action<int,int,CurrentEvent> setter,
-                               EventHandler<EventArgs> GoalEvent, Queue<PointF> ballCoordinates)
+                               Action<int,int> setter,
+                               EventHandler<CurrentEvent> GoalEvent, Queue<PointF> ballCoordinates)
         {
             // Check if this particular point signals that the ball is lost
             if (lastBallCoordinates == null)
@@ -131,8 +131,8 @@ namespace FoosLiveAndroid.Util.GameControl
                     if (ballInFirstGoalZone)
                     {
                         // Fire the goal event for the first team
-                        setter(BlueScore + 1, RedScore, CurrentEvent.BlueGoalOccured);
-                        GoalEvent(this, EventArgs.Empty);
+                        setter(BlueScore + 1, RedScore);
+                        GoalEvent(this, CurrentEvent.BlueGoalOccured);
 
                         _goals.Enqueue(new Goal(ballCoordinates, new RectF(ZoneOne.Left, ZoneOne.Top, ZoneTwo.Right, ZoneTwo.Bottom)));
 
@@ -147,8 +147,8 @@ namespace FoosLiveAndroid.Util.GameControl
                         if (ballInSecondGoalZone)
                     {
                         // Fire the goal event for the second team
-                        setter(BlueScore, RedScore + 1, CurrentEvent.BlueGoalOccured);
-                        GoalEvent(this, EventArgs.Empty);
+                        setter(BlueScore, RedScore + 1);
+                        GoalEvent(this, CurrentEvent.RedGoalOccured);
 
                         _goals.Enqueue(new Goal(ballCoordinates, new RectF(ZoneOne.Left, ZoneOne.Top, ZoneTwo.Right, ZoneTwo.Bottom)));
 

@@ -5,7 +5,7 @@ namespace FoosLiveAndroid.Util.Interface
 {
     public interface IRowChecker
     {
-        void CheckRow(PointF lastBallCoordinates, ref CurrentEvent currentEvent);
+        void CheckRow(PointF lastBallCoordinates);
         void CalculateRows(System.Drawing.Rectangle tableZone, CaptureMode mode);
     }
 }

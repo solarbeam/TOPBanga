@@ -13,8 +13,8 @@ namespace FoosLiveAndroid.Util.Interface
         bool BallInSecondGoalZone { get; set; }
 
         void OnNewFrame(PointF lastBallCoordinates, int BlueScore, int RedScore,
-                        CurrentEvent currentEvent, Action<int, int, CurrentEvent> setter,
-                        EventHandler<EventArgs> GoalEvent, Queue<PointF> ballCoordinates);
+                        Action<int, int> setter,
+                        EventHandler<CurrentEvent> GoalEvent, Queue<PointF> ballCoordinates);
         double CalculateSpeed(PointF one, PointF two, EventHandler<EventArgs> PositionEvent);
     }
 }

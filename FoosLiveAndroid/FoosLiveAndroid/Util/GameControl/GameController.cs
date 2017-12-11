@@ -17,7 +17,7 @@ namespace FoosLiveAndroid.Util.GameControl
         /// <summary>
         /// Fired whenever a goal event occurs
         /// </summary>
-        public event EventHandler<EventArgs> GoalEvent;
+        public event EventHandler<CurrentEvent> GoalEvent;
         public event EventHandler<EventArgs> PositionEvent;
 
         public int[] zones
@@ -38,8 +38,6 @@ namespace FoosLiveAndroid.Util.GameControl
         /// The amount of positions to hold in the queue
         /// </summary>
         private readonly int MaximumBallCoordinatesNumber = PropertiesManager.GetIntProperty("maximum_ball_coordinate_number");
-        
-        public CurrentEvent currentEvent;
 
         private PositionChecker _posChecker;
         private RowChecker _rowChecker;
@@ -95,7 +93,7 @@ namespace FoosLiveAndroid.Util.GameControl
                 // Check which row has the ball
                 if (lastBallCoordinates != null && _rowChecker.rows != null)
                 {
-                    _rowChecker.CheckRow(lastBallCoordinates, ref currentEvent);
+                    _rowChecker.CheckRow(lastBallCoordinates);
                 }
 
                 ballCoordinates.Enqueue(lastBallCoordinates);
@@ -103,12 +101,10 @@ namespace FoosLiveAndroid.Util.GameControl
                 _posChecker.OnNewFrame(lastBallCoordinates,
                                         BlueScore,
                                         RedScore,
-                                        currentEvent,
-                                        (blue, red, ev) =>
+                                        (blue, red) =>
                                         {
                                             BlueScore = blue;
                                             RedScore = red;
-                                            currentEvent = ev;
                                         },
                                         GoalEvent,
                                         ballCoordinates);

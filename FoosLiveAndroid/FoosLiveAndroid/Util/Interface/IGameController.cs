@@ -6,7 +6,7 @@ namespace FoosLiveAndroid.Util.Interface
 {
     public interface IGameController
     {
-        event EventHandler<EventArgs> GoalEvent;
+        event EventHandler<CurrentEvent> GoalEvent;
         event EventHandler<EventArgs> PositionEvent;
 
         int RedScore { get; }
