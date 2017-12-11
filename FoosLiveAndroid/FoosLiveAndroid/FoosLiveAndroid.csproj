@@ -147,6 +147,7 @@
     <Compile Include="Util\Database\DatabaseManager.cs" />
     <Compile Include="Util\Detection\ObjectDetector.cs" />
     <Compile Include="Util\Drawing\AlignZones.cs" />
+    <Compile Include="Util\Drawing\ZoneInfo.cs" />
     <Compile Include="Util\GameControl\GameTimer.cs" />
     <Compile Include="Util\GameControl\Goal.cs" />
     <Compile Include="Util\GameControl\PositionChecker.cs" />
