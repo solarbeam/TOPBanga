@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Android.Graphics;
-using static FoosLiveAndroid.Util.GameControl.Enums;
+using FoosLiveAndroid.Util.Model;
 
 namespace FoosLiveAndroid.Util.Interface
 {

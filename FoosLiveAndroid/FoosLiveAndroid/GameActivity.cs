@@ -20,10 +20,10 @@ using System.Text;
 using System.Threading.Tasks;
 using Android.Content;
 using FoosLiveAndroid.Util.GameControl;
-using static FoosLiveAndroid.Util.GameControl.Enums;
 using FoosLiveAndroid.Util.Sensors;
 using FoosLiveAndroid.Util.Interface;
 using FoosLiveAndroid.Fragments;
+using FoosLiveAndroid.Util.Model;
 using FoosLiveAndroid.Util.Sounds;
 using FoosLiveAndroid.Model;
 
@@ -72,6 +72,8 @@ namespace FoosLiveAndroid
         private IObjectDetector _objectDetector;
         private GameController _gameController;
 
+        private ECaptureMode _gameMode;
+
         // Todo: change Camera to Camera2
         private Camera _camera;
 
@@ -91,7 +93,21 @@ namespace FoosLiveAndroid
         protected override void OnCreate(Bundle savedInstanceState)
         {
             base.OnCreate(savedInstanceState);
-
+            // Identify game capture mode
+            if (Intent.Data != null)
+            {
+                _gameMode = ECaptureMode.Recording;
+            }
+            else
+            {
+                _gameMode = ECaptureMode.Live;
+                // Set up sensors & vibration
+                var sensorManager = (SensorManager)GetSystemService(SensorService);
+                var vibration = new Vibration((Vibrator)GetSystemService(VibratorService));
+                _positionManager = new PositionManager(this, sensorManager, vibration);
+            }
+                
+            
             SetContentView(Resource.Layout.activity_game);
 
             //Hide notification bar
@@ -126,11 +142,6 @@ namespace FoosLiveAndroid
             _gameView.SurfaceTextureListener = this;
             _gameView.SetOnTouchListener(this);
             CvInvoke.UseOptimized = true;
-
-            // Set up sensors & vibration
-            var sensorManager = (SensorManager)GetSystemService(SensorService);
-            var _vibration = new Vibration((Vibrator)GetSystemService(VibratorService));
-            _positionManager = new PositionManager(this, sensorManager, _vibration);
 
             //temp
             _topBar.Visibility = ViewStates.Gone;
@@ -174,7 +185,7 @@ namespace FoosLiveAndroid
         /// Defines a sliding text effect for a given string of text
         /// </summary>
         /// <param name="text">The text, to which the effect will be applied</param>
-        private void SlideText(String text)
+        private void SlideText(string text)
         {
             if (_textThreadStarted)
                 return;
@@ -183,24 +194,19 @@ namespace FoosLiveAndroid
 
             RunOnUiThread(async () =>
             {
-                String temp = text;
+                var temp = text;
                 var tempView = new StringBuilder(temp.Length);
 
-                for (int i = 0; i < tempView.Capacity; i++)
+                for (var i = 0; i < tempView.Capacity; i++)
                 {
                     tempView.Append(' ');
                 }
                 _eventText.Text = tempView.ToString();
 
-                for (int i = 0; i < temp.Length * 2; i++)
+                for (var i = 0; i < temp.Length * 2; i++)
                 {
                     tempView.Remove(1, 1);
-                    if (i < temp.Length)
-                    {
-                        tempView.Append(temp[i]);
-                    }
-                    else
-                        tempView.Append(' ');
+                    tempView.Append(i < temp.Length ? temp[i] : ' ');
 
                     _eventText.Text = tempView.ToString();
                     await Task.Delay(SlidingTextDelay);
@@ -224,6 +230,7 @@ namespace FoosLiveAndroid
                 SlideText(ApplicationContext.Resources.GetString(Resource.String.blue_team_goal));
             }
             else
+                if (e == CurrentEvent.RedGoalOccured)
             {
                 _soundAlerts.Play(EAlert.RedGoal);
                 SlideText(ApplicationContext.Resources.GetString(Resource.String.red_team_goal));
@@ -285,7 +292,7 @@ namespace FoosLiveAndroid
             _surfaceHolder.SetFixedSize(w, h);
 
             // Check if we use video mode
-            if ( Intent.Data != null )
+            if (_gameMode == ECaptureMode.Recording)
             {
                 // We do, so set the table according to display size
                 _gameController.SetTable(new PointF[]
@@ -294,7 +301,7 @@ namespace FoosLiveAndroid
                     new PointF(w,0),
                     new PointF(0,h),
                     new PointF(w,h)
-                }, CaptureMode.Video);
+                }, _gameMode);
 
                 _surface = new Surface(surface);
                 _video = new MediaPlayer();
@@ -309,7 +316,6 @@ namespace FoosLiveAndroid
             // Draw the align zones
             Canvas canvas = AlignZones.DrawZones(_surfaceHolder.LockCanvas(), _gameController);
             _surfaceHolder.UnlockCanvasAndPost(canvas);
-
             _camera = Camera.Open();
 
             // Get the camera parameters in order to set the appropriate frame size
@@ -408,7 +414,7 @@ namespace FoosLiveAndroid
         public bool OnTouch(View v, MotionEvent e)
         {
             // If game is not started, take sample image
-            if ( _gameButton.Visibility != ViewStates.Gone )
+            if ( _gameButton.Visibility != ViewStates.Gone && _hsvSelected != true )
             {
                 _image = new Image<Hsv, byte>(_gameView.GetBitmap(PreviewWidth, PreviewHeight));
                 UpdateButton(e);
@@ -423,13 +429,13 @@ namespace FoosLiveAndroid
         private void UpdateButton(MotionEvent e)
         {
             // Calculate the position
-            int positionX = (int)(e.GetX() / _upscaleMultiplierX);
-            int positionY = (int)(e.GetY() / _upscaleMultiplierY);
+            var positionX = (int)(e.GetX() / _upscaleMultiplierX);
+            var positionY = (int)(e.GetY() / _upscaleMultiplierY);
 
             // Get the Hsv value from the image
             _selectedHsv = _image[positionY, positionX];
             // convert hsv image to rgb image sample
-            var selectedRgb = _image.Convert<Rgb, Byte>()[positionY, positionX];
+            var selectedRgb = _image.Convert<Rgb, byte>()[positionY, positionX];
             // image won't be used anymore
             _image.Dispose();
             // Convert emgu rgb to android rgb
@@ -462,29 +468,33 @@ namespace FoosLiveAndroid
             if (_image == null) return;
 
             _hsvSelected = true;
+
             // Cleanup
             _image.Dispose();
 
             // If it's a video, start it again
             _video?.Start();
 
-            // We don't need the button anymore, so hide it
-            _gameButton.Visibility = ViewStates.Gone;
+            // Change button function to stop the game
+            _gameButton.Text = GetString(Resource.String.end_game);
 
-            // Capture aligned position to show guidelines accordingly
-            _positionManager.CapturePosition();
+            // If game is live, capture aligned position to show guidelines accordingly
+            if (_gameMode == ECaptureMode.Live)
+                _positionManager.CapturePosition();
         }
 
         protected override void OnPause()
         {
             base.OnPause();
-            _positionManager.StopListening();
+            if (_gameMode == ECaptureMode.Live)
+                _positionManager.StopListening();
         }
 
         protected override void OnResume()
         {
             base.OnResume();
-            _positionManager.StartListening();
+            if (_gameMode == ECaptureMode.Live)
+                _positionManager.StartListening();
         }
 
         public void UpdateGuideline(bool[] exceedsPitch, 
@@ -495,9 +505,9 @@ namespace FoosLiveAndroid
 
             // If game is not started, roll guidelines are ignored
             if (exceedsRoll == null) return;
+
             _arrowRight.Visibility = (exceedsRoll[0] ?? false) ? ViewStates.Visible : ViewStates.Gone;
             _arrowLeft.Visibility = (exceedsRoll[1] ?? false) ? ViewStates.Visible : ViewStates.Gone;
-
         }
 
         public void OnCompletion(MediaPlayer mp)

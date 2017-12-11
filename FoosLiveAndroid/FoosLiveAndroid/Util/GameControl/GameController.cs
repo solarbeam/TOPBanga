@@ -1,9 +1,8 @@
 using Android.Graphics;
 using System;
 using System.Collections.Generic;
-using static FoosLiveAndroid.Util.GameControl.Enums;
 using FoosLiveAndroid.Util.Interface;
-using Android.Util;
+using FoosLiveAndroid.Util.Model;
 
 namespace FoosLiveAndroid.Util.GameControl
 {
@@ -136,7 +135,8 @@ namespace FoosLiveAndroid.Util.GameControl
         /// bottom right
         /// </summary>
         /// <param name="points">The coordinates of the table</param>
-        public void SetTable(PointF[] points, CaptureMode mode)
+        /// <param name="mode"></param>
+        public void SetTable(PointF[] points, ECaptureMode mode)
         {
             if (points.Length != TablePointNumber)
                 return;

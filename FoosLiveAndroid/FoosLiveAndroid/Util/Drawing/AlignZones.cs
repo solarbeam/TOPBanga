@@ -1,6 +1,6 @@
 ﻿using Android.Graphics;
 using FoosLiveAndroid.Util.GameControl;
-using static FoosLiveAndroid.Util.GameControl.Enums;
+using FoosLiveAndroid.Util.Model;
 
 namespace FoosLiveAndroid.Util.Drawing
 {
@@ -56,7 +56,7 @@ namespace FoosLiveAndroid.Util.Drawing
                 new PointF(canvas.Width, topY),
                 new PointF(0, bottomY),
                 new PointF(canvas.Width, bottomY)
-            }, CaptureMode.Camera);
+            }, ECaptureMode.Live);
 
             return canvas;
         }

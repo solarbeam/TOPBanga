@@ -12,6 +12,7 @@ using Android.Widget;
 
 namespace FoosLiveAndroid.Model
 {
+    [Serializable]
     class MatchInfo
     {
         public string teamOne { get; set; }
