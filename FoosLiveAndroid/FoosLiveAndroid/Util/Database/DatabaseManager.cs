@@ -25,9 +25,9 @@ namespace FoosLiveAndroid.Util.Database
         /// </summary>
         /// <param name="blueTeamName"> Blue team name</param>
         /// <param name="redTeamName">Red team name</param>
-        /// <returns>The id of the inserted game, or null if error happens.
+        /// <returns>The id of the inserted game, or -1 if error happens.
         /// This id is used to specify which game to add goals and events to.</returns>
-        public static async Task<int?> InsertGame(string blueTeamName, string redTeamName) {
+        public static async Task<int> InsertGame(string blueTeamName, string redTeamName) {
             var request = (HttpWebRequest)WebRequest.Create(ConnectionUrl);
             request.Method = WebRequestMethods.Http.Post;
             request.Timeout = Timeout;
@@ -45,7 +45,7 @@ namespace FoosLiveAndroid.Util.Database
             if (int.TryParse(idUnconverted, out int id))
                 return id;
             else 
-                return null;
+                return -1;
         }
         /// <summary>
         /// Inserts a goal into the remote database.
