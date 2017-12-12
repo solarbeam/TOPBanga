@@ -108,14 +108,15 @@ namespace FoosLiveAndroid.Util.GameControl
                                         GoalEvent,
                                         ballCoordinates);
 
+                // Calculate the speed
+                CurrentSpeed = _posChecker.CalculateSpeed(lastBallCoordinates, lastLastBallCoordinates, PositionEvent);
+
                 // Calculate the average speed
                 if (lastBallCoordinates != null)
                 {
                     AverageSpeed = ((AverageSpeed * _avgSpeedCounter) + CurrentSpeed) / (_avgSpeedCounter + 1);
                     _avgSpeedCounter++;
                 }
-
-                CurrentSpeed = _posChecker.CalculateSpeed(lastBallCoordinates, lastLastBallCoordinates, PositionEvent);
 
                 if (MaxSpeed < CurrentSpeed)
                     MaxSpeed = CurrentSpeed;
