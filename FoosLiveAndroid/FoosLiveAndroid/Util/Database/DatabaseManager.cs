@@ -15,19 +15,74 @@ namespace FoosLiveAndroid.Util.Database
         private static readonly string OperationSuccess = PropertiesManager.GetProperty("operation_success");
         private static readonly int GetTimeout = PropertiesManager.GetIntProperty("get_timeout");
 
-        public static bool InsertIntoHistory(string blueTeamName, string redTeamName, int bluePoints, int redPoints)
-        {
-            HttpWebRequest httpWebRequest = (HttpWebRequest)WebRequest.Create(ConnectionUrl);
-            httpWebRequest.Method = "POST";
-            StreamWriter streamWriter = new StreamWriter(httpWebRequest.GetRequestStream());
-            streamWriter.Write($"InsertIntoHistory;{blueTeamName};{redTeamName};{bluePoints};{redPoints}");
+        /// <summary>
+        /// Inserts a game into the remote database. 
+        /// </summary>
+        /// <param name="blueTeamName"> Blue team name</param>
+        /// <param name="redTeamName">Red team name</param>
+        /// <returns>A task that returns int. The int is the id of the inserted game, or -1 if error happens.
+        /// This id is used to specify which game to add goals and events to.</returns>
+        public static async Task<int> InsertGame(string blueTeamName, string redTeamName) {
+            var request = (HttpWebRequest)WebRequest.Create(ConnectionUrl);
+            request.Method = WebRequestMethods.Http.Post;
+            request.Timeout = GetTimeout;
+            var streamWriter = new StreamWriter(request.GetRequestStream());
+            streamWriter.Write($"InsertGame;{blueTeamName};{redTeamName}");
             streamWriter.Flush();
-            HttpWebResponse httpWebResponse = (HttpWebResponse)httpWebRequest.GetResponse();
-            StreamReader streamReader = new StreamReader(httpWebResponse.GetResponseStream());
-            string response = streamReader.ReadLine();
-            return (response != null && response.Equals(OperationSuccess));
+            var httpWebResponse = (HttpWebResponse)await request.GetResponseAsync();
+            var streamReader = new StreamReader(httpWebResponse.GetResponseStream());
+            string idUnconverted = await streamReader.ReadToEndAsync();
+            if (int.TryParse(idUnconverted, out int id))
+                return id;
+            else
+                return -1;
+        }
+        /// <summary>
+        /// Inserts a goal into the remote database.
+        /// </summary>
+        /// <param name="gameId">The game id in the database. It is recommended to use the int returned by InsertGame,
+        /// otherwise the method might not work correctly or at all.</param>
+        /// <param name="teamName">The team name of the team who scored.</param>
+        /// <returns></returns>
+        public static async Task<bool> InsertGoal(int gameId, string teamName)
+        {
+            var request = (HttpWebRequest)WebRequest.Create(ConnectionUrl);
+            request.Method = WebRequestMethods.Http.Post;
+            request.Timeout = GetTimeout;
+            var streamWriter = new StreamWriter(await request.GetRequestStreamAsync());
+            streamWriter.Write($"InsertGoal;{gameId};{teamName}");
+            streamWriter.Flush();
+            var httpWebResponse = (HttpWebResponse)await request.GetResponseAsync();
+            var streamReader = new StreamReader(httpWebResponse.GetResponseStream());
+            string response = await streamReader.ReadToEndAsync();
+            return response.Equals(OperationSuccess);
         }
 
+        /// <summary>
+        /// Inserts an event into the remote database.
+        /// </summary>
+        /// <param name="gameId">The game id in the database. It is recommended to use the int returned by InsertGame,
+        /// otherwise the method might not work correctly or at all.</param>
+        /// <param name="details">The details of the event, in string form.</param>
+        /// <returns></returns>
+        public static async Task<bool> InsertEvent(int gameId, string details)
+        {
+            var request = (HttpWebRequest)WebRequest.Create(ConnectionUrl);
+            request.Method = WebRequestMethods.Http.Post;
+            request.Timeout = GetTimeout;
+            var streamWriter = new StreamWriter(request.GetRequestStream());
+            streamWriter.Write($"InsertEvent;{gameId};{details}");
+            streamWriter.Flush();
+            var httpWebResponse = (HttpWebResponse)await request.GetResponseAsync();
+            var streamReader = new StreamReader(httpWebResponse.GetResponseStream());
+            string response = await streamReader.ReadToEndAsync();
+            return response.Equals(OperationSuccess);
+        }
+
+        /// <summary>
+        /// Gets the full history of games played.
+        /// </summary>
+        /// <returns>A task that returns a list of IHistory objects.</returns>
         public static async Task<List<IHistory>> GetHistory() {
             var historyData = new List<IHistory>();
             var request = (HttpWebRequest)WebRequest.Create(ConnectionUrl);
@@ -41,9 +96,7 @@ namespace FoosLiveAndroid.Util.Database
             string response;
             while ((response = streamReader.ReadLine()) != null)
             {
-                //Log.Debug("", response);
-                string[] splitted = response.Split(';');
-                historyData.Add(new History(splitted));
+                historyData.Add(new History(response.Split(';')));
             }
             return historyData;
         }
