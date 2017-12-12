@@ -5,21 +5,33 @@ using Android.OS;
 using Android.Util;
 using Android.Views;
 using Android.Widget;
-using Java.IO;
-using Android.Content.Res;
 using FoosLiveAndroid.Fragments.Interface;
 
 namespace FoosLiveAndroid.Fragments
 {
+    enum SoundAsset
+    {
+        GoalMario = 0,
+        WinMario = 1
+    }
     public class SettingsFragment : Fragment
     {
         static readonly new string Tag = typeof(SettingsFragment).Name;
 
+        private String GoalSoundMarioPath;
+        private String WinSoundMarioPath;
+
         private View _view;
-        private Button _team1ScoreSoundButton;
-        private Button _team1WinSoundButton;
-        private Button _team2ScoreSoundButton;
-        private Button _team2WinSoundButton;
+        private Switch _syncSwitch;
+        private Switch _soundSwitch;
+        private RelativeLayout _team1ScoreSoundItem;
+        private TextView _team1ScoreSoundValue;
+        private RelativeLayout _team1WinSoundItem;
+        private TextView _team1WinSoundValue;
+        private RelativeLayout _team2ScoreSoundItem;
+        private TextView _team2ScoreSoundValue;
+        private RelativeLayout _team2WinSoundItem;
+        private TextView _team2WinSoundValue;
 
         private AlertDialog.Builder _dialogBuilder;
 
@@ -56,49 +68,131 @@ namespace FoosLiveAndroid.Fragments
 
             //Todo: set up sound adapter from model
             var scoreSoundsAdapter = new ArrayAdapter<string>(
-                Context, Android.Resource.Layout.SimpleListItem1, new string[] { "sound1", "sound2" });
+                Context, Android.Resource.Layout.SimpleListItem1, new string[] { "Mario Win Sound", "Mario Goal Sound" });
 
             var winSoundsAdapter = new ArrayAdapter<string>(
-                Context, Android.Resource.Layout.SimpleListItem1, new string[] { "sound1", "sound2" });
+                Context, Android.Resource.Layout.SimpleListItem1, new string[] { "Mario Win Sound", "Mario Goal Sound" });
 
             // Todo: set up button click events
-            _team1ScoreSoundButton.Click += delegate
+            _team1ScoreSoundItem.Click += delegate
             {
-                OpenSoundPicker("title", scoreSoundsAdapter);
+                OpenSoundPicker("team1Score", scoreSoundsAdapter);
             };
 
-            _team1WinSoundButton.Click += delegate
+            _team1WinSoundItem.Click += delegate
             {
-                OpenSoundPicker("title", winSoundsAdapter);
+                OpenSoundPicker("team1Win", winSoundsAdapter);
+            };
+
+            _team2ScoreSoundItem.Click += delegate
+            {
+                OpenSoundPicker("team2Score", scoreSoundsAdapter);
+            };
+
+            _team2WinSoundItem.Click += delegate
+            {
+                OpenSoundPicker("team2Win", winSoundsAdapter);
+            };
+
+            UpdateSelection();
+
+            //Todo: bind switches with events
+            _syncSwitch.CheckedChange += delegate {
+                ISharedPreferences preferences = Context.GetSharedPreferences("FoosliveAndroid.dat", FileCreationMode.Private);
+                ISharedPreferencesEditor editor = preferences.Edit();
+                editor.PutBoolean("syncEnabled", _syncSwitch.Checked).Apply();
+                editor.Commit();
+                editor.Dispose();
+                preferences.Dispose();
+            };
+
+            _soundSwitch.CheckedChange += delegate {
+                ISharedPreferences preferences = Context.GetSharedPreferences("FoosliveAndroid.dat", FileCreationMode.Private);
+                ISharedPreferencesEditor editor = preferences.Edit();
+                editor.PutBoolean("soundEnabled", _soundSwitch.Checked).Apply();
+                editor.Commit();
+                editor.Dispose();
+                preferences.Dispose();
             };
 
             return _view;
         }
 
+        private void UpdateSelection()
+        {
+            // Assign preexisting values
+            ISharedPreferences preferences = Context.GetSharedPreferences("FoosliveAndroid.dat", FileCreationMode.Private);
+            _team1ScoreSoundValue.Text = preferences.GetString("team1Score", "");
+            _team1WinSoundValue.Text = preferences.GetString("team1Win", "");
+            _team2ScoreSoundValue.Text = preferences.GetString("team2Score", "");
+            _team2WinSoundValue.Text = preferences.GetString("team2Win", "");
+            _soundSwitch.Checked = preferences.GetBoolean("soundEnabled", true);
+            _syncSwitch.Checked = preferences.GetBoolean("syncEnabled", true);
+            preferences.Dispose();
+        }
+
         private void GetReferencesFromLayout()
         {
-            _team1ScoreSoundButton = _view.FindViewById<Button>(Resource.Id.team1ScoreSoundButton);
-            _team1WinSoundButton = _view.FindViewById<Button>(Resource.Id.team1WinSoundButton);
-            _team2ScoreSoundButton = _view.FindViewById<Button>(Resource.Id.team2ScoreSoundButton);
-            _team2WinSoundButton = _view.FindViewById<Button>(Resource.Id.team2WinSoundButton);
+            _syncSwitch = _view.FindViewById<Switch>(Resource.Id.syncSwitch);
+            _soundSwitch = _view.FindViewById<Switch>(Resource.Id.soundSwitch);
+
+            _team1ScoreSoundItem = _view.FindViewById<RelativeLayout>(Resource.Id.team1ScoreSoundItem);
+            _team1WinSoundItem = _view.FindViewById<RelativeLayout>(Resource.Id.team1WinSoundItem);
+            _team2ScoreSoundItem = _view.FindViewById<RelativeLayout>(Resource.Id.team2ScoreSoundItem);
+            _team2WinSoundItem = _view.FindViewById<RelativeLayout>(Resource.Id.team2WinSoundItem);
+
+            _team1ScoreSoundValue = _view.FindViewById<TextView>(Resource.Id.team1ScoreSoundValue);
+            _team1WinSoundValue = _view.FindViewById<TextView>(Resource.Id.team1WinSoundValue);
+            _team2ScoreSoundValue = _view.FindViewById<TextView>(Resource.Id.team2ScoreSoundValue);
+            _team2WinSoundValue = _view.FindViewById<TextView>(Resource.Id.team2WinSoundValue);
+
+            GoalSoundMarioPath = Context.GetString(Resource.String.defaultMarioGoalSound);
+            WinSoundMarioPath = Context.GetString(Resource.String.defaultMarioWinSound);
         }
 
         //Todo set values from model/cfg/shared pref
         private void RestoreCurrentSoundValues()
         {
-            
+            _team1ScoreSoundValue.Text = "Demo sound";
+            _team1WinSoundValue.Text = "Demo sound";
+            _team2ScoreSoundValue.Text = "Demo sound";
+            _team2WinSoundValue.Text = "Demo sound";
         }
 
         // Todo: fully implement Alertdialog and selection events
         private void OpenSoundPicker(string title, ArrayAdapter<string> adapter)
         {
-            if (adapter == null) throw new ArgumentNullException(nameof(adapter));
+            if (adapter == null)
+                throw new ArgumentNullException(nameof(adapter));
+
             _dialogBuilder = _dialogBuilder ?? new AlertDialog.Builder(Context);
             _dialogBuilder.SetTitle($"Choose {title}");
+
             _dialogBuilder.SetAdapter(adapter, (dialog, item) =>
             {
-                
+                ISharedPreferences preferences = Context.GetSharedPreferences("FoosliveAndroid.dat", FileCreationMode.Private);
+                ISharedPreferencesEditor prefsEditor = preferences.Edit();
+                switch(item.Which)
+                {
+                    case (int)SoundAsset.GoalMario:
+                        {
+                            prefsEditor.PutString(title, GoalSoundMarioPath).Apply();
+                            break;
+                        }
+                    case (int)SoundAsset.WinMario:
+                        {
+                            prefsEditor.PutString(title, WinSoundMarioPath).Apply();
+                            break;
+                        }
+                    default:
+                            break;
+                }
+                prefsEditor.Commit();
+                prefsEditor.Dispose();
+                preferences.Dispose();
+                UpdateSelection();
             });
+
             var soundPickDialog = _dialogBuilder.Create();
             soundPickDialog.Show();
         }

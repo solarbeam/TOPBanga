@@ -1,6 +1,8 @@
-﻿using Android.Graphics;
+﻿using System.Drawing;
+using Android.Graphics;
 using FoosLiveAndroid.Util.Interface;
-using static FoosLiveAndroid.Util.GameControl.Enums;
+using FoosLiveAndroid.Util.Model;
+using PointF = Android.Graphics.PointF;
 
 namespace FoosLiveAndroid.Util.GameControl
 {
@@ -25,7 +27,7 @@ namespace FoosLiveAndroid.Util.GameControl
         private int _BlueDefenceZone;
         private int _BlueGoalieZone;
 
-        public void CheckRow(PointF lastBallCoordinates, ref CurrentEvent currentEvent)
+        public void CheckRow(PointF lastBallCoordinates)
         {
             for (int i = 0; i < rows.Length; i++)
             {
@@ -67,20 +69,17 @@ namespace FoosLiveAndroid.Util.GameControl
                             break;
                     }
 
-                    if (currentEvent == CurrentEvent.None)
-                        currentEvent = CurrentEvent.PositionChanged;
-
                     break;
                 }
             }
         }
 
-        public void CalculateRows(System.Drawing.Rectangle tableZone, CaptureMode mode)
+        public void CalculateRows(Rectangle tableZone, ECaptureMode mode)
         {
             // Declare constants
             float[] multipliers = new float[8];
 
-            if (mode == CaptureMode.Video)
+            if (mode == ECaptureMode.Recording)
             {
                 float toAssign = PropertiesManager.GetFloatProperty("percentage_video");
                 for (int i = 0; i < multipliers.Length; i ++)
@@ -120,6 +119,25 @@ namespace FoosLiveAndroid.Util.GameControl
                 rows[i] = new RectF(tableZone.Left, rows[i - 1].Bottom,
                                     tableZone.Right, tableZone.Top + toAdd + (tableZone.Height * multipliers[i]));
             }
+        }
+
+        /// <summary>
+        /// Returns all of the zone counters in an array
+        /// </summary>
+        /// <returns>An array, holding all of the zone counters</returns>
+        public int[] GetRowInformation()
+        {
+            return new int[]
+            {
+                _RedGoalieZone,
+                _RedDefenceZone,
+                _BlueAttackZone,
+                _RedMidfieldZone,
+                _BlueMidfieldZone,
+                _RedAttackZone,
+                _BlueDefenceZone,
+                _BlueGoalieZone
+            };
         }
     }
 }

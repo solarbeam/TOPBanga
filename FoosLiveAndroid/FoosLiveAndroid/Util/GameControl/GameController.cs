@@ -1,8 +1,8 @@
 using Android.Graphics;
 using System;
 using System.Collections.Generic;
-using static FoosLiveAndroid.Util.GameControl.Enums;
 using FoosLiveAndroid.Util.Interface;
+using FoosLiveAndroid.Util.Model;
 
 namespace FoosLiveAndroid.Util.GameControl
 {
@@ -16,8 +16,13 @@ namespace FoosLiveAndroid.Util.GameControl
         /// <summary>
         /// Fired whenever a goal event occurs
         /// </summary>
-        public event EventHandler<EventArgs> GoalEvent;
+        public event EventHandler<CurrentEvent> GoalEvent;
         public event EventHandler<EventArgs> PositionEvent;
+
+        public int[] zones
+        {
+            get => _rowChecker.GetRowInformation();
+        }
 
         /// <summary>
         /// Defines the current score for the red team
@@ -32,8 +37,6 @@ namespace FoosLiveAndroid.Util.GameControl
         /// The amount of positions to hold in the queue
         /// </summary>
         private readonly int MaximumBallCoordinatesNumber = PropertiesManager.GetIntProperty("maximum_ball_coordinate_number");
-        
-        public CurrentEvent currentEvent;
 
         private PositionChecker _posChecker;
         private RowChecker _rowChecker;
@@ -48,6 +51,13 @@ namespace FoosLiveAndroid.Util.GameControl
         /// Defines the current speed of the ball in centimeters per second
         /// </summary>
         public double CurrentSpeed;
+        /// <summary>
+        /// Defines the average speed during the match at any given moment
+        /// </summary>
+        public double AverageSpeed;
+        private int _avgSpeedCounter;
+
+        public double MaxSpeed;
 
         /// <summary>
         /// Defines the maximum number of edges a table can have
@@ -82,7 +92,7 @@ namespace FoosLiveAndroid.Util.GameControl
                 // Check which row has the ball
                 if (lastBallCoordinates != null && _rowChecker.rows != null)
                 {
-                    _rowChecker.CheckRow(lastBallCoordinates, ref currentEvent);
+                    _rowChecker.CheckRow(lastBallCoordinates);
                 }
 
                 ballCoordinates.Enqueue(lastBallCoordinates);
@@ -90,17 +100,26 @@ namespace FoosLiveAndroid.Util.GameControl
                 _posChecker.OnNewFrame(lastBallCoordinates,
                                         BlueScore,
                                         RedScore,
-                                        currentEvent,
-                                        (blue, red, ev) =>
+                                        (blue, red) =>
                                         {
                                             BlueScore = blue;
                                             RedScore = red;
-                                            currentEvent = ev;
                                         },
                                         GoalEvent,
                                         ballCoordinates);
 
+                // Calculate the speed
                 CurrentSpeed = _posChecker.CalculateSpeed(lastBallCoordinates, lastLastBallCoordinates, PositionEvent);
+
+                // Calculate the average speed
+                if (lastBallCoordinates != null)
+                {
+                    AverageSpeed = ((AverageSpeed * _avgSpeedCounter) + CurrentSpeed) / (_avgSpeedCounter + 1);
+                    _avgSpeedCounter++;
+                }
+
+                if (MaxSpeed < CurrentSpeed)
+                    MaxSpeed = CurrentSpeed;
             }
         }
 
@@ -117,7 +136,8 @@ namespace FoosLiveAndroid.Util.GameControl
         /// bottom right
         /// </summary>
         /// <param name="points">The coordinates of the table</param>
-        public void SetTable(PointF[] points, CaptureMode mode)
+        /// <param name="mode"></param>
+        public void SetTable(PointF[] points, ECaptureMode mode)
         {
             if (points.Length != TablePointNumber)
                 return;

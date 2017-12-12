@@ -16,6 +16,25 @@ namespace FoosLiveAndroid
     public class SplashActivity : AppCompatActivity
     {
         static readonly string TAG = typeof(SplashActivity).Name;
+
+        private const string team1Score = "team1Score";
+        private const string team1ScoreDefault = "defaultMarioGoal";
+
+        private const string team1Win = "team1Win";
+        private const string team1WinDefault = "defaultMarioWin";
+
+        private const string team2Score = "team2Score";
+        private const string team2Default = "defaultMarioGoal";
+
+        private const string team2Win = "team2Win";
+        private const string team2WinDefault = "defaultMarioWin";
+
+        private const string soundEnabled = "soundEnabled";
+        private const bool soundEnabledDefault = true;
+
+        private const string syncEnabled = "syncEnabled";
+        private const bool syncEnabledDefault = true;
+
         private static int Iterations = 1;
 
         /// Launches the startup task
@@ -45,6 +64,25 @@ namespace FoosLiveAndroid
             filtered.Dispose();
             blobs.Dispose();
             tempDetector.Dispose();
+
+            // Check if the shared preference file exists
+            var preferences = Application.Context.GetSharedPreferences("FoosliveAndroid.dat", FileCreationMode.Private);
+            if ( !( preferences.Contains("team1Score") && preferences.Contains("team1Win") &&
+                preferences.Contains("team2Score") && preferences.Contains("team2Win") && preferences.Contains("soundEnabled")
+                && preferences.Contains("syncEnabled") ) )
+            {
+                // It doesnt exist, so assign default values
+                var prefsEditor = preferences.Edit();
+                prefsEditor.PutString(team1Score, team1ScoreDefault).Apply();
+                prefsEditor.PutString(team1Win, team1WinDefault).Apply();
+                prefsEditor.PutString(team2Score, team2WinDefault).Apply();
+                prefsEditor.PutString(team2Win, team2WinDefault).Apply();
+                prefsEditor.PutBoolean(soundEnabled, soundEnabledDefault).Apply();
+                prefsEditor.PutBoolean(syncEnabled, syncEnabledDefault).Apply();
+                prefsEditor.Commit();
+                prefsEditor.Dispose();
+            }
+            preferences.Dispose();
 
             // Start application
             StartActivity(new Intent(Application.Context, typeof(MenuActivity)));

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Android.Graphics;
-using static FoosLiveAndroid.Util.GameControl.Enums;
+using FoosLiveAndroid.Util.Model;
 
 namespace FoosLiveAndroid.Util.Interface
 {
@@ -13,8 +13,8 @@ namespace FoosLiveAndroid.Util.Interface
         bool BallInSecondGoalZone { get; set; }
 
         void OnNewFrame(PointF lastBallCoordinates, int BlueScore, int RedScore,
-                        CurrentEvent currentEvent, Action<int, int, CurrentEvent> setter,
-                        EventHandler<EventArgs> GoalEvent, Queue<PointF> ballCoordinates);
+                        Action<int, int> setter,
+                        EventHandler<CurrentEvent> GoalEvent, Queue<PointF> ballCoordinates);
         double CalculateSpeed(PointF one, PointF two, EventHandler<EventArgs> PositionEvent);
     }
 }

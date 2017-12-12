@@ -15,10 +15,16 @@
     <string name="from_file">From file</string>
     <string name="main_menu_title">Title</string>
     <!--Settings-->
-    <string name="team1_score_sound_label">TEAM 1 score sound</string>
-    <string name="team2_score_sound_label">TEAM 2 score sound</string>
-    <string name="team1_win_sound_label">TEAM 1 win sound</string>
-    <string name="team2_win_sound_label">TEAM 2 win sound</string>
+    <string name="defaultMarioGoalSound">Mario Goal Sound</string>
+    <string name="defaultMarioWinSound">Mario Win Sound</string>
+    <string name="team1_score_sound_label">Team 1 score</string>
+    <string name="team2_score_sound_label">Team 2 score</string>
+    <string name="team1_win_sound_label">Team 1 win</string>
+    <string name="team2_win_sound_label">Team 2 win</string>
+    <string name="sync_settings_title">History</string>
+    <string name="sync_settings_description">Sync game results with web automatically</string>
+    <string name="sound_active_title">Sounds</string>
+    <string name="sound_active_description">Enable or disable game sounds</string>
 	<!--History-->
 	<string name="error_loading">Oops! Something went wrong.</string>
     <string name="history_empty">No records found.</string>
@@ -29,7 +35,7 @@
     <string name="end_game">End game</string>
     <string name="team1">TEAM 1</string>
     <string name="team2">TEAM 2</string>
-	<string name="score_format">%1$d : %2$d</string>
+	<string name="score_format_end_game">%1$d  :  %2$d</string>
     <string name="select_ball_color">Select the ball\'s color</string>
 	<!--Info-->
 	<string name="app_description">This is the description of foosbal live application. </string>
@@ -38,7 +44,6 @@
 	<string name="camera_request_explanation_title">Camera access request</string>
 	<string name="camera_request_explanation_content">Camera access is required to record and analyse live game.</string>
 	<string name="camera_access_missing">The application does not have access to record live game.</string>
-
 	<!--Temporary-->
 	<string name="sample_score">0 : 0</string>
 </resources>

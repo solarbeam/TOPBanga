@@ -1,5 +1,4 @@
-﻿using System;
-using FoosLiveAndroid.Model.Interface;
+﻿using FoosLiveAndroid.Model.Interface;
 
 namespace FoosLiveAndroid.Model
 {

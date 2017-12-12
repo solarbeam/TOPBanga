@@ -144,9 +144,17 @@ namespace FoosLiveAndroid.Fragments.MainMenu
         public override void OnActivityResult(int requestCode, Result resultCode, Intent data)
         {
             base.OnActivityResult(requestCode, resultCode, data);
-            if (resultCode == Result.Ok && requestCode == (int)ERequestId.VideoRequest)
+            if (resultCode == Result.Ok)
             {
-                StartCameraActivity(data.Data);
+                switch(requestCode) 
+                {
+                    case (int)ERequestId.VideoRequest:
+                        StartCameraActivity(data.Data);
+                        break;
+                    default:
+                        Log.Wtf(Tag, "Unknown activity result request: ", requestCode);
+                        break;
+                }
             }
         }
         /// <summary>
@@ -157,24 +165,16 @@ namespace FoosLiveAndroid.Fragments.MainMenu
         /// <param name="grantResults">The grant results for the corresponding permissions which is either Permission.Granted or Permission.Denied</param>
         public override void OnRequestPermissionsResult(int requestCode, string[] permissions, Permission[] grantResults)
         {
-            switch (requestCode)
+            if (requestCode == (int)ERequestId.Camera)
             {
-                case (int)ERequestId.VideoRequest:
-                    {
-                        if (grantResults[0] == Permission.Granted)
-                        {
-                            StartCameraActivity();
-                        }
-                        else
-                        {
-                            // show notification about missing access
-                            Snackbar.Make(_view, 
-                                          GetString(Resource.String.camera_access_missing),
-                                          Snackbar.LengthLong)
-                                    .Show();
-                        }
-                    }
-                    break;
+                if (grantResults[0] == Permission.Granted)
+                    StartCameraActivity();
+                else 
+                    // show notification about missing access
+                    Snackbar.Make(_view,
+                                  GetString(Resource.String.camera_access_missing),
+                                  Snackbar.LengthLong)
+                            .Show();
             }
         }
 

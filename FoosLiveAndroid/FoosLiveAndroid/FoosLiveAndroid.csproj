@@ -135,6 +135,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="MenuActivity.cs" />
+    <Compile Include="Model\MatchInfo.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Model\EFragmentId.cs" />
     <Compile Include="Fragments\InfoFragment.cs" />
@@ -146,7 +147,8 @@
     <Compile Include="Util\Database\DatabaseManager.cs" />
     <Compile Include="Util\Detection\ObjectDetector.cs" />
     <Compile Include="Util\Drawing\AlignZones.cs" />
-    <Compile Include="Util\GameControl\Enums.cs" />
+    <Compile Include="Util\Drawing\ZoneInfo.cs" />
+    <Compile Include="Util\GameControl\GameTimer.cs" />
     <Compile Include="Util\GameControl\Goal.cs" />
     <Compile Include="Util\GameControl\PositionChecker.cs" />
     <Compile Include="Util\GameControl\RowChecker.cs" />
@@ -156,6 +158,10 @@
     <Compile Include="Util\Detection\ColorContainer.cs" />
     <Compile Include="Util\Detection\ColorDetector.cs" />
     <Compile Include="Util\GameControl\GameController.cs" />
+    <Compile Include="Util\Model\ECaptureMode.cs" />
+    <Compile Include="Util\Model\ECurrentEvent.cs" />
+    <Compile Include="Util\Model\ERow.cs" />
+    <Compile Include="Util\Sounds\FilePathResolver.cs" />
     <Compile Include="Util\Sounds\SoundAlerts.cs" />
     <Compile Include="Util\Interface\IAlert.cs" />
     <Compile Include="Util\Sounds\EAlert.cs" />
@@ -174,11 +180,12 @@
     <Compile Include="Model\History.cs" />
     <Compile Include="Model\Interface\IHistory.cs" />
     <Compile Include="Fragments\HistoryListAdapter.cs" />
-    <Compile Include="Resources\Resource.Designer.cs" />
     <Compile Include="Util\Sensors\PositionManager.cs" />
     <Compile Include="Util\Interface\IVibration.cs" />
     <Compile Include="Util\Interface\IPositionManager.cs" />
     <Compile Include="Util\Vibration.cs" />
+    <Compile Include="Resources\Resource.Designer.cs" />
+    <Compile Include="Fragments\EndGameFragment.cs" />
   </ItemGroup>
   <ItemGroup>
     <AndroidNativeLibrary Include="lib\armeabi-v7a\libcvextern.so" />
@@ -213,6 +220,9 @@
     <AndroidResource Include="Resources\drawable\splash_screen.xml" />
     <AndroidResource Include="Resources\layout\fragment_history.axml" />
     <AndroidResource Include="Resources\layout\fragment_history_item.axml" />
+    <AndroidResource Include="Resources\drawable\ic_sound.xml" />
+    <AndroidResource Include="Resources\layout\fragment_end_game.xml" />
+    <AndroidResource Include="Resources\drawable\bg_end_game.xml" />
   </ItemGroup>
   <ItemGroup>
     <AndroidResource Include="Resources\mipmap-hdpi\Icon.png" />
@@ -245,10 +255,9 @@
     <AndroidAsset Include="Assets\SFX\goal.mp3" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Fragments\Interface\" />
-    <Folder Include="Model\Interface\" />
-    <Folder Include="Util\Sensors\" />
+    <AndroidResource Include="Resources\values\integer.xml" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\Android\Xamarin.Android.CSharp.targets" />
   <Import Project="..\packages\Xamarin.Android.Support.Annotations.26.1.0.1\build\MonoAndroid80\Xamarin.Android.Support.Annotations.targets" Condition="Exists('..\packages\Xamarin.Android.Support.Annotations.26.1.0.1\build\MonoAndroid80\Xamarin.Android.Support.Annotations.targets')" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

@@ -49,7 +49,7 @@ namespace FoosLiveAndroid.Util.Detection
             // Declare the outline style for the ball
             _paintBall = new Paint
             {
-                Color = new Color(0, 255, 0)
+                Color = new Color(255, 0, 0)
             };
             _paintBall.SetStyle(Paint.Style.Stroke);
             _paintBall.StrokeWidth = BallStrokeWidth;
@@ -72,12 +72,6 @@ namespace FoosLiveAndroid.Util.Detection
 
             // Try to detect the ball
             ballDetected = _detector.DetectBall(ballHsv, out var ball, out var bBox);
-            
-            canvas.DrawRect((int)(bBox.Left * _mulX),
-                                 (int)(bBox.Top * _mulY),
-                                 (int)(bBox.Right * _mulX),
-                                 (int)(bBox.Bottom * _mulY),
-                                 _paintRect);
 
             // Free unused resources
             _detector.image.Dispose();
@@ -92,11 +86,58 @@ namespace FoosLiveAndroid.Util.Detection
                                  _paintBall);
 
                 // Update the GameController class with new coordinates
-                _controller.LastBallCoordinates = new PointF(ball.X * _mulX, ball.Y * _mulY);
+                _controller.LastBallCoordinates = new PointF(((ball.Left + ball.Right) / 2) * _mulX,
+                                                             ((ball.Top + ball.Bottom) / 2) * _mulY);
             }
             else
                 // No ball was detected, so we let the GameController know that we lost it
                 _controller.LastBallCoordinates = null;
+
+            // Paint the trail
+            Path path = new Path();
+
+            // Start by calculating the cubic splines in order to smooth it
+            PointF[] points = _controller.ballCoordinates.ToArray();
+            int toPaint = 10;
+            bool startSet = false;
+            for (int i = points.Length - 1; i > 0; i--)
+            {
+                if (points[i] == null)
+                {
+                    toPaint--;
+
+                    if (toPaint == 0)
+                        break;
+                    else
+                        continue;
+                }
+
+                if (startSet)
+                {
+                    if (i < points.Length - 1 && points[i + 1] != null)
+                    {
+                        // Apply quadratic beziers in order to smooth the path
+                        path.QuadTo(points[i].X, points[i].Y,
+                                    points[i + 1].X, points[i + 1].Y);
+                    }
+                    else
+                        path.LineTo(points[i].X, points[i].Y);
+                }
+                else
+                {
+                    path.MoveTo(points[i].X,
+                                points[i].Y);
+                    startSet = true;
+                }
+
+                toPaint--;
+
+                if (toPaint == 0)
+                    break;
+            }
+
+            canvas.DrawPath(path, _paintRect);
+            path.Dispose();
 
             return true;
         }

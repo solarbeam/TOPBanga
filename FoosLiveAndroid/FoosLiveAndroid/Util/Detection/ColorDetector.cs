@@ -179,6 +179,7 @@ namespace FoosLiveAndroid.Util.Detection
                         biggestBlob = blob.Value;
                         _lastBlob = biggestBlob.Centroid;
                         UpdateBox(blob.Value);
+                        _framesLost = 0;
                         break;
                     }
                 }
