@@ -147,11 +147,13 @@
     <Compile Include="Util\Database\DatabaseManager.cs" />
     <Compile Include="Util\Detection\ObjectDetector.cs" />
     <Compile Include="Util\Drawing\AlignZones.cs" />
-    <Compile Include="Util\Drawing\ZoneInfo.cs" />
+    <Compile Include="Util\Drawing\HeatmapDrawer.cs" />
+    <Compile Include="Util\Drawing\RowDrawer.cs" />
     <Compile Include="Util\GameControl\GameTimer.cs" />
     <Compile Include="Util\GameControl\Goal.cs" />
     <Compile Include="Util\GameControl\PositionChecker.cs" />
     <Compile Include="Util\GameControl\RowChecker.cs" />
+    <Compile Include="Util\GameControl\ZoneInfo.cs" />
     <Compile Include="Util\Interface\IColorDetector.cs" />
     <Compile Include="Util\Interface\IGameTracker.cs" />
     <Compile Include="Util\Detection\BlobDetector.cs" />

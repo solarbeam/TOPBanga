@@ -7,7 +7,7 @@ using Android.Graphics;
 
 namespace FoosLiveAndroid.Util.Drawing
 {
-    class ZoneInfo
+    class RowDrawer
     {
         public static Canvas DrawZones(int[] zoneInfo, Canvas toDraw)
         {

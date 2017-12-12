@@ -198,7 +198,7 @@ namespace FoosLiveAndroid
                            .Commit();
 
             Canvas toDraw = _surfaceHolder.LockCanvas();
-            toDraw = ZoneInfo.DrawZones(MatchInfo.Zones, toDraw);
+            toDraw = Util.Drawing.RowDrawer.DrawZones(MatchInfo.Zones, toDraw);
             _surfaceHolder.UnlockCanvasAndPost(toDraw);
         }
 

@@ -40,6 +40,7 @@ namespace FoosLiveAndroid.Util.GameControl
 
         private PositionChecker _posChecker;
         private RowChecker _rowChecker;
+        private RowDrawer _heatmapGen;
 
         /// <summary>
         /// Holds the coordinates of the last position of the ball
@@ -94,6 +95,9 @@ namespace FoosLiveAndroid.Util.GameControl
                 {
                     _rowChecker.CheckRow(lastBallCoordinates);
                 }
+
+                // Update heatmap info
+                _heatmapGen.AssignValue(lastBallCoordinates);
 
                 ballCoordinates.Enqueue(lastBallCoordinates);
 
@@ -154,6 +158,9 @@ namespace FoosLiveAndroid.Util.GameControl
 
             _rowChecker.CalculateRows(new System.Drawing.Rectangle((int)_posChecker.ZoneOne.Left, (int)_posChecker.ZoneOne.Top,
                                                 (int)_posChecker.ZoneTwo.Right, (int)_posChecker.ZoneTwo.Bottom), mode);
+
+            _heatmapGen = new RowDrawer(new Rect((int)_posChecker.ZoneOne.Left, (int)_posChecker.ZoneOne.Top,
+                                                (int)_posChecker.ZoneTwo.Right, (int)_posChecker.ZoneTwo.Bottom), 20, 20);
         }
         /// <summary>
         /// The default constructor for the GameController class

@@ -121,6 +121,11 @@ namespace FoosLiveAndroid.Util.GameControl
             }
         }
 
+        public void CalculateZones(Rectangle tableInfo)
+        {
+
+        }
+
         /// <summary>
         /// Returns all of the zone counters in an array
         /// </summary>
