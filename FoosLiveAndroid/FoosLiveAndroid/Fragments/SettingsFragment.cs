@@ -9,14 +9,17 @@ using FoosLiveAndroid.Fragments.Interface;
 
 namespace FoosLiveAndroid.Fragments
 {
+    enum SoundAsset
+    {
+        GoalMario = 0,
+        WinMario = 1
+    }
     public class SettingsFragment : Fragment
     {
         static readonly new string Tag = typeof(SettingsFragment).Name;
 
-        private const int GoalSoundMario = 0;
-        private const int WinSoundMario = 1;
-        private const String GoalSoundMarioPath = "defaultMarioGoal";
-        private const String WinSoundMarioPath = "defaultMarioWin";
+        private String GoalSoundMarioPath;
+        private String WinSoundMarioPath;
 
         private View _view;
         private Switch _syncSwitch;
@@ -142,6 +145,9 @@ namespace FoosLiveAndroid.Fragments
             _team1WinSoundValue = _view.FindViewById<TextView>(Resource.Id.team1WinSoundValue);
             _team2ScoreSoundValue = _view.FindViewById<TextView>(Resource.Id.team2ScoreSoundValue);
             _team2WinSoundValue = _view.FindViewById<TextView>(Resource.Id.team2WinSoundValue);
+
+            GoalSoundMarioPath = Context.GetString(Resource.String.defaultMarioGoalSound);
+            WinSoundMarioPath = Context.GetString(Resource.String.defaultMarioWinSound);
         }
 
         //Todo set values from model/cfg/shared pref
@@ -168,12 +174,12 @@ namespace FoosLiveAndroid.Fragments
                 ISharedPreferencesEditor prefsEditor = preferences.Edit();
                 switch(item.Which)
                 {
-                    case WinSoundMario:
+                    case (int)SoundAsset.GoalMario:
                         {
                             prefsEditor.PutString(title, GoalSoundMarioPath).Apply();
                             break;
                         }
-                    case GoalSoundMario:
+                    case (int)SoundAsset.WinMario:
                         {
                             prefsEditor.PutString(title, WinSoundMarioPath).Apply();
                             break;

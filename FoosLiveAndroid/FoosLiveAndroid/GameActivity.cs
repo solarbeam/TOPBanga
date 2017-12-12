@@ -40,6 +40,8 @@ namespace FoosLiveAndroid
         private static readonly int PreviewWidth = PropertiesManager.GetIntProperty("preview_width");
         private static readonly int PreviewHeight = PropertiesManager.GetIntProperty("preview_height");
         private static readonly int SlidingTextDelay = PropertiesManager.GetIntProperty("sliding_text_delay");
+        private static readonly int TimerFrequency = PropertiesManager.GetIntProperty("timer_frequency");
+        private static readonly float FormatSpeed = 10.0f;
 
         private bool _textThreadStarted = false;
         private bool _waitForSpeed = false;
@@ -76,7 +78,7 @@ namespace FoosLiveAndroid
         private GameTimer _gameTimer;
 
         private ECaptureMode _gameMode;
-        private bool gameEnd;
+        private bool _gameEnd;
 
         // Todo: change Camera to Camera2
         private Camera _camera;
@@ -123,7 +125,7 @@ namespace FoosLiveAndroid
             _gameController = new GameController();
             _gameController.GoalEvent += GameControllerGoalEvent;
             _gameController.PositionEvent += GameControllerPositionEvent;
-            _gameTimer = new GameTimer(10);
+            _gameTimer = new GameTimer(TimerFrequency);
 
             _surfaceView.SetZOrderOnTop(true);
             _surfaceView.Holder.SetFormat(Format.Transparent);
@@ -159,7 +161,7 @@ namespace FoosLiveAndroid
 
         private void ShowEndGameScreen()
         {
-            gameEnd = true;
+            _gameEnd = true;
             // Terminate recognition
             _hsvSelected = false;
 
@@ -295,7 +297,7 @@ namespace FoosLiveAndroid
             // Check if sliding text is active or the delay is still on
             if (!_textThreadStarted && !_waitForSpeed)
             {
-                if (_gameController.CurrentSpeed >= 10.0f)
+                if (_gameController.CurrentSpeed >= FormatSpeed)
                 {
                     _eventText.Text = "" + Math.Round(_gameController.CurrentSpeed, 1) + " cm/s";
                 }
@@ -461,7 +463,7 @@ namespace FoosLiveAndroid
         public bool OnTouch(View v, MotionEvent e)
         {
             // If game has ended, ignore touch
-            if (gameEnd) return false;
+            if (_gameEnd) return false;
             // If game is not started, take sample image
             if ( _gameButton.Visibility != ViewStates.Gone && _hsvSelected != true )
             {
@@ -572,6 +574,8 @@ namespace FoosLiveAndroid
 
         public void OnCompletion(MediaPlayer mp)
         {
+            mp.Release();
+            mp.Dispose();
             ShowEndGameScreen();
         }
     }

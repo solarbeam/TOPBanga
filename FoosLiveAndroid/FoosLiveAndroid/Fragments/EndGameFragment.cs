@@ -8,6 +8,7 @@ namespace FoosLiveAndroid.Fragments
 {
     public class EndGameFragment : Fragment
     {
+        private static readonly string SpeedFormat = "0.00 cm/s";
         static readonly new string Tag = typeof(InfoFragment).Name;
 
         private View _view;
@@ -33,8 +34,8 @@ namespace FoosLiveAndroid.Fragments
             _team2Name.Text = MatchInfo.Team2Name;
             _teamScore.Text = GetString(Resource.String.score_format_end_game, MatchInfo.Team1Score, MatchInfo.Team2Score);
             _durationValue.Text = MatchInfo.Duration;
-            _avgBallSpeedValue.Text = MatchInfo.AvgSpeed.ToString("0.00 cm/s");
-            _maxBallSpeedValue.Text = MatchInfo.MaxSpeed.ToString("0.00 cm/s");
+            _avgBallSpeedValue.Text = MatchInfo.AvgSpeed.ToString(SpeedFormat);
+            _maxBallSpeedValue.Text = MatchInfo.MaxSpeed.ToString(SpeedFormat);
             return _view;
         }
 

@@ -15,6 +15,8 @@
     <string name="from_file">From file</string>
     <string name="main_menu_title">Title</string>
     <!--Settings-->
+    <string name="defaultMarioGoalSound">Mario Goal Sound</string>
+    <string name="defaultMarioWinSound">Mario Win Sound</string>
     <string name="team1_score_sound_label">Team 1 score</string>
     <string name="team2_score_sound_label">Team 2 score</string>
     <string name="team1_win_sound_label">Team 1 win</string>
