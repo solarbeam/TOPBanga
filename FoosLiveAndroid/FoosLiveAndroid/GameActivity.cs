@@ -198,7 +198,7 @@ namespace FoosLiveAndroid
                            .Commit();
 
             Canvas toDraw = _surfaceHolder.LockCanvas();
-            toDraw = Util.Drawing.RowDrawer.DrawZones(MatchInfo.Zones, toDraw);
+            toDraw = HeatmapDrawer.DrawZones(toDraw, _gameController.heatmapZones);
             _surfaceHolder.UnlockCanvasAndPost(toDraw);
         }
 
@@ -413,7 +413,7 @@ namespace FoosLiveAndroid
                 _video.Release();
             else
                 // We use a camera, so release it
-                _camera.Release();
+                _camera?.Release();
 
             _positionManager?.StopListening();
             return true;
