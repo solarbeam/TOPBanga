@@ -16,8 +16,10 @@ namespace FoosLiveAndroid.Fragments
         private TextView _team2Name;
         private TextView _teamScore;
         private TextView _durationValue;
-        private TextView _avgBallSpeedValue;
-        private TextView _maxBallSpeedValue;
+        private TextView _avgBallSpeed;
+        private TextView _maxBallSpeed;
+        private TextView _fastestGoal;
+        public ImageView ballHeatMap;
 
         public static Fragment NewInstance()
         {
@@ -34,8 +36,8 @@ namespace FoosLiveAndroid.Fragments
             _team2Name.Text = MatchInfo.Team2Name;
             _teamScore.Text = GetString(Resource.String.score_format_end_game, MatchInfo.Team1Score, MatchInfo.Team2Score);
             _durationValue.Text = MatchInfo.Duration;
-            _avgBallSpeedValue.Text = MatchInfo.AvgSpeed.ToString(SpeedFormat);
-            _maxBallSpeedValue.Text = MatchInfo.MaxSpeed.ToString(SpeedFormat);
+            _avgBallSpeed.Text = MatchInfo.AvgSpeed.ToString(SpeedFormat);
+            _maxBallSpeed.Text = MatchInfo.MaxSpeed.ToString(SpeedFormat);
             return _view;
         }
 
@@ -45,8 +47,10 @@ namespace FoosLiveAndroid.Fragments
             _team2Name = _view.FindViewById<TextView>(Resource.Id.team2Name);
             _teamScore = _view.FindViewById<TextView>(Resource.Id.teamScore);
             _durationValue = _view.FindViewById<TextView>(Resource.Id.durationValue);
-            _avgBallSpeedValue = _view.FindViewById<TextView>(Resource.Id.avgBallSpeedValue);
-            _maxBallSpeedValue = _view.FindViewById<TextView>(Resource.Id.maxBallSpeedValue);
+            _avgBallSpeed = _view.FindViewById<TextView>(Resource.Id.avgBallSpeedValue);
+            _maxBallSpeed = _view.FindViewById<TextView>(Resource.Id.maxBallSpeedValue);
+            _fastestGoal = _view.FindViewById<TextView>(Resource.Id.fastestGoalValue);
+            ballHeatMap = _view.FindViewById<ImageView>(Resource.Id.ballHeatMap);
         }
     }
 }
