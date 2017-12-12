@@ -1,4 +1,6 @@
-﻿namespace FoosLiveAndroid.Model
+﻿using FoosLiveAndroid.Util.GameControl;
+
+namespace FoosLiveAndroid.Model
 {
     public static class MatchInfo
     {
@@ -9,10 +11,10 @@
         public static double MaxSpeed { get; set; }
         public static double AvgSpeed { get; set; }
         public static string Duration { get; set; }
-        public static int[] Zones { get; set; }
+        public static ZoneInfo Zones { get; set; }
 
         public static void SetUp(string team1Name, int team1Score, string team2Name, int team2Score,
-                            double maxSpeedAchieved, double avgSpeedAchieved, int[] zoneInfo, string duration)
+                            double maxSpeedAchieved, double avgSpeedAchieved, ZoneInfo zoneInfo, string duration)
         {
             // Assign team one info
             Team1Name = team1Name;

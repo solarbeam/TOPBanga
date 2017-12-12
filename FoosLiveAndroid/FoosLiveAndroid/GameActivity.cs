@@ -190,16 +190,12 @@ namespace FoosLiveAndroid
                             "Team 2", _gameController.RedScore,
                             _gameController.MaxSpeed,
                             _gameController.AverageSpeed,
-                            _gameController.zones, TimeSpan.FromMilliseconds(GameTimer.Time).TotalSeconds.ToString() + " s");
+                            _gameController.heatmapZones, TimeSpan.FromMilliseconds(GameTimer.Time).TotalSeconds.ToString() + " s");
 
             // Show pop-up fragment, holding all of the match's info
             FragmentManager.BeginTransaction()
                            .Add(Resource.Id.infoLayout, EndGameFragment.NewInstance())
                            .Commit();
-
-            Canvas toDraw = _surfaceHolder.LockCanvas();
-            toDraw = HeatmapDrawer.DrawZones(toDraw, _gameController.heatmapZones);
-            _surfaceHolder.UnlockCanvasAndPost(toDraw);
         }
 
         /// <summary>

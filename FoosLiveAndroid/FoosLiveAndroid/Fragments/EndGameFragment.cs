@@ -1,8 +1,12 @@
 ﻿using Android.App;
+using Android.Graphics;
 using Android.OS;
 using Android.Views;
 using Android.Widget;
 using FoosLiveAndroid.Model;
+using FoosLiveAndroid.Util.Drawing;
+using System;
+using System.Threading.Tasks;
 
 namespace FoosLiveAndroid.Fragments
 {
@@ -38,6 +42,16 @@ namespace FoosLiveAndroid.Fragments
             _durationValue.Text = MatchInfo.Duration;
             _avgBallSpeed.Text = MatchInfo.AvgSpeed.ToString(SpeedFormat);
             _maxBallSpeed.Text = MatchInfo.MaxSpeed.ToString(SpeedFormat);
+
+            ballHeatMap.Post(() =>
+            {
+                Bitmap toDraw = Bitmap.CreateBitmap(ballHeatMap.Width, ballHeatMap.Height, Bitmap.Config.Argb8888);
+                Canvas canvas = new Canvas();
+                canvas.SetBitmap(toDraw);
+                HeatmapDrawer.DrawZones(canvas, MatchInfo.Zones);
+                ballHeatMap.SetImageBitmap(toDraw);
+            });
+
             return _view;
         }
 

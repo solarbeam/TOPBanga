@@ -16,16 +16,14 @@ namespace FoosLiveAndroid.Util.Drawing
 {
     class HeatmapDrawer
     {
-        private const int maxAlphaValue = 255;
-        private const int maxRValue = 255;
-        private const int maxGValue = 255;
+        private const int maxAlphaValue = 100;
+        private const int maxRValue = 200;
+        private const int maxGValue = 200;
         private const int maxBValue = 0;
         public static Canvas DrawZones(Canvas canvas, ZoneInfo zones)
         {
-            System.Drawing.Size sizeOfBitmap = new System.Drawing.Size((int)(canvas.Width * 0.4f),
-                                                                        (int)(canvas.Height * 0.26f));
-            PointF topLeftCorner = new PointF((canvas.Width / 2) - sizeOfBitmap.Width / 2,
-                                                                                canvas.Height * 0.48f);
+            System.Drawing.Size sizeOfBitmap = new System.Drawing.Size(canvas.Width, canvas.Height);
+            PointF topLeftCorner = new PointF(0,0);
 
             // Find the max value
             int max = 0;
@@ -52,8 +50,7 @@ namespace FoosLiveAndroid.Util.Drawing
                     {
                         Color = new Color((int)(maxRValue * multiplier),
                                             (int)(maxGValue * (1 - multiplier)),
-                                            (int)(maxBValue * multiplier),
-                                            50)
+                                            (int)(maxBValue * multiplier))
                     };
 
                     canvas.DrawRect(topLeftCorner.X + toAddX,
