@@ -41,7 +41,6 @@ namespace FoosLiveAndroid.Util.Database
 
             var streamReader = new StreamReader(httpWebResponse.GetResponseStream());
             string idUnconverted = await streamReader.ReadToEndAsync();
-            int.TryParse(idUnconverted, out int id);
             if (int.TryParse(idUnconverted, out int id))
                 return id;
             else 
