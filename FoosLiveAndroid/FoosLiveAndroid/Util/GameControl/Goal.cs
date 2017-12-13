@@ -4,7 +4,7 @@ using Android.Graphics;
 
 namespace FoosLiveAndroid.Util.GameControl
 {
-    class Goal
+    public class Goal
     {
         // Defines the real height of the table in meters
         private readonly double RealWidth = PropertiesManager.GetDoubleProperty("real_width");
@@ -21,10 +21,20 @@ namespace FoosLiveAndroid.Util.GameControl
 
         public double[] _speeds;
         public double _maxSpeed;
-        public Goal(Queue<PointF> positions, RectF tablePoints)
+        private long timestampStart;
+        private long timestampEnd;
+
+        public long Duration
+        {
+            get => timestampEnd - timestampStart;
+        }
+
+        public Goal(Queue<PointF> positions, RectF tablePoints, long start, long end)
         {
             _points = new PointF[positions.Count];
             _speeds = new double[positions.Count];
+            timestampStart = start;
+            timestampEnd = end;
 
             // Fill the points array with positions
             int i = 0;

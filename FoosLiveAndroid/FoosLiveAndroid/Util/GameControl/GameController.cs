@@ -138,6 +138,8 @@ namespace FoosLiveAndroid.Util.GameControl
         /// </summary>
         public Queue<PointF> ballCoordinates;
 
+        public Queue<Goal> Goals => _posChecker._goals;
+
         /// <summary>
         /// Set the table, which will be used for the definition of
         /// the goal zones

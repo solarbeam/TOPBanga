@@ -1,4 +1,5 @@
 ﻿using FoosLiveAndroid.Util.GameControl;
+using System.Collections.Generic;
 
 namespace FoosLiveAndroid.Model
 {
@@ -12,9 +13,11 @@ namespace FoosLiveAndroid.Model
         public static double AvgSpeed { get; set; }
         public static string Duration { get; set; }
         public static ZoneInfo Zones { get; set; }
+        public static Queue<Goal> Goals { get; set; }
 
         public static void SetUp(string team1Name, int team1Score, string team2Name, int team2Score,
-                            double maxSpeedAchieved, double avgSpeedAchieved, ZoneInfo zoneInfo, string duration)
+                            double maxSpeedAchieved, double avgSpeedAchieved, ZoneInfo zoneInfo, string duration,
+                            Queue<Goal> goals)
         {
             // Assign team one info
             Team1Name = team1Name;
@@ -28,6 +31,7 @@ namespace FoosLiveAndroid.Model
             MaxSpeed = maxSpeedAchieved;
             AvgSpeed = avgSpeedAchieved;
             Zones = zoneInfo;
+            Goals = goals;
 
             Duration = duration;
         }

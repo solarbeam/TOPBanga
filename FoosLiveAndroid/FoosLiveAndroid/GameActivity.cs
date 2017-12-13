@@ -190,7 +190,8 @@ namespace FoosLiveAndroid
                             "Team 2", _gameController.RedScore,
                             _gameController.MaxSpeed,
                             _gameController.AverageSpeed,
-                            _gameController.heatmapZones, TimeSpan.FromMilliseconds(GameTimer.Time).TotalSeconds.ToString() + " s");
+                            _gameController.heatmapZones, TimeSpan.FromMilliseconds(GameTimer.Time).TotalSeconds.ToString() + " s",
+                            _gameController.Goals);
 
             // Show pop-up fragment, holding all of the match's info
             FragmentManager.BeginTransaction()

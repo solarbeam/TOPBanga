@@ -52,6 +52,19 @@ namespace FoosLiveAndroid.Fragments
                 ballHeatMap.SetImageBitmap(toDraw);
             });
 
+            // Find the fastest goal
+            _fastestGoal.Post(() =>
+            {
+                long min = 999999999;
+                foreach (var goal in MatchInfo.Goals)
+                {
+                    if (goal.Duration < min)
+                        min = goal.Duration;
+                }
+
+                _fastestGoal.Text = Math.Round(min * 0.001, 2).ToString("0.00 s");
+            });
+
             return _view;
         }
 
