@@ -17,6 +17,8 @@ namespace FoosLiveAndroid
     {
         static readonly string TAG = typeof(SplashActivity).Name;
 
+        private const string preferencesFileName = "FoosliveAndroid.dat";
+
         private const string team1Score = "team1Score";
         private const string team1ScoreDefault = "defaultMarioGoal";
 
@@ -34,6 +36,11 @@ namespace FoosLiveAndroid
 
         private const string syncEnabled = "syncEnabled";
         private const bool syncEnabledDefault = true;
+
+        private const string team1Name = "team1Name";
+        private const string team1NameDefault = "Team 1";
+        private const string team2Name = "team2Name";
+        private const string team2NameDefault = "Team 2";
 
         private static int Iterations = 1;
 
@@ -65,11 +72,12 @@ namespace FoosLiveAndroid
             blobs.Dispose();
             tempDetector.Dispose();
 
+            // Todo: move to for loop
             // Check if the shared preference file exists
-            var preferences = Application.Context.GetSharedPreferences("FoosliveAndroid.dat", FileCreationMode.Private);
-            if ( !( preferences.Contains("team1Score") && preferences.Contains("team1Win") &&
-                preferences.Contains("team2Score") && preferences.Contains("team2Win") && preferences.Contains("soundEnabled")
-                && preferences.Contains("syncEnabled") ) )
+            var preferences = Application.Context.GetSharedPreferences(preferencesFileName, FileCreationMode.Private);
+            if ( !( preferences.Contains(team1Score) && preferences.Contains(team1Win) &&
+                preferences.Contains(team2Score) && preferences.Contains(team2Win) && preferences.Contains(soundEnabled)
+                   && preferences.Contains(syncEnabled) &&  preferences.Contains(team1Name) && preferences.Contains(team2Name) ) )
             {
                 // It doesnt exist, so assign default values
                 var prefsEditor = preferences.Edit();
@@ -79,6 +87,8 @@ namespace FoosLiveAndroid
                 prefsEditor.PutString(team2Win, team2WinDefault).Apply();
                 prefsEditor.PutBoolean(soundEnabled, soundEnabledDefault).Apply();
                 prefsEditor.PutBoolean(syncEnabled, syncEnabledDefault).Apply();
+                prefsEditor.PutString(team1Name, team1NameDefault).Apply();
+                prefsEditor.PutString(team2Name, team2NameDefault).Apply();
                 prefsEditor.Commit();
                 prefsEditor.Dispose();
             }
