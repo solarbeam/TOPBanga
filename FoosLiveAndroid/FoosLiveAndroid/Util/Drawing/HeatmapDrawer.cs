@@ -61,9 +61,10 @@ namespace FoosLiveAndroid.Util.Drawing
 
                     paint.Color = CalculateColor(zones.values[i, j], max, colours);
 
-                    canvas.DrawCircle(((topLeftCorner.X + toAddX) + (topLeftCorner.X + toAddX + zoneWidth) )/ 2,
-                                        ((topLeftCorner.Y + toAddY) + (topLeftCorner.Y + toAddY + zoneHeight)) / 2,
-                                        (zoneWidth + zoneHeight) / 2,
+                    canvas.DrawRect(new RectF(topLeftCorner.X + toAddX,
+                                        topLeftCorner.Y + toAddY,
+                                        topLeftCorner.X + toAddX + zoneWidth,
+                                        topLeftCorner.Y + toAddY + zoneHeight),
                                         paint);
                     toAddX += zoneWidth;
                 }

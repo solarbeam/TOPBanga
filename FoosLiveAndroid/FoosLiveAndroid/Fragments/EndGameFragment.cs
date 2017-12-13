@@ -55,7 +55,7 @@ namespace FoosLiveAndroid.Fragments
                 HeatmapDrawer.DrawZones(canvas, MatchInfo.Zones);
 
                 Image<Bgr, byte> toBlur = new Image<Bgr, byte>(toDraw);
-                toBlur = toBlur.Dilate(3);
+                toBlur = toBlur.Dilate(7);
                 CvInvoke.GaussianBlur(toBlur, toBlur, new System.Drawing.Size(0,0), 3);
 
                 ballHeatMap.SetImageBitmap(toBlur.Bitmap);
