@@ -87,6 +87,7 @@ namespace FoosLiveAndroid
         // Todo: change Camera to Camera2
         private Camera _camera;
 
+        private bool _videoDisposed = true; 
         private MediaPlayer _video;
         private Surface _surface;
 
@@ -358,6 +359,7 @@ namespace FoosLiveAndroid
 
                 _surface = new Surface(surface);
                 _video = new MediaPlayer();
+                _videoDisposed = false;
                 _video.SetDataSource(ApplicationContext, Intent.Data);
                 _video.SetSurface(_surface);
                 _video.Prepare();
@@ -413,9 +415,13 @@ namespace FoosLiveAndroid
         public bool OnSurfaceTextureDestroyed(SurfaceTexture surface)
         {
             // Check if we use a video file for getting frames or the camera
-            if (_video != null)
+            if (_video != null && !_videoDisposed)
+            {
                 // We use a video file, so release it's resources
                 _video.Release();
+                _video.Dispose();
+                _videoDisposed = true;
+            }
             else
                 // We use a camera, so release it
                 _camera?.Release();
@@ -579,8 +585,12 @@ namespace FoosLiveAndroid
 
         public void OnCompletion(MediaPlayer mp)
         {
-            mp.Release();
-            mp.Dispose();
+            if (!_videoDisposed)
+            {
+                mp.Release();
+                mp.Dispose();
+                _videoDisposed = true;
+            }
             ShowEndGameScreen();
         }
     }

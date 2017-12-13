@@ -64,7 +64,25 @@ namespace FoosLiveAndroid.Util.GameControl
             int posY = (int)(y / _zoneHeight);
 
             if (posX < width && posY < height)
-                values[posY, posX]++;
+            {
+                values[posY, posX] += 3;
+
+                int toAddY = -1, toAddX = -1;
+                for (int i = 0; i < 2; i ++)
+                {
+                    for (int j = 0; j < 2; j ++)
+                    {
+                        if ((posX + toAddX < width && posX + toAddX > 0) &&
+                            (posY + toAddY < height && posY + toAddY > 0))
+                        {
+                            values[posX + toAddX, posY + toAddY]++;
+                        }
+                        toAddX ++;
+                    }
+                    toAddX = 0;
+                    toAddY++;
+                }
+            }
         }
     }
 }

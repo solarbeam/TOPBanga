@@ -3,6 +3,8 @@ using Android.Graphics;
 using Android.OS;
 using Android.Views;
 using Android.Widget;
+using Emgu.CV;
+using Emgu.CV.Structure;
 using FoosLiveAndroid.Model;
 using FoosLiveAndroid.Util.Drawing;
 using System;
@@ -48,9 +50,15 @@ namespace FoosLiveAndroid.Fragments
             {
                 Bitmap toDraw = Bitmap.CreateBitmap(ballHeatMap.Width, ballHeatMap.Height, Bitmap.Config.Argb8888);
                 Canvas canvas = new Canvas();
+
                 canvas.SetBitmap(toDraw);
                 HeatmapDrawer.DrawZones(canvas, MatchInfo.Zones);
-                ballHeatMap.SetImageBitmap(toDraw);
+
+                Image<Bgr, byte> toBlur = new Image<Bgr, byte>(toDraw);
+                toBlur = toBlur.Dilate(3);
+                CvInvoke.GaussianBlur(toBlur, toBlur, new System.Drawing.Size(0,0), 3);
+
+                ballHeatMap.SetImageBitmap(toBlur.Bitmap);
             });
 
             // Find the fastest goal
