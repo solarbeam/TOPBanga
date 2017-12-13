@@ -63,7 +63,7 @@ namespace FoosLiveAndroid.Util.GameControl
             int posX = (int)(x / _zoneWidth);
             int posY = (int)(y / _zoneHeight);
 
-            if (posX < width && posY < height)
+            if (posX >= 0 && posY >= 0  && posX < width && posY < height)
             {
                 values[posY, posX] += 3;
 
