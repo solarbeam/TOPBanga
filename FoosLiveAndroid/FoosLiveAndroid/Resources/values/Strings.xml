@@ -36,7 +36,11 @@
     <string name="team1">TEAM 1</string>
     <string name="team2">TEAM 2</string>
 	<string name="score_format_end_game">%1$d  :  %2$d</string>
+    <string name="score_format">%1$d : %2$d</string>
     <string name="select_ball_color">Select the ball\'s color</string>
+    <string name="speed_unit">cm/s</string>
+    <string name="timer_format">00:00</string>
+    <string name="speed_format">0.00</string>
 	<!--Info-->
 	<string name="app_description">This is the description of foosbal live application. </string>
 	<string name="credits">Developed by TOPBanga team</string>
