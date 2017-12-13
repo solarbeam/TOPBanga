@@ -3597,8 +3597,8 @@ namespace FoosLiveAndroid
 			// aapt resource value: 0x7f090012
 			public const int abc_toolbar_collapse_description = 2131296274;
 			
-			// aapt resource value: 0x7f09004c
-			public const int app_description = 2131296332;
+			// aapt resource value: 0x7f09004d
+			public const int app_description = 2131296333;
 			
 			// aapt resource value: 0x7f090029
 			public const int app_name = 2131296297;
@@ -3615,14 +3615,14 @@ namespace FoosLiveAndroid
 			// aapt resource value: 0x7f090022
 			public const int bottom_sheet_behavior = 2131296290;
 			
+			// aapt resource value: 0x7f090051
+			public const int camera_access_missing = 2131296337;
+			
 			// aapt resource value: 0x7f090050
-			public const int camera_access_missing = 2131296336;
+			public const int camera_request_explanation_content = 2131296336;
 			
 			// aapt resource value: 0x7f09004f
-			public const int camera_request_explanation_content = 2131296335;
-			
-			// aapt resource value: 0x7f09004e
-			public const int camera_request_explanation_title = 2131296334;
+			public const int camera_request_explanation_title = 2131296335;
 			
 			// aapt resource value: 0x7f090023
 			public const int character_counter_pattern = 2131296291;
@@ -3630,8 +3630,8 @@ namespace FoosLiveAndroid
 			// aapt resource value: 0x7f09002e
 			public const int choose_mode = 2131296302;
 			
-			// aapt resource value: 0x7f09004d
-			public const int credits = 2131296333;
+			// aapt resource value: 0x7f09004e
+			public const int credits = 2131296334;
 			
 			// aapt resource value: 0x7f090035
 			public const int defaultMarioGoalSound = 2131296309;
@@ -3687,8 +3687,8 @@ namespace FoosLiveAndroid
 			// aapt resource value: 0x7f090042
 			public const int red_team_goal = 2131296322;
 			
-			// aapt resource value: 0x7f090051
-			public const int sample_score = 2131296337;
+			// aapt resource value: 0x7f090052
+			public const int sample_score = 2131296338;
 			
 			// aapt resource value: 0x7f090048
 			public const int score_format = 2131296328;
@@ -3710,6 +3710,9 @@ namespace FoosLiveAndroid
 			
 			// aapt resource value: 0x7f09003d
 			public const int sound_active_title = 2131296317;
+			
+			// aapt resource value: 0x7f09004c
+			public const int speed_format = 2131296332;
 			
 			// aapt resource value: 0x7f09004a
 			public const int speed_unit = 2131296330;

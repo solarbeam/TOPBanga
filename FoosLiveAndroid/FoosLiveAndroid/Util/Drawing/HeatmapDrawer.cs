@@ -38,8 +38,7 @@ namespace FoosLiveAndroid.Util.Drawing
             }
 
             // Initialize the colorspace
-            Color[] colours = new Color[]
-            {
+            Color[] colours = {
                 Color.Argb(MaxAlphaValue, 0, 0, 0) ,
                 Color.Argb(MaxAlphaValue, 0, 0, 0xFF) ,
                 Color.Argb(MaxAlphaValue, 0, 0xFF, 0xFF) ,

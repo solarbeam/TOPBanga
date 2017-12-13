@@ -6,14 +6,14 @@ using Android.Widget;
 using FoosLiveAndroid.Model;
 using FoosLiveAndroid.Util.Drawing;
 using System;
-using System.Threading.Tasks;
 
 namespace FoosLiveAndroid.Fragments
 {
     public class EndGameFragment : Fragment
     {
-        private static readonly string SpeedFormat = "0.00 cm/s";
         static readonly new string Tag = typeof(InfoFragment).Name;
+        private static string SpeedFormat;
+        private const double miliSecondsInSecond = 1000;
 
         private View _view;
         private TextView _team1Name;
@@ -33,9 +33,10 @@ namespace FoosLiveAndroid.Fragments
         public override View OnCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
         {
             _view = inflater.Inflate(Resource.Layout.fragment_end_game, container, false);
+            // If SpeedFormat is not loaded yet, load it
+            SpeedFormat = SpeedFormat ?? GetString(Resource.String.speed_format);
 
             GetReferencesFromLayout();
-
             _team1Name.Text = MatchInfo.Team1Name;
             _team2Name.Text = MatchInfo.Team2Name;
             _teamScore.Text = GetString(Resource.String.score_format_end_game, MatchInfo.Team1Score, MatchInfo.Team2Score);
@@ -55,14 +56,15 @@ namespace FoosLiveAndroid.Fragments
             // Find the fastest goal
             _fastestGoal.Post(() =>
             {
-                long min = 999999999;
+                // if there are no goals, assign 0 to minDuration
+                long minDuration = (MatchInfo.Goals.Count > 0) ? MatchInfo.Goals.Dequeue().Duration : 0;
+                
                 foreach (var goal in MatchInfo.Goals)
                 {
-                    if (goal.Duration < min)
-                        min = goal.Duration;
+                    if (goal.Duration < minDuration)
+                        minDuration = goal.Duration;
                 }
-
-                _fastestGoal.Text = Math.Round(min * 0.001, 2).ToString("0.00 s");
+                _fastestGoal.Text = Math.Round(minDuration / miliSecondsInSecond).ToString(SpeedFormat);
             });
 
             return _view;
