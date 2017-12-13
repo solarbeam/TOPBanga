@@ -4,6 +4,7 @@
     {
         No_connection,
         Empty_list,
-        Success
+        Success,
+        Unknown
     }
 }

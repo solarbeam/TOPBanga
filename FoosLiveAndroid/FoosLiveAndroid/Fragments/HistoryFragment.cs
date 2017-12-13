@@ -22,7 +22,7 @@ namespace FoosLiveAndroid.Fragments
         private View _view;
         private IOnFragmentInteractionListener _interactionListener;
         private RecyclerView _historyRecyclerView;
-        private LoadingStatus _loadingStatus;
+        private LoadingStatus _loadingStatus = LoadingStatus.Unknown;
 
         public static Fragment NewInstance()
         {
@@ -89,13 +89,12 @@ namespace FoosLiveAndroid.Fragments
                 if (_loadingStatus == LoadingStatus.Success) return;
 
                 if (_loadingStatus == LoadingStatus.Empty_list)
+                {
                     _loadingStatusLabel.Text = GetString(Resource.String.history_empty);
-                
-                // Hide progress bar
-                _progressBar.Post(() => _progressBar.Visibility = ViewStates.Gone);
-                // Show error message
-                _loadingStatusLabel.Post(() => _loadingStatusLabel.Visibility = ViewStates.Visible);
-
+                    ShowError();
+                }
+                else if (_loadingStatus == LoadingStatus.No_connection)
+                    ShowError();
             });
 
             return _view;
@@ -107,6 +106,14 @@ namespace FoosLiveAndroid.Fragments
             _loadingStatusLabel = _view.FindViewById<TextView>(Resource.Id.loadingStatusLabel);
             _progressBar = _view.FindViewById<ProgressBar>(Resource.Id.loadingBar);
             _historyRecyclerView = _view.FindViewById<RecyclerView>(Resource.Id.historyRecyclerView);
+        }
+
+        private void ShowError() 
+        {
+            // Hide progress bar
+            _progressBar.Post(() => _progressBar.Visibility = ViewStates.Gone);
+            // Show error message
+            _loadingStatusLabel.Post(() => _loadingStatusLabel.Visibility = ViewStates.Visible);
         }
     }
 }
