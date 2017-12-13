@@ -42,7 +42,6 @@ namespace FoosLiveAndroid
         private static readonly int SlidingTextDelay = PropertiesManager.GetIntProperty("sliding_text_delay");
         private static readonly int TimerFrequency = PropertiesManager.GetIntProperty("timer_frequency");
         private static readonly float FormatSpeed = PropertiesManager.GetFloatProperty("format_speed");
-        private const double miliSecondsInSecond = 1000;
         private bool _textThreadStarted = false;
         private bool _waitForSpeed = false;
 
@@ -133,11 +132,6 @@ namespace FoosLiveAndroid
             _gameController.GoalEvent += GameControllerGoalEvent;
             _gameController.PositionEvent += GameControllerPositionEvent;
             _gameTimer = new GameTimer(TimerFrequency);
-
-            ISharedPreferences preferences = GetSharedPreferences("FoosliveAndroid.dat", FileCreationMode.Private);
-            _team1Title.Text = preferences.GetString("team1Name", "TEAM 1");
-            _team2Title.Text = preferences.GetString("team2Name", "TEAM 2");
-            preferences.Dispose();
             
             _surfaceView.SetZOrderOnTop(true);
             _surfaceView.Holder.SetFormat(Format.Transparent);
@@ -147,20 +141,37 @@ namespace FoosLiveAndroid
             _gameButton.Click += GameButtonClicked;
 
             // Assign the sound file paths
-            ISharedPreferences prefs = GetSharedPreferences("FoosliveAndroid.dat", FileCreationMode.Private);
+            var preferences = GetSharedPreferences(GetString(Resource.String.preference_file_key), FileCreationMode.Private);
 
-            if (prefs.GetBoolean("soundEnabled", true))
+            var team1DefaultValue = Resources.GetString(Resource.String.saved_team1_name_default);
+            _team1Title.Text = preferences.GetString(GetString(Resource.String.saved_team1_name), team1DefaultValue);
+
+            var team2DefaultValue = Resources.GetString(Resource.String.saved_team2_name_default);
+            _team2Title.Text = preferences.GetString(GetString(Resource.String.saved_team2_name), team2DefaultValue);
+
+            var defaultSoundEnabledValue = Resources.GetBoolean(Resource.Boolean.saved_sound_enabled_default);
+            if (preferences.GetBoolean(GetString(Resource.String.saved_sound_enabled), defaultSoundEnabledValue))
             {
+                var team1WinKey = Resources.GetString(Resource.String.saved_team1_win);
+                var team2WinKey = Resources.GetString(Resource.String.saved_team2_win);
+                var team1GoalKey = Resources.GetString(Resource.String.saved_team1_goal);
+                var team2GoalKey = Resources.GetString(Resource.String.saved_team2_goal);
+
+                var team1WinDefaultValue = Resources.GetString(Resource.String.saved_team1_win_default);
+                var team2WinDefaultValue = Resources.GetString(Resource.String.saved_team2_win_default);
+                var team1GoalDefaultValue = Resources.GetString(Resource.String.saved_team1_goal_default);
+                var team2GoalDefaultValue = Resources.GetString(Resource.String.saved_team2_goal_default);
+  
                 _soundAlerts = new SoundAlerts
                 {
-                    BlueTeamWins = new PlayerOGG(this, FilePathResolver.getFile(this, prefs.GetString("team1Win", ""))),
-                    BlueTeamGoal = new PlayerOGG(this, FilePathResolver.getFile(this, prefs.GetString("team1Score", ""))),
-                    RedTeamWins = new PlayerOGG(this, FilePathResolver.getFile(this, prefs.GetString("team2Win", ""))),
-                    RedTeamGoal = new PlayerOGG(this, FilePathResolver.getFile(this, prefs.GetString("team2Score", "")))
+                    Team1Win = new PlayerOGG(FilePathResolver.GetFile(this, preferences.GetString(team1WinKey, team1WinDefaultValue))),
+                    Team1Goal = new PlayerOGG(FilePathResolver.GetFile(this, preferences.GetString(team1GoalKey, team1GoalDefaultValue))),
+                    Team2Win = new PlayerOGG(FilePathResolver.GetFile(this, preferences.GetString(team2WinKey,team2WinDefaultValue))),
+                    Team2Goal = new PlayerOGG(FilePathResolver.GetFile(this, preferences.GetString(team2GoalKey, team2GoalDefaultValue)))
                 };
             }
 
-            prefs.Dispose();
+            preferences.Dispose();
 
             scoreFormat = GetString(Resource.String.score_format);
             timerFormat = GetString(Resource.String.timer_format);
@@ -237,7 +248,7 @@ namespace FoosLiveAndroid
         {
             RunOnUiThread(() =>
             {
-                _timer.Text = Math.Round(GameTimer.Time / miliSecondsInSecond).ToString(timerFormat);
+                _timer.Text = Math.Round(GameTimer.Time / Units.MiliSecondsInSecond).ToString(timerFormat);
             });
         }
 
@@ -286,12 +297,12 @@ namespace FoosLiveAndroid
             // Check which event occured
             if (e == CurrentEvent.BlueGoalOccured)
             {
-                _soundAlerts?.Play(EAlert.BlueGoal);
+                _soundAlerts?.Play(EAlert.Team1Goal);
                 SlideText(ApplicationContext.Resources.GetString(Resource.String.blue_team_goal));
             }
             else if (e == CurrentEvent.RedGoalOccured)
             {
-                _soundAlerts?.Play(EAlert.RedGoal);
+                _soundAlerts?.Play(EAlert.Team2Goal);
                 SlideText(ApplicationContext.Resources.GetString(Resource.String.red_team_goal));
             }
             _score.Text = $"{_gameController.BlueScore} : {_gameController.RedScore}";

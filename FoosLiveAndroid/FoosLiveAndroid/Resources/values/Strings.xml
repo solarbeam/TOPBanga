@@ -3,7 +3,8 @@
 	<!--Global-->
 	<string name="app_name">fooslive</string>
 	<string name="app_version">Version: 0.1</string>
-	<string name="dismiss">OK</string>
+	<string name="ok">OK</string>
+    <string name="cancel">Cancel</string>
     <!--Menu-->
 	<string name="main_menu">Main menu</string>
 	<string name="start">Start</string>
@@ -15,8 +16,6 @@
     <string name="from_file">From file</string>
     <string name="main_menu_title">Title</string>
     <!--Settings-->
-    <string name="defaultMarioGoalSound">Mario Goal Sound</string>
-    <string name="defaultMarioWinSound">Mario Win Sound</string>
     <string name="team1_score_sound_label">Team 1 score</string>
     <string name="team2_score_sound_label">Team 2 score</string>
     <string name="team1_win_sound_label">Team 1 win</string>
@@ -50,4 +49,23 @@
 	<string name="camera_access_missing">The application does not have access to record live game.</string>
 	<!--Temporary-->
 	<string name="sample_score">0 : 0</string>
+
+    <!--SharedPref-->
+    <string name="preference_file_key">fooslive_pref</string> 
+    <string name="saved_team1_goal">TEAM1_SCORE</string>
+    <string name="saved_team1_goal_default">defaultMarioGoal</string>
+    <string name="saved_team2_goal">TEAM2_SCORE</string>
+    <string name="saved_team2_goal_default">defaultMarioGoal</string>
+    <string name="saved_team1_win">TEAM1_WIN</string>
+    <string name="saved_team1_win_default">defaultMarioGoal</string>
+    <string name="saved_team2_win">TEAM2_WIN</string>
+    <string name="saved_team2_win_default">defaultMarioGoal</string>
+    <string name="saved_sound_enabled">SOUND_ENABLED</string>
+    <string name="saved_sync_enabled">SYNC_ENABLED</string>
+    <string name="saved_team1_name">TEAM1_NAME</string>
+    <string name="saved_team1_name_default">Team 1</string>
+    <string name="saved_team2_name">TEAM2_NAME</string>
+    <string name="saved_team2_name_default">Team 2</string>
+    <string name="mario_goal_sound">Mario Goal Sound</string>
+    <string name="mario_win_sound">Mario Win Sound</string>
 </resources>

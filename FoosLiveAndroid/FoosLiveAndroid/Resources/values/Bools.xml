@@ -1,0 +1,5 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<resources>
+    <bool name="saved_sync_enabled_default">true</bool>
+    <bool name="saved_sound_enabled_default">true</bool>
+</resources>

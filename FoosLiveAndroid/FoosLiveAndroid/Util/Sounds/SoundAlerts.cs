@@ -4,11 +4,11 @@ namespace FoosLiveAndroid.Util.Sounds
 {
     public class SoundAlerts
     {
-        public IAlert RedTeamGoal { get; set; }
-        public IAlert RedTeamWins { get; set; }
+        public IAlert Team1Goal { get; set; }
+        public IAlert Team1Win { get; set; }
 
-        public IAlert BlueTeamGoal { get; set; }
-        public IAlert BlueTeamWins { get; set; }
+        public IAlert Team2Goal { get; set; }
+        public IAlert Team2Win { get; set; }
        
         public IAlert BallLost { get; set; }
 
@@ -16,17 +16,17 @@ namespace FoosLiveAndroid.Util.Sounds
         {
             switch(alertType)
             {
-                case EAlert.RedGoal:
-                    RedTeamGoal.Play();
+                case EAlert.Team2Goal:
+                    Team2Goal.Play();
                     break;
-                case EAlert.RedWin:
-                    RedTeamWins.Play();
+                case EAlert.Team2Win:
+                    Team2Win.Play();
                     break;
-                case EAlert.BlueGoal:
-                    BlueTeamGoal.Play();
+                case EAlert.Team1Goal:
+                    Team1Goal.Play();
                     break;
-                case EAlert.BlueWin:
-                    BlueTeamWins.Play();
+                case EAlert.Team1Win:
+                    Team1Win.Play();
                     break;
                 case EAlert.BallLost:
                     BallLost.Play();

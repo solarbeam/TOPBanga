@@ -36,35 +36,35 @@ namespace FoosLiveAndroid.Util.GameControl
                     switch (i)
                     {
                         case 0:
-                            currentRow = Row.RedGoalie;
+                            currentRow = Row.Team2Goalie;
                             _RedGoalieZone++;
                             break;
                         case 1:
-                            currentRow = Row.RedDefence;
+                            currentRow = Row.Team2Defence;
                             _RedDefenceZone++;
                             break;
                         case 2:
-                            currentRow = Row.BlueAttack;
+                            currentRow = Row.Team1Attack;
                             _BlueAttackZone++;
                             break;
                         case 3:
-                            currentRow = Row.RedMidfield;
+                            currentRow = Row.Team2MidField;
                             _RedMidfieldZone++;
                             break;
                         case 4:
-                            currentRow = Row.BlueMidfield;
+                            currentRow = Row.Team1MidField;
                             _BlueMidfieldZone++;
                             break;
                         case 5:
-                            currentRow = Row.RedAttack;
+                            currentRow = Row.Team2Attack;
                             _RedAttackZone++;
                             break;
                         case 6:
-                            currentRow = Row.BlueDefence;
+                            currentRow = Row.Team1Defence;
                             _BlueDefenceZone++;
                             break;
                         case 7:
-                            currentRow = Row.BlueGoalie;
+                            currentRow = Row.Team1Goalie;
                             _BlueGoalieZone++;
                             break;
                     }

@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Globalization;
 using Android.App;
 using Android.Content;
 using Android.OS;
@@ -8,14 +7,10 @@ using Android.Views;
 using Android.Views.InputMethods;
 using Android.Widget;
 using FoosLiveAndroid.Fragments.Interface;
+using FoosLiveAndroid.Model;
 
 namespace FoosLiveAndroid.Fragments
 {
-    enum SoundAsset
-    {
-        GoalMario = 0,
-        WinMario = 1
-    }
     public class SettingsFragment : Fragment
     {
         static readonly new string Tag = typeof(SettingsFragment).Name;
@@ -27,11 +22,11 @@ namespace FoosLiveAndroid.Fragments
         private Switch _syncSwitch;
         private Switch _soundSwitch;
         private RelativeLayout _team1ScoreSoundItem;
-        private TextView _team1ScoreSoundValue;
+        private TextView _team1GoalSoundValue;
         private RelativeLayout _team1WinSoundItem;
         private TextView _team1WinSoundValue;
         private RelativeLayout _team2ScoreSoundItem;
-        private TextView _team2ScoreSoundValue;
+        private TextView _team2GoalSoundValue;
         private RelativeLayout _team2WinSoundItem;
         private TextView _team2WinSoundValue;
 
@@ -133,18 +128,30 @@ namespace FoosLiveAndroid.Fragments
             return _view;
         }
 
+        /// Assign preexisting values
         private void UpdateSelection()
         {
-            // Assign preexisting values
-            ISharedPreferences preferences = Context.GetSharedPreferences("FoosliveAndroid.dat", FileCreationMode.Private);
-            _team1ScoreSoundValue.Text = preferences.GetString("team1Score", "");
-            _team1WinSoundValue.Text = preferences.GetString("team1Win", "");
-            _team2ScoreSoundValue.Text = preferences.GetString("team2Score", "");
-            _team2WinSoundValue.Text = preferences.GetString("team2Win", "");
-            _soundSwitch.Checked = preferences.GetBoolean("soundEnabled", true);
-            _syncSwitch.Checked = preferences.GetBoolean("syncEnabled", true);
-            _team1Title.Text = preferences.GetString("team1Name", "TEAM1");
-            _team2Title.Text = preferences.GetString("team2Name", "TEAM1"); 
+            //Extract default values from resources
+            var team1GoalSoundDefault = GetString(Resource.String.saved_team1_goal_default);
+            var team2GoalSoundDefault = GetString(Resource.String.saved_team2_goal_default);
+            var team1WinSoundDefault = GetString(Resource.String.saved_team1_win_default);
+            var team2WinSoundDefault = GetString(Resource.String.saved_team2_win_default);
+            var soundSwitchDefault = Resources.GetBoolean(Resource.Boolean.saved_sound_enabled_default);
+            var syncSwitchDefault = Resources.GetBoolean(Resource.Boolean.saved_sync_enabled_default);
+            var team1NameDefault = GetString(Resource.String.saved_team1_name_default);
+            var team2NameDefault = GetString(Resource.String.saved_team2_name_default);
+
+            // Extract and assign values from sharedPreferences
+            var preferences = Context.GetSharedPreferences(GetString(Resource.String.preference_file_key), FileCreationMode.Private);
+
+            _team1GoalSoundValue.Text = preferences.GetString(GetString(Resource.String.saved_team1_goal), team1GoalSoundDefault);
+            _team1WinSoundValue.Text = preferences.GetString(GetString(Resource.String.saved_team1_win), team1WinSoundDefault);
+            _team2GoalSoundValue.Text = preferences.GetString(GetString(Resource.String.saved_team2_goal), team2GoalSoundDefault);
+            _team2WinSoundValue.Text = preferences.GetString(GetString(Resource.String.saved_team2_win), team2WinSoundDefault);
+            _soundSwitch.Checked = preferences.GetBoolean(GetString(Resource.String.saved_sound_enabled), soundSwitchDefault);
+            _syncSwitch.Checked = preferences.GetBoolean(GetString(Resource.String.saved_sync_enabled), syncSwitchDefault);
+            _team1Title.Text = preferences.GetString(GetString(Resource.String.saved_team1_name), team1NameDefault);
+            _team2Title.Text = preferences.GetString(GetString(Resource.String.saved_team2_name), team2NameDefault); 
             preferences.Dispose();
         }
 
@@ -158,56 +165,41 @@ namespace FoosLiveAndroid.Fragments
             _team2ScoreSoundItem = _view.FindViewById<RelativeLayout>(Resource.Id.team2ScoreSoundItem);
             _team2WinSoundItem = _view.FindViewById<RelativeLayout>(Resource.Id.team2WinSoundItem);
 
-            _team1ScoreSoundValue = _view.FindViewById<TextView>(Resource.Id.team1ScoreSoundValue);
+            _team1GoalSoundValue = _view.FindViewById<TextView>(Resource.Id.team1ScoreSoundValue);
             _team1WinSoundValue = _view.FindViewById<TextView>(Resource.Id.team1WinSoundValue);
-            _team2ScoreSoundValue = _view.FindViewById<TextView>(Resource.Id.team2ScoreSoundValue);
+            _team2GoalSoundValue = _view.FindViewById<TextView>(Resource.Id.team2ScoreSoundValue);
             _team2WinSoundValue = _view.FindViewById<TextView>(Resource.Id.team2WinSoundValue);
 
             _team1Title = _view.FindViewById<TextView>(Resource.Id.team1Name);
             _team2Title = _view.FindViewById<TextView>(Resource.Id.team2Name);
             _team1TitleSettings = _view.FindViewById<RelativeLayout>(Resource.Id.team1TitleSettings);
             _team2TitleSettings = _view.FindViewById<RelativeLayout>(Resource.Id.team2TitleSettings);
-
-            GoalSoundMarioPath = Context.GetString(Resource.String.defaultMarioGoalSound);
-            WinSoundMarioPath = Context.GetString(Resource.String.defaultMarioWinSound);
         }
 
-        //Todo set values from model/cfg/shared pref
-        private void RestoreCurrentSoundValues()
-        {
-            _team1ScoreSoundValue.Text = "Demo sound";
-            _team1WinSoundValue.Text = "Demo sound";
-            _team2ScoreSoundValue.Text = "Demo sound";
-            _team2WinSoundValue.Text = "Demo sound";
-        }
-
-        // Todo: fully implement Alertdialog and selection events
-        private void OpenSoundPicker(string title, ArrayAdapter<string> adapter)
+        private void OpenSoundPicker(string soundItem, ArrayAdapter<string> adapter)
         {
             if (adapter == null)
                 throw new ArgumentNullException(nameof(adapter));
 
             _dialogBuilder = _dialogBuilder ?? new AlertDialog.Builder(Context);
-            _dialogBuilder.SetTitle($"Choose {title}");
+            _dialogBuilder.SetTitle($"Choose {soundItem}");
 
             _dialogBuilder.SetAdapter(adapter, (dialog, item) =>
             {
-                ISharedPreferences preferences = Context.GetSharedPreferences("FoosliveAndroid.dat", FileCreationMode.Private);
-                ISharedPreferencesEditor prefsEditor = preferences.Edit();
+                var preferences = Context.GetSharedPreferences(GetString(Resource.String.preference_file_key), FileCreationMode.Private);
+                var prefsEditor = preferences.Edit();
                 switch(item.Which)
                 {
                     case (int)SoundAsset.GoalMario:
                         {
-                            prefsEditor.PutString(title, GoalSoundMarioPath).Apply();
+                            prefsEditor.PutString(soundItem, GetString(Resource.String.mario_goal_sound)).Apply();
                             break;
                         }
                     case (int)SoundAsset.WinMario:
                         {
-                            prefsEditor.PutString(title, WinSoundMarioPath).Apply();
+                            prefsEditor.PutString(soundItem, GetString(Resource.String.mario_win_sound)).Apply();
                             break;
                         }
-                    default:
-                            break;
                 }
                 prefsEditor.Commit();
                 prefsEditor.Dispose();
@@ -222,69 +214,58 @@ namespace FoosLiveAndroid.Fragments
         private void ShowKeyboard(EditText userInput)
         {
             userInput.RequestFocus();
-            InputMethodManager imm = (InputMethodManager)this.Activity.GetSystemService(Context.InputMethodService);
-            imm.ToggleSoftInput(ShowFlags.Forced, 0);
+            var inputMethodManager = (InputMethodManager)Activity.GetSystemService(Context.InputMethodService);
+            inputMethodManager.ToggleSoftInput(ShowFlags.Forced, 0);
         }
 
         private void HideKeyboard(EditText userInput)
         {
-            InputMethodManager imm = (InputMethodManager)this.Activity.GetSystemService(Context.InputMethodService);
-            imm.HideSoftInputFromWindow(userInput.WindowToken, 0);
+            var inputMethodManager = (InputMethodManager)Activity.GetSystemService(Context.InputMethodService);
+            inputMethodManager.HideSoftInputFromWindow(userInput.WindowToken, 0);
         }
 
-        private void InputClicked(TextView title)
+        private void InputClicked(TextView teamTitle)
         {
             var inputDialog = new AlertDialog.Builder(Activity);
             EditText userInput = new EditText(Activity);
 
             string selectedInput = string.Empty;
-            userInput.Text = title.Text;
+            userInput.Text = teamTitle.Text;
             //SetEditTextStylings(userInput);
             userInput.InputType = Android.Text.InputTypes.TextVariationPersonName;
             inputDialog.SetTitle(selectedInput);
             inputDialog.SetView(userInput);
             inputDialog.SetPositiveButton(
-                "Ok",
+                GetString(Resource.String.ok),
                 (see, ess) =>
                 {
                     if (userInput.Text != string.Empty)
                     {
-                        title.Text = userInput.Text;
-                        SaveUserInputToClass(userInput.Text, title);
+                        teamTitle.Text = userInput.Text;
+                        SaveUserInput(userInput.Text, teamTitle.Id);
                     }
                     HideKeyboard(userInput);
                 });
-            inputDialog.SetNegativeButton("Cancel", (afk, kfa) => { HideKeyboard(userInput); });
+            inputDialog.SetNegativeButton(GetString(Resource.String.cancel), 
+                                          (obj, args) => { HideKeyboard(userInput); });
             inputDialog.Show();
             ShowKeyboard(userInput);
         }
 
-        private void SaveUserInputToClass(string teamName, TextView teamNameTextView) 
+        private void SaveUserInput(string teamName, int teamTitleId) 
         {
-            if (teamNameTextView.Id == Resource.Id.team1Name)
-            {
-                _team1Title.Text = teamName;
-                // Todo: make code modular
-                ISharedPreferences preferences = Context.GetSharedPreferences("FoosliveAndroid.dat", FileCreationMode.Private);
-                ISharedPreferencesEditor prefsEditor = preferences.Edit();
-                prefsEditor.PutString("team1Name", teamName);
-                prefsEditor.Commit();
-                prefsEditor.Dispose();
-                preferences.Dispose();
-
-            }
-            else if (teamNameTextView.Id == Resource.Id.team2Name)
-            {
-                _team2Title.Text = teamName;
-                // Todo: make code modular
-                ISharedPreferences preferences = Context.GetSharedPreferences("FoosliveAndroid.dat", FileCreationMode.Private);
-                ISharedPreferencesEditor prefsEditor = preferences.Edit();
-                prefsEditor.PutString("team2Name", teamName);
-                prefsEditor.Commit();
-                prefsEditor.Dispose();
-                preferences.Dispose();
-            }
+            string key;
+            if (teamTitleId == _team1Title.Id)
+                key = GetString(Resource.String.saved_team1_name);
+            else
+                key = GetString(Resource.String.saved_team2_name);
+            
+            var preferences = Context.GetSharedPreferences(GetString(Resource.String.preference_file_key), FileCreationMode.Private);
+            var prefsEditor = preferences.Edit();
+            prefsEditor.PutString(key, teamName);
+            prefsEditor.Commit();
+            prefsEditor.Dispose();
+            preferences.Dispose();
         }
-
     }
 }

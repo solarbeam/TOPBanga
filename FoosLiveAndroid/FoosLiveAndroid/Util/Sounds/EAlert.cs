@@ -2,10 +2,10 @@
 {
     public enum EAlert
     {
-        RedGoal,
-        RedWin,
-        BlueGoal,
-        BlueWin,
+        Team1Goal,
+        Team2Goal,
+        Team1Win,
+        Team2Win,
         BallLost
     }
 }

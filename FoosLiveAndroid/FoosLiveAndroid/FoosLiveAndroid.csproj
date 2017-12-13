@@ -188,6 +188,8 @@
     <Compile Include="Util\Vibration.cs" />
     <Compile Include="Resources\Resource.Designer.cs" />
     <Compile Include="Fragments\EndGameFragment.cs" />
+    <Compile Include="Util\Model\Units.cs" />
+    <Compile Include="Model\ESoundAsset.cs" />
   </ItemGroup>
   <ItemGroup>
     <AndroidNativeLibrary Include="lib\armeabi-v7a\libcvextern.so" />
@@ -227,6 +229,7 @@
     <AndroidResource Include="Resources\drawable\bg_end_game.xml" />
     <AndroidResource Include="Resources\drawable\ic_timer.xml" />
     <AndroidResource Include="Resources\drawable\ic_speed.xml" />
+    <AndroidResource Include="Resources\values\Bools.xml" />
   </ItemGroup>
   <ItemGroup>
     <AndroidResource Include="Resources\mipmap-hdpi\Icon.png" />

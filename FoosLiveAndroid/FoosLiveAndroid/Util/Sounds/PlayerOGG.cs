@@ -1,8 +1,6 @@
-﻿using Android.Content;
-using Android.Content.Res;
+﻿using Android.Content.Res;
 using Android.Media;
 using FoosLiveAndroid.Util.Interface;
-using Java.IO;
 
 namespace FoosLiveAndroid.Util.Sounds
 {
@@ -10,9 +8,7 @@ namespace FoosLiveAndroid.Util.Sounds
     {
         private readonly MediaPlayer _player;
 
-        //Todo: paths from cfg
-
-        public PlayerOGG(Context context, AssetFileDescriptor descriptor )
+        public PlayerOGG(AssetFileDescriptor descriptor)
         {
             _player = new MediaPlayer();
             _player.SetVolume(100, 100);

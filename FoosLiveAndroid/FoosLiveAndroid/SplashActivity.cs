@@ -17,8 +17,6 @@ namespace FoosLiveAndroid
     {
         static readonly string TAG = typeof(SplashActivity).Name;
 
-        private const string preferencesFileName = "FoosliveAndroid.dat";
-
         private const string team1Score = "team1Score";
         private const string team1ScoreDefault = "defaultMarioGoal";
 
@@ -71,28 +69,6 @@ namespace FoosLiveAndroid
             filtered.Dispose();
             blobs.Dispose();
             tempDetector.Dispose();
-
-            // Todo: move to for loop
-            // Check if the shared preference file exists
-            var preferences = Application.Context.GetSharedPreferences(preferencesFileName, FileCreationMode.Private);
-            if ( !( preferences.Contains(team1Score) && preferences.Contains(team1Win) &&
-                preferences.Contains(team2Score) && preferences.Contains(team2Win) && preferences.Contains(soundEnabled)
-                   && preferences.Contains(syncEnabled) &&  preferences.Contains(team1Name) && preferences.Contains(team2Name) ) )
-            {
-                // It doesnt exist, so assign default values
-                var prefsEditor = preferences.Edit();
-                prefsEditor.PutString(team1Score, team1ScoreDefault).Apply();
-                prefsEditor.PutString(team1Win, team1WinDefault).Apply();
-                prefsEditor.PutString(team2Score, team2WinDefault).Apply();
-                prefsEditor.PutString(team2Win, team2WinDefault).Apply();
-                prefsEditor.PutBoolean(soundEnabled, soundEnabledDefault).Apply();
-                prefsEditor.PutBoolean(syncEnabled, syncEnabledDefault).Apply();
-                prefsEditor.PutString(team1Name, team1NameDefault).Apply();
-                prefsEditor.PutString(team2Name, team2NameDefault).Apply();
-                prefsEditor.Commit();
-                prefsEditor.Dispose();
-            }
-            preferences.Dispose();
 
             // Start application
             StartActivity(new Intent(Application.Context, typeof(MenuActivity)));

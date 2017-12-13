@@ -1,14 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-using Android.App;
 using Android.Content;
-using Android.OS;
-using Android.Runtime;
-using Android.Views;
-using Android.Widget;
 using Android.Content.Res;
 
 namespace FoosLiveAndroid.Util.Sounds
@@ -20,23 +11,20 @@ namespace FoosLiveAndroid.Util.Sounds
         private const String marioGoalSound = "SFX/goal.mp3";
         private const String marioWinSound = "SFX/game_end.wav";
 
-        public static AssetFileDescriptor getFile(Activity activity, String argument)
+        public static AssetFileDescriptor GetFile(Context context, String argument)
         {
             switch(argument)
             {
                 case defaultMarioGoal:
                     {
-                        return activity.Assets.OpenFd(marioGoalSound);
+                        return context.Assets.OpenFd(marioGoalSound);
                     }
                 case defaultMarioWin:
                     {
-                        return activity.Assets.OpenFd(marioWinSound);
-                    }
-                default:
-                    {
-                        return null;
+                        return context.Assets.OpenFd(marioWinSound);
                     }
             }
+            return null;
         }
     }
 }

@@ -96,7 +96,7 @@ namespace FoosLiveAndroid
                     _fragment = InfoFragment.NewInstance();
                     break;
                 default:
-                    Log.Error(Tag, $"SwitchFragment unknown ID: {id}");
+                    Log.Wtf(Tag, $"SwitchFragment unknown ID: {id}");
                     break;
             }
 

@@ -2,13 +2,13 @@
 {
     public enum Row
     {
-        RedGoalie,
-        RedDefence,
-        BlueAttack,
-        RedMidfield,
-        BlueMidfield,
-        RedAttack,
-        BlueDefence,
-        BlueGoalie
+        Team1Goalie,
+        Team2Goalie,
+        Team1Defence,
+        Team2Defence,
+        Team1MidField,
+        Team2MidField,
+        Team1Attack,
+        Team2Attack
     }
 }
