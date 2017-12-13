@@ -4,6 +4,8 @@ using System.Collections.Generic;
 using FoosLiveAndroid.Model.Interface;
 using FoosLiveAndroid.Model;
 using System.Threading.Tasks;
+using System;
+using Android.Util;
 
 namespace FoosLiveAndroid.Util.Database
 {
@@ -19,7 +21,7 @@ namespace FoosLiveAndroid.Util.Database
         private static readonly string InsertGoalFormat = PropertiesManager.GetProperty("insert_goal_format");
         private static readonly string InsertEventFormat = PropertiesManager.GetProperty("insert_event_format");
         private static readonly string GetHistoryFormat = PropertiesManager.GetProperty("get_history_format");
-       
+
         /// <summary>
         /// Inserts a game into the remote database. 
         /// </summary>
@@ -37,13 +39,13 @@ namespace FoosLiveAndroid.Util.Database
             streamWriter.Write(string.Format(InsertGameFormat, blueTeamName, redTeamName));
 
             streamWriter.Flush();
-            var httpWebResponse = (HttpWebResponse) await request.GetResponseAsync();
+            var httpWebResponse = (HttpWebResponse)await request.GetResponseAsync();
 
             var streamReader = new StreamReader(httpWebResponse.GetResponseStream());
             string idUnconverted = await streamReader.ReadToEndAsync();
             if (int.TryParse(idUnconverted, out int id))
                 return id;
-            else 
+            else
                 return -1;
         }
         /// <summary>
@@ -109,23 +111,29 @@ namespace FoosLiveAndroid.Util.Database
             var request = (HttpWebRequest)WebRequest.Create(ConnectionUrl);
             request.Method = WebRequestMethods.Http.Post;
             request.Timeout = Timeout;
-
-            // Set up request statement
-            var streamWriter = new StreamWriter(request.GetRequestStream());
-            streamWriter.Write(GetHistoryFormat);
-            streamWriter.Flush();
-
-            // Get response
-            var httpWebResponse = (HttpWebResponse) await request.GetResponseAsync();
-            var streamReader = new StreamReader(httpWebResponse.GetResponseStream());
-            // Parse response
-            string response;
-            var historyData = new List<IHistory>();
-            while ((response = streamReader.ReadLine()) != null)
+            try
             {
-                historyData.Add(new History(response.Split(';')));
+                // Set up request statement
+                var streamWriter = new StreamWriter(request.GetRequestStream());
+                streamWriter.Write(GetHistoryFormat);
+                streamWriter.Flush();
+
+                // Get response
+                var httpWebResponse = (HttpWebResponse)await request.GetResponseAsync();
+                var streamReader = new StreamReader(httpWebResponse.GetResponseStream());
+                // Parse response
+                string response;
+                var historyData = new List<IHistory>();
+                while ((response = streamReader.ReadLine()) != null)
+                {
+                    historyData.Add(new History(response.Split(';')));
+                }
+                return historyData;
             }
-            return historyData;
+            catch (Exception we) {
+                Log.Error("Exception", we.ToString()); 
+            }
+            return null;
         }
     }
 }
