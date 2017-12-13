@@ -294,7 +294,7 @@ namespace FoosLiveAndroid
                 _soundAlerts?.Play(EAlert.RedGoal);
                 SlideText(ApplicationContext.Resources.GetString(Resource.String.red_team_goal));
             }
-            _score.Text = String.Format(scoreFormat, _gameController.BlueScore, _gameController.RedScore);
+            _score.Text = $"{_gameController.BlueScore} : {_gameController.RedScore}";
             Log.Debug(Tag, $"Score value assigned {_score.Text}");
         }
 
