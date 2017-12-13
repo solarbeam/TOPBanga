@@ -51,6 +51,7 @@ namespace FoosLiveAndroid.Fragments
             if (_historyList == null)
             {
                 DisplayError();
+
                 return;
             }
 
@@ -96,10 +97,14 @@ namespace FoosLiveAndroid.Fragments
         /// </summary>
         private void DisplayError()
         {
+
+            Toast t = Toast.MakeText(Application.Context, "Error'as", Android.Widget.ToastLength.Long);
+            t.Show();
             // Hide progress bar
-            _progressBar.Visibility = ViewStates.Gone;
+            //_progressBar.Post(() => _progressBar.Visibility = ViewStates.Gone);
+
             // Show message
-            _loadingStatusLabel.Visibility = ViewStates.Visible;
+            //_loadingStatusLabel.Post(() => _loadingStatusLabel.Visibility = ViewStates.Visible);
         }
 
     }
