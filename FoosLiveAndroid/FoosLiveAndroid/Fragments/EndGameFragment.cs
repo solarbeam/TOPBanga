@@ -8,6 +8,7 @@ using Emgu.CV.Structure;
 using FoosLiveAndroid.Model;
 using FoosLiveAndroid.Util.Drawing;
 using System;
+using FoosLiveAndroid.Util.Model;
 
 namespace FoosLiveAndroid.Fragments
 {
@@ -15,7 +16,6 @@ namespace FoosLiveAndroid.Fragments
     {
         static readonly new string Tag = typeof(InfoFragment).Name;
         private static string SpeedFormat;
-        private const double miliSecondsInSecond = 1000;
 
         private View _view;
         private TextView _team1Name;
@@ -72,7 +72,7 @@ namespace FoosLiveAndroid.Fragments
                     if (goal.Duration < minDuration)
                         minDuration = goal.Duration;
                 }
-                _fastestGoal.Text = Math.Round(minDuration / miliSecondsInSecond).ToString(SpeedFormat);
+                _fastestGoal.Text = minDuration.ToString(SpeedFormat);
             });
 
             return _view;

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Android.Graphics;
+using FoosLiveAndroid.Util.Model;
 
 namespace FoosLiveAndroid.Util.GameControl
 {
@@ -24,10 +25,7 @@ namespace FoosLiveAndroid.Util.GameControl
         private long timestampStart;
         private long timestampEnd;
 
-        public long Duration
-        {
-            get => timestampEnd - timestampStart;
-        }
+        public long Duration { get; }
 
         public Goal(Queue<PointF> positions, RectF tablePoints, long start, long end)
         {
@@ -35,6 +33,8 @@ namespace FoosLiveAndroid.Util.GameControl
             _speeds = new double[positions.Count];
             timestampStart = start;
             timestampEnd = end;
+
+            Duration = (long) Math.Round((timestampEnd - timestampStart) / Units.MiliSecondsInSecond);
 
             // Fill the points array with positions
             int i = 0;
