@@ -2,7 +2,7 @@
 {
     public enum SoundAsset
     {
-        GoalMario = 0,
-        WinMario = 1
+        GoalMario,
+        WinMario,
     }
 }

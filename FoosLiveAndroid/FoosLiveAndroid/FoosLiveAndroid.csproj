@@ -190,6 +190,7 @@
     <Compile Include="Fragments\EndGameFragment.cs" />
     <Compile Include="Util\Model\Units.cs" />
     <Compile Include="Model\ESoundAsset.cs" />
+    <Compile Include="Model\ELoadingStatus.cs" />
   </ItemGroup>
   <ItemGroup>
     <AndroidNativeLibrary Include="lib\armeabi-v7a\libcvextern.so" />

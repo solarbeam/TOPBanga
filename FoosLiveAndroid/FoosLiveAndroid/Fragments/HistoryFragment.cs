@@ -8,6 +8,7 @@ using Android.Views;
 using Android.Widget;
 using FoosLiveAndroid.Util.Database;
 using FoosLiveAndroid.Fragments.Interface;
+using FoosLiveAndroid.Model;
 
 namespace FoosLiveAndroid.Fragments
 {
@@ -21,7 +22,7 @@ namespace FoosLiveAndroid.Fragments
         private View _view;
         private IOnFragmentInteractionListener _interactionListener;
         private RecyclerView _historyRecyclerView;
-        private bool error = false;
+        private LoadingStatus _loadingStatus;
 
         public static Fragment NewInstance()
         {
@@ -51,17 +52,19 @@ namespace FoosLiveAndroid.Fragments
             // If no data was retrieved, display error and ignore list initialisation
             if (_historyList == null)
             {
-                error = true;
+                _loadingStatus = LoadingStatus.No_connection;
                 return;
             }
 
             // If there are no records, display message and ignore list initialisation
             if (_historyList.Count == 0)
             {
-                _loadingStatusLabel.Text = GetString(Resource.String.history_empty);
-                error = true;
+                
+                _loadingStatus = LoadingStatus.Empty_list;
                 return;
             }
+
+            _loadingStatus = LoadingStatus.Success;
             // Hides loading layout and shows history list
             _loadingLayout.Visibility = ViewStates.Gone;
             _historyRecyclerView.Visibility = ViewStates.Visible;
@@ -83,14 +86,16 @@ namespace FoosLiveAndroid.Fragments
 
             _view.Post(() =>
             {
-                if (error)
-                {
-                    // Hide progress bar
-                    _progressBar.Post(() => _progressBar.Visibility = ViewStates.Gone);
+                if (_loadingStatus == LoadingStatus.Success) return;
 
-                    // Show message
-                    _loadingStatusLabel.Post(() => _loadingStatusLabel.Visibility = ViewStates.Visible);
-                }
+                if (_loadingStatus == LoadingStatus.Empty_list)
+                    _loadingStatusLabel.Text = GetString(Resource.String.history_empty);
+                
+                // Hide progress bar
+                _progressBar.Post(() => _progressBar.Visibility = ViewStates.Gone);
+                // Show error message
+                _loadingStatusLabel.Post(() => _loadingStatusLabel.Visibility = ViewStates.Visible);
+
             });
 
             return _view;
@@ -103,15 +108,5 @@ namespace FoosLiveAndroid.Fragments
             _progressBar = _view.FindViewById<ProgressBar>(Resource.Id.loadingBar);
             _historyRecyclerView = _view.FindViewById<RecyclerView>(Resource.Id.historyRecyclerView);
         }
-
-        /// <summary>
-        /// Displays the loading error.
-        /// </summary>
-        private void DisplayError()
-        {
-
-            
-        }
-
     }
 }
