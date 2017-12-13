@@ -41,8 +41,8 @@ namespace FoosLiveAndroid
         private static readonly int PreviewHeight = PropertiesManager.GetIntProperty("preview_height");
         private static readonly int SlidingTextDelay = PropertiesManager.GetIntProperty("sliding_text_delay");
         private static readonly int TimerFrequency = PropertiesManager.GetIntProperty("timer_frequency");
-        private static readonly float FormatSpeed = 10.0f;
-
+        private static readonly float FormatSpeed = PropertiesManager.GetFloatProperty("format_speed");
+        private const double miliSecondsInSecond = 1000;
         private bool _textThreadStarted = false;
         private bool _waitForSpeed = false;
 
@@ -197,7 +197,7 @@ namespace FoosLiveAndroid
                             "Team 2", _gameController.RedScore,
                             _gameController.MaxSpeed,
                             _gameController.AverageSpeed,
-                            _gameController.heatmapZones, TimeSpan.FromMilliseconds(GameTimer.Time).TotalSeconds.ToString() + " s",
+                            _gameController.heatmapZones, TimeSpan.FromMilliseconds(GameTimer.Time).TotalSeconds.ToString(timerFormat),
                             _gameController.Goals);
 
             // Show pop-up fragment, holding all of the match's info
@@ -230,7 +230,7 @@ namespace FoosLiveAndroid
         {
             RunOnUiThread(() =>
             {
-                _timer.Text = Math.Round(GameTimer.Time * 0.001f, 2).ToString(timerFormat);
+                _timer.Text = Math.Round(GameTimer.Time / miliSecondsInSecond).ToString(timerFormat);
             });
         }
 
