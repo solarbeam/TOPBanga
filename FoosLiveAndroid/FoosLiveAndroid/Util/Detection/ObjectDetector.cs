@@ -89,7 +89,7 @@ namespace FoosLiveAndroid.Util.Detection
             Path path = new Path();
 
             Paint paint = new Paint();
-            paint.StrokeWidth = BallStrokeWidth;
+            paint.StrokeWidth = RectStrokeWidth;
             paint.SetStyle(Paint.Style.Stroke);
 
             PointF[] points = _controller.ballCoordinates.ToArray();
