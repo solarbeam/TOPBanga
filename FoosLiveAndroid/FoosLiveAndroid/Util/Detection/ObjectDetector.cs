@@ -96,7 +96,10 @@ namespace FoosLiveAndroid.Util.Detection
             // Paint the trail
             Path path = new Path();
 
-            // Start by calculating the cubic splines in order to smooth it
+            Paint paint = new Paint();
+            paint.StrokeWidth = 16.0f;
+            paint.SetStyle(Paint.Style.Stroke);
+
             PointF[] points = _controller.ballCoordinates.ToArray();
             int toPaint = 10;
             bool startSet = false;
@@ -122,6 +125,9 @@ namespace FoosLiveAndroid.Util.Detection
                     }
                     else
                         path.LineTo(points[i].X, points[i].Y);
+
+                    paint.Color = new Color(255, 0, 0, 200 * (toPaint / 9) + 50);
+                    canvas.DrawPath(path, paint);
                 }
                 else
                 {
@@ -136,7 +142,6 @@ namespace FoosLiveAndroid.Util.Detection
                     break;
             }
 
-            canvas.DrawPath(path, _paintRect);
             path.Dispose();
 
             return true;
