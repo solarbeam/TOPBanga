@@ -179,11 +179,6 @@ namespace FoosLiveAndroid
             _arrowRight.Visibility = ViewStates.Gone;
             _arrowLeft.Visibility = ViewStates.Gone;
 
-            // Remove drawable lefovers
-            Canvas canvas = _surfaceHolder.LockCanvas();
-            canvas.DrawBitmap(_alphaBitmap, 0, 0, null);
-            _surfaceHolder.UnlockCanvasAndPost(canvas);
-
             // Hide top bar
             _topBar.Visibility = ViewStates.Gone;
             // Hide game button
@@ -205,6 +200,8 @@ namespace FoosLiveAndroid
             FragmentManager.BeginTransaction()
                            .Add(Resource.Id.infoLayout, EndGameFragment.NewInstance())
                            .Commit();
+
+            _surfaceView.Visibility = ViewStates.Invisible;
         }
 
         /// <summary>
