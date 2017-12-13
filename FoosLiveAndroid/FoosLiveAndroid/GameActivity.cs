@@ -57,6 +57,8 @@ namespace FoosLiveAndroid
         private TextureView _gameView;
         private SurfaceView _surfaceView;
         private TextView _ballSpeed;
+        private TextView _team1Title;
+        private TextView _team2Title;
 
         private string scoreFormat;
         private string timerFormat;
@@ -132,6 +134,11 @@ namespace FoosLiveAndroid
             _gameController.PositionEvent += GameControllerPositionEvent;
             _gameTimer = new GameTimer(TimerFrequency);
 
+            ISharedPreferences preferences = GetSharedPreferences("FoosliveAndroid.dat", FileCreationMode.Private);
+            _team1Title.Text = preferences.GetString("team1Name", "TEAM 1");
+            _team2Title.Text = preferences.GetString("team2Name", "TEAM 2");
+            preferences.Dispose();
+            
             _surfaceView.SetZOrderOnTop(true);
             _surfaceView.Holder.SetFormat(Format.Transparent);
             _surfaceHolder = _surfaceView.Holder;
@@ -189,8 +196,8 @@ namespace FoosLiveAndroid
                 _positionManager.StopListening();
             
             //Collect data from GameController
-            MatchInfo.SetUp("Team 1", _gameController.BlueScore,
-                            "Team 2", _gameController.RedScore,
+            MatchInfo.SetUp(_team1Title.Text, _gameController.BlueScore,
+                            _team2Title.Text, _gameController.RedScore,
                             _gameController.MaxSpeed,
                             _gameController.AverageSpeed,
                             _gameController.heatmapZones, TimeSpan.FromMilliseconds(GameTimer.Time).TotalSeconds.ToString(timerFormat),
@@ -222,6 +229,8 @@ namespace FoosLiveAndroid
             _eventText = FindViewById<TextView>(Resource.Id.eventSlider);
             _ballSpeed = FindViewById<TextView>(Resource.Id.ballSpeed);
             _timer = FindViewById<TextView>(Resource.Id.timer);
+            _team1Title = FindViewById<TextView>(Resource.Id.team1Label);
+            _team2Title = FindViewById<TextView>(Resource.Id.team2Label);
         }
 
         private void UpdateTimer(object sender, EventArgs e)
@@ -280,14 +289,13 @@ namespace FoosLiveAndroid
                 _soundAlerts?.Play(EAlert.BlueGoal);
                 SlideText(ApplicationContext.Resources.GetString(Resource.String.blue_team_goal));
             }
-            else
-                if (e == CurrentEvent.RedGoalOccured)
+            else if (e == CurrentEvent.RedGoalOccured)
             {
                 _soundAlerts?.Play(EAlert.RedGoal);
                 SlideText(ApplicationContext.Resources.GetString(Resource.String.red_team_goal));
             }
-
             _score.Text = String.Format(scoreFormat, _gameController.BlueScore, _gameController.RedScore);
+            Log.Debug(Tag, $"Score value assigned {_score.Text}");
         }
 
         /// <summary>
