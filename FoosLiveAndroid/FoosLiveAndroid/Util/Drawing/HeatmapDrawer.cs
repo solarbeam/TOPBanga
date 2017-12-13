@@ -16,7 +16,7 @@ namespace FoosLiveAndroid.Util.Drawing
 {
     class HeatmapDrawer
     {
-        private const int maxAlphaValue = 255;
+        private static readonly int maxAlphaValue = PropertiesManager.GetIntProperty("trail_alpha_max");
         private const int maxHue = 255;
         private const int maxSaturation = 180;
         private const int maxValue = 0;

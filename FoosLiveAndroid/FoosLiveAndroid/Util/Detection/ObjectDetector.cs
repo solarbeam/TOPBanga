@@ -38,14 +38,6 @@ namespace FoosLiveAndroid.Util.Detection
             _mulX = mulX;
             _mulY = mulY;
 
-            // Declare the outline style for the table
-            _paintRect = new Paint
-            {
-                Color = new Color(255, 0, 0)
-            };
-            _paintRect.SetStyle(Paint.Style.Stroke);
-            _paintRect.StrokeWidth = RectStrokeWidth;
-
             // Declare the outline style for the ball
             _paintBall = new Paint
             {
@@ -97,7 +89,7 @@ namespace FoosLiveAndroid.Util.Detection
             Path path = new Path();
 
             Paint paint = new Paint();
-            paint.StrokeWidth = 16.0f;
+            paint.StrokeWidth = BallStrokeWidth;
             paint.SetStyle(Paint.Style.Stroke);
 
             PointF[] points = _controller.ballCoordinates.ToArray();

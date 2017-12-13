@@ -35,10 +35,10 @@ namespace FoosLiveAndroid.Util.GameControl
             private set;
         }
 
-        private float zoneWidth;
-        private float zoneHeight;
-        private float topLeftX;
-        private float topLeftY;
+        private float _zoneWidth;
+        private float _zoneHeight;
+        private float _topLeftX;
+        private float _topLeftY;
 
         public ZoneInfo(RectF tableInfo, int width, int height)
         {
@@ -46,10 +46,10 @@ namespace FoosLiveAndroid.Util.GameControl
             PointF topLeftCorner = new PointF(tableInfo.Left, tableInfo.Top);
             this.width = width;
             this.height = height;
-            zoneHeight = (( tableInfo.Bottom - tableInfo.Top ) / width);
-            zoneWidth = (( tableInfo.Right - tableInfo.Left ) / height);
-            topLeftX = tableInfo.Left;
-            topLeftY = tableInfo.Top;
+            _zoneHeight = (( tableInfo.Bottom - tableInfo.Top ) / width);
+            _zoneWidth = (( tableInfo.Right - tableInfo.Left ) / height);
+            _topLeftX = tableInfo.Left;
+            _topLeftY = tableInfo.Top;
         }
 
         public void AssignValue(PointF point)
@@ -57,11 +57,11 @@ namespace FoosLiveAndroid.Util.GameControl
             if (point == null)
                 return;
 
-            float x = point.X - topLeftX;
-            float y = point.Y - topLeftY;
+            float x = point.X - _topLeftX;
+            float y = point.Y - _topLeftY;
 
-            int posX = (int)(x / zoneWidth);
-            int posY = (int)(y / zoneHeight);
+            int posX = (int)(x / _zoneWidth);
+            int posY = (int)(y / _zoneHeight);
 
             if (posX < width && posY < height)
                 values[posY, posX]++;
