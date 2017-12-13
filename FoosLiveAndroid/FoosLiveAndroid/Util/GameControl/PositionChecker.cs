@@ -22,6 +22,9 @@ namespace FoosLiveAndroid.Util.GameControl
         private RectF zoneOne;
         private RectF zoneTwo;
 
+        private bool goalOccured;
+        private long timestampStart;
+
         /// <summary>
         /// Defines the goal zones, which hold the point of no return for the ball
         /// </summary>
@@ -73,7 +76,7 @@ namespace FoosLiveAndroid.Util.GameControl
         /// <summary>
         /// Holds the goals, which occured during the session
         /// </summary>
-        private Queue<Goal> _goals;
+        public Queue<Goal> _goals;
 
         /// <summary>
         /// Defines whether the ball is in the first goal zone
@@ -134,12 +137,14 @@ namespace FoosLiveAndroid.Util.GameControl
                         setter(BlueScore + 1, RedScore);
                         GoalEvent(this, CurrentEvent.BlueGoalOccured);
 
-                        _goals.Enqueue(new Goal(ballCoordinates, new RectF(ZoneOne.Left, ZoneOne.Top, ZoneTwo.Right, ZoneTwo.Bottom)));
+                        _goals.Enqueue(new Goal(ballCoordinates, new RectF(ZoneOne.Left, ZoneOne.Top, ZoneTwo.Right,
+                                                ZoneTwo.Bottom), timestampStart, GameTimer.Time));
 
                         // Reset variables to their starting values
                         _framesLost = 0;
                         ballInFirstGoalZone = false;
                         ballInSecondGoalZone = false;
+                        goalOccured = true;
 
                         return;
                     }
@@ -150,12 +155,14 @@ namespace FoosLiveAndroid.Util.GameControl
                         setter(BlueScore, RedScore + 1);
                         GoalEvent(this, CurrentEvent.RedGoalOccured);
 
-                        _goals.Enqueue(new Goal(ballCoordinates, new RectF(ZoneOne.Left, ZoneOne.Top, ZoneTwo.Right, ZoneTwo.Bottom)));
+                        _goals.Enqueue(new Goal(ballCoordinates, new RectF(ZoneOne.Left, ZoneOne.Top, ZoneTwo.Right,
+                                                ZoneTwo.Bottom), timestampStart, GameTimer.Time));
 
                         // Reset variables to their starting values
                         _framesLost = 0;
                         ballInFirstGoalZone = false;
                         ballInSecondGoalZone = false;
+                        goalOccured = true;
 
                         return;
                     }
@@ -165,6 +172,12 @@ namespace FoosLiveAndroid.Util.GameControl
             }
             else
             {
+                if (goalOccured)
+                {
+                    timestampStart = GameTimer.Time;
+                    goalOccured = false;
+                }
+
                 // It isn't, so reset the counter
                 _framesLost = 0;
 

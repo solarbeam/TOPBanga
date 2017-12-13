@@ -6,7 +6,7 @@
     android:layout_height="match_parent">
     <TextureView
         android:id="@+id/game_content"
-        android:layout_width="fill_parent"
+        android:layout_width="match_parent"
         android:layout_height="match_parent" />
     <SurfaceView
         android:layout_width="match_parent"
@@ -58,25 +58,65 @@
                 android:layout_alignTop="@+id/score"
                 android:layout_alignBottom="@+id/score"
                 android:layout_alignParentEnd="true" />
-            <TextView
-                android:id="@+id/statusText"
-                android:gravity="left"
+            <ImageView
+                android:id="@+id/speedIcon"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:paddingStart="10dp"
+                android:src="@drawable/ic_speed"
+                android:layout_alignParentStart="true"
+                android:layout_below="@+id/team1Label"
+                android:layout_marginRight="3dp" />
+            <TextView
+                android:id="@+id/ballSpeed"
+                android:textColor="@color/status_text"
+                android:layout_below="@+id/team1Label"
+                android:paddingTop="3dp"
+                android:layout_toRightOf="@+id/speedIcon"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="0" />
+            <TextView
+                android:id="@+id/speedUnit"
+                android:textColor="@color/status_text"
+                android:layout_below="@id/team1Label"
+                android:paddingTop="3dp"
+                android:textSize="10dp"
+                android:layout_toRightOf="@+id/ballSpeed"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/speed_unit" />
+            <TextView
+                android:id="@+id/eventSlider"
+                android:layout_marginStart="10dp"
+                android:layout_marginEnd="10dp"
                 android:textColor="@color/status_text"
                 android:maxLength="@integer/max_chars"
                 android:layout_below="@id/score"
-                android:layout_width="match_parent"
+                android:paddingTop="3dp"
+                android:layout_width="wrap_content"
+                android:layout_centerInParent="true"
                 android:layout_height="wrap_content"
-                android:text="Slider text" />
+                android:text="" />
+            <ImageView
+                android:id="@+id/timerIcon"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_timer"
+                android:layout_below="@+id/team2Label"
+                android:layout_toLeftOf="@+id/timer"
+                android:layout_marginRight="3dp" />
             <TextView
-                android:id="@+id/timerText"
+                android:id="@+id/timer"
                 android:gravity="right"
-                android:paddingEnd="@dimen/status_padding"
+                android:paddingEnd="8dp"
                 android:textColor="@color/status_text"
+                android:layout_alignParentRight="true"
                 android:layout_below="@id/score"
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="0:00 s" />
+                android:paddingTop="3dp"
+                android:text="@string/timer_format" />
         </RelativeLayout>
         <ImageView
             android:id="@+id/arrowTop"

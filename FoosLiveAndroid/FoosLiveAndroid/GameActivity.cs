@@ -41,8 +41,8 @@ namespace FoosLiveAndroid
         private static readonly int PreviewHeight = PropertiesManager.GetIntProperty("preview_height");
         private static readonly int SlidingTextDelay = PropertiesManager.GetIntProperty("sliding_text_delay");
         private static readonly int TimerFrequency = PropertiesManager.GetIntProperty("timer_frequency");
-        private static readonly float FormatSpeed = 10.0f;
-
+        private static readonly float FormatSpeed = PropertiesManager.GetFloatProperty("format_speed");
+        private const double miliSecondsInSecond = 1000;
         private bool _textThreadStarted = false;
         private bool _waitForSpeed = false;
 
@@ -51,11 +51,15 @@ namespace FoosLiveAndroid
         private float _upscaleMultiplierY;
 
         private TextView _eventText;
-        private TextView _timerText;
+        private TextView _timer;
         private Button _gameButton;
         private TextView _score;
         private TextureView _gameView;
         private SurfaceView _surfaceView;
+        private TextView _ballSpeed;
+
+        private string scoreFormat;
+        private string timerFormat;
 
         // Guideline UI elements
         private ImageView _arrowTop;
@@ -83,6 +87,7 @@ namespace FoosLiveAndroid
         // Todo: change Camera to Camera2
         private Camera _camera;
 
+        private bool _videoDisposed = true; 
         private MediaPlayer _video;
         private Surface _surface;
 
@@ -150,6 +155,9 @@ namespace FoosLiveAndroid
 
             prefs.Dispose();
 
+            scoreFormat = GetString(Resource.String.score_format);
+            timerFormat = GetString(Resource.String.timer_format);
+
             // Open the camera
             _gameView.SurfaceTextureListener = this;
             _gameView.SetOnTouchListener(this);
@@ -171,11 +179,6 @@ namespace FoosLiveAndroid
             _arrowRight.Visibility = ViewStates.Gone;
             _arrowLeft.Visibility = ViewStates.Gone;
 
-            // Remove drawable lefovers
-            Canvas canvas = _surfaceHolder.LockCanvas();
-            canvas.DrawBitmap(_alphaBitmap, 0, 0, null);
-            _surfaceHolder.UnlockCanvasAndPost(canvas);
-
             // Hide top bar
             _topBar.Visibility = ViewStates.Gone;
             // Hide game button
@@ -190,16 +193,15 @@ namespace FoosLiveAndroid
                             "Team 2", _gameController.RedScore,
                             _gameController.MaxSpeed,
                             _gameController.AverageSpeed,
-                            _gameController.zones, TimeSpan.FromMilliseconds(GameTimer.Time).TotalSeconds.ToString() + " s");
+                            _gameController.heatmapZones, TimeSpan.FromMilliseconds(GameTimer.Time).TotalSeconds.ToString(timerFormat),
+                            _gameController.Goals);
 
             // Show pop-up fragment, holding all of the match's info
             FragmentManager.BeginTransaction()
                            .Add(Resource.Id.infoLayout, EndGameFragment.NewInstance())
                            .Commit();
 
-            Canvas toDraw = _surfaceHolder.LockCanvas();
-            toDraw = ZoneInfo.DrawZones(MatchInfo.Zones, toDraw);
-            _surfaceHolder.UnlockCanvasAndPost(toDraw);
+            _surfaceView.Visibility = ViewStates.Invisible;
         }
 
         /// <summary>
@@ -217,15 +219,16 @@ namespace FoosLiveAndroid
             _arrowLeft = FindViewById<ImageView>(Resource.Id.arrowLeft);
             _arrowRight = FindViewById<ImageView>(Resource.Id.arrowRight);
             _arrowBot = FindViewById<ImageView>(Resource.Id.arrowBot);
-            _eventText = FindViewById<TextView>(Resource.Id.statusText);
-            _timerText = FindViewById<TextView>(Resource.Id.timerText);
+            _eventText = FindViewById<TextView>(Resource.Id.eventSlider);
+            _ballSpeed = FindViewById<TextView>(Resource.Id.ballSpeed);
+            _timer = FindViewById<TextView>(Resource.Id.timer);
         }
 
         private void UpdateTimer(object sender, EventArgs e)
         {
             RunOnUiThread(() =>
             {
-                    _timerText.Text = Math.Round(GameTimer.Time * 0.001f, 2).ToString("0.00 s");
+                _timer.Text = Math.Round(GameTimer.Time / miliSecondsInSecond).ToString(timerFormat);
             });
         }
 
@@ -284,7 +287,7 @@ namespace FoosLiveAndroid
                 SlideText(ApplicationContext.Resources.GetString(Resource.String.red_team_goal));
             }
 
-            _score.Text = _gameController.BlueScore + " : " + _gameController.RedScore;
+            _score.Text = String.Format(scoreFormat, _gameController.BlueScore, _gameController.RedScore);
         }
 
         /// <summary>
@@ -299,10 +302,10 @@ namespace FoosLiveAndroid
             {
                 if (_gameController.CurrentSpeed >= FormatSpeed)
                 {
-                    _eventText.Text = "" + Math.Round(_gameController.CurrentSpeed, 1) + " cm/s";
+                    _ballSpeed.Text = Math.Round(_gameController.CurrentSpeed, 1).ToString();
                 }
                 else
-                    _eventText.Text = "" + Math.Round(_gameController.CurrentSpeed, 2) + " cm/s";
+                    _ballSpeed.Text = Math.Round(_gameController.CurrentSpeed, 2).ToString();
 
                 _waitForSpeed = true;
 
@@ -353,6 +356,7 @@ namespace FoosLiveAndroid
 
                 _surface = new Surface(surface);
                 _video = new MediaPlayer();
+                _videoDisposed = false;
                 _video.SetDataSource(ApplicationContext, Intent.Data);
                 _video.SetSurface(_surface);
                 _video.Prepare();
@@ -408,12 +412,16 @@ namespace FoosLiveAndroid
         public bool OnSurfaceTextureDestroyed(SurfaceTexture surface)
         {
             // Check if we use a video file for getting frames or the camera
-            if (_video != null)
+            if (_video != null && !_videoDisposed)
+            {
                 // We use a video file, so release it's resources
                 _video.Release();
+                _video.Dispose();
+                _videoDisposed = true;
+            }
             else
                 // We use a camera, so release it
-                _camera.Release();
+                _camera?.Release();
 
             _positionManager?.StopListening();
             return true;
@@ -574,8 +582,12 @@ namespace FoosLiveAndroid
 
         public void OnCompletion(MediaPlayer mp)
         {
-            mp.Release();
-            mp.Dispose();
+            if (!_videoDisposed)
+            {
+                mp.Release();
+                mp.Dispose();
+                _videoDisposed = true;
+            }
             ShowEndGameScreen();
         }
     }

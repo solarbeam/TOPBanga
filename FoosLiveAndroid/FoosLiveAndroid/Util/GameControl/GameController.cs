@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using FoosLiveAndroid.Util.Interface;
 using FoosLiveAndroid.Util.Model;
+using Android.Util;
 
 namespace FoosLiveAndroid.Util.GameControl
 {
@@ -24,6 +25,11 @@ namespace FoosLiveAndroid.Util.GameControl
             get => _rowChecker.GetRowInformation();
         }
 
+        public ZoneInfo heatmapZones
+        {
+            get => _heatmapGen;
+        }
+
         /// <summary>
         /// Defines the current score for the red team
         /// </summary>
@@ -40,6 +46,7 @@ namespace FoosLiveAndroid.Util.GameControl
 
         private PositionChecker _posChecker;
         private RowChecker _rowChecker;
+        private ZoneInfo _heatmapGen;
 
         /// <summary>
         /// Holds the coordinates of the last position of the ball
@@ -95,6 +102,9 @@ namespace FoosLiveAndroid.Util.GameControl
                     _rowChecker.CheckRow(lastBallCoordinates);
                 }
 
+                // Update heatmap info
+                _heatmapGen.AssignValue(lastBallCoordinates);
+
                 ballCoordinates.Enqueue(lastBallCoordinates);
 
                 _posChecker.OnNewFrame(lastBallCoordinates,
@@ -128,6 +138,8 @@ namespace FoosLiveAndroid.Util.GameControl
         /// </summary>
         public Queue<PointF> ballCoordinates;
 
+        public Queue<Goal> Goals => _posChecker._goals;
+
         /// <summary>
         /// Set the table, which will be used for the definition of
         /// the goal zones
@@ -154,6 +166,9 @@ namespace FoosLiveAndroid.Util.GameControl
 
             _rowChecker.CalculateRows(new System.Drawing.Rectangle((int)_posChecker.ZoneOne.Left, (int)_posChecker.ZoneOne.Top,
                                                 (int)_posChecker.ZoneTwo.Right, (int)_posChecker.ZoneTwo.Bottom), mode);
+
+            _heatmapGen = new ZoneInfo(new RectF(_posChecker.ZoneOne.Left, _posChecker.ZoneOne.Top,
+                                                _posChecker.ZoneTwo.Right, _posChecker.ZoneTwo.Bottom), 30, 30);
         }
         /// <summary>
         /// The default constructor for the GameController class

@@ -21,6 +21,7 @@ namespace FoosLiveAndroid.Fragments
         private View _view;
         private IOnFragmentInteractionListener _interactionListener;
         private RecyclerView _historyRecyclerView;
+        private bool error = false;
 
         public static Fragment NewInstance()
         {
@@ -50,7 +51,7 @@ namespace FoosLiveAndroid.Fragments
             // If no data was retrieved, display error and ignore list initialisation
             if (_historyList == null)
             {
-                DisplayError();
+                error = true;
                 return;
             }
 
@@ -58,7 +59,7 @@ namespace FoosLiveAndroid.Fragments
             if (_historyList.Count == 0)
             {
                 _loadingStatusLabel.Text = GetString(Resource.String.history_empty);
-                DisplayError();
+                error = true;
                 return;
             }
             // Hides loading layout and shows history list
@@ -80,6 +81,18 @@ namespace FoosLiveAndroid.Fragments
             var layoutManager = new LinearLayoutManager(Activity);
             _historyRecyclerView.SetLayoutManager(layoutManager);
 
+            _view.Post(() =>
+            {
+                if (error)
+                {
+                    // Hide progress bar
+                    _progressBar.Post(() => _progressBar.Visibility = ViewStates.Gone);
+
+                    // Show message
+                    _loadingStatusLabel.Post(() => _loadingStatusLabel.Visibility = ViewStates.Visible);
+                }
+            });
+
             return _view;
         }
 
@@ -96,10 +109,8 @@ namespace FoosLiveAndroid.Fragments
         /// </summary>
         private void DisplayError()
         {
-            // Hide progress bar
-            _progressBar.Visibility = ViewStates.Gone;
-            // Show message
-            _loadingStatusLabel.Visibility = ViewStates.Visible;
+
+            
         }
 
     }

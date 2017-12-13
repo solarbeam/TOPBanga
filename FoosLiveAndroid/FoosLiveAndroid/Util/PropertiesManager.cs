@@ -1,7 +1,6 @@
 ﻿using System;
 using System.IO;
 using Android.Content;
-using Android.Util;
 using Java.Util;
 
 namespace FoosLiveAndroid.Util
