@@ -225,6 +225,8 @@
     <AndroidResource Include="Resources\drawable\ic_sound.xml" />
     <AndroidResource Include="Resources\layout\fragment_end_game.xml" />
     <AndroidResource Include="Resources\drawable\bg_end_game.xml" />
+    <AndroidResource Include="Resources\drawable\ic_timer.xml" />
+    <AndroidResource Include="Resources\drawable\ic_speed.xml" />
   </ItemGroup>
   <ItemGroup>
     <AndroidResource Include="Resources\mipmap-hdpi\Icon.png" />

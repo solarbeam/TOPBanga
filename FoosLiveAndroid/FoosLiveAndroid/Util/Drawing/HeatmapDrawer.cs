@@ -16,10 +16,11 @@ namespace FoosLiveAndroid.Util.Drawing
 {
     class HeatmapDrawer
     {
-        private static readonly int maxAlphaValue = PropertiesManager.GetIntProperty("trail_alpha_max");
-        private const int maxHue = 255;
-        private const int maxSaturation = 180;
-        private const int maxValue = 0;
+        private static readonly int MaxAlphaValue = PropertiesManager.GetIntProperty("trail_alpha_max");
+        private static readonly int MaxHue = PropertiesManager.GetIntProperty("max_hue");
+        private static readonly int MaxSaturation = PropertiesManager.GetIntProperty("max_saturation");
+        private static readonly int MaxValue = PropertiesManager.GetIntProperty("max_value");
+
         public static Canvas DrawZones(Canvas canvas, ZoneInfo zones)
         {
             System.Drawing.Size sizeOfBitmap = new System.Drawing.Size(canvas.Width, canvas.Height);
@@ -37,15 +38,14 @@ namespace FoosLiveAndroid.Util.Drawing
             }
 
             // Initialize the colorspace
-            Color[] colours = new Color[]
-            {
-                Color.Argb(maxAlphaValue, 0, 0, 0) ,
-                Color.Argb(maxAlphaValue, 0, 0, 0xFF) ,
-                Color.Argb(maxAlphaValue, 0, 0xFF, 0xFF) ,
-                Color.Argb(maxAlphaValue, 0, 0xFF, 0) ,
-                Color.Argb(maxAlphaValue, 0xFF, 0xFF, 0) ,
-                Color.Argb(maxAlphaValue, 0xFF, 0, 0) ,
-                Color.Argb(maxAlphaValue, 0xFF, 0xFF, 0xFF)
+            Color[] colours = {
+                Color.Argb(MaxAlphaValue, 0, 0, 0) ,
+                Color.Argb(MaxAlphaValue, 0, 0, 0xFF) ,
+                Color.Argb(MaxAlphaValue, 0, 0xFF, 0xFF) ,
+                Color.Argb(MaxAlphaValue, 0, 0xFF, 0) ,
+                Color.Argb(MaxAlphaValue, 0xFF, 0xFF, 0) ,
+                Color.Argb(MaxAlphaValue, 0xFF, 0, 0) ,
+                Color.Argb(MaxAlphaValue, 0xFF, 0xFF, 0xFF)
             };
 
             // Draw the zones
@@ -94,7 +94,7 @@ namespace FoosLiveAndroid.Util.Drawing
             double green = target.G + (greenDelta * percOfColor);
             double blue = target.B + (blueDelta * percOfColor);
 
-            return Color.Argb(maxAlphaValue, (byte)red, (byte)green, (byte)blue);
+            return Color.Argb(MaxAlphaValue, (byte)red, (byte)green, (byte)blue);
         }
     }
 }
