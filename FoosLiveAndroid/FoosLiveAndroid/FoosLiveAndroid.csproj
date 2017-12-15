@@ -149,6 +149,8 @@
     <Compile Include="Util\Drawing\AlignZones.cs" />
     <Compile Include="Util\Drawing\HeatmapDrawer.cs" />
     <Compile Include="Util\Drawing\RowDrawer.cs" />
+    <Compile Include="Util\Drawing\TextEffects.cs" />
+    <Compile Include="Util\Game.cs" />
     <Compile Include="Util\GameControl\GameTimer.cs" />
     <Compile Include="Util\GameControl\Goal.cs" />
     <Compile Include="Util\GameControl\PositionChecker.cs" />
@@ -268,9 +270,7 @@
     <AndroidResource Include="Resources\values\integer.xml" />
   </ItemGroup>
   <ItemGroup />
-  <ItemGroup>
-    <Folder Include="Util\Record\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\Android\Xamarin.Android.CSharp.targets" />
   <Import Project="..\packages\Xamarin.Android.Support.Annotations.26.1.0.1\build\MonoAndroid80\Xamarin.Android.Support.Annotations.targets" Condition="Exists('..\packages\Xamarin.Android.Support.Annotations.26.1.0.1\build\MonoAndroid80\Xamarin.Android.Support.Annotations.targets')" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
