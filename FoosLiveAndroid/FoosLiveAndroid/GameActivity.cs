@@ -340,9 +340,6 @@ namespace FoosLiveAndroid
             _upscaleMultiplierY = (float)h / PreviewHeight;
             _upscaleMultiplierX = (float)w / PreviewWidth;
 
-            // Create the ObjectDetector class for the GameActivity
-            _objectDetector = new ObjectDetector(_upscaleMultiplierX, _upscaleMultiplierY, _colorDetector, _gameController);
-
             // Create a template alpha bitmap for repeated drawing
             var tempBitmap = new BitmapDrawable(Bitmap.CreateBitmap(w, h, Bitmap.Config.Argb8888));
             tempBitmap.SetAlpha(0);
@@ -455,6 +452,12 @@ namespace FoosLiveAndroid
             // The table is currently drawn only if an Hsv value is selected
             if ( _hsvSelected )
             {
+                if (_objectDetector == null)
+                {
+                    // Create the ObjectDetector class for the GameActivity
+                    _objectDetector = new ObjectDetector(_upscaleMultiplierX, _upscaleMultiplierY, _colorDetector, _gameController, _selectedHsv);
+                }
+
                 Canvas canvas = _surfaceHolder.LockCanvas();
 
                 if ( ! _objectDetector.Detect(canvas, _selectedHsv,
