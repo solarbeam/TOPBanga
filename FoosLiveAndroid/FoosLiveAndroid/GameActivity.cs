@@ -21,6 +21,7 @@ using FoosLiveAndroid.Util.Model;
 using FoosLiveAndroid.Model;
 using Android.Support.V7.App;
 using FoosLiveAndroid.Util.Record;
+using FoosLiveAndroid.Util.Database;
 
 namespace FoosLiveAndroid
 {
@@ -219,8 +220,17 @@ namespace FoosLiveAndroid
             return;
         }
 
-        public void ShowEndGameScreen()
+        public async void ShowEndGameScreen()
         {
+
+            // Start depositing the data to database
+            var preferences = GetSharedPreferences(GetString(Resource.String.preference_file_key), FileCreationMode.Private);
+            var team1DefaultValue = Resources.GetString(Resource.String.saved_team1_name_default);
+            var team2DefaultValue = Resources.GetString(Resource.String.saved_team2_name_default);
+            var gameIdInDatabaseTask = DatabaseManager.InsertGame(preferences.GetString(GetString(Resource.String.saved_team1_name),team1DefaultValue),
+                 preferences.GetString(GetString(Resource.String.saved_team2_name), team2DefaultValue));
+
+
             _gameEnd = true;
             // Terminate recognition
             _ballColorSelected = false;
@@ -250,10 +260,19 @@ namespace FoosLiveAndroid
                             _game._gameController.heatmapZones, TimeSpan.FromMilliseconds(GameTimer.Time).TotalSeconds.ToString(_timerFormat),
                             _game._gameController.Goals);
 
+            // Send Data to database
+            
+
             // Show pop-up fragment, holding all of the match's info
             FragmentManager.BeginTransaction()
                            .Add(Resource.Id.infoLayout, EndGameFragment.NewInstance())
                            .Commit();
+            var gameIdInDatabase = await gameIdInDatabaseTask;
+            Log.Debug("Game Id In database", gameIdInDatabase.ToString());
+            if (gameIdInDatabase != -1)
+            {
+                await DatabaseManager.InsertEvent(gameIdInDatabase, "asdasd");
+            }
         }
 
         /// <summary>
