@@ -76,15 +76,9 @@ namespace FoosLiveAndroid.Util.GameControl
         /// Stops the timer
         /// </summary>
         /// <returns>True if the timer is stopped succesfully. False otherwise</returns>
-        public bool Stop()
+        public void Stop()
         {
-            if (_timer.Enabled)
-            {
-                _timer.Enabled = false;
-                return true;
-            }
-            else
-                return false;
+            _timer.Enabled = false;
         }
     }
 }

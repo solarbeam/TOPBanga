@@ -192,7 +192,8 @@ namespace FoosLiveAndroid.Fragments
                             break;
                         }
                 }
-                prefsEditor.Commit();
+                if (prefsEditor.Commit())
+                    Log.Error(Tag, "Failed to sve user sound selection.");
                 prefsEditor.Dispose();
                 preferences.Dispose();
                 UpdateSelection();

@@ -14,7 +14,7 @@ namespace FoosLiveAndroid.Fragments
 {
     public class HistoryFragment : Fragment
     {
-        static readonly new string Tag = typeof(InfoFragment).Name;
+        static readonly new string Tag = typeof(HistoryFragment).Name;
 
         private TextView _loadingStatusLabel;
         private ProgressBar _progressBar;

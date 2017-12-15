@@ -191,6 +191,8 @@
     <Compile Include="Util\Model\Units.cs" />
     <Compile Include="Model\ESoundAsset.cs" />
     <Compile Include="Model\ELoadingStatus.cs" />
+    <Compile Include="Util\Record\RecordPlayer.cs" />
+    <Compile Include="Util\Record\SurfaceManager.cs" />
   </ItemGroup>
   <ItemGroup>
     <AndroidNativeLibrary Include="lib\armeabi-v7a\libcvextern.so" />
@@ -266,6 +268,9 @@
     <AndroidResource Include="Resources\values\integer.xml" />
   </ItemGroup>
   <ItemGroup />
+  <ItemGroup>
+    <Folder Include="Util\Record\" />
+  </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\Android\Xamarin.Android.CSharp.targets" />
   <Import Project="..\packages\Xamarin.Android.Support.Annotations.26.1.0.1\build\MonoAndroid80\Xamarin.Android.Support.Annotations.targets" Condition="Exists('..\packages\Xamarin.Android.Support.Annotations.26.1.0.1\build\MonoAndroid80\Xamarin.Android.Support.Annotations.targets')" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

@@ -14,7 +14,7 @@ namespace FoosLiveAndroid.Fragments
 {
     public class EndGameFragment : Fragment
     {
-        static readonly new string Tag = typeof(InfoFragment).Name;
+        static readonly new string Tag = typeof(EndGameFragment).Name;
         private static string SpeedFormat;
 
         private View _view;

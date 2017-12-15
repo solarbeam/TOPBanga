@@ -4,7 +4,7 @@ namespace FoosLiveAndroid.Util
 {
     public class Vibration
     {
-        private Vibrator _vibrator;
+        private readonly Vibrator _vibrator;
         private bool _vibrating = false;
         private readonly int vibrationRepeatIndex = PropertiesManager.GetIntProperty("vibration_repeat_index");
         private readonly long[] _vibrationPattern =
