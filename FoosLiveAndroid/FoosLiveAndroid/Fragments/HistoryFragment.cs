@@ -9,6 +9,9 @@ using Android.Widget;
 using FoosLiveAndroid.Util.Database;
 using FoosLiveAndroid.Fragments.Interface;
 using FoosLiveAndroid.Model;
+using System.Threading.Tasks;
+using FoosLiveAndroid.Model.Interface;
+using System.Collections.Generic;
 
 namespace FoosLiveAndroid.Fragments
 {
@@ -23,6 +26,7 @@ namespace FoosLiveAndroid.Fragments
         private IOnFragmentInteractionListener _interactionListener;
         private RecyclerView _historyRecyclerView;
         private LoadingStatus _loadingStatus = LoadingStatus.Unknown;
+        private Task<List<IHistory>> historyTask;
 
         public static Fragment NewInstance()
         {
@@ -46,8 +50,10 @@ namespace FoosLiveAndroid.Fragments
 
         public async override void OnCreate(Bundle savedInstanceState)
         {
+            if (historyTask == null)
+                historyTask = DatabaseManager.GetHistory();
             base.OnCreate(savedInstanceState);
-            var _historyList = await DatabaseManager.GetHistory();
+            var _historyList = await historyTask;
 
             // If no data was retrieved, display error and ignore list initialisation
             if (_historyList == null)
@@ -77,6 +83,8 @@ namespace FoosLiveAndroid.Fragments
 
         public override View OnCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
         {
+            if(historyTask == null)
+                historyTask = DatabaseManager.GetHistory();
             _interactionListener.UpdateTitle(GetString(Resource.String.history));
             _view = inflater.Inflate(Resource.Layout.fragment_history, container, false);
             GetReferencesFromLayout();

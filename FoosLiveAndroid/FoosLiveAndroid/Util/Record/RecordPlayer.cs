@@ -38,9 +38,9 @@ namespace FoosLiveAndroid.Util
         }
         public override void Release()
         {
-            base.Release();
             if (!disposed)
             {
+                base.Release();
                 Dispose();
                 disposed = true;
             }
