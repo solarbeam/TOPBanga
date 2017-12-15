@@ -65,17 +65,23 @@ namespace FoosLiveAndroid.Util.GameControl
 
             if (posX >= 0 && posY >= 0  && posX < width && posY < height)
             {
-                values[posY, posX] += 3;
+                values[posY, posX] += 8;
 
-                int toAddY = -1, toAddX = -1;
-                for (int i = 0; i < 2; i ++)
+                int toAddY = -2, toAddX = -2;
+                for (int i = 0; i < 3; i ++)
                 {
-                    for (int j = 0; j < 2; j ++)
+                    for (int j = 0; j < 3; j ++)
                     {
                         if ((posX + toAddX < width && posX + toAddX > 0) &&
                             (posY + toAddY < height && posY + toAddY > 0))
                         {
-                            values[posX + toAddX, posY + toAddY]++;
+                            if ((i == -2 || i == 2) && (j == -2 || j == 2))
+                                values[posY + toAddY, posX + toAddX] += 2;
+                            else
+                                if ((i == -1 || i == 1) && (j == -1 || j == 1))
+                                values[posY + toAddY, posX + toAddX] += 4;
+                            else
+                                values[posY + toAddY, posX + toAddX] += 8;
                         }
                         toAddX ++;
                     }

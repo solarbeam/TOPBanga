@@ -200,7 +200,7 @@ namespace FoosLiveAndroid
                             _team2Title.Text, _gameController.RedScore,
                             _gameController.MaxSpeed,
                             _gameController.AverageSpeed,
-                            _gameController.heatmapZones, TimeSpan.FromMilliseconds(GameTimer.Time).TotalSeconds.ToString(timerFormat),
+                            _gameController.heatmapZones, _gameTimer.GetFormattedTime(),
                             _gameController.Goals);
 
             // Show pop-up fragment, holding all of the match's info
@@ -237,7 +237,7 @@ namespace FoosLiveAndroid
         {
             RunOnUiThread(() =>
             {
-                _timer.Text = Math.Round(GameTimer.Time / miliSecondsInSecond).ToString(timerFormat);
+                _timer.Text = _gameTimer.GetFormattedTime();
             });
         }
 
