@@ -68,4 +68,7 @@
     <string name="saved_team2_name_default">Team 2</string>
     <string name="mario_goal_sound">Mario Goal Sound</string>
     <string name="mario_win_sound">Mario Win Sound</string>
+    <!--Login-->
+    <string name="facebook_app_id">306442999863629</string>
+    <string name="fb_login_protocol_scheme">fb306442999863629</string>
 </resources>

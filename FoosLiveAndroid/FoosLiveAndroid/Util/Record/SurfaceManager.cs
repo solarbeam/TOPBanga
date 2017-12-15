@@ -34,7 +34,7 @@ namespace FoosLiveAndroid.Util.Record
             _activity._gameView.LayoutParameters = new FrameLayout.LayoutParams(w, h);
 
             // Set the upscaling constant
-            _activity.SetMultipliers(h, w);
+            _activity.SetMultipliers(w, h);
 
             // Create a template alpha bitmap for repeated drawing
             var tempBitmap = new BitmapDrawable(Bitmap.CreateBitmap(w, h, Bitmap.Config.Argb8888));

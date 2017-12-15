@@ -3663,6 +3663,12 @@ namespace FoosLiveAndroid
 			// aapt resource value: 0x7f09003e
 			public const int error_loading = 2131296318;
 			
+			// aapt resource value: 0x7f090063
+			public const int facebook_app_id = 2131296355;
+			
+			// aapt resource value: 0x7f090064
+			public const int fb_login_protocol_scheme = 2131296356;
+			
 			// aapt resource value: 0x7f090034
 			public const int from_file = 2131296308;
 			
