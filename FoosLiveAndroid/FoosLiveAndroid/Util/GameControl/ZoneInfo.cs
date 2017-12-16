@@ -7,20 +7,17 @@ namespace FoosLiveAndroid.Util.GameControl
     /// </summary>
     public class ZoneInfo
     {
-        public int[,] values
+        public int[,] Values
         {
             get;
-            private set;
         }
-        public int height
+        public int Height
         {
             get;
-            private set;
         }
-        public int width
+        public int Width
         {
             get;
-            private set;
         }
 
         private float _zoneWidth;
@@ -30,10 +27,11 @@ namespace FoosLiveAndroid.Util.GameControl
 
         public ZoneInfo(RectF tableInfo, int width, int height)
         {
-            values = new int[height, width];
-            PointF topLeftCorner = new PointF(tableInfo.Left, tableInfo.Top);
-            this.width = width;
-            this.height = height;
+            Values = new int[height, width];
+            // Todo: redudantant variable
+            var topLeftCorner = new PointF(tableInfo.Left, tableInfo.Top);
+            Width = width;
+            Height = height;
             _zoneHeight = (( tableInfo.Bottom - tableInfo.Top ) / width);
             _zoneWidth = (( tableInfo.Right - tableInfo.Left ) / height);
             _topLeftX = tableInfo.Left;
@@ -45,31 +43,29 @@ namespace FoosLiveAndroid.Util.GameControl
             if (point == null)
                 return;
 
-            float x = point.X - _topLeftX;
-            float y = point.Y - _topLeftY;
+            var x = point.X - _topLeftX;
+            var y = point.Y - _topLeftY;
 
-            int posX = (int)(x / _zoneWidth);
-            int posY = (int)(y / _zoneHeight);
+            var posX = (int)(x / _zoneWidth);
+            var posY = (int)(y / _zoneHeight);
 
-            if (posX >= 0 && posY >= 0  && posX < width && posY < height)
+            if (posX < 0 || posY < 0 || posX >= Width || posY >= Height) return;
+            Values[posY, posX] += 3;
+
+            int toAddY = -1, toAddX = -1;
+            for (var i = 0; i < 2; i ++)
             {
-                values[posY, posX] += 3;
-
-                int toAddY = -1, toAddX = -1;
-                for (int i = 0; i < 2; i ++)
+                for (var j = 0; j < 2; j ++)
                 {
-                    for (int j = 0; j < 2; j ++)
+                    if ((posX + toAddX < Width && posX + toAddX > 0) &&
+                        (posY + toAddY < Height && posY + toAddY > 0))
                     {
-                        if ((posX + toAddX < width && posX + toAddX > 0) &&
-                            (posY + toAddY < height && posY + toAddY > 0))
-                        {
-                            values[posX + toAddX, posY + toAddY]++;
-                        }
-                        toAddX ++;
+                        Values[posX + toAddX, posY + toAddY]++;
                     }
-                    toAddX = 0;
-                    toAddY++;
+                    toAddX ++;
                 }
+                toAddX = 0;
+                toAddY++;
             }
         }
     }

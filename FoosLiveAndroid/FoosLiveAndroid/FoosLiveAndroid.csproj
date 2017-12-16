@@ -165,11 +165,12 @@
     <Compile Include="Util\Model\ECaptureMode.cs" />
     <Compile Include="Util\Model\ECurrentEvent.cs" />
     <Compile Include="Util\Model\ERow.cs" />
+    <Compile Include="Util\Sensors\Vibration.cs" />
     <Compile Include="Util\Sounds\FilePathResolver.cs" />
     <Compile Include="Util\Sounds\SoundAlerts.cs" />
     <Compile Include="Util\Interface\IAlert.cs" />
     <Compile Include="Util\Sounds\EAlert.cs" />
-    <Compile Include="Util\Sounds\PlayerOGG.cs" />
+    <Compile Include="Util\Sounds\PlayerOgg.cs" />
     <Compile Include="Model\ERequestId.cs" />
     <Compile Include="SplashActivity.cs" />
     <Compile Include="Util\PropertiesManager.cs" />
@@ -187,7 +188,6 @@
     <Compile Include="Util\Sensors\PositionManager.cs" />
     <Compile Include="Util\Interface\IVibration.cs" />
     <Compile Include="Util\Interface\IPositionManager.cs" />
-    <Compile Include="Util\Vibration.cs" />
     <Compile Include="Resources\Resource.Designer.cs" />
     <Compile Include="Fragments\EndGameFragment.cs" />
     <Compile Include="Util\Model\Units.cs" />

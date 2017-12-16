@@ -36,17 +36,16 @@ namespace FoosLiveAndroid.Util.Database
 
             var streamWriter = new StreamWriter(request.GetRequestStream());
             // Prepare query statement
-            streamWriter.Write(string.Format(InsertGameFormat, blueTeamName, redTeamName));
+            streamWriter.Write(InsertGameFormat, blueTeamName, redTeamName);
 
             streamWriter.Flush();
             var httpWebResponse = (HttpWebResponse)await request.GetResponseAsync();
 
             var streamReader = new StreamReader(httpWebResponse.GetResponseStream());
-            string idUnconverted = await streamReader.ReadToEndAsync();
-            if (int.TryParse(idUnconverted, out int id))
+            var idUnconverted = await streamReader.ReadToEndAsync();
+            if (int.TryParse(idUnconverted, out var id))
                 return id;
-            else
-                return -1;
+            return -1;
         }
         /// <summary>
         /// Inserts a goal into the remote database.
@@ -64,7 +63,7 @@ namespace FoosLiveAndroid.Util.Database
 
             // Set up request statement
             var streamWriter = new StreamWriter(await request.GetRequestStreamAsync());
-            streamWriter.Write(string.Format(InsertGoalFormat, gameId, teamName));
+            streamWriter.Write(InsertGoalFormat, gameId, teamName);
             streamWriter.Flush();
 
             // Get response
@@ -91,7 +90,7 @@ namespace FoosLiveAndroid.Util.Database
 
             // Set up request statement
             var streamWriter = new StreamWriter(request.GetRequestStream());
-            streamWriter.Write(string.Format(InsertEventFormat, gameId, details));
+            streamWriter.Write(InsertEventFormat, gameId, details);
             streamWriter.Flush();
 
             // Get response

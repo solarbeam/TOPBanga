@@ -1,5 +1,4 @@
-﻿using System;
-using Android.Hardware;
+﻿using Android.Hardware;
 using Android.Runtime;
 using FoosLiveAndroid.Util.Interface;
 
@@ -8,7 +7,7 @@ namespace FoosLiveAndroid.Util.Sensors
     public class PositionManager : Java.Lang.Object, ISensorEventListener, IPositionManager
     {
 
-        private Vibration _vibration;
+        private IVibration _vibration;
         private SensorManager _sensorManager;
         private Sensor _rotationSensor;
         private SensorStatus _lastAccuracy;
@@ -22,16 +21,20 @@ namespace FoosLiveAndroid.Util.Sensors
         private float _pitch;
         private float _roll;
         private float _referencePointRoll;
-        // 0 - top, 1 - bot
+        /// <summary>
+        /// 0 - top, 1 - bot
+        /// </summary>
         private bool[] _exceedsPitch;
-        // 0 - left, 1 - right
+        /// <summary>
+        /// 0 - left, 1 - right
+        /// </summary>
         private bool?[] _exceedsRoll;
 
         private GameActivity _activity;
 
         private bool gameStarted = false;
 
-        public PositionManager(GameActivity activity, SensorManager sensorManager, Vibration vibration)
+        public PositionManager(GameActivity activity, SensorManager sensorManager, IVibration vibration)
         {
             _activity = activity;
             _rotationSensor = sensorManager.GetDefaultSensor(SensorType.RotationVector);
@@ -56,36 +59,34 @@ namespace FoosLiveAndroid.Util.Sensors
         public void OnSensorChanged(SensorEvent e)
         {
             // Do not handle low accuracy / unreliable data
-            if (_lastAccuracy == SensorStatus.AccuracyLow || _lastAccuracy == SensorStatus.Unreliable) return;
+            if (_lastAccuracy == SensorStatus.AccuracyLow || _lastAccuracy == SensorStatus.Unreliable || 
+                e.Sensor.Type != SensorType.RotationVector) return;
 
-            if (e.Sensor.Type == SensorType.RotationVector)
-            {
-                float[] rotationMatrix = new float[9];
-                float[] rotationVector = new float[e.Values.Count];
+            var rotationMatrix = new float[9];
+            var rotationVector = new float[e.Values.Count];
 
-                // Extract raw data
-                for (int i = 0; i < rotationVector.Length; i++)
-                    rotationVector[i] = e.Values[i];
+            // Extract raw data
+            for (var i = 0; i < rotationVector.Length; i++)
+                rotationVector[i] = e.Values[i];
 
-                // Parse raw data
-                SensorManager.GetRotationMatrixFromVector(rotationMatrix, rotationVector);
+            // Parse raw data
+            SensorManager.GetRotationMatrixFromVector(rotationMatrix, rotationVector);
 
-                // Calibration 
-                float[] adjustedRotationMatrix = new float[9];
-                SensorManager.RemapCoordinateSystem(rotationMatrix, Axis.X,
-                                                    Axis.Y, adjustedRotationMatrix);
+            // Calibration 
+            var adjustedRotationMatrix = new float[9];
+            SensorManager.RemapCoordinateSystem(rotationMatrix, Axis.X,
+                Axis.Y, adjustedRotationMatrix);
 
-                //Retrieve calibrated data
-                var orientation = new float[3];
-                SensorManager.GetOrientation(adjustedRotationMatrix, orientation);
+            //Retrieve calibrated data
+            var orientation = new float[3];
+            SensorManager.GetOrientation(adjustedRotationMatrix, orientation);
 
-                //Todo: find out what the hell is -57
-                _pitch = orientation[1] * -57;
-                _roll = orientation[2] * -57;
+            //Todo: find out what the hell is -57
+            _pitch = orientation[1] * -57;
+            _roll = orientation[2] * -57;
 
-                ProcessPosition();
-                //Log.Debug("ROTATION", $"Pitch: {_pitch}, roll: {_roll}");
-            }
+            ProcessPosition();
+            //Log.Debug("ROTATION", $"Pitch: {_pitch}, roll: {_roll}");
         }
 
         /// <summary>

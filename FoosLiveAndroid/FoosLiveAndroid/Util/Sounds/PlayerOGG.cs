@@ -4,11 +4,11 @@ using FoosLiveAndroid.Util.Interface;
 
 namespace FoosLiveAndroid.Util.Sounds
 {
-    public class PlayerOGG : IAlert
+    public class PlayerOgg : IAlert
     {
         private readonly MediaPlayer _player;
 
-        public PlayerOGG(AssetFileDescriptor descriptor)
+        public PlayerOgg(AssetFileDescriptor descriptor)
         {
             _player = new MediaPlayer();
             _player.SetVolume(100, 100);
