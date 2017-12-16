@@ -66,6 +66,7 @@
     <string name="saved_team1_name_default">Team 1</string>
     <string name="saved_team2_name">TEAM2_NAME</string>
     <string name="saved_team2_name_default">Team 2</string>
+    <string name="saved_auto_login">AUTO_LOGIN</string>
     <string name="mario_goal_sound">Mario Goal Sound</string>
     <string name="mario_win_sound">Mario Win Sound</string>
     <!--Login-->

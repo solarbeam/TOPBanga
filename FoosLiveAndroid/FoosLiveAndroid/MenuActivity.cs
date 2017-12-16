@@ -8,6 +8,7 @@ using FoosLiveAndroid.Fragments;
 using Android.Content.PM;
 using FoosLiveAndroid.Fragments.MainMenu;
 using FoosLiveAndroid.Fragments.Interface;
+using FoosLiveAndroid.Util.Login;
 
 namespace FoosLiveAndroid
 {
@@ -30,6 +31,8 @@ namespace FoosLiveAndroid
         protected override void OnCreate(Bundle savedInstanceState)
         {
             base.OnCreate(savedInstanceState);
+            var lm = LoginManager.GetInstance(this);
+            Log.Debug("LOCMAN", $"Connected: {lm.googleApiClient.IsConnected}");
             SetContentView(Resource.Layout.activity_menu);
             GetReferencesFromLayout();
             SetSupportActionBar(_toolbar);

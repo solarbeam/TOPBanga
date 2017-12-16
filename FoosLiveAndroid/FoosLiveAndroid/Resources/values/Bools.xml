@@ -2,4 +2,5 @@
 <resources>
     <bool name="saved_sync_enabled_default">true</bool>
     <bool name="saved_sound_enabled_default">true</bool>
+    <bool name="saved_auto_login_default">true</bool>
 </resources>

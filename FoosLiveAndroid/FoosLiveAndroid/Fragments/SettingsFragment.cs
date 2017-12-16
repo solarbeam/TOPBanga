@@ -8,6 +8,7 @@ using Android.Views.InputMethods;
 using Android.Widget;
 using FoosLiveAndroid.Fragments.Interface;
 using FoosLiveAndroid.Model;
+using FoosLiveAndroid.Util.Login;
 
 namespace FoosLiveAndroid.Fragments
 {
@@ -29,6 +30,7 @@ namespace FoosLiveAndroid.Fragments
         private TextView _team2GoalSoundValue;
         private RelativeLayout _team2WinSoundItem;
         private TextView _team2WinSoundValue;
+        private Button _logoutButton;
 
         private RelativeLayout _team1TitleSettings;
         private RelativeLayout _team2TitleSettings;
@@ -57,21 +59,28 @@ namespace FoosLiveAndroid.Fragments
             }
 
             base.OnAttach(context);
+
         }
 
         public override View OnCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
         {
             _interactionListener.UpdateTitle(GetString(Resource.String.settings));
             _view = inflater.Inflate(Resource.Layout.fragment_settings, container, false);
-
             GetReferencesFromLayout();
-
+            LoginManager loginManager = LoginManager.GetInstance(Context);
             //Todo: set up sound adapter from model
             var scoreSoundsAdapter = new ArrayAdapter<string>(
                 Context, Android.Resource.Layout.SimpleListItem1, new string[] { "Mario Goal Sound", "Mario Win Sound" });
 
             var winSoundsAdapter = new ArrayAdapter<string>(
                 Context, Android.Resource.Layout.SimpleListItem1, new string[] { "Mario Goal Sound", "Mario Win Sound"  });
+
+            _logoutButton.Click += delegate {
+                loginManager.SignOut();
+                var intent = new Intent(Application.Context, typeof(LoginActivity));
+                intent.SetFlags(ActivityFlags.NewTask | ActivityFlags.ClearTask);
+                StartActivity(intent);
+            };
 
             _team1ScoreSoundItem.Click += delegate
             {
@@ -161,6 +170,7 @@ namespace FoosLiveAndroid.Fragments
             _team2Title = _view.FindViewById<TextView>(Resource.Id.team2Name);
             _team1TitleSettings = _view.FindViewById<RelativeLayout>(Resource.Id.team1TitleSettings);
             _team2TitleSettings = _view.FindViewById<RelativeLayout>(Resource.Id.team2TitleSettings);
+            _logoutButton = _view.FindViewById<Button>(Resource.Id.logoutButton);
         }
 
         private void OpenSoundPicker(string soundItem, ArrayAdapter<string> adapter, TextView soundTitle)
@@ -279,6 +289,11 @@ namespace FoosLiveAndroid.Fragments
             editor.Commit();
             editor.Dispose();
             preferences.Dispose();
+        }
+
+        public void SignOut(object sender, EventArgs e)
+        {
+            
         }
 
     }

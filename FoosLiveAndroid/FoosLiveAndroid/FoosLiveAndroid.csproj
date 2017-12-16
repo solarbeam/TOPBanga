@@ -158,20 +158,20 @@
     <Reference Include="Xamarin.Android.Support.Design">
       <HintPath>..\packages\Xamarin.Android.Support.Design.26.1.0.1\lib\MonoAndroid80\Xamarin.Android.Support.Design.dll</HintPath>
     </Reference>
-    <Reference Include="PInvoke.Windows.Core">
-      <HintPath>..\packages\PInvoke.Windows.Core.0.3.2\lib\portable-net45+win+wpa81+MonoAndroid10+xamarinios10+MonoTouch10\PInvoke.Windows.Core.dll</HintPath>
-    </Reference>
-    <Reference Include="PInvoke.Kernel32">
-      <HintPath>..\packages\PInvoke.Kernel32.0.3.2\lib\portable-net45+win+wpa81+MonoAndroid10+xamarinios10+MonoTouch10\PInvoke.Kernel32.dll</HintPath>
-    </Reference>
-    <Reference Include="PInvoke.BCrypt">
-      <HintPath>..\packages\PInvoke.BCrypt.0.3.2\lib\portable-net45+win+wpa81+MonoAndroid10+xamarinios10+MonoTouch10\PInvoke.BCrypt.dll</HintPath>
-    </Reference>
-    <Reference Include="PInvoke.NCrypt">
-      <HintPath>..\packages\PInvoke.NCrypt.0.3.2\lib\portable-net45+win+wpa81+MonoAndroid10+xamarinios10+MonoTouch10\PInvoke.NCrypt.dll</HintPath>
-    </Reference>
     <Reference Include="PCLCrypto">
       <HintPath>..\packages\PCLCrypto.2.0.147\lib\MonoAndroid23\PCLCrypto.dll</HintPath>
+    </Reference>
+    <Reference Include="PInvoke.Windows.Core">
+      <HintPath>..\packages\PInvoke.Windows.Core.0.5.111\lib\portable-net45+win8+wpa81\PInvoke.Windows.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="PInvoke.Kernel32">
+      <HintPath>..\packages\PInvoke.Kernel32.0.5.111\lib\portable-net45+win8+wpa81\PInvoke.Kernel32.dll</HintPath>
+    </Reference>
+    <Reference Include="PInvoke.BCrypt">
+      <HintPath>..\packages\PInvoke.BCrypt.0.5.111\lib\portable-net45+win8+wpa81\PInvoke.BCrypt.dll</HintPath>
+    </Reference>
+    <Reference Include="PInvoke.NCrypt">
+      <HintPath>..\packages\PInvoke.NCrypt.0.5.111\lib\portable-net45+win8+wpa81\PInvoke.NCrypt.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -235,8 +235,9 @@
     <Compile Include="Util\Record\RecordPlayer.cs" />
     <Compile Include="Util\Record\SurfaceManager.cs" />
     <Compile Include="LoginActivity.cs" />
-    <Compile Include="Util\Login\SignInResultCallback.cs" />
     <Compile Include="Util\Login\SignOutResultCallback.cs" />
+    <Compile Include="Util\Login\LoginManager.cs" />
+    <Compile Include="Util\Login\SignInResultCallback.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
@@ -274,6 +275,7 @@
     <AndroidResource Include="Resources\drawable\ic_speed.xml" />
     <AndroidResource Include="Resources\values\Bools.xml" />
     <AndroidResource Include="Resources\layout\activity_login.axml" />
+    <AndroidResource Include="Resources\drawable\ic_logout.xml" />
   </ItemGroup>
   <ItemGroup>
     <AndroidResource Include="Resources\mipmap-hdpi\Icon.png" />
