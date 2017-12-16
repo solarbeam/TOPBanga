@@ -1,5 +1,4 @@
-﻿using System;
-using Android.Hardware;
+﻿using Android.Hardware;
 using Android.Runtime;
 using FoosLiveAndroid.Util.Interface;
 

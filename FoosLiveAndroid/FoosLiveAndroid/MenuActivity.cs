@@ -11,8 +11,7 @@ using FoosLiveAndroid.Fragments.Interface;
 
 namespace FoosLiveAndroid
 {
-    [Activity(Label = "Fooslive", Icon = "@mipmap/icon_round",
-              ScreenOrientation = ScreenOrientation.Portrait)]
+    [Activity(ScreenOrientation = ScreenOrientation.Portrait)]
     public class MenuActivity : AppCompatActivity, IOnFragmentInteractionListener
     {
         static readonly string Tag = typeof(MenuActivity).Name;

@@ -11,8 +11,7 @@ using Emgu.CV.Cvb;
 namespace FoosLiveAndroid
 {
     [Activity(Theme = "@style/FoosbalTheme.Splash", MainLauncher = true,
-              NoHistory = true, Label = "Fooslive", Icon = "@mipmap/icon_round",
-              ScreenOrientation = ScreenOrientation.Portrait)]
+              NoHistory = true, ScreenOrientation = ScreenOrientation.Portrait)]
     public class SplashActivity : AppCompatActivity
     {
         static readonly string TAG = typeof(SplashActivity).Name;
@@ -27,7 +26,7 @@ namespace FoosLiveAndroid
         }
 
         /// Background work behind the splash screen
-        private async void LoadResources()
+        private void LoadResources()
         {
             // Initialize config file manager
             PropertiesManager.Initialise(this);

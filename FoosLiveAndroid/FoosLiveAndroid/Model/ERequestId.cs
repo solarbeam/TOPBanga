@@ -6,6 +6,7 @@
     public enum RequestId
     {
         Camera,
-        VideoRequest
+        VideoRequest,
+        SignIn
     }
 }

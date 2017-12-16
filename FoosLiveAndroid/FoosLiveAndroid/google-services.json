@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "331011237467",
+    "project_id": "fooslive-123456"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:331011237467:android:399e6c57d8ce3dfe",
+        "android_client_info": {
+          "package_name": "FoosLiveAndroid.FoosLiveAndroid"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "331011237467-r23bv65mqdddrr8tags99ocd56dirar1.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "FoosLiveAndroid.FoosLiveAndroid",
+            "certificate_hash": "f4d49fe98f7c9ec4e4fd6987930817e0c0cd8e42"
+          }
+        },
+        {
+          "client_id": "331011237467-v9se3vltpne2rnjoeijumk4baac7gkvs.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCur9LoWGhqNU_WQQt68OmFbSFFW7i_cF4"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 1
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
