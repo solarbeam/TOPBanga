@@ -8,15 +8,13 @@ using Android.Views.InputMethods;
 using Android.Widget;
 using FoosLiveAndroid.Fragments.Interface;
 using FoosLiveAndroid.Model;
+using FoosLiveAndroid.Util.Sounds;
 
 namespace FoosLiveAndroid.Fragments
 {
     public class SettingsFragment : Fragment
     {
         static readonly new string Tag = typeof(SettingsFragment).Name;
-
-        private String GoalSoundMarioPath;
-        private String WinSoundMarioPath;
 
         private View _view;
         private Switch _syncSwitch;
@@ -34,6 +32,8 @@ namespace FoosLiveAndroid.Fragments
         private RelativeLayout _team2TitleSettings;
         private TextView _team1Title;
         private TextView _team2Title;
+
+        private PlayerOGG previewPlayer;
 
         private AlertDialog.Builder _dialogBuilder;
 
@@ -180,6 +180,7 @@ namespace FoosLiveAndroid.Fragments
                     case (int)SoundAsset.GoalMario:
                         {
                             var goalSoundName = GetString(Resource.String.mario_goal_sound);
+                            previewPlayer = new PlayerOGG(FilePathResolver.GetFile(Context, GetString(Resource.String.mario_goal_sound)));
                             prefsEditor.PutString(soundItem, goalSoundName).Apply();
                             soundTitle.Text = goalSoundName;
                             break;
@@ -187,13 +188,18 @@ namespace FoosLiveAndroid.Fragments
                     case (int)SoundAsset.WinMario:
                         {
                             var winSoundName = GetString(Resource.String.mario_win_sound);
+                            previewPlayer = new PlayerOGG(FilePathResolver.GetFile(Context, GetString(Resource.String.mario_win_sound)));
                             prefsEditor.PutString(soundItem, winSoundName).Apply();
                             soundTitle.Text = winSoundName;
                             break;
                         }
                 }
                 if (prefsEditor.Commit())
-                    Log.Error(Tag, "Failed to sve user sound selection.");
+                    Log.Error(Tag, "Failed to save user sound selection.");
+
+                // Preview the sound
+                previewPlayer.Play();
+
                 prefsEditor.Dispose();
                 preferences.Dispose();
                 UpdateSelection();
@@ -261,7 +267,7 @@ namespace FoosLiveAndroid.Fragments
             SaveValue<bool>(switchPrefKey, settingsSwitch.Checked);
         }
 
-        private void SaveValue<T>(string prefKey,  T input)
+        private void SaveValue<T>(string prefKey, T input)
         {
             var preferences = Context.GetSharedPreferences(GetString(Resource.String.preference_file_key), FileCreationMode.Private);
             var editor = preferences.Edit();
