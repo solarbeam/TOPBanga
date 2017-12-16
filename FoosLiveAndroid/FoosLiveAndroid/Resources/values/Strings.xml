@@ -71,4 +71,5 @@
     <!--Login-->
     <string name="facebook_app_id">306442999863629</string>
     <string name="fb_login_protocol_scheme">fb306442999863629</string>
+    <string name="google_oauth_client_id">331011237467-tv969e29bk9dfko2kd4mjneu7vp21468.apps.googleusercontent.com</string>
 </resources>

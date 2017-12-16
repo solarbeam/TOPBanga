@@ -16,30 +16,6 @@ namespace FoosLiveAndroid
     public class SplashActivity : AppCompatActivity
     {
         static readonly string TAG = typeof(SplashActivity).Name;
-
-        private const string team1Score = "team1Score";
-        private const string team1ScoreDefault = "defaultMarioGoal";
-
-        private const string team1Win = "team1Win";
-        private const string team1WinDefault = "defaultMarioWin";
-
-        private const string team2Score = "team2Score";
-        private const string team2Default = "defaultMarioGoal";
-
-        private const string team2Win = "team2Win";
-        private const string team2WinDefault = "defaultMarioWin";
-
-        private const string soundEnabled = "soundEnabled";
-        private const bool soundEnabledDefault = true;
-
-        private const string syncEnabled = "syncEnabled";
-        private const bool syncEnabledDefault = true;
-
-        private const string team1Name = "team1Name";
-        private const string team1NameDefault = "Team 1";
-        private const string team2Name = "team2Name";
-        private const string team2NameDefault = "Team 2";
-
         private static int Iterations = 1;
 
         /// Launches the startup task
@@ -51,7 +27,7 @@ namespace FoosLiveAndroid
         }
 
         /// Background work behind the splash screen
-        async void LoadResources()
+        private async void LoadResources()
         {
             // Initialize config file manager
             PropertiesManager.Initialise(this);
@@ -71,7 +47,7 @@ namespace FoosLiveAndroid
             tempDetector.Dispose();
 
             // Start application
-            StartActivity(new Intent(Application.Context, typeof(MenuActivity)));
+            StartActivity(new Intent(Application.Context, typeof(LoginActivity)));
         }
     }
 }
