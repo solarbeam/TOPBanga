@@ -47,7 +47,7 @@ namespace FoosLiveAndroid.Util.Detection
             _paintBall.SetStyle(Paint.Style.Stroke);
             _paintBall.StrokeWidth = BallStrokeWidth;
         }
-        public bool Detect(Canvas canvas, Hsv ballHsv, Bitmap bitmap, Bitmap bgBitmap)
+        public bool Detect(Canvas canvas, Hsv ballHsv, Bitmap bitmap)
         {
             // Preliminary checks
             if (canvas == null || _detector == null || bitmap == null)
@@ -60,9 +60,9 @@ namespace FoosLiveAndroid.Util.Detection
             _detector.image = new Image<Hsv, byte>(bitmap);
 
             // Clear the image
-            canvas.DrawColor(Color.Transparent, PorterDuff.Mode.Clear);
-            canvas.DrawBitmap(bgBitmap, 0, 0, null);
 
+            var transparentBackground = Color.Argb(0, 0, 0, 0);
+            canvas.DrawColor(transparentBackground);
             // Try to detect the ball
             ballDetected = _detector.DetectBall(ballHsv, out var ball, out var bBox);
 

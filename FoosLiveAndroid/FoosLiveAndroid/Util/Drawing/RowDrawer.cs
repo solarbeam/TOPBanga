@@ -34,7 +34,7 @@ namespace FoosLiveAndroid.Util.Drawing
             float toAdd = 0;
             for (int i = 0; i < zoneInfo.Length; i ++)
             {
-                Paint paint = new Paint();
+                var paint = new Paint();
                 paint.Color = new Color((int)(200 * values[i]), (int)(200 * (1.0f - values[i])), 0, 100);
                 toDraw.DrawRect(topLeftCorner.X, topLeftCorner.Y + toAdd,
                                 topLeftCorner.X + sizeOfBitmap.Width, topLeftCorner.Y + toAdd + sizeOfBitmap.Height / 8, paint);
