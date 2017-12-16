@@ -167,21 +167,14 @@ namespace FoosLiveAndroid.Util.Detection
                     _lastSize = biggestBlob.Area;
                     break;
                 }
-            }
-
-            // If a blob wasn't found, find the one with the area in a range close to the last one
-            if (biggestBlob == null)
-            {
-                foreach (var blob in points)
+                else
+                    if (pair.Value.Area > (_lastSize - SizeDiff) && pair.Value.Area < (_lastSize + SizeDiff))
                 {
-                    if (blob.Value.Area > ( _lastSize - SizeDiff ) && blob.Value.Area < ( _lastSize + SizeDiff ) )
-                    {
-                        biggestBlob = blob.Value;
-                        _lastBlob = biggestBlob.Centroid;
-                        UpdateBox(blob.Value);
-                        _framesLost = 0;
-                        break;
-                    }
+                    biggestBlob = pair.Value;
+                    _lastBlob = biggestBlob.Centroid;
+                    UpdateBox(pair.Value);
+                    _framesLost = 0;
+                    break;
                 }
             }
 

@@ -13,8 +13,8 @@ namespace FoosLiveAndroid.Fragments
 {
     enum SoundAsset
     {
-        GoalMario = 0,
-        WinMario = 1
+        WinMario = 0,
+        GoalMario = 1
     }
     public class SettingsFragment : Fragment
     {
@@ -198,12 +198,12 @@ namespace FoosLiveAndroid.Fragments
                 {
                     case (int)SoundAsset.GoalMario:
                         {
-                            prefsEditor.PutString(title, GoalSoundMarioPath).Apply();
+                            prefsEditor.PutString(title, WinSoundMarioPath).Apply();
                             break;
                         }
                     case (int)SoundAsset.WinMario:
                         {
-                            prefsEditor.PutString(title, WinSoundMarioPath).Apply();
+                            prefsEditor.PutString(title, GoalSoundMarioPath).Apply();
                             break;
                         }
                     default:

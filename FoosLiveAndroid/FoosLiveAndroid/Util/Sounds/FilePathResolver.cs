@@ -15,13 +15,14 @@ namespace FoosLiveAndroid.Util.Sounds
 {
     class FilePathResolver
     {
-        private const String defaultMarioWin = "defaultMarioWin";
-        private const String defaultMarioGoal = "defaultMarioGoal";
+        private const String defaultMarioWin = "Mario Win Sound";
+        private const String defaultMarioGoal = "Mario Goal Sound";
         private const String marioGoalSound = "SFX/goal.mp3";
         private const String marioWinSound = "SFX/game_end.wav";
 
         public static AssetFileDescriptor getFile(Activity activity, String argument)
         {
+            System.Console.WriteLine(argument);
             switch(argument)
             {
                 case defaultMarioGoal:
