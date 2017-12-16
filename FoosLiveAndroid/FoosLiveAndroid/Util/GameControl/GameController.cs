@@ -3,7 +3,6 @@ using System;
 using System.Collections.Generic;
 using FoosLiveAndroid.Util.Interface;
 using FoosLiveAndroid.Util.Model;
-using Android.Util;
 
 namespace FoosLiveAndroid.Util.GameControl
 {
@@ -20,15 +19,10 @@ namespace FoosLiveAndroid.Util.GameControl
         public event EventHandler<CurrentEvent> GoalEvent;
         public event EventHandler<EventArgs> PositionEvent;
 
-        public int[] zones
-        {
-            get => _rowChecker.GetRowInformation();
-        }
+        //Todo: use it somewhere
+        public int[] Zones => _rowChecker.GetRowInformation();
 
-        public ZoneInfo heatmapZones
-        {
-            get => _heatmapGen;
-        }
+        public ZoneInfo HeatmapZones { get; private set; }
 
         /// <summary>
         /// Defines the current score for the red team
@@ -46,7 +40,6 @@ namespace FoosLiveAndroid.Util.GameControl
 
         private PositionChecker _posChecker;
         private RowChecker _rowChecker;
-        private ZoneInfo _heatmapGen;
 
         /// <summary>
         /// Holds the coordinates of the last position of the ball
@@ -86,9 +79,9 @@ namespace FoosLiveAndroid.Util.GameControl
 
             set
             {
-                if (ballCoordinates.Count == MaximumBallCoordinatesNumber)
+                if (BallCoordinates.Count == MaximumBallCoordinatesNumber)
                 {
-                    PointF temp = ballCoordinates.Dequeue();
+                    var temp = BallCoordinates.Dequeue();
 
                     temp?.Dispose();
                 }
@@ -97,15 +90,15 @@ namespace FoosLiveAndroid.Util.GameControl
                 lastBallCoordinates = value;
 
                 // Check which row has the ball
-                if (lastBallCoordinates != null && _rowChecker.rows != null)
+                if (lastBallCoordinates != null && _rowChecker.Rows != null)
                 {
                     _rowChecker.CheckRow(lastBallCoordinates);
                 }
 
                 // Update heatmap info
-                _heatmapGen.AssignValue(lastBallCoordinates);
+                HeatmapZones.AssignValue(lastBallCoordinates);
 
-                ballCoordinates.Enqueue(lastBallCoordinates);
+                BallCoordinates.Enqueue(lastBallCoordinates);
 
                 _posChecker.OnNewFrame(lastBallCoordinates,
                                         BlueScore,
@@ -116,7 +109,7 @@ namespace FoosLiveAndroid.Util.GameControl
                                             RedScore = red;
                                         },
                                         GoalEvent,
-                                        ballCoordinates);
+                                        BallCoordinates);
 
                 // Calculate the speed
                 CurrentSpeed = _posChecker.CalculateSpeed(lastBallCoordinates, lastLastBallCoordinates, PositionEvent);
@@ -136,7 +129,7 @@ namespace FoosLiveAndroid.Util.GameControl
         /// <summary>
         /// Holds the ball coordinates in a queue
         /// </summary>
-        public Queue<PointF> ballCoordinates;
+        public Queue<PointF> BallCoordinates;
 
         public Queue<Goal> Goals => _posChecker._goals;
 
@@ -156,9 +149,9 @@ namespace FoosLiveAndroid.Util.GameControl
 
             // Calculate the different zones, using the points given
             _posChecker.ZoneOne = new RectF(points[0].X,
-                                    points[0].Y,
-                                    points[1].X,
-                                    (points[2].Y - points[0].Y) * percentageOfSide);
+                                            points[0].Y,
+                                            points[1].X,
+                                            (points[2].Y - points[0].Y) * percentageOfSide);
 
             _posChecker.ZoneTwo = new RectF(points[0].X, _posChecker.ZoneOne.Bottom + (1.0f - percentageOfSide * 2) * (points[2].Y - points[0].Y),
                                         points[3].X,
@@ -167,7 +160,7 @@ namespace FoosLiveAndroid.Util.GameControl
             _rowChecker.CalculateRows(new System.Drawing.Rectangle((int)_posChecker.ZoneOne.Left, (int)_posChecker.ZoneOne.Top,
                                                 (int)_posChecker.ZoneTwo.Right, (int)_posChecker.ZoneTwo.Bottom), mode);
 
-            _heatmapGen = new ZoneInfo(new RectF(_posChecker.ZoneOne.Left, _posChecker.ZoneOne.Top,
+            HeatmapZones = new ZoneInfo(new RectF(_posChecker.ZoneOne.Left, _posChecker.ZoneOne.Top,
                                                 _posChecker.ZoneTwo.Right, _posChecker.ZoneTwo.Bottom), 30, 30);
         }
         /// <summary>
@@ -175,7 +168,7 @@ namespace FoosLiveAndroid.Util.GameControl
         /// </summary>
         public GameController()
         {
-            ballCoordinates = new Queue<PointF>();
+            BallCoordinates = new Queue<PointF>();
             _rowChecker = new RowChecker();
             _posChecker = new PositionChecker();
         }

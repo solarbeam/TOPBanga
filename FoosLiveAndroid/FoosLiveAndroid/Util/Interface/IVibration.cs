@@ -1,5 +1,4 @@
-﻿using System;
-namespace FoosLiveAndroid.Util.Interface
+﻿namespace FoosLiveAndroid.Util.Interface
 {
     public interface IVibration
     {

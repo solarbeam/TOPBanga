@@ -20,17 +20,17 @@ namespace FoosLiveAndroid.Util.GameControl
 
         private PointF[] _points;
 
-        public double[] _speeds;
-        public double _maxSpeed;
-        private long timestampStart;
-        private long timestampEnd;
+        public readonly double[] Speeds;
+        public readonly double MaxSpeed;
+        private readonly long timestampStart;
+        private readonly long timestampEnd;
 
         public long Duration { get; }
 
         public Goal(Queue<PointF> positions, RectF tablePoints, long start, long end)
         {
             _points = new PointF[positions.Count];
-            _speeds = new double[positions.Count];
+            Speeds = new double[positions.Count];
             timestampStart = start;
             timestampEnd = end;
 
@@ -52,7 +52,7 @@ namespace FoosLiveAndroid.Util.GameControl
 
             // Calculate the speeds
             PointF lastPoint = null;
-            int lostFrameCounter = 0;
+            var lostFrameCounter = 0;
             i = 0;
             foreach (var point in positions)
             {
@@ -68,20 +68,18 @@ namespace FoosLiveAndroid.Util.GameControl
                     i++;
                     continue;
                 }
-                else
-                {
-                    _speeds[i] = Math.Sqrt( (point.X * mulX - lastPoint.X * mulX) * (point.X * mulX - lastPoint.X * mulX) + 
-                                            (point.Y * mulY - lastPoint.Y * mulY) * (point.Y * mulY - lastPoint.Y * mulY) );
-                    _speeds[i] /= (lostFrameCounter + 1.0f);
+                
+                Speeds[i] = Math.Sqrt( (point.X * mulX - lastPoint.X * mulX) * (point.X * mulX - lastPoint.X * mulX) + 
+                                        (point.Y * mulY - lastPoint.Y * mulY) * (point.Y * mulY - lastPoint.Y * mulY) );
+                Speeds[i] /= (lostFrameCounter + 1.0f);
 
-                    if (_maxSpeed < _speeds[i])
-                        _maxSpeed = _speeds[i];
+                if (MaxSpeed < Speeds[i])
+                    MaxSpeed = Speeds[i];
 
-                    i++;
+                i++;
 
-                    lastPoint = point;
-                    lostFrameCounter = 0;
-                }
+                lastPoint = point;
+                lostFrameCounter = 0;
             }
         }
     }

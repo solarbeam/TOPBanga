@@ -53,7 +53,7 @@ namespace FoosLiveAndroid.Util.Detection
                 return false;
 
             // Declare temporary variables
-            bool ballDetected = false;
+            var ballDetected = false;
 
             // Refresh the detector's image
             _detector.image = new Image<Hsv, byte>(bitmap);
@@ -78,24 +78,24 @@ namespace FoosLiveAndroid.Util.Detection
                                  _paintBall);
 
                 // Update the GameController class with new coordinates
-                _controller.LastBallCoordinates = new PointF(((ball.Left + ball.Right) / 2) * _mulX,
-                                                             ((ball.Top + ball.Bottom) / 2) * _mulY);
+                
+                _controller.LastBallCoordinates = new PointF((ball.Left + ball.Right) / 2 * _mulX,
+                                                             (ball.Top + ball.Bottom) / 2 * _mulY);
             }
             else
                 // No ball was detected, so we let the GameController know that we lost it
                 _controller.LastBallCoordinates = null;
 
             // Paint the trail
-            Path path = new Path();
+            var path = new Path();
 
-            Paint paint = new Paint();
-            paint.StrokeWidth = RectStrokeWidth;
+            var paint = new Paint { StrokeWidth = RectStrokeWidth };
             paint.SetStyle(Paint.Style.Stroke);
 
-            PointF[] points = _controller.ballCoordinates.ToArray();
-            int toPaint = 10;
-            bool startSet = false;
-            for (int i = points.Length - 1; i > 0; i--)
+            var points = _controller.BallCoordinates.ToArray();
+            var toPaint = 10;
+            var startSet = false;
+            for (var i = points.Length - 1; i > 0; i--)
             {
                 if (points[i] == null)
                 {

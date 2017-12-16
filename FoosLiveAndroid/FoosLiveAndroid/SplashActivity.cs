@@ -17,37 +17,14 @@ namespace FoosLiveAndroid
     {
         static readonly string TAG = typeof(SplashActivity).Name;
 
-        private const string team1Score = "team1Score";
-        private const string team1ScoreDefault = "defaultMarioGoal";
-
-        private const string team1Win = "team1Win";
-        private const string team1WinDefault = "defaultMarioWin";
-
-        private const string team2Score = "team2Score";
-        private const string team2Default = "defaultMarioGoal";
-
-        private const string team2Win = "team2Win";
-        private const string team2WinDefault = "defaultMarioWin";
-
-        private const string soundEnabled = "soundEnabled";
-        private const bool soundEnabledDefault = true;
-
-        private const string syncEnabled = "syncEnabled";
-        private const bool syncEnabledDefault = true;
-
-        private const string team1Name = "team1Name";
-        private const string team1NameDefault = "Team 1";
-        private const string team2Name = "team2Name";
-        private const string team2NameDefault = "Team 2";
-
         private static int Iterations = 1;
 
         /// Launches the startup task
         protected override void OnResume()
         {
             base.OnResume();
-            Task startupLoading = new Task(LoadResources);
-            startupLoading.Start();
+            // Initialize loading
+            new Task(LoadResources).Start();
         }
 
         /// Background work behind the splash screen
@@ -61,8 +38,8 @@ namespace FoosLiveAndroid
             var filtered = tempImage.InRange(new Bgr(100, 0, 0), new Bgr(200, 0, 0));
             filtered.Erode(Iterations).Dispose();
             filtered.Dilate(Iterations).Dispose();
-            CvBlobDetector tempDetector = new CvBlobDetector();
-            CvBlobs blobs = new CvBlobs();
+            var tempDetector = new CvBlobDetector();
+            var blobs = new CvBlobs();
             tempDetector.Detect(filtered, blobs);
 
             tempImage.Dispose();

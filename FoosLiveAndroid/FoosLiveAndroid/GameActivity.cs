@@ -43,7 +43,7 @@ namespace FoosLiveAndroid
         private TextView _timer;
         private Button _gameButton;
         private TextView _score;
-        public TextureView _gameView;
+        public TextureView GameView;
         private SurfaceView _surfaceView;
         private TextView _ballSpeed;
         private TextView _team1Title;
@@ -61,24 +61,24 @@ namespace FoosLiveAndroid
         private FrameLayout _infoLayout;
         private RelativeLayout _topBar;
 
-        public Bitmap _alphaBitmap;
+        public Bitmap AlphaBitmap;
 
         private Game _game;
 
-        public ECaptureMode _gameMode;
+        public ECaptureMode GameMode;
         private bool _gameEnd;
 
         // Todo: change Camera to Camera2
         private Camera _camera;
 
-        internal SurfaceManager _surfaceManager;
+        internal SurfaceManager SurfaceManager;
 
         private Hsv _selectedBallColor;
-        internal bool _ballColorSelected;
+        internal bool BallColorSelected;
         private Image<Hsv, byte> _image;
 
         private IPositionManager _positionManager;
-        internal RecordPlayer _recordPlayer;
+        internal RecordPlayer RecordPlayer;
 
         /// <summary>
         /// Called whenever the view is created
@@ -90,14 +90,14 @@ namespace FoosLiveAndroid
             // Identify game capture mode
             if (Intent.Data != null)
             {
-                _gameMode = ECaptureMode.Recording;
+                GameMode = ECaptureMode.Recording;
             }
             else
             {
-                _gameMode = ECaptureMode.Live;
+                GameMode = ECaptureMode.Live;
                 // Set up sensors & vibration
                 var sensorManager = (SensorManager)GetSystemService(SensorService);
-                var vibration = new Vibration((Vibrator)GetSystemService(VibratorService));
+                IVibration vibration = new Vibration((Vibrator)GetSystemService(VibratorService));
                 _positionManager = new PositionManager(this, sensorManager, vibration);
             }
 
@@ -109,7 +109,7 @@ namespace FoosLiveAndroid
             Window.SetFlags(WindowManagerFlags.KeepScreenOn, WindowManagerFlags.KeepScreenOn);
             GetReferencesFromLayout();
 
-            _surfaceManager = new SurfaceManager(this, _surfaceView.Holder);
+            SurfaceManager = new SurfaceManager(this, _surfaceView.Holder);
             
             _surfaceView.SetZOrderOnTop(true);
             _surfaceView.Holder.SetFormat(Format.Transparent);
@@ -131,18 +131,18 @@ namespace FoosLiveAndroid
             _timerFormat = GetString(Resource.String.timer_format);
 
             // Open the camera
-            _gameView.SurfaceTextureListener = _surfaceManager;
-            _gameView.SetOnTouchListener(this);
+            GameView.SurfaceTextureListener = SurfaceManager;
+            GameView.SetOnTouchListener(this);
             CvInvoke.UseOptimized = true;
         }
 
         internal void ReleaseResources()
         {
             // Check if we use a video file for getting frames or the camera
-            if (_gameMode == ECaptureMode.Recording)
+            if (GameMode == ECaptureMode.Recording)
             {
                 // We use a video file, so release it's resources
-                _recordPlayer.Release();
+                RecordPlayer.Release();
             }
             else
             {
@@ -167,8 +167,8 @@ namespace FoosLiveAndroid
         internal void SetUpCameraMode()
         {
             // Draw the align zones
-            Canvas canvas = AlignZones.DrawZones(_surfaceManager.SurfaceHolder.LockCanvas(), _game._gameController);
-            _surfaceManager.SurfaceHolder.UnlockCanvasAndPost(canvas);
+            var canvas = AlignZones.DrawZones(SurfaceManager.SurfaceHolder.LockCanvas(), _game.GameController);
+            SurfaceManager.SurfaceHolder.UnlockCanvasAndPost(canvas);
 
             _camera = Camera.Open();
 
@@ -196,7 +196,7 @@ namespace FoosLiveAndroid
                  * Set the surface on which frames are drawn
                  * In this case, it's the surface, which was created for _gameview
                  */
-                _camera.SetPreviewTexture(_surfaceManager.SurfaceTexture);
+                _camera.SetPreviewTexture(SurfaceManager.SurfaceTexture);
                 _camera.StartPreview();
             }
             catch (Java.IO.IOException e)
@@ -209,15 +209,14 @@ namespace FoosLiveAndroid
         internal void SetUpRecordMode(float screenWidth, float screenHeight)
         {
             // We do, so set the table according to display size
-            _game._gameController.SetTable(new PointF[]
+            _game.GameController.SetTable(new PointF[]
             {
                     new PointF(0, 0),
                     new PointF(screenWidth, 0),
                     new PointF(0, screenHeight),
                     new PointF(screenWidth, screenHeight)
-            }, _gameMode);
-            _recordPlayer = new RecordPlayer(this);
-            return;
+            }, GameMode);
+            RecordPlayer = new RecordPlayer(this);
         }
 
         public async void ShowEndGameScreen()
@@ -233,7 +232,7 @@ namespace FoosLiveAndroid
 
             _gameEnd = true;
             // Terminate recognition
-            _ballColorSelected = false;
+            BallColorSelected = false;
 
             // Hide guideline arrows
             _arrowBot.Visibility = ViewStates.Gone;
@@ -249,16 +248,16 @@ namespace FoosLiveAndroid
             _surfaceView.Visibility = ViewStates.Invisible;
 
             // Disable sensors
-            if (_gameMode == ECaptureMode.Live)
+            if (GameMode == ECaptureMode.Live)
                 _positionManager.StopListening();
 
             //Collect data from GameController
-            MatchInfo.SetUp(_team1Title.Text, _game._gameController.BlueScore,
-                            _team2Title.Text, _game._gameController.RedScore,
-                            _game._gameController.MaxSpeed,
-                            _game._gameController.AverageSpeed,
-                            _game._gameController.heatmapZones, TimeSpan.FromMilliseconds(GameTimer.Time).TotalSeconds.ToString(_timerFormat),
-                            _game._gameController.Goals);
+            MatchInfo.SetUp(_team1Title.Text, _game.GameController.BlueScore,
+                            _team2Title.Text, _game.GameController.RedScore,
+                            _game.GameController.MaxSpeed,
+                            _game.GameController.AverageSpeed,
+                            _game.GameController.HeatmapZones, TimeSpan.FromMilliseconds(GameTimer.Time).TotalSeconds.ToString(_timerFormat),
+                            _game.GameController.Goals);
 
             // Send Data to database
             
@@ -283,7 +282,7 @@ namespace FoosLiveAndroid
             _topBar = FindViewById<RelativeLayout>(Resource.Id.fullscreen_content_top_status_bar);
             _infoLayout = FindViewById<FrameLayout>(Resource.Id.infoLayout);
             _gameButton = FindViewById<Button>(Resource.Id.gameButton);
-            _gameView = FindViewById<TextureView>(Resource.Id.game_content);
+            GameView = FindViewById<TextureView>(Resource.Id.game_content);
             _score = FindViewById<TextView>(Resource.Id.score);
             _surfaceView = FindViewById<SurfaceView>(Resource.Id.surfaceView);
             _arrowTop = FindViewById<ImageView>(Resource.Id.arrowTop);
@@ -306,9 +305,9 @@ namespace FoosLiveAndroid
         }
 
         public bool DetectBall(Canvas canvas) {
-            return _game._objectDetector.Detect(canvas, _selectedBallColor,
-                                            _gameView.GetBitmap(PreviewWidth, PreviewHeight),
-                                          _alphaBitmap);
+            return _game.ObjectDetector.Detect(canvas, _selectedBallColor,
+                                            GameView.GetBitmap(PreviewWidth, PreviewHeight),
+                                          AlphaBitmap);
         }
 
         /// <summary>
@@ -322,9 +321,9 @@ namespace FoosLiveAndroid
             // If game has ended, ignore touch
             if (_gameEnd) return false;
             // If game is not started, take sample image
-            if (_gameButton.Visibility != ViewStates.Gone && _ballColorSelected != true)
+            if (_gameButton.Visibility != ViewStates.Gone && !BallColorSelected)
             {
-                _image = new Image<Hsv, byte>(_gameView.GetBitmap(PreviewWidth, PreviewHeight));
+                _image = new Image<Hsv, byte>(GameView.GetBitmap(PreviewWidth, PreviewHeight));
                 UpdateButton(e);
             }
             return true;
@@ -361,36 +360,36 @@ namespace FoosLiveAndroid
         {
             if (_gameButton.Text == GetString(Resource.String.end_game))
             {
-                _game._gameTimer.Stop();
+                _game.GameTimer.Stop();
                 ShowEndGameScreen();
                 return;
             }
 
             if (_image == null) return;
 
-            _ballColorSelected = true;
+            BallColorSelected = true;
 
             // Cleanup
             _image.Dispose();
 
             // If it's a video, start it again
-            _recordPlayer?.Start();
+            RecordPlayer?.Start();
 
             // Change button function to stop the game
             _gameButton.Text = GetString(Resource.String.end_game);
             _gameButton.SetBackgroundResource(Resource.Drawable.game_button_selector);
 
             // If game is live, capture aligned position to show guidelines accordingly
-            if (_gameMode == ECaptureMode.Live)
+            if (GameMode == ECaptureMode.Live)
                 _positionManager.CapturePosition();
 
-            _game._gameTimer.Start();
+            _game.GameTimer.Start();
         }
 
         protected override void OnPause()
         {
             base.OnPause();
-            if (_gameMode == ECaptureMode.Live)
+            if (GameMode == ECaptureMode.Live)
                 _positionManager.StopListening();
 
         }
@@ -398,13 +397,13 @@ namespace FoosLiveAndroid
         protected override void OnStop()
         {
             base.OnStop();
-            _game._gameTimer.Stop();
+            _game.GameTimer.Stop();
         }
 
         protected override void OnResume()
         {
             base.OnResume();
-            if (_gameMode == ECaptureMode.Live)
+            if (GameMode == ECaptureMode.Live)
                 _positionManager.StartListening();
         }
 

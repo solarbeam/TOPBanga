@@ -118,10 +118,10 @@ namespace FoosLiveAndroid.Util.Detection
             rect = new Rectangle();
 
             // Define the upper and lower limits of the Hue and Saturation values
-            Hsv lowerLimit = new Hsv(ballHsv.Hue - Threshold / 2, ballHsv.Satuation - Threshold * 1.3f, ballHsv.Value - Threshold * 1.3f);
-            Hsv upperLimit = new Hsv(ballHsv.Hue + Threshold / 2, ballHsv.Satuation + Threshold * 1.3f, ballHsv.Value + Threshold * 1.3f);
+            var lowerLimit = new Hsv(ballHsv.Hue - Threshold / 2, ballHsv.Satuation - Threshold * 1.3f, ballHsv.Value - Threshold * 1.3f);
+            var upperLimit = new Hsv(ballHsv.Hue + Threshold / 2, ballHsv.Satuation + Threshold * 1.3f, ballHsv.Value + Threshold * 1.3f);
 
-            Image<Gray, byte> imgFiltered = image.InRange(lowerLimit, upperLimit);
+            var imgFiltered = image.InRange(lowerLimit, upperLimit);
 
             // Define the class, which will store information about blobs found
             var points = new CvBlobs();
@@ -158,15 +158,13 @@ namespace FoosLiveAndroid.Util.Detection
             foreach (var pair in points.OrderByDescending(e => e.Value.Area))
             {
                 // Check if the blob is within the predefined bounding box and is of a given size
-                if (_box.Contains((int)pair.Value.Centroid.X, (int)pair.Value.Centroid.Y))
-                {
-                    // It is, so we pressume it to be the ball
-                    biggestBlob = pair.Value;
-                    UpdateBox(biggestBlob);
-                    _framesLost = 0;
-                    _lastSize = biggestBlob.Area;
-                    break;
-                }
+                if (!_box.Contains((int) pair.Value.Centroid.X, (int) pair.Value.Centroid.Y)) continue;
+                // It is, so we pressume it to be the ball
+                biggestBlob = pair.Value;
+                UpdateBox(biggestBlob);
+                _framesLost = 0;
+                _lastSize = biggestBlob.Area;
+                break;
             }
 
             // If a blob wasn't found, find the one with the area in a range close to the last one
@@ -174,14 +172,13 @@ namespace FoosLiveAndroid.Util.Detection
             {
                 foreach (var blob in points)
                 {
-                    if (blob.Value.Area > ( _lastSize - SizeDiff ) && blob.Value.Area < ( _lastSize + SizeDiff ) )
-                    {
-                        biggestBlob = blob.Value;
-                        _lastBlob = biggestBlob.Centroid;
-                        UpdateBox(blob.Value);
-                        _framesLost = 0;
-                        break;
-                    }
+                    if (blob.Value.Area <= _lastSize - SizeDiff || blob.Value.Area >= _lastSize + SizeDiff)
+                        continue;
+                    biggestBlob = blob.Value;
+                    _lastBlob = biggestBlob.Centroid;
+                    UpdateBox(blob.Value);
+                    _framesLost = 0;
+                    break;
                 }
             }
 
@@ -222,15 +219,15 @@ namespace FoosLiveAndroid.Util.Detection
                     toAddY *= -1;
             }
 
-            System.Drawing.Size toInflate = new System.Drawing.Size();
+            var toInflate = new Size();
             if (newBlob.Area > MinBlobSize)
             {
-                toInflate = new System.Drawing.Size(newBlob.BoundingBox.Width * MulDeltaWidth + (int)toAddX * MulDeltaX,
+                toInflate = new Size(newBlob.BoundingBox.Width * MulDeltaWidth + (int)toAddX * MulDeltaX,
                                         newBlob.BoundingBox.Height * MulDeltaHeight + (int)toAddY * MulDeltaY);
             }
             else
             {
-                toInflate = new System.Drawing.Size(MinWidth + (int)toAddX * MulDeltaX, MinHeight + (int)toAddY * MulDeltaY);
+                toInflate = new Size(MinWidth + (int)toAddX * MulDeltaX, MinHeight + (int)toAddY * MulDeltaY);
             }
 
             _box.Inflate(toInflate);

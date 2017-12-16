@@ -4,24 +4,24 @@ using Android.Content.Res;
 
 namespace FoosLiveAndroid.Util.Sounds
 {
-    class FilePathResolver
+    static class FilePathResolver
     {
-        private const String defaultMarioWin = "defaultMarioWin";
-        private const String defaultMarioGoal = "defaultMarioGoal";
-        private const String marioGoalSound = "SFX/goal.mp3";
-        private const String marioWinSound = "SFX/game_end.wav";
+        private const string DefaultMarioWin = "defaultMarioWin";
+        private const string DefaultMarioGoal = "defaultMarioGoal";
+        private const string MarioGoalSound = "SFX/goal.mp3";
+        private const string MarioWinSound = "SFX/game_end.wav";
 
         public static AssetFileDescriptor GetFile(Context context, String argument)
         {
             switch(argument)
             {
-                case defaultMarioGoal:
+                case DefaultMarioGoal:
                     {
-                        return context.Assets.OpenFd(marioGoalSound);
+                        return context.Assets.OpenFd(MarioGoalSound);
                     }
-                case defaultMarioWin:
+                case DefaultMarioWin:
                     {
-                        return context.Assets.OpenFd(marioWinSound);
+                        return context.Assets.OpenFd(MarioWinSound);
                     }
             }
             return null;
