@@ -33,7 +33,7 @@ namespace FoosLiveAndroid.Fragments
         private TextView _team1Title;
         private TextView _team2Title;
 
-        private PlayerOGG previewPlayer;
+        private PlayerOgg previewPlayer;
 
         private AlertDialog.Builder _dialogBuilder;
 
@@ -180,7 +180,7 @@ namespace FoosLiveAndroid.Fragments
                     case (int)SoundAsset.GoalMario:
                         {
                             var goalSoundName = GetString(Resource.String.mario_goal_sound);
-                            previewPlayer = new PlayerOGG(FilePathResolver.GetFile(Context, GetString(Resource.String.mario_goal_sound)));
+                            previewPlayer = new PlayerOgg(FilePathResolver.GetFile(Context, GetString(Resource.String.mario_goal_sound)));
                             prefsEditor.PutString(soundItem, goalSoundName).Apply();
                             soundTitle.Text = goalSoundName;
                             break;
@@ -188,7 +188,7 @@ namespace FoosLiveAndroid.Fragments
                     case (int)SoundAsset.WinMario:
                         {
                             var winSoundName = GetString(Resource.String.mario_win_sound);
-                            previewPlayer = new PlayerOGG(FilePathResolver.GetFile(Context, GetString(Resource.String.mario_win_sound)));
+                            previewPlayer = new PlayerOgg(FilePathResolver.GetFile(Context, GetString(Resource.String.mario_win_sound)));
                             prefsEditor.PutString(soundItem, winSoundName).Apply();
                             soundTitle.Text = winSoundName;
                             break;
