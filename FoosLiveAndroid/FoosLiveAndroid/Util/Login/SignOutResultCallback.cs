@@ -1,10 +1,9 @@
-﻿using Android.Content;
-using Android.Gms.Common.Apis;
+﻿using Android.Gms.Common.Apis;
 using Java.Lang;
 
 namespace FoosLiveAndroid.Util.Login
 {
-	public class SignOutResultCallback : Object, IResultCallback
+    public class SignOutResultCallback : Object, IResultCallback
 	{
         private GoogleApiClient _client;
         public SignOutResultCallback(GoogleApiClient googleApiClient)

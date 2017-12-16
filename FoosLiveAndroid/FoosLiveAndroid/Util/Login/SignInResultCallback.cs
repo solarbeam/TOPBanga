@@ -18,19 +18,16 @@ namespace FoosLiveAndroid.Util.Login
 
         public void OnConnected(Bundle connectionHint)
         {
-            if (client.IsConnected)
-                client.ClearDefaultAccountAndReconnect();
+            client.ClearDefaultAccountAndReconnect();
         }
 
         public void OnConnectionSuspended(int cause)
         {
-            
         }
 
         public void OnResult(Object result)
         {
-            
-            client.ClearDefaultAccountAndReconnect();
+            //client.ClearDefaultAccountAndReconnect();
         }
     }
 }

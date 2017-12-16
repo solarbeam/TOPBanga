@@ -5,7 +5,6 @@ using Android.Gms.Auth.Api;
 using Android.Gms.Common;
 using Android.OS;
 using Android.Support.V7.App;
-using Android.Util;
 using FoosLiveAndroid.Model;
 using FoosLiveAndroid.Util.Login;
 
@@ -34,19 +33,8 @@ namespace FoosLiveAndroid
             base.OnStart();
             // Initialize login handler
             _loginManager = LoginManager.GetInstance(this);
-            //saved_auto_login
-            //_loginManager.LoginSilent();
         }
-        protected override void OnPause()
-        {
-            Log.Debug("LOCMAN", $"Connected: {_loginManager.googleApiClient.IsConnected}");
-            base.OnPause();
-            Log.Debug("LOCMAN", $"Connected: {_loginManager.googleApiClient.IsConnected}");
-        }
-        protected override void OnStop()
-        {
-            base.OnStop();
-        }
+
         protected override void OnActivityResult(int requestCode, Result resultCode, Intent data)
         {
             base.OnActivityResult(requestCode, resultCode, data);
@@ -63,7 +51,7 @@ namespace FoosLiveAndroid
         internal void LoadMainMenu(Bundle userData)
         {
             var intent = new Intent(Application.Context, typeof(MenuActivity));
-            intent.PutExtra("USER_DATA", userData);
+            intent.PutExtra(GetString(Resource.String.google_user_data_key), userData);
             StartActivity(intent);
         }
     }

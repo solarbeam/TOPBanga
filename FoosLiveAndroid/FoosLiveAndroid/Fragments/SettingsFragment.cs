@@ -76,7 +76,6 @@ namespace FoosLiveAndroid.Fragments
                 Context, Android.Resource.Layout.SimpleListItem1, new string[] { "Mario Goal Sound", "Mario Win Sound"  });
 
             _logoutButton.Click += delegate {
-                loginManager.SignOut();
                 var intent = new Intent(Application.Context, typeof(LoginActivity));
                 intent.SetFlags(ActivityFlags.NewTask | ActivityFlags.ClearTask);
                 StartActivity(intent);
@@ -202,8 +201,8 @@ namespace FoosLiveAndroid.Fragments
                             break;
                         }
                 }
-                if (prefsEditor.Commit())
-                    Log.Error(Tag, "Failed to sve user sound selection.");
+                if (!prefsEditor.Commit())
+                    Log.Error(Tag, "Failed to save user sound selection.");
                 prefsEditor.Dispose();
                 preferences.Dispose();
                 UpdateSelection();
@@ -290,11 +289,5 @@ namespace FoosLiveAndroid.Fragments
             editor.Dispose();
             preferences.Dispose();
         }
-
-        public void SignOut(object sender, EventArgs e)
-        {
-            
-        }
-
     }
 }

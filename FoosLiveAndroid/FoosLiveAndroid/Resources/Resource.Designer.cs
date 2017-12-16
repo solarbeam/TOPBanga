@@ -3910,8 +3910,17 @@ namespace FoosLiveAndroid
 			// aapt resource value: 0x7f080048
 			public const int from_file = 2131230792;
 			
+			// aapt resource value: 0x7f08007c
+			public const int google_id_key = 2131230844;
+			
+			// aapt resource value: 0x7f08007d
+			public const int google_id_name = 2131230845;
+			
 			// aapt resource value: 0x7f08007a
 			public const int google_oauth_client_id = 2131230842;
+			
+			// aapt resource value: 0x7f08007b
+			public const int google_user_data_key = 2131230843;
 			
 			// aapt resource value: 0x7f080044
 			public const int history = 2131230788;
