@@ -14,6 +14,7 @@ namespace FoosLiveAndroid.Util.GameControl
         /// <summary>
         /// Fires whenever the Time attribute updates
         /// </summary>
+        // Todo: redundant variable
         public EventHandler<EventArgs> OnUpdated;
 
         /// <summary>

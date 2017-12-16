@@ -29,7 +29,9 @@ namespace FoosLiveAndroid.Util.Detection
         /// True if the box field is not null
         /// </summary>
         private bool _boxSet = false;
+        // Todo: redundant variable
         private bool _started = false;
+        // Todo: redundant variable
         private Rectangle _preliminaryBlob;
         /// <summary>
         /// Defines the bounding box, in which we search for the blob
@@ -89,7 +91,7 @@ namespace FoosLiveAndroid.Util.Detection
         /// The threshold, which defines the range of colors
         /// </summary>
         public int Threshold { get; set; }
-
+        // Todo: redundant variable
         private int minContourArea;
         public int MinContourArea { get; set; }
 

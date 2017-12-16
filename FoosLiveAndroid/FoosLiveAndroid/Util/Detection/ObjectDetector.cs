@@ -19,6 +19,7 @@ namespace FoosLiveAndroid.Util.Detection
         private GameController _controller;
         private float _mulX;
         private float _mulY;
+        // Todo: redundant variable
         private Paint _paintRect;
         private Paint _paintBall;
         private static readonly float BallStrokeWidth = PropertiesManager.GetFloatProperty("ball_stroke_width");

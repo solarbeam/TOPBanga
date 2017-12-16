@@ -14,8 +14,9 @@ namespace FoosLiveAndroid.Fragments
     public class SettingsFragment : Fragment
     {
         static readonly new string Tag = typeof(SettingsFragment).Name;
-
+        // Todo: redundant variable
         private String GoalSoundMarioPath;
+        // Todo: redundant variable
         private String WinSoundMarioPath;
 
         private View _view;
