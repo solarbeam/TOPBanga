@@ -99,6 +99,8 @@ namespace FoosLiveAndroid
 
         private IPositionManager _positionManager;
 
+        private int _maxEventSliderLength;
+
         /// <summary>
         /// Called whenever the view is created
         /// </summary>
@@ -164,6 +166,8 @@ namespace FoosLiveAndroid
 
             scoreFormat = GetString(Resource.String.score_format);
             timerFormat = GetString(Resource.String.timer_format);
+
+            _maxEventSliderLength = int.Parse(GetString(Resource.Integer.max_chars));
 
             // Open the camera
             _gameView.SurfaceTextureListener = this;
@@ -252,12 +256,14 @@ namespace FoosLiveAndroid
 
             _textThreadStarted = true;
 
+            System.Console.WriteLine(_maxEventSliderLength);
+
             RunOnUiThread(async () =>
             {
                 var temp = text;
                 var tempView = new StringBuilder(temp.Length);
 
-                for (var i = 0; i < _eventText.Length(); i++)
+                for (var i = 0; i < _maxEventSliderLength; i++)
                 {
                     tempView.Append(' ');
                 }

@@ -90,7 +90,6 @@ namespace FoosLiveAndroid.Util.Detection
         /// </summary>
         public int Threshold { get; set; }
 
-        private int minContourArea;
         public int MinContourArea { get; set; }
 
         /// <summary>
