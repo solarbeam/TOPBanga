@@ -265,7 +265,7 @@ namespace FoosLiveAndroid
                 _game.SoundAlerts.Play(Util.Sounds.EAlert.Team2Win);
 
                 // Show pop-up fragment, holding all of the match's info
-                FragmentManager.BeginTransaction()
+            FragmentManager.BeginTransaction()
                            .Add(Resource.Id.infoLayout, EndGameFragment.NewInstance())
                            .Commit();
             var gameIdInDatabase = await gameIdInDatabaseTask;

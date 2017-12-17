@@ -9,9 +9,13 @@ namespace FoosLiveAndroid.Util.Sounds
     {
         private static readonly string DefaultMarioWin = SoundAsset.WinMario.ToString();
         private static readonly string DefaultMarioGoal = SoundAsset.GoalMario.ToString();
+        private static readonly string DefaultBingSound = SoundAsset.BingSound.ToString();
+        private static readonly string DefaultCrowdCheerSound = SoundAsset.CrowdCheer.ToString();
 
         private const string MarioGoalSound = "SFX/goal.mp3";
         private const string MarioWinSound = "SFX/game_end.wav";
+        private const string BingSound = "SFX/ping-bing.wav";
+        private const string CrowdCheer = "SFX/sound.ogg";
 
         public static AssetFileDescriptor GetFile(Context context, String argument)
         {
@@ -25,6 +29,16 @@ namespace FoosLiveAndroid.Util.Sounds
                 if (argument.Equals(DefaultMarioWin))
             {
                 return context.Assets.OpenFd(MarioWinSound);
+            }
+            else
+                if (argument.Equals(DefaultBingSound))
+            {
+                return context.Assets.OpenFd(BingSound);
+            }
+            else
+                if (argument.Equals(DefaultCrowdCheerSound))
+            {
+                return context.Assets.OpenFd(CrowdCheer);
             }
             else
                 return null;

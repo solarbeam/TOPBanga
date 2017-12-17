@@ -200,6 +200,7 @@
     <AndroidNativeLibrary Include="lib\armeabi-v7a\libcvextern.so" />
     <AndroidNativeLibrary Include="lib\armeabi\libcvextern.so" />
     <AndroidNativeLibrary Include="lib\x86\libcvextern.so" />
+    <AndroidAsset Include="Assets\SFX\sound.ogg" />
     <None Include="packages.config" />
     <None Include="Properties\AndroidManifest.xml" />
     <None Include="Assets\AboutAssets.txt" />
@@ -269,7 +270,9 @@
   <ItemGroup>
     <AndroidResource Include="Resources\values\integer.xml" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <AndroidAsset Include="Assets\SFX\ping-bing.wav" />
+  </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\Android\Xamarin.Android.CSharp.targets" />
   <Import Project="..\packages\Xamarin.Android.Support.Annotations.26.1.0.1\build\MonoAndroid80\Xamarin.Android.Support.Annotations.targets" Condition="Exists('..\packages\Xamarin.Android.Support.Annotations.26.1.0.1\build\MonoAndroid80\Xamarin.Android.Support.Annotations.targets')" />
