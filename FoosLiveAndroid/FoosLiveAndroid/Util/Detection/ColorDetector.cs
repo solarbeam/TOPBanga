@@ -13,24 +13,14 @@ namespace FoosLiveAndroid.Util.Detection
     class ColorDetector : IColorDetector
     {
         private static readonly string Tag = typeof(MenuActivity).Name;
-        private const int VerticeCount = 4;
 
         private readonly int DefaultThreshold = PropertiesManager.GetIntProperty("default_threshold");
-        private readonly int DefaultContourArea = PropertiesManager.GetIntProperty("default_contour_area");
-        private readonly double CannyThreshold = PropertiesManager.GetDoubleProperty("canny_threshold");
-        private readonly double CannyThresholdLinking = PropertiesManager.GetDoubleProperty("canny_threshold_linking");
-        private readonly int MinAngle = PropertiesManager.GetIntProperty("min_angle");
-        private readonly int MaxAngle = PropertiesManager.GetIntProperty("max_angle");
-
-        private const int Iterations = 1;
 
         /// <summary>
         /// False if the box field is null
         /// True if the box field is not null
         /// </summary>
         private bool _boxSet = false;
-        private bool _started = false;
-        private Rectangle _preliminaryBlob;
         /// <summary>
         /// Defines the bounding box, in which we search for the blob
         /// </summary>
@@ -60,10 +50,6 @@ namespace FoosLiveAndroid.Util.Detection
         /// </summary>
         private int _lastSize = 0;
         /// <summary>
-        /// Defines the permitted size difference between blobs
-        /// </summary>
-        private int SizeDiff = PropertiesManager.GetIntProperty("size_difference");
-        /// <summary>
         /// Defines the limit for the bounding box sizing algorithm
         /// </summary>
         private readonly int MinBlobSize = PropertiesManager.GetIntProperty("min_blob_size");
@@ -90,7 +76,14 @@ namespace FoosLiveAndroid.Util.Detection
         /// </summary>
         public int Threshold { get; set; }
 
-        public int MinContourArea { get; set; }
+        /// <summary>
+        /// Defines the minimum size allowed for the blob to pass
+        /// </summary>
+        private int _minAllowed;
+        /// <summary>
+        /// Defines the maximum size allowed for the blob to pass
+        /// </summary>
+        private int _maxAllowed;
 
         /// <summary>
         /// Creates the ColorDetector class with the appropriate threshold
@@ -98,7 +91,6 @@ namespace FoosLiveAndroid.Util.Detection
         public ColorDetector()
         {
             Threshold = DefaultThreshold;
-            MinContourArea = DefaultContourArea;
             _box = new Rectangle();
             _blobDetector = new BlobDetector();
         }
@@ -117,8 +109,8 @@ namespace FoosLiveAndroid.Util.Detection
             rect = new Rectangle();
 
             // Define the upper and lower limits of the Hue and Saturation values
-            Hsv lowerLimit = new Hsv(ballHsv.Hue - Threshold / 2, ballHsv.Satuation - Threshold * 1.3f, ballHsv.Value - Threshold * 1.3f);
-            Hsv upperLimit = new Hsv(ballHsv.Hue + Threshold / 2, ballHsv.Satuation + Threshold * 1.3f, ballHsv.Value + Threshold * 1.3f);
+            Hsv lowerLimit = new Hsv(ballHsv.Hue - Threshold / 4, ballHsv.Satuation - Threshold * 1.3f, ballHsv.Value - Threshold * 1.3f);
+            Hsv upperLimit = new Hsv(ballHsv.Hue + Threshold / 4, ballHsv.Satuation + Threshold * 1.3f, ballHsv.Value + Threshold * 1.3f);
 
             Image<Gray, byte> imgFiltered = image.InRange(lowerLimit, upperLimit);
 
@@ -160,6 +152,15 @@ namespace FoosLiveAndroid.Util.Detection
                 if (_box.Contains((int)pair.Value.Centroid.X, (int)pair.Value.Centroid.Y))
                 {
                     // It is, so we pressume it to be the ball
+                    if (_minAllowed == 0)
+                        _minAllowed = pair.Value.Area;
+                    else
+                        if (_minAllowed > pair.Value.Area)
+                        _minAllowed = pair.Value.Area - 5;
+
+                    if (_maxAllowed < pair.Value.Area)
+                        _maxAllowed = pair.Value.Area + 5;
+
                     biggestBlob = pair.Value;
                     UpdateBox(biggestBlob);
                     _framesLost = 0;
@@ -167,7 +168,7 @@ namespace FoosLiveAndroid.Util.Detection
                     break;
                 }
                 else
-                    if (pair.Value.Area > (_lastSize - SizeDiff) && pair.Value.Area < (_lastSize + SizeDiff))
+                    if (pair.Value.Area > _minAllowed && pair.Value.Area < _maxAllowed)
                 {
                     biggestBlob = pair.Value;
                     _lastBlob = biggestBlob.Centroid;
