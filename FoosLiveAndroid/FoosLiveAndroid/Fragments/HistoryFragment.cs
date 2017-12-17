@@ -50,6 +50,7 @@ namespace FoosLiveAndroid.Fragments
 
         public async override void OnCreate(Bundle savedInstanceState)
         {
+            //Log.Debug("Sdasdsd", (await DatabaseManager.InsertGame("BLUE", "RED", "OWNERSID")).ToString());
             if (historyTask == null)
                 historyTask = DatabaseManager.GetHistory();
             base.OnCreate(savedInstanceState);

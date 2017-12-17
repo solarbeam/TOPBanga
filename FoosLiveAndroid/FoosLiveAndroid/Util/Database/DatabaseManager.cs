@@ -41,7 +41,7 @@ namespace FoosLiveAndroid.Util.Database
                 streamWriter.Write(InsertGameFormat, blueTeamName, redTeamName, ownersId);
 
                 streamWriter.Flush();
-                var httpWebResponse = (HttpWebResponse)await request.GetResponseAsync();
+                var httpWebResponse = (HttpWebResponse)request.GetResponse();
 
                 var streamReader = new StreamReader(httpWebResponse.GetResponseStream());
                 var idUnconverted = await streamReader.ReadToEndAsync();
