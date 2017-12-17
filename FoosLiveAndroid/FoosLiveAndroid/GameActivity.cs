@@ -219,14 +219,12 @@ namespace FoosLiveAndroid
 
         public async void ShowEndGameScreen()
         {
-
             // Start depositing the data to database
             var preferences = GetSharedPreferences(GetString(Resource.String.preference_file_key), FileCreationMode.Private);
             var team1DefaultValue = Resources.GetString(Resource.String.saved_team1_name_default);
             var team2DefaultValue = Resources.GetString(Resource.String.saved_team2_name_default);
             var gameIdInDatabaseTask = DatabaseManager.InsertGame(preferences.GetString(GetString(Resource.String.saved_team1_name),team1DefaultValue),
                  preferences.GetString(GetString(Resource.String.saved_team2_name), team2DefaultValue));
-
 
             _gameEnd = true;
             // Terminate recognition
@@ -257,10 +255,17 @@ namespace FoosLiveAndroid
                             _game.GameController.Goals);
 
             // Send Data to database
-            
 
-            // Show pop-up fragment, holding all of the match's info
-            FragmentManager.BeginTransaction()
+
+            // Play the game end sound
+            if (MatchInfo.Team1Score > MatchInfo.Team2Score)
+                _game.SoundAlerts.Play(Util.Sounds.EAlert.Team1Win);
+            else
+                if (MatchInfo.Team2Score > MatchInfo.Team1Score)
+                _game.SoundAlerts.Play(Util.Sounds.EAlert.Team2Win);
+
+                // Show pop-up fragment, holding all of the match's info
+                FragmentManager.BeginTransaction()
                            .Add(Resource.Id.infoLayout, EndGameFragment.NewInstance())
                            .Commit();
             var gameIdInDatabase = await gameIdInDatabaseTask;

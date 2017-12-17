@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using FoosLiveAndroid.Util.Model;
 using FoosLiveAndroid.Util.Drawing;
 using Android.Util;
+using FoosLiveAndroid.Model;
 
 namespace FoosLiveAndroid.Util
 {
@@ -34,7 +35,7 @@ namespace FoosLiveAndroid.Util
         public IObjectDetector ObjectDetector;
         public GameTimer GameTimer;
 
-        private SoundAlerts _soundAlerts;
+        public SoundAlerts SoundAlerts;
 
         public Game(float mulX, float mulY, Activity activity, TextView ballSpeed, TextView score, TextView eventText, TextView timer)
         {
@@ -66,12 +67,12 @@ namespace FoosLiveAndroid.Util
                 var team1GoalDefaultValue = activity.Resources.GetString(Resource.String.saved_team1_goal_default);
                 var team2GoalDefaultValue = activity.Resources.GetString(Resource.String.saved_team2_goal_default);
 
-                _soundAlerts = new SoundAlerts
+                SoundAlerts = new SoundAlerts
                 {
-                    Team1Win = new PlayerOgg(FilePathResolver.GetFile(activity, preferences.GetString(team1WinKey, team1WinDefaultValue))),
-                    Team1Goal = new PlayerOgg(FilePathResolver.GetFile(activity, preferences.GetString(team1GoalKey, team1GoalDefaultValue))),
-                    Team2Win = new PlayerOgg(FilePathResolver.GetFile(activity, preferences.GetString(team2WinKey, team2WinDefaultValue))),
-                    Team2Goal = new PlayerOgg(FilePathResolver.GetFile(activity, preferences.GetString(team2GoalKey, team2GoalDefaultValue)))
+                    Team1Win = new PlayerOgg(FilePathResolver.GetFile(activity, preferences.GetString(team1WinKey, SoundAsset.WinMario.ToString()))),
+                    Team1Goal = new PlayerOgg(FilePathResolver.GetFile(activity, preferences.GetString(team1GoalKey, SoundAsset.GoalMario.ToString()))),
+                    Team2Win = new PlayerOgg(FilePathResolver.GetFile(activity, preferences.GetString(team2WinKey, SoundAsset.WinMario.ToString()))),
+                    Team2Goal = new PlayerOgg(FilePathResolver.GetFile(activity, preferences.GetString(team2GoalKey, SoundAsset.GoalMario.ToString())))
                 };
             }
 
@@ -122,12 +123,12 @@ namespace FoosLiveAndroid.Util
             // Check which event occured
             if (e == CurrentEvent.BlueGoalOccured)
             {
-                _soundAlerts?.Play(EAlert.Team1Goal);
+                SoundAlerts?.Play(EAlert.Team1Goal);
                 TextEffects.SlideText(_activity.ApplicationContext.Resources.GetString(Resource.String.blue_team_goal), _activity, _eventText);
             }
             else if (e == CurrentEvent.RedGoalOccured)
             {
-                _soundAlerts?.Play(EAlert.Team2Goal);
+                SoundAlerts?.Play(EAlert.Team2Goal);
                 TextEffects.SlideText(_activity.ApplicationContext.Resources.GetString(Resource.String.red_team_goal), _activity, _eventText);
             }
             _score.Text = $"{GameController.BlueScore} : {GameController.RedScore}";

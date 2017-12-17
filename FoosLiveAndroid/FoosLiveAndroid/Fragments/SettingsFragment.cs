@@ -180,16 +180,16 @@ namespace FoosLiveAndroid.Fragments
                     case (int)SoundAsset.GoalMario:
                         {
                             var goalSoundName = GetString(Resource.String.mario_goal_sound);
-                            previewPlayer = new PlayerOgg(FilePathResolver.GetFile(Context, goalSoundName));
-                            prefsEditor.PutString(soundItem, goalSoundName).Apply();
+                            previewPlayer = new PlayerOgg(FilePathResolver.GetFile(Context, SoundAsset.GoalMario.ToString()));
+                            prefsEditor.PutString(soundItem, SoundAsset.GoalMario.ToString()).Apply();
                             soundTitle.Text = goalSoundName;
                             break;
                         }
                     case (int)SoundAsset.WinMario:
                         {
                             var winSoundName = GetString(Resource.String.mario_win_sound);
-                            previewPlayer = new PlayerOgg(FilePathResolver.GetFile(Context, winSoundName));
-                            prefsEditor.PutString(soundItem, winSoundName).Apply();
+                            previewPlayer = new PlayerOgg(FilePathResolver.GetFile(Context, SoundAsset.WinMario.ToString()));
+                            prefsEditor.PutString(soundItem, SoundAsset.WinMario.ToString()).Apply();
                             soundTitle.Text = winSoundName;
                             break;
                         }

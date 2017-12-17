@@ -3,6 +3,6 @@
     public enum SoundAsset
     {
         GoalMario,
-        WinMario,
+        WinMario
     }
 }
