@@ -6,6 +6,7 @@ using Android.Widget;
 using Emgu.CV;
 using Emgu.CV.Structure;
 using FoosLiveAndroid.Model;
+using FoosLiveAndroid.Util;
 using FoosLiveAndroid.Util.Drawing;
 using System;
 using FoosLiveAndroid.Util.Model;
@@ -55,8 +56,7 @@ namespace FoosLiveAndroid.Fragments
                 HeatmapDrawer.DrawZones(canvas, MatchInfo.Zones);
 
                 Image<Bgr, byte> toBlur = new Image<Bgr, byte>(toDraw);
-                toBlur = toBlur.Dilate(7);
-                CvInvoke.GaussianBlur(toBlur, toBlur, new System.Drawing.Size(0,0), 3);
+                CvInvoke.MedianBlur(toBlur, toBlur, PropertiesManager.GetIntProperty("blur_iterations"));
 
                 ballHeatMap.SetImageBitmap(toBlur.Bitmap);
             });

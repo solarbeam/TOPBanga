@@ -289,5 +289,5 @@ FoosLiveAndroid/FoosLiveAndroid/.DS_Store
 *.dll
 *.mdb
 FoosLiveAndroid/FoosLiveAndroid/Emgu.CV.World.Android.XML
-/FoosLiveAndroid/FoosLiveAndroid/lib/arm64-v8a
-/FoosLiveAndroid/FoosLiveAndroid/lib/x86_64
+/FoosLiveAndroid/FoosLiveAndroid/lib/arm64-v8a/libcvextern.so
+/FoosLiveAndroid/FoosLiveAndroid/lib/x86_64/libcvextern.so

@@ -22,7 +22,7 @@ namespace FoosLiveAndroid.Util.Drawing
         /// Defines a sliding text effect for a given string of text
         /// </summary>
         /// <param name="text">The text, to which the effect will be applied</param>
-        public static void SlideText(string text, Activity activity, TextView textView)
+        public static void SlideText(string text, Activity activity, TextView textView, int maxLength)
         {
             if (_textThreadStarted)
                 return;
@@ -34,7 +34,7 @@ namespace FoosLiveAndroid.Util.Drawing
                 var temp = text;
                 var tempView = new StringBuilder(temp.Length);
 
-                for (var i = 0; i < textView.Length(); i++)
+                for (var i = 0; i < maxLength; i++)
                 {
                     tempView.Append(' ');
                 }
