@@ -46,6 +46,7 @@ namespace FoosLiveAndroid.Util
             ObjectDetector = new ObjectDetector(mulX, mulY, ColorDetector, GameController);
             GameController.GoalEvent += GameControllerGoalEvent;
             GameController.PositionEvent += GameControllerPositionEvent;
+            GameTimer.OnUpdated += UpdateTimer;
 
             _ballSpeed = ballSpeed;
             _score = score;

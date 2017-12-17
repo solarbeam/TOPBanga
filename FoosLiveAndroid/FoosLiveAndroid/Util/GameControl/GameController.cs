@@ -27,11 +27,11 @@ namespace FoosLiveAndroid.Util.GameControl
         /// <summary>
         /// Defines the current score for the red team
         /// </summary>
-        public int RedScore { get; private set; }
+        public int RedScore { get; set; }
         /// <summary>
         /// Defines the current score for the blue team
         /// </summary>
-        public int BlueScore { get; private set; }
+        public int BlueScore { get; set; }
 
         /// <summary>
         /// The amount of positions to hold in the queue

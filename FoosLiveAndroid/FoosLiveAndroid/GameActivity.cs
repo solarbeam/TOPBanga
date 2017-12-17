@@ -116,12 +116,36 @@ namespace FoosLiveAndroid
 
             _gameButton.Click += GameButtonClicked;
 
-            //Todo: add click events
-            //_addScoreTeam1.Click += 
-            //_addScoreTeam2.Click += 
-            //_removeScoreTeam1.Click +=
-            //_removeScoreTeam2.Click +=
-                
+            _addScoreTeam1.Click += (o, e) =>
+            {
+                _game.GameController.BlueScore++;
+                _score.Text = String.Format(_scoreFormat, _game.GameController.BlueScore, _game.GameController.RedScore);
+            };
+            _addScoreTeam2.Click += (o, e) =>
+            {
+                _game.GameController.RedScore++;
+                _score.Text = String.Format(_scoreFormat, _game.GameController.BlueScore, _game.GameController.RedScore);
+            };
+            _removeScoreTeam1.Click += (o, e) =>
+            {
+                if (_game.GameController.BlueScore == 0)
+                    return;
+                else
+                {
+                    _game.GameController.BlueScore--;
+                    _score.Text = String.Format(_scoreFormat, _game.GameController.BlueScore, _game.GameController.RedScore);
+                }
+            };
+            _removeScoreTeam2.Click += (o, e) =>
+            {
+                if (_game.GameController.RedScore == 0)
+                    return;
+                else
+                {
+                    _game.GameController.RedScore--;
+                    _score.Text = String.Format(_scoreFormat, _game.GameController.BlueScore, _game.GameController.RedScore);
+                }
+            };
 
             // Assign the sound file paths
             var preferences = GetSharedPreferences(GetString(Resource.String.preference_file_key), FileCreationMode.Private);
