@@ -19,8 +19,8 @@ namespace FoosLiveAndroid.Util.GameControl
         public event EventHandler<CurrentEvent> GoalEvent;
         public event EventHandler<EventArgs> PositionEvent;
 
-        //Todo: use it somewhere
-        public int[] Zones => _rowChecker.GetRowInformation();
+        //Todo: for future
+        //public int[] Zones => _rowChecker.GetRowInformation();
 
         public ZoneInfo HeatmapZones { get; private set; }
 

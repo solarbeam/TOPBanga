@@ -61,8 +61,6 @@ namespace FoosLiveAndroid
         private FrameLayout _infoLayout;
         private RelativeLayout _topBar;
 
-        public Bitmap AlphaBitmap;
-
         private Game _game;
 
         public ECaptureMode GameMode;
@@ -239,7 +237,6 @@ namespace FoosLiveAndroid
             _arrowTop.Visibility = ViewStates.Gone;
             _arrowRight.Visibility = ViewStates.Gone;
             _arrowLeft.Visibility = ViewStates.Gone;
-            //_videoPlayer
             // Hide top bar
             _topBar.Visibility = ViewStates.Gone;
             // Hide game button
@@ -335,8 +332,8 @@ namespace FoosLiveAndroid
         private void UpdateButton(MotionEvent e)
         {
             // Calculate the position
-            var positionX = (int)(e.GetX() / _upscaleMultiplierX) - 1;
-            var positionY = (int)(e.GetY() / _upscaleMultiplierY) - 1;
+            var positionX = (int)(e.GetX() / _upscaleMultiplierX);
+            var positionY = (int)(e.GetY() / _upscaleMultiplierY);
 
             // Get the Hsv value from the image
             // Todo: exception pops HERE
