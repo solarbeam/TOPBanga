@@ -72,7 +72,4 @@
     <!--Login-->
     <string name="facebook_app_id">306442999863629</string>
     <string name="fb_login_protocol_scheme">fb306442999863629</string>
-    <!--AssetFiles-->
-    <string name="mario_goal_sound">defaultMarioGoal</string>
-    <string name="mario_win_sound">defaultMarioWin</string>
 </resources>

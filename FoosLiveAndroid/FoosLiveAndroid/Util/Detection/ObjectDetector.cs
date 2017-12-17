@@ -19,8 +19,6 @@ namespace FoosLiveAndroid.Util.Detection
         private GameController _controller;
         private float _mulX;
         private float _mulY;
-        // Todo: redundant variable
-        private Paint _paintRect;
         private Paint _paintBall;
         private static readonly float BallStrokeWidth = PropertiesManager.GetFloatProperty("ball_stroke_width");
         private static readonly float RectStrokeWidth = PropertiesManager.GetFloatProperty("rect_stroke_width");
@@ -47,7 +45,7 @@ namespace FoosLiveAndroid.Util.Detection
             _paintBall.SetStyle(Paint.Style.Stroke);
             _paintBall.StrokeWidth = BallStrokeWidth;
         }
-        public bool Detect(Canvas canvas, Hsv ballHsv, Bitmap bitmap, Bitmap bgBitmap)
+        public bool Detect(Canvas canvas, Hsv ballHsv, Bitmap bitmap)
         {
             // Preliminary checks
             if (canvas == null || _detector == null || bitmap == null)
@@ -59,15 +57,14 @@ namespace FoosLiveAndroid.Util.Detection
             // Refresh the detector's image
             _detector.image = new Image<Hsv, byte>(bitmap);
 
-            // Clear the image
-            canvas.DrawColor(Color.Transparent, PorterDuff.Mode.Clear);
-            canvas.DrawBitmap(bgBitmap, 0, 0, null);
-
             // Try to detect the ball
             ballDetected = _detector.DetectBall(ballHsv, out var ball, out var bBox);
 
             // Free unused resources
             _detector.image.Dispose();
+
+            // Clear the image
+            canvas.DrawColor(Color.Transparent, PorterDuff.Mode.Clear);
 
             if (ballDetected)
             {

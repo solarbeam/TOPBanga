@@ -306,8 +306,7 @@ namespace FoosLiveAndroid
 
         public bool DetectBall(Canvas canvas) {
             return _game.ObjectDetector.Detect(canvas, _selectedBallColor,
-                                            GameView.GetBitmap(PreviewWidth, PreviewHeight),
-                                          AlphaBitmap);
+                                            GameView.GetBitmap(PreviewWidth, PreviewHeight));
         }
 
         /// <summary>

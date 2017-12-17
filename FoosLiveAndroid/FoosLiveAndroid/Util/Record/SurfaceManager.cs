@@ -35,11 +35,6 @@ namespace FoosLiveAndroid.Util.Record
             // Set the upscaling constant
             _activity.SetMultipliers(w, h);
 
-            // Create a template alpha bitmap for repeated drawing
-            var tempBitmap = new BitmapDrawable(Bitmap.CreateBitmap(w, h, Bitmap.Config.Argb8888));
-            tempBitmap.SetAlpha(0);
-            _activity.AlphaBitmap = tempBitmap.Bitmap;
-
             SurfaceHolder.SetFixedSize(w, h);
 
             SurfaceTexture = surface;
@@ -89,7 +84,7 @@ namespace FoosLiveAndroid.Util.Record
             if (!_activity.DetectBall(canvas))
             {
                 // Remove all drawings
-                canvas.DrawColor(Color.Argb(255, 0, 0, 0));
+                canvas.DrawColor(Color.Transparent, PorterDuff.Mode.Clear);
             }
 
             SurfaceHolder.UnlockCanvasAndPost(canvas);
