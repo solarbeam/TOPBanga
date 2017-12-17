@@ -30,21 +30,29 @@ namespace FoosLiveAndroid.Util.Database
         /// <returns>The id of the inserted game, or -1 if error happens.
         /// This id is used to specify which game to add goals and events to.</returns>
         public static async Task<int> InsertGame(string blueTeamName, string redTeamName, string ownersId) {
-            var request = (HttpWebRequest)WebRequest.Create(ConnectionUrl);
-            request.Method = WebRequestMethods.Http.Post;
-            request.Timeout = Timeout;
+            try
+            {
+                var request = (HttpWebRequest)WebRequest.Create(ConnectionUrl);
+                request.Method = WebRequestMethods.Http.Post;
+                request.Timeout = Timeout;
 
-            var streamWriter = new StreamWriter(request.GetRequestStream());
-            // Prepare query statement
-            streamWriter.Write(InsertGameFormat, blueTeamName, redTeamName, ownersId);
+                var streamWriter = new StreamWriter(request.GetRequestStream());
+                // Prepare query statement
+                streamWriter.Write(InsertGameFormat, blueTeamName, redTeamName, ownersId);
 
-            streamWriter.Flush();
-            var httpWebResponse = (HttpWebResponse)await request.GetResponseAsync();
+                streamWriter.Flush();
+                var httpWebResponse = (HttpWebResponse)await request.GetResponseAsync();
 
-            var streamReader = new StreamReader(httpWebResponse.GetResponseStream());
-            var idUnconverted = await streamReader.ReadToEndAsync();
-            if (int.TryParse(idUnconverted, out var id))
-                return id;
+                var streamReader = new StreamReader(httpWebResponse.GetResponseStream());
+                var idUnconverted = await streamReader.ReadToEndAsync();
+                if (int.TryParse(idUnconverted, out var id))
+                    return id;
+                return -1;
+            }
+            catch(Exception e)
+            {
+                Log.Error("Exception in db", e.ToString());
+            }
             return -1;
         }
         /// <summary>
