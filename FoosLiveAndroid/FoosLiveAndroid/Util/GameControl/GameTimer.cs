@@ -84,8 +84,7 @@ namespace FoosLiveAndroid.Util.GameControl
 
         public string GetFormattedTime()
         {
-            return string.Format(_timeFormat, TimeSpan.FromMilliseconds(Time).Minutes.ToString("00"),
-                TimeSpan.FromMilliseconds(Time).Seconds.ToString("00"));
+            return TimeSpan.FromMilliseconds(Time).ToString(@"mm\:ss");
         }
     }
 }

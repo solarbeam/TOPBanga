@@ -38,7 +38,9 @@
     <string name="score_format">{0} : {1}</string>
     <string name="select_ball_color">Select the ball\'s color</string>
     <string name="speed_unit">cm/s</string>
-    <string name="timer_format">00:00</string>
+    <string name="timer_format">{0}:{1}</string>
+    <string name="add_point">+</string>
+    <string name="remove_point">-</string>
     
     <string name="speed_format">0.00</string>
 	<!--Info-->

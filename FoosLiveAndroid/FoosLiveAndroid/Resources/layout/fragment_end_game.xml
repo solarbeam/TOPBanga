@@ -118,7 +118,7 @@
     <ImageView
         android:id="@+id/ballHeatMap"
         android:layout_width="160dp"
-        android:layout_height="260dp"
+        android:layout_height="245dp"
         android:layout_centerHorizontal="true"
         android:layout_below="@+id/activityZonesLabel" />
     <LinearLayout

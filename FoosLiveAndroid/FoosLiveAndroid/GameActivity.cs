@@ -13,7 +13,6 @@ using System;
 using Android.Hardware;
 using FoosLiveAndroid.Util.Drawing;
 using Android.Content;
-using FoosLiveAndroid.Util.GameControl;
 using FoosLiveAndroid.Util.Sensors;
 using FoosLiveAndroid.Util.Interface;
 using FoosLiveAndroid.Fragments;
@@ -48,9 +47,12 @@ namespace FoosLiveAndroid
         private TextView _ballSpeed;
         private TextView _team1Title;
         private TextView _team2Title;
-
+        private Button _addScoreTeam1;
+        private Button _addScoreTeam2;
+        private Button _removeScoreTeam1;
+        private Button _removeScoreTeam2;
+            
         private string _scoreFormat;
-        private string _timerFormat;
 
         // Guideline UI elements
         private ImageView _arrowTop;
@@ -114,6 +116,13 @@ namespace FoosLiveAndroid
 
             _gameButton.Click += GameButtonClicked;
 
+            //Todo: add click events
+            //_addScoreTeam1.Click += 
+            //_addScoreTeam2.Click += 
+            //_removeScoreTeam1.Click +=
+            //_removeScoreTeam2.Click +=
+                
+
             // Assign the sound file paths
             var preferences = GetSharedPreferences(GetString(Resource.String.preference_file_key), FileCreationMode.Private);
 
@@ -126,7 +135,7 @@ namespace FoosLiveAndroid
             preferences.Dispose();
 
             _scoreFormat = GetString(Resource.String.score_format);
-            _timerFormat = GetString(Resource.String.timer_format);
+            //_timerFormat = GetString(Resource.String.timer_format);
 
             // Open the camera
             GameView.SurfaceTextureListener = SurfaceManager;
@@ -230,6 +239,12 @@ namespace FoosLiveAndroid
             // Terminate recognition
             BallColorSelected = false;
 
+            //Hide score management buttons
+            _addScoreTeam1.Visibility = ViewStates.Gone;
+            _addScoreTeam2.Visibility = ViewStates.Gone;
+            _removeScoreTeam1.Visibility = ViewStates.Gone;
+            _removeScoreTeam2.Visibility = ViewStates.Gone;
+
             // Hide guideline arrows
             _arrowBot.Visibility = ViewStates.Gone;
             _arrowTop.Visibility = ViewStates.Gone;
@@ -251,7 +266,7 @@ namespace FoosLiveAndroid
                             _team2Title.Text, _game.GameController.RedScore,
                             _game.GameController.MaxSpeed,
                             _game.GameController.AverageSpeed,
-                            _game.GameController.HeatmapZones, TimeSpan.FromMilliseconds(GameTimer.Time).TotalSeconds.ToString(_timerFormat),
+                            _game.GameController.HeatmapZones, _game.GameTimer.GetFormattedTime(),
                             _game.GameController.Goals);
 
             // Send Data to database
@@ -296,13 +311,17 @@ namespace FoosLiveAndroid
             _timer = FindViewById<TextView>(Resource.Id.timer);
             _team1Title = FindViewById<TextView>(Resource.Id.team1Label);
             _team2Title = FindViewById<TextView>(Resource.Id.team2Label);
+            _addScoreTeam1 = FindViewById<Button>(Resource.Id.addScoreTeam1);
+            _addScoreTeam2 = FindViewById<Button>(Resource.Id.addScoreTeam2);
+            _removeScoreTeam1 = FindViewById<Button>(Resource.Id.removeScoreTeam1);
+            _removeScoreTeam2 = FindViewById<Button>(Resource.Id.removeScoreTeam2);
         }
 
         private void UpdateTimer(object sender, EventArgs e)
         {
             RunOnUiThread(() =>
             {
-                _timer.Text = Math.Round(GameTimer.Time / Units.MiliSecondsInSecond).ToString(_timerFormat);
+                _timer.Text = _game.GameTimer.GetFormattedTime();
             });
         }
 
