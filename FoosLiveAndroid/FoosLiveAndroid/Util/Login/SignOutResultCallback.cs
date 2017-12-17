@@ -6,6 +6,7 @@ namespace FoosLiveAndroid.Util.Login
     public class SignOutResultCallback : Object, IResultCallback
 	{
         private GoogleApiClient _client;
+
         public SignOutResultCallback(GoogleApiClient googleApiClient)
         {
             _client = googleApiClient;

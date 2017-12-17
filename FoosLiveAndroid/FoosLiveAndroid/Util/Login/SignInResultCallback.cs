@@ -9,25 +9,20 @@ namespace FoosLiveAndroid.Util.Login
 {
     public class SignInResultCallback : Object, IResultCallback, IConnectionCallbacks
     {
-        GoogleApiClient client;
+        private GoogleApiClient _client;
         public SignInResultCallback(GoogleApiClient googleApiClient)
         {
-            client = googleApiClient;
+            _client = googleApiClient;
         }
         public Context LoginContext { get; set; }
 
         public void OnConnected(Bundle connectionHint)
         {
-            client.ClearDefaultAccountAndReconnect();
+            _client.ClearDefaultAccountAndReconnect();
         }
 
-        public void OnConnectionSuspended(int cause)
-        {
-        }
+        public void OnConnectionSuspended(int cause) {}
 
-        public void OnResult(Object result)
-        {
-            //client.ClearDefaultAccountAndReconnect();
-        }
+        public void OnResult(Object result) {}
     }
 }

@@ -11,9 +11,9 @@ namespace FoosLiveAndroid.Util.Login
     public class LoginManager : Java.Lang.Object, GoogleApiClient.IOnConnectionFailedListener
     {
         static readonly string Tag = typeof(LoginManager).Name;
-        static LoginManager Instance;
-        public GoogleApiClient googleApiClient;
+        private static LoginManager Instance;
         private Context _context;
+        private GoogleApiClient _googleApiClient;
 
         private LoginManager(Context context)
         {
@@ -23,11 +23,11 @@ namespace FoosLiveAndroid.Util.Login
                                                        .RequestEmail().Build();
             // Build a GoogleApiClient with access to the Google Sign-In API and the
             // options specified by gso.
-            googleApiClient = new GoogleApiClient.Builder(context)
+            _googleApiClient = new GoogleApiClient.Builder(context)
                     .EnableAutoManage((LoginActivity)context, OnResult)
                     .AddApi(Auth.GOOGLE_SIGN_IN_API, signInOptions)
                     .Build();
-            googleApiClient.RegisterConnectionCallbacks(new SignInResultCallback(googleApiClient));
+            _googleApiClient.RegisterConnectionCallbacks(new SignInResultCallback(_googleApiClient));
             _context = context;
         }
 
@@ -37,7 +37,7 @@ namespace FoosLiveAndroid.Util.Login
             return Instance;
         }
 
-        public Intent SignInIntent => Auth.GoogleSignInApi.GetSignInIntent(googleApiClient);
+        public Intent SignInIntent => Auth.GoogleSignInApi.GetSignInIntent(_googleApiClient);
 
         public void OnResult(Java.Lang.Object result)
         {

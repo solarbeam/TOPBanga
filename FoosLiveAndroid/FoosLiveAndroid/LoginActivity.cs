@@ -14,7 +14,7 @@ namespace FoosLiveAndroid
     public class LoginActivity : AppCompatActivity
     {
         static readonly string Tag = typeof(LoginActivity).Name;
-        LoginManager _loginManager;
+        private LoginManager _loginManager;
 
         protected override void OnCreate(Bundle savedInstanceState)
         {

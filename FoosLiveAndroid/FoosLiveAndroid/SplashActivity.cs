@@ -21,8 +21,7 @@ namespace FoosLiveAndroid
         protected override void OnResume()
         {
             base.OnResume();
-            Task startupLoading = new Task(LoadResources);
-            startupLoading.Start();
+            new Task(LoadResources).Start();
         }
 
         /// Background work behind the splash screen
