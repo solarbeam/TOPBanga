@@ -279,14 +279,18 @@ namespace FoosLiveAndroid
             _topBar.Visibility = ViewStates.Gone;
             // Hide game button
             _gameButton.Visibility = ViewStates.Gone;
-            // Hide all EmguCV drawables
+            // Hide all EmguCV drawables    
             _surfaceView.Visibility = ViewStates.Invisible;
 
             // Disable sensors
             if (GameMode == ECaptureMode.Live)
                 _positionManager.StopListening();
-            else 
+            else if (!recordPlayer.Disposed)
+            {
                 recordPlayer.Stop();
+                recordPlayer.Release();
+            }
+                
             //Collect data from GameController
             MatchInfo.SetUp(_team1Title.Text, _game.GameController.BlueScore,
                             _team2Title.Text, _game.GameController.RedScore,
