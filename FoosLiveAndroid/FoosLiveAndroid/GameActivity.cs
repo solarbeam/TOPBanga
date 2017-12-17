@@ -256,8 +256,6 @@ namespace FoosLiveAndroid
 
             _textThreadStarted = true;
 
-            System.Console.WriteLine(_maxEventSliderLength);
-
             RunOnUiThread(async () =>
             {
                 var temp = text;

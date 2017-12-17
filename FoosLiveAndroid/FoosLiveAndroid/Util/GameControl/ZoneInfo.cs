@@ -19,6 +19,10 @@ namespace FoosLiveAndroid.Util.GameControl
     /// </summary>
     public class ZoneInfo
     {
+        private const int _toAddZone1 = 8;
+        private const int _toAddZone2 = 4;
+        private const int _toAddZone3 = 2;
+
         public int[,] values
         {
             get;
@@ -67,26 +71,25 @@ namespace FoosLiveAndroid.Util.GameControl
             {
                 values[posY, posX] += 8;
 
-                int toAddY = -2, toAddX = -2;
-                for (int i = 0; i < 3; i ++)
+                for (int i = -2; i < 3; i ++)
                 {
-                    for (int j = 0; j < 3; j ++)
+                    for (int j = -2; j < 3; j ++)
                     {
-                        if ((posX + toAddX < width && posX + toAddX > 0) &&
-                            (posY + toAddY < height && posY + toAddY > 0))
+                        if ((posX + i < width && posX + i > 0) &&
+                            (posY + j < height && posY + j > 0))
                         {
+                            // Defines the outermost points from the center
                             if ((i == -2 || i == 2) && (j == -2 || j == 2))
-                                values[posY + toAddY, posX + toAddX] += 2;
+                                values[posY + j, posX + i] += _toAddZone3;
                             else
+                            // Defines the points, which surround the center point
                                 if ((i == -1 || i == 1) && (j == -1 || j == 1))
-                                values[posY + toAddY, posX + toAddX] += 4;
+                                values[posY + j, posX + i] += _toAddZone2;
                             else
-                                values[posY + toAddY, posX + toAddX] += 8;
+                                // Defines the center point
+                                values[posY + j, posX + i] += _toAddZone3;
                         }
-                        toAddX ++;
                     }
-                    toAddX = 0;
-                    toAddY++;
                 }
             }
         }

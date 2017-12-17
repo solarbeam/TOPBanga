@@ -22,7 +22,6 @@ namespace FoosLiveAndroid.Util.Sounds
 
         public static AssetFileDescriptor getFile(Activity activity, String argument)
         {
-            System.Console.WriteLine(argument);
             switch(argument)
             {
                 case defaultMarioGoal:

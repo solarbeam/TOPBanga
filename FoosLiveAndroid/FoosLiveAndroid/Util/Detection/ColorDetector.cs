@@ -53,6 +53,9 @@ namespace FoosLiveAndroid.Util.Detection
         /// Defines the limit for the bounding box sizing algorithm
         /// </summary>
         private readonly int MinBlobSize = PropertiesManager.GetIntProperty("min_blob_size");
+        private readonly int HsvDivisor = 4;
+        private readonly float SaturationMultiplier = 1.3f;
+        private readonly float ValueMultiplier = 1.3f;
 
         /// <summary>
         /// Defines the multipliers for the bounding box sizing algorithm
@@ -63,6 +66,9 @@ namespace FoosLiveAndroid.Util.Detection
         private readonly int MulDeltaHeight = PropertiesManager.GetIntProperty("multiplier_delta_height");
         private readonly int MinWidth = PropertiesManager.GetIntProperty("min_width");
         private readonly int MinHeight = PropertiesManager.GetIntProperty("min_height");
+
+        private readonly int MinAddition = 5;
+        private readonly int MaxAddition = 5;
 
         /// <summary>
         /// The detector's image, used for calculations
@@ -108,9 +114,18 @@ namespace FoosLiveAndroid.Util.Detection
             //default returns
             rect = new Rectangle();
 
-            // Define the upper and lower limits of the Hue and Saturation values
-            Hsv lowerLimit = new Hsv(ballHsv.Hue - Threshold / 4, ballHsv.Satuation - Threshold * 1.3f, ballHsv.Value - Threshold * 1.3f);
-            Hsv upperLimit = new Hsv(ballHsv.Hue + Threshold / 4, ballHsv.Satuation + Threshold * 1.3f, ballHsv.Value + Threshold * 1.3f);
+            /**
+             * In order to boost tracking accuracy in all lighting conditions, I reduce the base color
+             * min and max values and boost the black and white intensities ( in this case, its 
+             * the Saturation and Value values ). This in turn helps us detect the ball, even in poor conditions, 
+             * but not all of the lighting conditions are touched. This will be addressed sometime in the future
+             */
+            Hsv lowerLimit = new Hsv(ballHsv.Hue - Threshold / HsvDivisor,
+                ballHsv.Satuation - Threshold * SaturationMultiplier,
+                ballHsv.Value - Threshold * ValueMultiplier);
+            Hsv upperLimit = new Hsv(ballHsv.Hue + Threshold / HsvDivisor,
+                ballHsv.Satuation + Threshold * SaturationMultiplier,
+                ballHsv.Value + Threshold * ValueMultiplier);
 
             Image<Gray, byte> imgFiltered = image.InRange(lowerLimit, upperLimit);
 
@@ -152,14 +167,21 @@ namespace FoosLiveAndroid.Util.Detection
                 if (_box.Contains((int)pair.Value.Centroid.X, (int)pair.Value.Centroid.Y))
                 {
                     // It is, so we pressume it to be the ball
+
+                    /**
+                     * The blob can differ in size when detected by the tracking algorithm. 
+                     * In this case, I check whether the blob, accepted by the algorithm, is lower than
+                     * the previous minimum. This in turn lets us "remember" all of the blob sizes, should
+                     * we detect them in the future, and also allows to detect pretty fast shots
+                     */
                     if (_minAllowed == 0)
                         _minAllowed = pair.Value.Area;
                     else
                         if (_minAllowed > pair.Value.Area)
-                        _minAllowed = pair.Value.Area - 5;
+                        _minAllowed = pair.Value.Area - MinAddition;
 
                     if (_maxAllowed < pair.Value.Area)
-                        _maxAllowed = pair.Value.Area + 5;
+                        _maxAllowed = pair.Value.Area + MaxAddition;
 
                     biggestBlob = pair.Value;
                     UpdateBox(biggestBlob);
