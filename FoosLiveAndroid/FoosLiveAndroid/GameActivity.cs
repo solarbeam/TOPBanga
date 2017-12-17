@@ -298,15 +298,15 @@ namespace FoosLiveAndroid
                             _game.GameController.AverageSpeed,
                             _game.GameController.HeatmapZones, _game.GameTimer.GetFormattedTime(),
                             _game.GameController.Goals);
-            
+
             // Play the game end sound
             if (MatchInfo.Team1Score > MatchInfo.Team2Score)
-                _game.SoundAlerts.Play(Util.Sounds.EAlert.Team1Win);
+                _game.SoundAlerts?.Play(Util.Sounds.EAlert.Team1Win);
             else
                 if (MatchInfo.Team2Score > MatchInfo.Team1Score)
-                _game.SoundAlerts.Play(Util.Sounds.EAlert.Team2Win);
+                _game.SoundAlerts?.Play(Util.Sounds.EAlert.Team2Win);
 
-                // Show pop-up fragment, holding all of the match's info
+            // Show pop-up fragment, holding all of the match's info
             FragmentManager.BeginTransaction()
                            .Add(Resource.Id.infoLayout, EndGameFragment.NewInstance())
                            .Commit();
@@ -320,9 +320,9 @@ namespace FoosLiveAndroid
                 foreach(var goal in _game.GameController.Goals)
                 {
                     if (goal.TeamColor == TeamColor.Blue)
-                        await DatabaseManager.InsertGoal(gameIdInDatabase, team1Name);
-                    if(goal.TeamColor == TeamColor.Red)
-                        await DatabaseManager.InsertGoal(gameIdInDatabase, team2Name);
+                        DatabaseManager.InsertGoal(gameIdInDatabase, team1Name);
+                    if (goal.TeamColor == TeamColor.Red)
+                        DatabaseManager.InsertGoal(gameIdInDatabase, team2Name);
                 }
             }
         }
