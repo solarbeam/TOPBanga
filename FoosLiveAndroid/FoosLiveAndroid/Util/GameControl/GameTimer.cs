@@ -1,15 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-using Android.App;
-using Android.Content;
-using Android.OS;
-using Android.Runtime;
-using Android.Views;
-using Android.Widget;
 using System.Timers;
+using Android.Content.Res;
 
 namespace FoosLiveAndroid.Util.GameControl
 {
@@ -23,6 +14,7 @@ namespace FoosLiveAndroid.Util.GameControl
         /// <summary>
         /// Fires whenever the Time attribute updates
         /// </summary>
+        // Todo: redundant variable
         public EventHandler<EventArgs> OnUpdated;
 
         /// <summary>
@@ -38,16 +30,20 @@ namespace FoosLiveAndroid.Util.GameControl
         /// </summary>
         private int _toAdd;
 
+        private readonly string _timeFormat;
+
         /// <summary>
         /// The default constructor for the GameTimer class
         /// </summary>
         /// <param name="interval">The interval between increments</param>
-        public GameTimer(int interval)
+        /// <param name="resources">Static resources reference</param>
+        public GameTimer(int interval, Resources resources)
         {
             _timer = new Timer();
-            _timer.Elapsed += new ElapsedEventHandler(OnTimedEvent);
+            _timer.Elapsed += OnTimedEvent;
             _timer.Interval = interval;
             _toAdd = interval;
+            _timeFormat = resources.GetString(Resource.String.timer_format);
         }
 
         /// <summary>
@@ -70,37 +66,25 @@ namespace FoosLiveAndroid.Util.GameControl
         /// Starts the timer
         /// </summary>
         /// <returns>True if started succesfully. False otherwise</returns>
-        public bool Start()
+        public void Start()
         {
-            if (!_timer.Enabled)
-            {
-                Time = 0;
-                _timer.Enabled = true;
-                return true;
-            }
-            else
-                return false;
+            if (_timer.Enabled) return;
+            Time = 0;
+            _timer.Enabled = true;
         }
 
         /// <summary>
         /// Stops the timer
         /// </summary>
         /// <returns>True if the timer is stopped succesfully. False otherwise</returns>
-        public bool Stop()
+        public void Stop()
         {
-            if (_timer.Enabled)
-            {
-                _timer.Enabled = false;
-                return true;
-            }
-            else
-                return false;
+            _timer.Enabled = false;
         }
 
-        public String GetFormattedTime()
+        public string GetFormattedTime()
         {
-            return TimeSpan.FromMilliseconds(GameTimer.Time).Minutes.ToString("00") + ":" +
-                                TimeSpan.FromMilliseconds(GameTimer.Time).Seconds.ToString("00");
+            return TimeSpan.FromMilliseconds(Time).ToString(@"mm\:ss");
         }
     }
 }

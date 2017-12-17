@@ -1,18 +1,14 @@
-﻿using Android.Content;
-using Android.Content.Res;
+﻿using Android.Content.Res;
 using Android.Media;
 using FoosLiveAndroid.Util.Interface;
-using Java.IO;
 
 namespace FoosLiveAndroid.Util.Sounds
 {
-    public class PlayerOGG : IAlert
+    public class PlayerOgg : IAlert
     {
         private readonly MediaPlayer _player;
 
-        //Todo: paths from cfg
-
-        public PlayerOGG(Context context, AssetFileDescriptor descriptor )
+        public PlayerOgg(AssetFileDescriptor descriptor)
         {
             _player = new MediaPlayer();
             _player.SetVolume(100, 100);

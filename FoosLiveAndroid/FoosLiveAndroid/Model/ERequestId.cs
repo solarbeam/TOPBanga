@@ -3,7 +3,7 @@
     /// <summary>
     /// Runtime requests ids
     /// </summary>
-    public enum ERequestId
+    public enum RequestId
     {
         Camera,
         VideoRequest

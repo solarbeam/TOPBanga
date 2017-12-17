@@ -159,7 +159,7 @@ namespace FoosLiveAndroid.Util.Detection
                 _framesLost++;
                 return false;
             }
-            
+
             CvBlob biggestBlob = null;
             foreach (var pair in points.OrderByDescending(e => e.Value.Area))
             {

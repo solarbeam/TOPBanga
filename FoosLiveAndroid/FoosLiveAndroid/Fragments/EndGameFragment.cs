@@ -9,14 +9,14 @@ using FoosLiveAndroid.Model;
 using FoosLiveAndroid.Util;
 using FoosLiveAndroid.Util.Drawing;
 using System;
+using FoosLiveAndroid.Util.Model;
 
 namespace FoosLiveAndroid.Fragments
 {
     public class EndGameFragment : Fragment
     {
-        static readonly new string Tag = typeof(InfoFragment).Name;
+        static readonly new string Tag = typeof(EndGameFragment).Name;
         private static string SpeedFormat;
-        private const double miliSecondsInSecond = 1000;
 
         private View _view;
         private TextView _team1Name;
@@ -42,7 +42,7 @@ namespace FoosLiveAndroid.Fragments
             GetReferencesFromLayout();
             _team1Name.Text = MatchInfo.Team1Name;
             _team2Name.Text = MatchInfo.Team2Name;
-            _teamScore.Text = GetString(Resource.String.score_format_end_game, MatchInfo.Team1Score, MatchInfo.Team2Score);
+            _teamScore.Text = String.Format(GetString(Resource.String.score_format_end_game), MatchInfo.Team1Score, MatchInfo.Team2Score);
             _durationValue.Text = MatchInfo.Duration;
             _avgBallSpeed.Text = MatchInfo.AvgSpeed.ToString(SpeedFormat);
             _maxBallSpeed.Text = MatchInfo.MaxSpeed.ToString(SpeedFormat);
@@ -72,7 +72,7 @@ namespace FoosLiveAndroid.Fragments
                     if (goal.Duration < minDuration)
                         minDuration = goal.Duration;
                 }
-                _fastestGoal.Text = Math.Round(minDuration / miliSecondsInSecond).ToString(SpeedFormat);
+                _fastestGoal.Text = minDuration.ToString(SpeedFormat);
             });
 
             return _view;

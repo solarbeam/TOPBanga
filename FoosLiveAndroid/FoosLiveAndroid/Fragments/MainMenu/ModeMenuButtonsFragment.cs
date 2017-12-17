@@ -109,16 +109,16 @@ namespace FoosLiveAndroid.Fragments.MainMenu
                 var alert = dialog.Create();
                 alert.SetTitle(GetString(Resource.String.camera_request_explanation_title));
                 alert.SetMessage(GetString(Resource.String.camera_request_explanation_content));
-                alert.SetButton(GetString(Resource.String.dismiss), (c, ev) =>
+                alert.SetButton(GetString(Resource.String.ok), (c, ev) =>
                 {
                     alert.Dismiss();
-                    RequestPermissions(_permissionsCamera, (int)ERequestId.Camera);
+                    RequestPermissions(_permissionsCamera, (int)RequestId.Camera);
                 });
                 alert.Show();
                 return;
             }
             //Finally request permissions with the list of permissions and Id
-            RequestPermissions(_permissionsCamera, (int)ERequestId.Camera);
+            RequestPermissions(_permissionsCamera, (int)RequestId.Camera);
         }
 
         private void StartVideoPickActivity(object sender, EventArgs e)
@@ -126,7 +126,7 @@ namespace FoosLiveAndroid.Fragments.MainMenu
             var videoIntent = new Intent();
             videoIntent.SetAction(Intent.ActionPick);
             videoIntent.SetData(MediaStore.Video.Media.ExternalContentUri);
-            StartActivityForResult(videoIntent, (int) ERequestId.VideoRequest);
+            StartActivityForResult(videoIntent, (int) RequestId.VideoRequest);
         }
 
         private void GetReferencesFromLayout()
@@ -148,7 +148,7 @@ namespace FoosLiveAndroid.Fragments.MainMenu
             {
                 switch(requestCode) 
                 {
-                    case (int)ERequestId.VideoRequest:
+                    case (int)RequestId.VideoRequest:
                         StartCameraActivity(data.Data);
                         break;
                     default:
@@ -165,7 +165,7 @@ namespace FoosLiveAndroid.Fragments.MainMenu
         /// <param name="grantResults">The grant results for the corresponding permissions which is either Permission.Granted or Permission.Denied</param>
         public override void OnRequestPermissionsResult(int requestCode, string[] permissions, Permission[] grantResults)
         {
-            if (requestCode == (int)ERequestId.Camera)
+            if (requestCode == (int)RequestId.Camera)
             {
                 if (grantResults[0] == Permission.Granted)
                     StartCameraActivity();

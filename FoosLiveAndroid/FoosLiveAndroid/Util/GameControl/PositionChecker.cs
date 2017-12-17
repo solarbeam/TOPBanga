@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Android.Graphics;
 using FoosLiveAndroid.Util.Interface;
 using FoosLiveAndroid.Util.Model;
+using FoosLiveAndroid.Model;
 
 namespace FoosLiveAndroid.Util.GameControl
 {
@@ -117,7 +118,6 @@ namespace FoosLiveAndroid.Util.GameControl
         /// <param name="lastBallCoordinates">Defines the last point of the ball</param>
         /// <param name="BlueScore">Defines the current score for the blue team</param>
         /// <param name="RedScore">Defines the current score for the red team</param>
-        /// <param name="currentEvent">Defines the current event</param>
         /// <param name="setter">Defines the setter function for the GameController class's attributes</param>
         /// <param name="GoalEvent">Defines the goal event, which is fired whenever a goal occurs</param>
         /// <param name="ballCoordinates">Defines the queue, holding the historical points of the ball</param>
@@ -138,7 +138,7 @@ namespace FoosLiveAndroid.Util.GameControl
                         GoalEvent(this, CurrentEvent.BlueGoalOccured);
 
                         _goals.Enqueue(new Goal(ballCoordinates, new RectF(ZoneOne.Left, ZoneOne.Top, ZoneTwo.Right,
-                                                ZoneTwo.Bottom), timestampStart, GameTimer.Time));
+                                                ZoneTwo.Bottom), timestampStart, GameTimer.Time, TeamColor.Blue));
 
                         // Reset variables to their starting values
                         _framesLost = 0;
@@ -148,24 +148,19 @@ namespace FoosLiveAndroid.Util.GameControl
 
                         return;
                     }
-                    else
-                        if (ballInSecondGoalZone)
-                    {
-                        // Fire the goal event for the second team
-                        setter(BlueScore, RedScore + 1);
-                        GoalEvent(this, CurrentEvent.RedGoalOccured);
+                    if (!ballInSecondGoalZone) return;
+                    // Fire the goal event for the second team
+                    setter(BlueScore, RedScore + 1);
+                    GoalEvent(this, CurrentEvent.RedGoalOccured);
 
-                        _goals.Enqueue(new Goal(ballCoordinates, new RectF(ZoneOne.Left, ZoneOne.Top, ZoneTwo.Right,
-                                                ZoneTwo.Bottom), timestampStart, GameTimer.Time));
+                    _goals.Enqueue(new Goal(ballCoordinates, new RectF(ZoneOne.Left, ZoneOne.Top, ZoneTwo.Right,
+                        ZoneTwo.Bottom), timestampStart, GameTimer.Time, TeamColor.Red));
 
-                        // Reset variables to their starting values
-                        _framesLost = 0;
-                        ballInFirstGoalZone = false;
-                        ballInSecondGoalZone = false;
-                        goalOccured = true;
-
-                        return;
-                    }
+                    // Reset variables to their starting values
+                    _framesLost = 0;
+                    ballInFirstGoalZone = false;
+                    ballInSecondGoalZone = false;
+                    goalOccured = true;
                 }
                 else
                     _framesLost++;
@@ -197,20 +192,15 @@ namespace FoosLiveAndroid.Util.GameControl
                     BallInFirstGoalZone = false;
                 }
             }
-
-            return;
         }
 
-        public double CalculateSpeed(PointF one, PointF two, EventHandler<EventArgs> PositionEvent)
+        public double CalculateSpeed(PointF one, PointF two, EventHandler<EventArgs> positionEvent)
         {
-            if (one != null && two != null)
-            {
-                PositionEvent(this, EventArgs.Empty);
-                return Math.Sqrt(
-                    (one.X * _mulX - two.X * _mulX) * (one.X * _mulX - two.X * _mulX) +
-                    (one.Y * _mulY - two.Y * _mulY) * (one.Y * _mulY - two.Y * _mulY));
-            }
-            return 0;
+            if (one == null || two == null) return 0;
+            positionEvent(this, EventArgs.Empty);
+            return Math.Sqrt(
+                (one.X * _mulX - two.X * _mulX) * (one.X * _mulX - two.X * _mulX) +
+                (one.Y * _mulY - two.Y * _mulY) * (one.Y * _mulY - two.Y * _mulY));
         }
     }
 }

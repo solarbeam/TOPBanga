@@ -1,16 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-using Android.App;
-using Android.Content;
-using Android.OS;
-using Android.Runtime;
-using Android.Views;
-using Android.Widget;
-using Android.Graphics;
-using Android.Util;
+﻿using Android.Graphics;
 
 namespace FoosLiveAndroid.Util.GameControl
 {
@@ -26,17 +14,14 @@ namespace FoosLiveAndroid.Util.GameControl
         public int[,] values
         {
             get;
-            private set;
         }
-        public int height
+        public int Height
         {
             get;
-            private set;
         }
-        public int width
+        public int Width
         {
             get;
-            private set;
         }
 
         private float _zoneWidth;
@@ -47,9 +32,10 @@ namespace FoosLiveAndroid.Util.GameControl
         public ZoneInfo(RectF tableInfo, int width, int height)
         {
             values = new int[height, width];
-            PointF topLeftCorner = new PointF(tableInfo.Left, tableInfo.Top);
-            this.width = width;
-            this.height = height;
+            // Todo: redudantant variable
+            var topLeftCorner = new PointF(tableInfo.Left, tableInfo.Top);
+            Width = width;
+            Height = height;
             _zoneHeight = (( tableInfo.Bottom - tableInfo.Top ) / width);
             _zoneWidth = (( tableInfo.Right - tableInfo.Left ) / height);
             _topLeftX = tableInfo.Left;
@@ -61,13 +47,13 @@ namespace FoosLiveAndroid.Util.GameControl
             if (point == null)
                 return;
 
-            float x = point.X - _topLeftX;
-            float y = point.Y - _topLeftY;
+            var x = point.X - _topLeftX;
+            var y = point.Y - _topLeftY;
 
-            int posX = (int)(x / _zoneWidth);
-            int posY = (int)(y / _zoneHeight);
+            var posX = (int)(x / _zoneWidth);
+            var posY = (int)(y / _zoneHeight);
 
-            if (posX >= 0 && posY >= 0  && posX < width && posY < height)
+            if (posX >= 0 && posY >= 0  && posX < Width && posY < Height)
             {
                 values[posY, posX] += 8;
 
@@ -75,8 +61,8 @@ namespace FoosLiveAndroid.Util.GameControl
                 {
                     for (int j = -2; j < 3; j ++)
                     {
-                        if ((posX + i < width && posX + i > 0) &&
-                            (posY + j < height && posY + j > 0))
+                        if ((posX + i < Width && posX + i > 0) &&
+                            (posY + j < Height && posY + j > 0))
                         {
                             // Defines the outermost points from the center
                             if ((i == -2 || i == 2) && (j == -2 || j == 2))

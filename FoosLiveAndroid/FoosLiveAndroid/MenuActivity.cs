@@ -96,18 +96,16 @@ namespace FoosLiveAndroid
                     _fragment = InfoFragment.NewInstance();
                     break;
                 default:
-                    Log.Error(Tag, $"SwitchFragment unknown ID: {id}");
+                    Log.Wtf(Tag, $"SwitchFragment unknown ID: {id}");
                     break;
             }
 
-            if (_fragment != null)
-            {
-                var transaction = FragmentManager.BeginTransaction();
-                transaction.Replace(Resource.Id.menu_content, _fragment);
-                if (saveState)
-                    transaction.AddToBackStack(_fragment.Tag);
-                transaction.Commit();
-            }
+            if (_fragment == null) return;
+            var transaction = FragmentManager.BeginTransaction();
+            transaction.Replace(Resource.Id.menu_content, _fragment);
+            if (saveState)
+                transaction.AddToBackStack(_fragment.Tag);
+            transaction.Commit();
         }
         /// <summary>
         /// Update top actionbar title

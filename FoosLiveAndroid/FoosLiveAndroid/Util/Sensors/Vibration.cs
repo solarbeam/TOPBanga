@@ -1,12 +1,13 @@
 ﻿using Android.OS;
+using FoosLiveAndroid.Util.Interface;
 
-namespace FoosLiveAndroid.Util
+namespace FoosLiveAndroid.Util.Sensors
 {
-    public class Vibration
+    public class Vibration : IVibration
     {
-        private Vibrator _vibrator;
+        private readonly Vibrator _vibrator;
         private bool _vibrating = false;
-        private readonly int vibrationRepeatIndex = PropertiesManager.GetIntProperty("vibration_repeat_index");
+        private readonly int _vibrationRepeatIndex = PropertiesManager.GetIntProperty("vibration_repeat_index");
         private readonly long[] _vibrationPattern =
 {
             PropertiesManager.GetIntProperty("vibration_pattern_timing1"),
@@ -24,7 +25,7 @@ namespace FoosLiveAndroid.Util
             if (_vibrating) return;
             if ((int)Build.VERSION.SdkInt >= 26)
             {
-                _vibrator.Vibrate(VibrationEffect.CreateWaveform(_vibrationPattern, vibrationRepeatIndex));
+                _vibrator.Vibrate(VibrationEffect.CreateWaveform(_vibrationPattern, _vibrationRepeatIndex));
             }
             else 
             {

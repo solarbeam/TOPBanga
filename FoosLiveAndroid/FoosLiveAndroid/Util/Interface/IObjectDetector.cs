@@ -5,6 +5,6 @@ namespace FoosLiveAndroid.Util.Interface
 {
     public interface IObjectDetector
     {
-        bool Detect(Canvas canvas, Hsv ballHsv, Bitmap bitmap, Bitmap bgBitmap);
+        bool Detect(Canvas canvas, Hsv ballHsv, Bitmap bitmap);
     }
 }

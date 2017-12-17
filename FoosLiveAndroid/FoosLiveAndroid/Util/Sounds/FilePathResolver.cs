@@ -1,42 +1,47 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-using Android.App;
 using Android.Content;
-using Android.OS;
-using Android.Runtime;
-using Android.Views;
-using Android.Widget;
 using Android.Content.Res;
+using FoosLiveAndroid.Model;
 
 namespace FoosLiveAndroid.Util.Sounds
 {
-    class FilePathResolver
+    static class FilePathResolver
     {
-        private const String defaultMarioWin = "Mario Win Sound";
-        private const String defaultMarioGoal = "Mario Goal Sound";
-        private const String marioGoalSound = "SFX/goal.mp3";
-        private const String marioWinSound = "SFX/game_end.wav";
+        private static readonly string DefaultMarioWin = SoundAsset.WinMario.ToString();
+        private static readonly string DefaultMarioGoal = SoundAsset.GoalMario.ToString();
+        private static readonly string DefaultBingSound = SoundAsset.BingSound.ToString();
+        private static readonly string DefaultCrowdCheerSound = SoundAsset.CrowdCheer.ToString();
 
-        public static AssetFileDescriptor getFile(Activity activity, String argument)
+        private const string MarioGoalSound = "SFX/goal.mp3";
+        private const string MarioWinSound = "SFX/game_end.wav";
+        private const string BingSound = "SFX/ping-bing.wav";
+        private const string CrowdCheer = "SFX/sound.ogg";
+
+        public static AssetFileDescriptor GetFile(Context context, String argument)
         {
-            switch(argument)
+            System.Console.WriteLine(argument);
+
+            if (argument.Equals(DefaultMarioGoal))
             {
-                case defaultMarioGoal:
-                    {
-                        return activity.Assets.OpenFd(marioGoalSound);
-                    }
-                case defaultMarioWin:
-                    {
-                        return activity.Assets.OpenFd(marioWinSound);
-                    }
-                default:
-                    {
-                        return null;
-                    }
+                return context.Assets.OpenFd(MarioGoalSound);
             }
+            else
+                if (argument.Equals(DefaultMarioWin))
+            {
+                return context.Assets.OpenFd(MarioWinSound);
+            }
+            else
+                if (argument.Equals(DefaultBingSound))
+            {
+                return context.Assets.OpenFd(BingSound);
+            }
+            else
+                if (argument.Equals(DefaultCrowdCheerSound))
+            {
+                return context.Assets.OpenFd(CrowdCheer);
+            }
+            else
+                return null;
         }
     }
 }

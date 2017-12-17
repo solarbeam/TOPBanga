@@ -50,34 +50,17 @@
     <EmbedAssembliesIntoApk>True</EmbedAssembliesIntoApk>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Emgu.CV.UI, Version=3.2.0.2682, Culture=neutral, PublicKeyToken=7281126722ab4438, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>.\Emgu.CV.UI.dll</HintPath>
-    </Reference>
-    <Reference Include="Emgu.CV.UI.GL, Version=3.2.0.2682, Culture=neutral, PublicKeyToken=7281126722ab4438, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>.\Emgu.CV.UI.GL.dll</HintPath>
-    </Reference>
     <Reference Include="Emgu.CV.World.Android">
       <HintPath>.\Emgu.CV.World.Android.dll</HintPath>
     </Reference>
-    <Reference Include="OpenTK">
-      <HintPath>.\OpenTK.dll</HintPath>
-    </Reference>
-    <Reference Include="OpenTK.Compatibility, Version=1.1.0.0, Culture=neutral, PublicKeyToken=bad199fe84eb3df4, processorArchitecture=MSIL">
+    <Reference Include="Mono.Security" />
+    <Reference Include="System, Version=2.0.5.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>.\OpenTK.Compatibility.dll</HintPath>
     </Reference>
-    <Reference Include="OpenTK.GLControl">
-      <HintPath>.\OpenTK.GLControl.dll</HintPath>
-    </Reference>
-    <Reference Include="System" />
-    <Reference Include="System.Windows.Forms">
-      <HintPath>..\..\..\..\..\..\..\Windows\Microsoft.NET\Framework64\v2.0.50727\System.Windows.Forms.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Xml" />
-    <Reference Include="System.Core" />
+    <Reference Include="System.Core, Version=2.0.5.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e, processorArchitecture=MSIL" />
     <Reference Include="Mono.Android" />
+    <Reference Include="System.Xml" />
+    <Reference Include="System.Xml.Linq" />
     <Reference Include="Xamarin.Android.Arch.Core.Common, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\Xamarin.Android.Arch.Core.Common.1.0.0\lib\MonoAndroid80\Xamarin.Android.Arch.Core.Common.dll</HintPath>
     </Reference>
@@ -126,15 +109,12 @@
     <Reference Include="Xamarin.Android.Support.Vector.Drawable, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\Xamarin.Android.Support.Vector.Drawable.26.1.0.1\lib\MonoAndroid80\Xamarin.Android.Support.Vector.Drawable.dll</HintPath>
     </Reference>
-    <Reference Include="ZedGraph, Version=5.1.5.28844, Culture=neutral, PublicKeyToken=02a83cbd123fcd60, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>.\ZedGraph.dll</HintPath>
-    </Reference>
     <Reference Include="System.IO.Compression" />
     <Reference Include="System.Net.Http" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="MenuActivity.cs" />
+    <Compile Include="Model\ETeamColor.cs" />
     <Compile Include="Model\MatchInfo.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Model\EFragmentId.cs" />
@@ -149,6 +129,8 @@
     <Compile Include="Util\Drawing\AlignZones.cs" />
     <Compile Include="Util\Drawing\HeatmapDrawer.cs" />
     <Compile Include="Util\Drawing\RowDrawer.cs" />
+    <Compile Include="Util\Drawing\TextEffects.cs" />
+    <Compile Include="Util\Game.cs" />
     <Compile Include="Util\GameControl\GameTimer.cs" />
     <Compile Include="Util\GameControl\Goal.cs" />
     <Compile Include="Util\GameControl\PositionChecker.cs" />
@@ -163,11 +145,12 @@
     <Compile Include="Util\Model\ECaptureMode.cs" />
     <Compile Include="Util\Model\ECurrentEvent.cs" />
     <Compile Include="Util\Model\ERow.cs" />
+    <Compile Include="Util\Sensors\Vibration.cs" />
     <Compile Include="Util\Sounds\FilePathResolver.cs" />
     <Compile Include="Util\Sounds\SoundAlerts.cs" />
     <Compile Include="Util\Interface\IAlert.cs" />
     <Compile Include="Util\Sounds\EAlert.cs" />
-    <Compile Include="Util\Sounds\PlayerOGG.cs" />
+    <Compile Include="Util\Sounds\PlayerOgg.cs" />
     <Compile Include="Model\ERequestId.cs" />
     <Compile Include="SplashActivity.cs" />
     <Compile Include="Util\PropertiesManager.cs" />
@@ -185,14 +168,21 @@
     <Compile Include="Util\Sensors\PositionManager.cs" />
     <Compile Include="Util\Interface\IVibration.cs" />
     <Compile Include="Util\Interface\IPositionManager.cs" />
-    <Compile Include="Util\Vibration.cs" />
     <Compile Include="Resources\Resource.Designer.cs" />
     <Compile Include="Fragments\EndGameFragment.cs" />
+    <Compile Include="Util\Model\Units.cs" />
+    <Compile Include="Model\ESoundAsset.cs" />
+    <Compile Include="Model\ELoadingStatus.cs" />
+    <Compile Include="Util\Record\RecordPlayer.cs" />
+    <Compile Include="Util\Record\SurfaceManager.cs" />
   </ItemGroup>
   <ItemGroup>
     <AndroidNativeLibrary Include="lib\armeabi-v7a\libcvextern.so" />
     <AndroidNativeLibrary Include="lib\armeabi\libcvextern.so" />
     <AndroidNativeLibrary Include="lib\x86\libcvextern.so" />
+    <AndroidAsset Include="Assets\SFX\sound.ogg" />
+    <AndroidNativeLibrary Include="lib\arm64-v8a\libcvextern.so" />
+    <AndroidNativeLibrary Include="lib\x86_64\libcvextern.so" />
     <None Include="packages.config" />
     <None Include="Properties\AndroidManifest.xml" />
     <None Include="Assets\AboutAssets.txt" />
@@ -227,6 +217,9 @@
     <AndroidResource Include="Resources\drawable\bg_end_game.xml" />
     <AndroidResource Include="Resources\drawable\ic_timer.xml" />
     <AndroidResource Include="Resources\drawable\ic_speed.xml" />
+    <AndroidResource Include="Resources\values\Bools.xml" />
+    <AndroidResource Include="Resources\drawable\ic_sync_on.xml" />
+    <AndroidResource Include="Resources\drawable\ic_sync_off.xml" />
   </ItemGroup>
   <ItemGroup>
     <AndroidResource Include="Resources\mipmap-hdpi\Icon.png" />
@@ -260,6 +253,9 @@
   </ItemGroup>
   <ItemGroup>
     <AndroidResource Include="Resources\values\integer.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidAsset Include="Assets\SFX\ping-bing.wav" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\Android\Xamarin.Android.CSharp.targets" />
