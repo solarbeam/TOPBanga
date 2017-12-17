@@ -27,7 +27,7 @@ namespace FoosLiveAndroid.Util.GameControl
         private readonly long timestampEnd;
 
         // Which team scored: true if blue, false if 
-        private TeamColor TeamColor { get; }
+        public TeamColor TeamColor { get; }
 
         public long Duration { get; }
 

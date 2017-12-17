@@ -232,8 +232,9 @@ namespace FoosLiveAndroid
             var preferences = GetSharedPreferences(GetString(Resource.String.preference_file_key), FileCreationMode.Private);
             var team1DefaultValue = Resources.GetString(Resource.String.saved_team1_name_default);
             var team2DefaultValue = Resources.GetString(Resource.String.saved_team2_name_default);
-            var gameIdInDatabaseTask = DatabaseManager.InsertGame(preferences.GetString(GetString(Resource.String.saved_team1_name),team1DefaultValue),
-                 preferences.GetString(GetString(Resource.String.saved_team2_name), team2DefaultValue));
+            var team1Name = preferences.GetString(GetString(Resource.String.saved_team1_name), team1DefaultValue);
+            var team2Name = preferences.GetString(GetString(Resource.String.saved_team2_name), team2DefaultValue);
+            var insertTask = DatabaseManager.InsertGame(team1Name, team2Name, "Kazkieno kazkoks ID");
 
             _gameEnd = true;
             // Terminate recognition
@@ -283,11 +284,18 @@ namespace FoosLiveAndroid
                            .Commit();
             
             // Send Data to database
-            var gameIdInDatabase = await gameIdInDatabaseTask;
+            var gameIdInDatabase = await insertTask;
             Log.Debug("Game Id In database", gameIdInDatabase.ToString());
             if (gameIdInDatabase != -1)
             {
-                await DatabaseManager.InsertEvent(gameIdInDatabase, "asdasd");
+                await DatabaseManager.InsertEvent(gameIdInDatabase, "Kazkoks eventas");
+                foreach(var goal in _game.GameController.Goals)
+                {
+                    if (goal.TeamColor == TeamColor.Blue)
+                        await DatabaseManager.InsertGoal(gameIdInDatabase, team1Name);
+                    if(goal.TeamColor == TeamColor.Red)
+                        await DatabaseManager.InsertGoal(gameIdInDatabase, team2Name);
+                }
             }
         }
 
