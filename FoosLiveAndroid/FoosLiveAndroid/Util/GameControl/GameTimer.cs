@@ -57,9 +57,8 @@ namespace FoosLiveAndroid.Util.GameControl
         }
 
         /// <summary>
-        /// Starts the timer
+        /// Start the timer
         /// </summary>
-        /// <returns>True if started succesfully. False otherwise</returns>
         public bool Start()
         {
             if (!_timer.Enabled)
@@ -73,9 +72,8 @@ namespace FoosLiveAndroid.Util.GameControl
         }
 
         /// <summary>
-        /// Stops the timer
+        /// Stop the timer
         /// </summary>
-        /// <returns>True if the timer is stopped succesfully. False otherwise</returns>
         public void Stop()
         {
             _timer.Enabled = false;
