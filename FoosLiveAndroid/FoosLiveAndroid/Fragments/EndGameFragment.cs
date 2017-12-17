@@ -41,7 +41,7 @@ namespace FoosLiveAndroid.Fragments
             GetReferencesFromLayout();
             _team1Name.Text = MatchInfo.Team1Name;
             _team2Name.Text = MatchInfo.Team2Name;
-            _teamScore.Text = GetString(Resource.String.score_format_end_game, MatchInfo.Team1Score, MatchInfo.Team2Score);
+            _teamScore.Text = String.Format(GetString(Resource.String.score_format_end_game), MatchInfo.Team1Score, MatchInfo.Team2Score);
             _durationValue.Text = MatchInfo.Duration;
             _avgBallSpeed.Text = MatchInfo.AvgSpeed.ToString(SpeedFormat);
             _maxBallSpeed.Text = MatchInfo.MaxSpeed.ToString(SpeedFormat);

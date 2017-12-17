@@ -235,6 +235,8 @@
     <AndroidResource Include="Resources\drawable\ic_timer.xml" />
     <AndroidResource Include="Resources\drawable\ic_speed.xml" />
     <AndroidResource Include="Resources\values\Bools.xml" />
+    <AndroidResource Include="Resources\drawable\ic_sync_on.xml" />
+    <AndroidResource Include="Resources\drawable\ic_sync_off.xml" />
   </ItemGroup>
   <ItemGroup>
     <AndroidResource Include="Resources\mipmap-hdpi\Icon.png" />

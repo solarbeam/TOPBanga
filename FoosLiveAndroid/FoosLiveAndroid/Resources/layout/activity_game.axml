@@ -90,7 +90,7 @@
                 android:text="@string/speed_unit" />
             <TextView
                 android:id="@+id/eventSlider"
-                android:layout_marginStart="10dp"
+                android:layout_marginStart="11dp"
                 android:layout_marginEnd="10dp"
                 android:textColor="@color/status_text"
                 android:maxLength="@integer/max_chars"
@@ -99,7 +99,7 @@
                 android:layout_width="wrap_content"
                 android:layout_centerInParent="true"
                 android:layout_height="wrap_content"
-                android:text="" />
+                tools:text="Fast g0al" />
             <ImageView
                 android:id="@+id/timerIcon"
                 android:layout_width="wrap_content"
@@ -118,7 +118,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:paddingTop="3dp"
-                android:text="@string/timer_format" />
+                tools:text="00:00" />
         </RelativeLayout>
         <ImageView
             android:id="@+id/arrowTop"
