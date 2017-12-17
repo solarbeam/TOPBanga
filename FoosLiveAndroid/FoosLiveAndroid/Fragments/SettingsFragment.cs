@@ -75,22 +75,22 @@ namespace FoosLiveAndroid.Fragments
 
             _team1ScoreSoundItem.Click += delegate
             {
-                OpenSoundPicker(GetString(Resource.String.saved_team1_goal), scoreSoundsAdapter, _team1GoalSoundValue);
+                OpenSoundPicker(GetString(Resource.String.team1_score_sound_label), scoreSoundsAdapter, _team1GoalSoundValue);
             };
 
             _team1WinSoundItem.Click += delegate
             {
-                OpenSoundPicker(GetString(Resource.String.saved_team1_win), winSoundsAdapter, _team1WinSoundValue);
+                OpenSoundPicker(GetString(Resource.String.team1_win_sound_label), winSoundsAdapter, _team1WinSoundValue);
             };
 
             _team2ScoreSoundItem.Click += delegate
             {
-                OpenSoundPicker(GetString(Resource.String.saved_team2_goal), scoreSoundsAdapter, _team2GoalSoundValue);
+                OpenSoundPicker(GetString(Resource.String.team2_score_sound_label), scoreSoundsAdapter, _team2GoalSoundValue);
             };
 
             _team2WinSoundItem.Click += delegate
             {
-                OpenSoundPicker(GetString(Resource.String.saved_team2_win), winSoundsAdapter, _team2WinSoundValue);
+                OpenSoundPicker(GetString(Resource.String.team2_win_sound_label), winSoundsAdapter, _team2WinSoundValue);
             };
 
             UpdateSelection();
@@ -169,7 +169,7 @@ namespace FoosLiveAndroid.Fragments
                 throw new ArgumentNullException(nameof(adapter));
 
             _dialogBuilder = _dialogBuilder ?? new AlertDialog.Builder(Context);
-            _dialogBuilder.SetTitle($"Choose {soundItem}");
+            _dialogBuilder.SetTitle($"Choose {soundItem} sound");
 
             _dialogBuilder.SetAdapter(adapter, (dialog, item) =>
             {

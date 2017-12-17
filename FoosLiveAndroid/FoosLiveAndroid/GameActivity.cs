@@ -288,6 +288,7 @@ namespace FoosLiveAndroid
             else if (!recordPlayer.Disposed)
             {
                 recordPlayer.Stop();
+                recordPlayer.Reset();
                 recordPlayer.Release();
             }
                 
