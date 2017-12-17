@@ -79,12 +79,13 @@ namespace FoosLiveAndroid.Util.Record
         {
             // The table is currently drawn only if an Hsv value is selected
             if (!_activity.BallColorSelected) return;
+
             var canvas = SurfaceHolder.LockCanvas();
 
             if (!_activity.DetectBall(canvas))
             {
                 // Remove all drawings
-                canvas.DrawColor(Color.Argb(255, 0, 0, 0));
+                canvas.DrawColor(Color.Transparent, PorterDuff.Mode.Clear);
             }
 
             SurfaceHolder.UnlockCanvasAndPost(canvas);

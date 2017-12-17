@@ -19,8 +19,6 @@ namespace FoosLiveAndroid.Util.Detection
         private GameController _controller;
         private float _mulX;
         private float _mulY;
-        // Todo: redundant variable
-        private Paint _paintRect;
         private Paint _paintBall;
         private static readonly float BallStrokeWidth = PropertiesManager.GetFloatProperty("ball_stroke_width");
         private static readonly float RectStrokeWidth = PropertiesManager.GetFloatProperty("rect_stroke_width");
@@ -59,15 +57,14 @@ namespace FoosLiveAndroid.Util.Detection
             // Refresh the detector's image
             _detector.image = new Image<Hsv, byte>(bitmap);
 
-            // Clear the image
-
-            var transparentBackground = Color.Argb(0, 0, 0, 0);
-            canvas.DrawColor(transparentBackground);
             // Try to detect the ball
             ballDetected = _detector.DetectBall(ballHsv, out var ball, out var bBox);
 
             // Free unused resources
             _detector.image.Dispose();
+
+            // Clear the image
+            canvas.DrawColor(Color.Transparent, PorterDuff.Mode.Clear);
 
             if (ballDetected)
             {

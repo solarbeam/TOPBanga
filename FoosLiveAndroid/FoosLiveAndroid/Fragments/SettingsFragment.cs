@@ -68,10 +68,10 @@ namespace FoosLiveAndroid.Fragments
 
             //Todo: set up sound adapter from model
             var scoreSoundsAdapter = new ArrayAdapter<string>(
-                Context, Android.Resource.Layout.SimpleListItem1, new string[] { "Mario Goal Sound", "Mario Win Sound" });
+                Context, Android.Resource.Layout.SimpleListItem1, new string[] { "Mario Goal Sound", "Mario Win Sound", "Bing Sound", "Crowd Cheer" });
 
             var winSoundsAdapter = new ArrayAdapter<string>(
-                Context, Android.Resource.Layout.SimpleListItem1, new string[] { "Mario Goal Sound", "Mario Win Sound"  });
+                Context, Android.Resource.Layout.SimpleListItem1, new string[] { "Mario Goal Sound", "Mario Win Sound", "Bing Sound", "Crowd Cheer" });
 
             _team1ScoreSoundItem.Click += delegate
             {
@@ -180,17 +180,31 @@ namespace FoosLiveAndroid.Fragments
                     case (int)SoundAsset.GoalMario:
                         {
                             var goalSoundName = GetString(Resource.String.mario_goal_sound);
-                            previewPlayer = new PlayerOgg(FilePathResolver.GetFile(Context, GetString(Resource.String.mario_goal_sound)));
-                            prefsEditor.PutString(soundItem, goalSoundName).Apply();
+                            previewPlayer = new PlayerOgg(FilePathResolver.GetFile(Context, SoundAsset.GoalMario.ToString()));
+                            prefsEditor.PutString(soundItem, SoundAsset.GoalMario.ToString()).Apply();
                             soundTitle.Text = goalSoundName;
                             break;
                         }
                     case (int)SoundAsset.WinMario:
                         {
                             var winSoundName = GetString(Resource.String.mario_win_sound);
-                            previewPlayer = new PlayerOgg(FilePathResolver.GetFile(Context, GetString(Resource.String.mario_win_sound)));
-                            prefsEditor.PutString(soundItem, winSoundName).Apply();
+                            previewPlayer = new PlayerOgg(FilePathResolver.GetFile(Context, SoundAsset.WinMario.ToString()));
+                            prefsEditor.PutString(soundItem, SoundAsset.WinMario.ToString()).Apply();
                             soundTitle.Text = winSoundName;
+                            break;
+                        }
+                    case (int)SoundAsset.BingSound:
+                        {
+                            previewPlayer = new PlayerOgg(FilePathResolver.GetFile(Context, SoundAsset.BingSound.ToString()));
+                            prefsEditor.PutString(soundItem, SoundAsset.BingSound.ToString());
+                            soundTitle.Text = SoundAsset.BingSound.ToString();
+                            break;
+                        }
+                    case (int)SoundAsset.CrowdCheer:
+                        {
+                            previewPlayer = new PlayerOgg(FilePathResolver.GetFile(Context, SoundAsset.CrowdCheer.ToString()));
+                            prefsEditor.PutString(soundItem, SoundAsset.CrowdCheer.ToString());
+                            soundTitle.Text = SoundAsset.CrowdCheer.ToString();
                             break;
                         }
                 }
