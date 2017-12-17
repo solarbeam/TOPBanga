@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using Android.Graphics;
 using FoosLiveAndroid.Util.Model;
+using FoosLiveAndroid.Model;
 
 namespace FoosLiveAndroid.Util.GameControl
 {
@@ -25,14 +26,18 @@ namespace FoosLiveAndroid.Util.GameControl
         private readonly long timestampStart;
         private readonly long timestampEnd;
 
+        // Which team scored: true if blue, false if 
+        private TeamColor TeamColor { get; }
+
         public long Duration { get; }
 
-        public Goal(Queue<PointF> positions, RectF tablePoints, long start, long end)
+        public Goal(Queue<PointF> positions, RectF tablePoints, long start, long end, TeamColor team)
         {
             _points = new PointF[positions.Count];
             Speeds = new double[positions.Count];
             timestampStart = start;
             timestampEnd = end;
+            TeamColor = team;
 
             Duration = (long) Math.Round((timestampEnd - timestampStart) / Units.MiliSecondsInSecond);
 

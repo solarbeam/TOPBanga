@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Android.Graphics;
 using FoosLiveAndroid.Util.Interface;
 using FoosLiveAndroid.Util.Model;
+using FoosLiveAndroid.Model;
 
 namespace FoosLiveAndroid.Util.GameControl
 {
@@ -137,7 +138,7 @@ namespace FoosLiveAndroid.Util.GameControl
                         GoalEvent(this, CurrentEvent.BlueGoalOccured);
 
                         _goals.Enqueue(new Goal(ballCoordinates, new RectF(ZoneOne.Left, ZoneOne.Top, ZoneTwo.Right,
-                                                ZoneTwo.Bottom), timestampStart, GameTimer.Time));
+                                                ZoneTwo.Bottom), timestampStart, GameTimer.Time, TeamColor.Blue));
 
                         // Reset variables to their starting values
                         _framesLost = 0;
@@ -153,7 +154,7 @@ namespace FoosLiveAndroid.Util.GameControl
                     GoalEvent(this, CurrentEvent.RedGoalOccured);
 
                     _goals.Enqueue(new Goal(ballCoordinates, new RectF(ZoneOne.Left, ZoneOne.Top, ZoneTwo.Right,
-                        ZoneTwo.Bottom), timestampStart, GameTimer.Time));
+                        ZoneTwo.Bottom), timestampStart, GameTimer.Time, TeamColor.Red));
 
                     // Reset variables to their starting values
                     _framesLost = 0;
