@@ -22,6 +22,7 @@ namespace FoosLiveAndroid.Util
 
         private readonly bool _textThreadStarted = false;
         private bool _waitForSpeed = false;
+        private readonly string _scoreFormat;
         
         // Controlled UI elements
         private Activity _activity;
@@ -76,6 +77,7 @@ namespace FoosLiveAndroid.Util
                 };
             }
 
+            _scoreFormat = activity.GetString(Resource.String.score_format);
             _activity = activity;
         }
 
@@ -131,7 +133,7 @@ namespace FoosLiveAndroid.Util
                 SoundAlerts?.Play(EAlert.Team2Goal);
                 TextEffects.SlideText(_activity.ApplicationContext.Resources.GetString(Resource.String.red_team_goal), _activity, _eventText);
             }
-            _score.Text = $"{GameController.BlueScore} : {GameController.RedScore}";
+            _score.Text = String.Format(_scoreFormat, GameController.BlueScore, GameController.RedScore);
             Log.Debug(Tag, $"Score value assigned {_score.Text}");
         }
     }

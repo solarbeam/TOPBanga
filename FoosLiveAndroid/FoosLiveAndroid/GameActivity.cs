@@ -78,7 +78,7 @@ namespace FoosLiveAndroid
         private Image<Hsv, byte> _image;
 
         private IPositionManager _positionManager;
-        internal RecordPlayer RecordPlayer;
+        internal RecordPlayer recordPlayer;
 
         /// <summary>
         /// Called whenever the view is created
@@ -149,7 +149,7 @@ namespace FoosLiveAndroid
             if (GameMode == ECaptureMode.Recording)
             {
                 // We use a video file, so release it's resources
-                RecordPlayer.Release();
+                recordPlayer.Release();
             }
             else
             {
@@ -223,7 +223,7 @@ namespace FoosLiveAndroid
                     new PointF(0, screenHeight),
                     new PointF(screenWidth, screenHeight)
             }, GameMode);
-            RecordPlayer = new RecordPlayer(this);
+            recordPlayer = new RecordPlayer(this);
         }
 
         public async void ShowEndGameScreen()
@@ -260,7 +260,8 @@ namespace FoosLiveAndroid
             // Disable sensors
             if (GameMode == ECaptureMode.Live)
                 _positionManager.StopListening();
-
+            else 
+                recordPlayer.Stop();
             //Collect data from GameController
             MatchInfo.SetUp(_team1Title.Text, _game.GameController.BlueScore,
                             _team2Title.Text, _game.GameController.RedScore,
@@ -268,10 +269,7 @@ namespace FoosLiveAndroid
                             _game.GameController.AverageSpeed,
                             _game.GameController.HeatmapZones, _game.GameTimer.GetFormattedTime(),
                             _game.GameController.Goals);
-
-            // Send Data to database
-
-
+            
             // Play the game end sound
             if (MatchInfo.Team1Score > MatchInfo.Team2Score)
                 _game.SoundAlerts.Play(Util.Sounds.EAlert.Team1Win);
@@ -283,6 +281,8 @@ namespace FoosLiveAndroid
             FragmentManager.BeginTransaction()
                            .Add(Resource.Id.infoLayout, EndGameFragment.NewInstance())
                            .Commit();
+            
+            // Send Data to database
             var gameIdInDatabase = await gameIdInDatabaseTask;
             Log.Debug("Game Id In database", gameIdInDatabase.ToString());
             if (gameIdInDatabase != -1)
@@ -393,7 +393,7 @@ namespace FoosLiveAndroid
             _image.Dispose();
 
             // If it's a video, start it again
-            RecordPlayer?.Start();
+            recordPlayer?.Start();
 
             // Change button function to stop the game
             _gameButton.Text = GetString(Resource.String.end_game);
