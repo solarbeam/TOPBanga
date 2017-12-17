@@ -96,5 +96,11 @@ namespace FoosLiveAndroid.Util.GameControl
             else
                 return false;
         }
+
+        public String GetFormattedTime()
+        {
+            return TimeSpan.FromMilliseconds(GameTimer.Time).Minutes.ToString("00") + ":" +
+                                TimeSpan.FromMilliseconds(GameTimer.Time).Seconds.ToString("00");
+        }
     }
 }

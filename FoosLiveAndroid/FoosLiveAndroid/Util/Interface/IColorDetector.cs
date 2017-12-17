@@ -8,7 +8,6 @@ namespace FoosLiveAndroid.Util.Interface
     {
         Image<Hsv, byte> image { get; set; }
         int Threshold { get; set; }
-        int MinContourArea { get; set; }
         bool DetectBall(Hsv ballHsv, out Rectangle rect, out Rectangle blobBox);
     }
 }

@@ -99,6 +99,8 @@ namespace FoosLiveAndroid
 
         private IPositionManager _positionManager;
 
+        private int _maxEventSliderLength;
+
         /// <summary>
         /// Called whenever the view is created
         /// </summary>
@@ -165,6 +167,8 @@ namespace FoosLiveAndroid
             scoreFormat = GetString(Resource.String.score_format);
             timerFormat = GetString(Resource.String.timer_format);
 
+            _maxEventSliderLength = int.Parse(GetString(Resource.Integer.max_chars));
+
             // Open the camera
             _gameView.SurfaceTextureListener = this;
             _gameView.SetOnTouchListener(this);
@@ -200,7 +204,7 @@ namespace FoosLiveAndroid
                             _team2Title.Text, _gameController.RedScore,
                             _gameController.MaxSpeed,
                             _gameController.AverageSpeed,
-                            _gameController.heatmapZones, TimeSpan.FromMilliseconds(GameTimer.Time).TotalSeconds.ToString(timerFormat),
+                            _gameController.heatmapZones, _gameTimer.GetFormattedTime(),
                             _gameController.Goals);
 
             // Show pop-up fragment, holding all of the match's info
@@ -237,7 +241,7 @@ namespace FoosLiveAndroid
         {
             RunOnUiThread(() =>
             {
-                _timer.Text = Math.Round(GameTimer.Time / miliSecondsInSecond).ToString(timerFormat);
+                _timer.Text = _gameTimer.GetFormattedTime();
             });
         }
 
@@ -257,7 +261,7 @@ namespace FoosLiveAndroid
                 var temp = text;
                 var tempView = new StringBuilder(temp.Length);
 
-                for (var i = 0; i < _eventText.Length(); i++)
+                for (var i = 0; i < _maxEventSliderLength; i++)
                 {
                     tempView.Append(' ');
                 }
@@ -339,9 +343,6 @@ namespace FoosLiveAndroid
             // Set the upscaling constant
             _upscaleMultiplierY = (float)h / PreviewHeight;
             _upscaleMultiplierX = (float)w / PreviewWidth;
-
-            // Create the ObjectDetector class for the GameActivity
-            _objectDetector = new ObjectDetector(_upscaleMultiplierX, _upscaleMultiplierY, _colorDetector, _gameController);
 
             // Create a template alpha bitmap for repeated drawing
             var tempBitmap = new BitmapDrawable(Bitmap.CreateBitmap(w, h, Bitmap.Config.Argb8888));
@@ -455,6 +456,12 @@ namespace FoosLiveAndroid
             // The table is currently drawn only if an Hsv value is selected
             if ( _hsvSelected )
             {
+                if (_objectDetector == null)
+                {
+                    // Create the ObjectDetector class for the GameActivity
+                    _objectDetector = new ObjectDetector(_upscaleMultiplierX, _upscaleMultiplierY, _colorDetector, _gameController, _selectedHsv);
+                }
+
                 Canvas canvas = _surfaceHolder.LockCanvas();
 
                 if ( ! _objectDetector.Detect(canvas, _selectedHsv,

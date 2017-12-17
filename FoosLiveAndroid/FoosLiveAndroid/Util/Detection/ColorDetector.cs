@@ -13,24 +13,14 @@ namespace FoosLiveAndroid.Util.Detection
     class ColorDetector : IColorDetector
     {
         private static readonly string Tag = typeof(MenuActivity).Name;
-        private const int VerticeCount = 4;
 
         private readonly int DefaultThreshold = PropertiesManager.GetIntProperty("default_threshold");
-        private readonly int DefaultContourArea = PropertiesManager.GetIntProperty("default_contour_area");
-        private readonly double CannyThreshold = PropertiesManager.GetDoubleProperty("canny_threshold");
-        private readonly double CannyThresholdLinking = PropertiesManager.GetDoubleProperty("canny_threshold_linking");
-        private readonly int MinAngle = PropertiesManager.GetIntProperty("min_angle");
-        private readonly int MaxAngle = PropertiesManager.GetIntProperty("max_angle");
-
-        private const int Iterations = 1;
 
         /// <summary>
         /// False if the box field is null
         /// True if the box field is not null
         /// </summary>
         private bool _boxSet = false;
-        private bool _started = false;
-        private Rectangle _preliminaryBlob;
         /// <summary>
         /// Defines the bounding box, in which we search for the blob
         /// </summary>
@@ -60,13 +50,12 @@ namespace FoosLiveAndroid.Util.Detection
         /// </summary>
         private int _lastSize = 0;
         /// <summary>
-        /// Defines the permitted size difference between blobs
-        /// </summary>
-        private int SizeDiff = PropertiesManager.GetIntProperty("size_difference");
-        /// <summary>
         /// Defines the limit for the bounding box sizing algorithm
         /// </summary>
         private readonly int MinBlobSize = PropertiesManager.GetIntProperty("min_blob_size");
+        private readonly int HsvDivisor = 4;
+        private readonly float SaturationMultiplier = 1.3f;
+        private readonly float ValueMultiplier = 1.3f;
 
         /// <summary>
         /// Defines the multipliers for the bounding box sizing algorithm
@@ -77,6 +66,9 @@ namespace FoosLiveAndroid.Util.Detection
         private readonly int MulDeltaHeight = PropertiesManager.GetIntProperty("multiplier_delta_height");
         private readonly int MinWidth = PropertiesManager.GetIntProperty("min_width");
         private readonly int MinHeight = PropertiesManager.GetIntProperty("min_height");
+
+        private readonly int MinAddition = 5;
+        private readonly int MaxAddition = 5;
 
         /// <summary>
         /// The detector's image, used for calculations
@@ -90,8 +82,14 @@ namespace FoosLiveAndroid.Util.Detection
         /// </summary>
         public int Threshold { get; set; }
 
-        private int minContourArea;
-        public int MinContourArea { get; set; }
+        /// <summary>
+        /// Defines the minimum size allowed for the blob to pass
+        /// </summary>
+        private int _minAllowed;
+        /// <summary>
+        /// Defines the maximum size allowed for the blob to pass
+        /// </summary>
+        private int _maxAllowed;
 
         /// <summary>
         /// Creates the ColorDetector class with the appropriate threshold
@@ -99,7 +97,6 @@ namespace FoosLiveAndroid.Util.Detection
         public ColorDetector()
         {
             Threshold = DefaultThreshold;
-            MinContourArea = DefaultContourArea;
             _box = new Rectangle();
             _blobDetector = new BlobDetector();
         }
@@ -117,9 +114,18 @@ namespace FoosLiveAndroid.Util.Detection
             //default returns
             rect = new Rectangle();
 
-            // Define the upper and lower limits of the Hue and Saturation values
-            Hsv lowerLimit = new Hsv(ballHsv.Hue - Threshold / 2, ballHsv.Satuation - Threshold * 1.3f, ballHsv.Value - Threshold * 1.3f);
-            Hsv upperLimit = new Hsv(ballHsv.Hue + Threshold / 2, ballHsv.Satuation + Threshold * 1.3f, ballHsv.Value + Threshold * 1.3f);
+            /**
+             * In order to boost tracking accuracy in all lighting conditions, I reduce the base color
+             * min and max values and boost the black and white intensities ( in this case, its 
+             * the Saturation and Value values ). This in turn helps us detect the ball, even in poor conditions, 
+             * but not all of the lighting conditions are touched. This will be addressed sometime in the future
+             */
+            Hsv lowerLimit = new Hsv(ballHsv.Hue - Threshold / HsvDivisor,
+                ballHsv.Satuation - Threshold * SaturationMultiplier,
+                ballHsv.Value - Threshold * ValueMultiplier);
+            Hsv upperLimit = new Hsv(ballHsv.Hue + Threshold / HsvDivisor,
+                ballHsv.Satuation + Threshold * SaturationMultiplier,
+                ballHsv.Value + Threshold * ValueMultiplier);
 
             Image<Gray, byte> imgFiltered = image.InRange(lowerLimit, upperLimit);
 
@@ -161,27 +167,36 @@ namespace FoosLiveAndroid.Util.Detection
                 if (_box.Contains((int)pair.Value.Centroid.X, (int)pair.Value.Centroid.Y))
                 {
                     // It is, so we pressume it to be the ball
+
+                    /**
+                     * The blob can differ in size when detected by the tracking algorithm. 
+                     * In this case, I check whether the blob, accepted by the algorithm, is lower than
+                     * the previous minimum. This in turn lets us "remember" all of the blob sizes, should
+                     * we detect them in the future, and also allows to detect pretty fast shots
+                     */
+                    if (_minAllowed == 0)
+                        _minAllowed = pair.Value.Area;
+                    else
+                        if (_minAllowed > pair.Value.Area)
+                        _minAllowed = pair.Value.Area - MinAddition;
+
+                    if (_maxAllowed < pair.Value.Area)
+                        _maxAllowed = pair.Value.Area + MaxAddition;
+
                     biggestBlob = pair.Value;
                     UpdateBox(biggestBlob);
                     _framesLost = 0;
                     _lastSize = biggestBlob.Area;
                     break;
                 }
-            }
-
-            // If a blob wasn't found, find the one with the area in a range close to the last one
-            if (biggestBlob == null)
-            {
-                foreach (var blob in points)
+                else
+                    if (pair.Value.Area > _minAllowed && pair.Value.Area < _maxAllowed)
                 {
-                    if (blob.Value.Area > ( _lastSize - SizeDiff ) && blob.Value.Area < ( _lastSize + SizeDiff ) )
-                    {
-                        biggestBlob = blob.Value;
-                        _lastBlob = biggestBlob.Centroid;
-                        UpdateBox(blob.Value);
-                        _framesLost = 0;
-                        break;
-                    }
+                    biggestBlob = pair.Value;
+                    _lastBlob = biggestBlob.Centroid;
+                    UpdateBox(pair.Value);
+                    _framesLost = 0;
+                    break;
                 }
             }
 

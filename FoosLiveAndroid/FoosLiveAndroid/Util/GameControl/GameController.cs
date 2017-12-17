@@ -44,6 +44,9 @@ namespace FoosLiveAndroid.Util.GameControl
         /// </summary>
         private readonly int MaximumBallCoordinatesNumber = PropertiesManager.GetIntProperty("maximum_ball_coordinate_number");
 
+        private readonly int HeatmapZonesWidth = PropertiesManager.GetIntProperty("zones_width");
+        private readonly int HeatmapZonesHeight = PropertiesManager.GetIntProperty("zones_height");
+
         private PositionChecker _posChecker;
         private RowChecker _rowChecker;
         private ZoneInfo _heatmapGen;
@@ -168,7 +171,7 @@ namespace FoosLiveAndroid.Util.GameControl
                                                 (int)_posChecker.ZoneTwo.Right, (int)_posChecker.ZoneTwo.Bottom), mode);
 
             _heatmapGen = new ZoneInfo(new RectF(_posChecker.ZoneOne.Left, _posChecker.ZoneOne.Top,
-                                                _posChecker.ZoneTwo.Right, _posChecker.ZoneTwo.Bottom), 30, 30);
+                                                _posChecker.ZoneTwo.Right, _posChecker.ZoneTwo.Bottom), HeatmapZonesWidth, HeatmapZonesHeight);
         }
         /// <summary>
         /// The default constructor for the GameController class
