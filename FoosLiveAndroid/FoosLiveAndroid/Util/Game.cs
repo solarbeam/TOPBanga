@@ -11,6 +11,7 @@ using FoosLiveAndroid.Util.Model;
 using FoosLiveAndroid.Util.Drawing;
 using Android.Util;
 using FoosLiveAndroid.Model;
+using Emgu.CV.Structure;
 
 namespace FoosLiveAndroid.Util
 {
@@ -23,7 +24,8 @@ namespace FoosLiveAndroid.Util
         private readonly bool _textThreadStarted = false;
         private bool _waitForSpeed = false;
         private readonly string _scoreFormat;
-        
+        private int MaxCharLength;
+
         // Controlled UI elements
         private Activity _activity;
         private TextView _ballSpeed;
@@ -33,7 +35,7 @@ namespace FoosLiveAndroid.Util
 
         public GameController GameController;
         public IColorDetector ColorDetector;
-        public IObjectDetector ObjectDetector;
+        public ObjectDetector ObjectDetector;
         public GameTimer GameTimer;
 
         public SoundAlerts SoundAlerts;
@@ -47,6 +49,8 @@ namespace FoosLiveAndroid.Util
             GameController.GoalEvent += GameControllerGoalEvent;
             GameController.PositionEvent += GameControllerPositionEvent;
             GameTimer.OnUpdated += UpdateTimer;
+
+            MaxCharLength = int.Parse(activity.GetString(Resource.Integer.max_chars));
 
             _ballSpeed = ballSpeed;
             _score = score;
@@ -127,12 +131,12 @@ namespace FoosLiveAndroid.Util
             if (e == CurrentEvent.BlueGoalOccured)
             {
                 SoundAlerts?.Play(EAlert.Team1Goal);
-                TextEffects.SlideText(_activity.ApplicationContext.Resources.GetString(Resource.String.blue_team_goal), _activity, _eventText);
+                TextEffects.SlideText(_activity.ApplicationContext.Resources.GetString(Resource.String.blue_team_goal), _activity, _eventText,MaxCharLength);
             }
             else if (e == CurrentEvent.RedGoalOccured)
             {
                 SoundAlerts?.Play(EAlert.Team2Goal);
-                TextEffects.SlideText(_activity.ApplicationContext.Resources.GetString(Resource.String.red_team_goal), _activity, _eventText);
+                TextEffects.SlideText(_activity.ApplicationContext.Resources.GetString(Resource.String.red_team_goal), _activity, _eventText, MaxCharLength);
             }
             _score.Text = String.Format(_scoreFormat, GameController.BlueScore, GameController.RedScore);
             Log.Debug(Tag, $"Score value assigned {_score.Text}");

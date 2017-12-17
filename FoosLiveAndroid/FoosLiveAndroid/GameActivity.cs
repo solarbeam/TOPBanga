@@ -80,6 +80,8 @@ namespace FoosLiveAndroid
         private IPositionManager _positionManager;
         internal RecordPlayer recordPlayer;
 
+        private int _maxEventSliderLength;
+
         /// <summary>
         /// Called whenever the view is created
         /// </summary>
@@ -425,6 +427,9 @@ namespace FoosLiveAndroid
             if (_image == null) return;
 
             BallColorSelected = true;
+
+            // Set the ball trace color
+            _game.ObjectDetector.SetColor(_selectedBallColor);
 
             // Cleanup
             _image.Dispose();

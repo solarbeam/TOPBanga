@@ -32,8 +32,8 @@ namespace FoosLiveAndroid.Util.Drawing
             {
                 for (int j = 0; j < zones.Width; j ++)
                 {
-                    if (max < zones.Values[i, j])
-                        max = zones.Values[i, j];
+                    if (max < zones.values[i, j])
+                        max = zones.values[i, j];
                 }
             }
 
@@ -57,9 +57,9 @@ namespace FoosLiveAndroid.Util.Drawing
             {
                 for (int j = 0; j < zones.Width; j ++)
                 {
-                    float multiplier = zones.Values[i, j] / (float)max;
+                    float multiplier = zones.values[i, j] / (float)max;
 
-                    paint.Color = CalculateColor(zones.Values[i, j], max, colours);
+                    paint.Color = CalculateColor(zones.values[i, j], max, colours);
 
                     canvas.DrawRect(new RectF(topLeftCorner.X + toAddX,
                                         topLeftCorner.Y + toAddY,

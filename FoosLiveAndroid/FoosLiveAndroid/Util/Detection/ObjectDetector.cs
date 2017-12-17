@@ -23,6 +23,10 @@ namespace FoosLiveAndroid.Util.Detection
         private static readonly float BallStrokeWidth = PropertiesManager.GetFloatProperty("ball_stroke_width");
         private static readonly float RectStrokeWidth = PropertiesManager.GetFloatProperty("rect_stroke_width");
 
+        private static readonly int TraceMaxAlpha = PropertiesManager.GetIntProperty("trace_max_alpha");
+        private static readonly int TraceDivisor = PropertiesManager.GetIntProperty("trace_divisor");
+        private static readonly int TraceToAdd = PropertiesManager.GetIntProperty("trace_to_add");
+
         /// <summary>
         /// The default constructor for the ObjectDetector class
         /// </summary>
@@ -30,21 +34,39 @@ namespace FoosLiveAndroid.Util.Detection
         /// <param name="mulY">The upscaling multiplier for the Y axis</param>
         /// <param name="detector">The detector used to detect the ball</param>
         /// <param name="controller">The Game Controller, which fires specific events, related to the game</param>
+        /// <param name="color">Defines the color of the ball trace effect</param>
         public ObjectDetector(float mulX, float mulY, IColorDetector detector, GameController controller)
         {
             _controller = controller;
             _detector = detector;
             _mulX = mulX;
             _mulY = mulY;
+        }
 
+        public void SetColor(Hsv color)
+        {
             // Declare the outline style for the ball
             _paintBall = new Paint
             {
-                Color = new Color(255, 0, 0)
+                /*
+                 * EmguCv holds the HSV values as follows : 0 <= Hue <= 180,
+                 * 0 <= Saturation <= 180 and 0 <= Value <= 180, while Android holds the 
+                 * values like so: 0 <= Hue <= 360, 0 <= Saturation <= 1 and 0 <= Value <= 1. 
+                 * The multiplication and division is just a conversion taking place between
+                 * the different frameworks
+                 */
+                Color = Color.HSVToColor(new float[]
+                {
+                    (float)(color.Hue * 2),
+                    (float)(color.Satuation / 180),
+                    (float)(color.Value / 180)
+                })
             };
+
             _paintBall.SetStyle(Paint.Style.Stroke);
-            _paintBall.StrokeWidth = BallStrokeWidth;
+            _paintBall.StrokeWidth = RectStrokeWidth;
         }
+
         public bool Detect(Canvas canvas, Hsv ballHsv, Bitmap bitmap)
         {
             // Preliminary checks
@@ -68,13 +90,6 @@ namespace FoosLiveAndroid.Util.Detection
 
             if (ballDetected)
             {
-                // The ball was detected, so we draw it
-                canvas.DrawRect((int)(ball.Left * _mulX),
-                                 (int)(ball.Top * _mulY),
-                                 (int)(ball.Right * _mulX),
-                                 (int)(ball.Bottom * _mulY),
-                                 _paintBall);
-
                 // Update the GameController class with new coordinates
                 
                 _controller.LastBallCoordinates = new PointF((ball.Left + ball.Right) / 2 * _mulX,
@@ -87,13 +102,10 @@ namespace FoosLiveAndroid.Util.Detection
             // Paint the trail
             var path = new Path();
 
-            var paint = new Paint { StrokeWidth = RectStrokeWidth };
-            paint.SetStyle(Paint.Style.Stroke);
-
-            var points = _controller.BallCoordinates.ToArray();
-            var toPaint = 10;
-            var startSet = false;
-            for (var i = points.Length - 1; i > 0; i--)
+            PointF[] points = _controller.BallCoordinates.ToArray();
+            int toPaint = 10;
+            bool startSet = false;
+            for (int i = points.Length - 1; i > 0; i--)
             {
                 if (points[i] == null)
                 {
@@ -116,8 +128,8 @@ namespace FoosLiveAndroid.Util.Detection
                     else
                         path.LineTo(points[i].X, points[i].Y);
 
-                    paint.Color = new Color(255, 0, 0, 200 * (toPaint / 9) + 50);
-                    canvas.DrawPath(path, paint);
+                    _paintBall.Alpha = TraceMaxAlpha * (toPaint / TraceDivisor) + TraceToAdd;
+                    canvas.DrawPath(path, _paintBall);
                 }
                 else
                 {
