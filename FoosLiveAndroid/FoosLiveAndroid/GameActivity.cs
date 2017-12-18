@@ -21,6 +21,7 @@ using FoosLiveAndroid.Model;
 using Android.Support.V7.App;
 using FoosLiveAndroid.Util.Record;
 using FoosLiveAndroid.Util.Database;
+using System.Threading.Tasks;
 
 namespace FoosLiveAndroid
 {
@@ -34,9 +35,14 @@ namespace FoosLiveAndroid
         private static readonly int PreviewWidth = PropertiesManager.GetIntProperty("preview_width");
         private static readonly int PreviewHeight = PropertiesManager.GetIntProperty("preview_height");
 
+        private static readonly int ColorZoneCount = PropertiesManager.GetIntProperty("color_zone_count");
+
         // A constant for upscaling the positions
         private float _upscaleMultiplierX;
         private float _upscaleMultiplierY;
+
+        private int FakeTeam1Added;
+        private int FakeTeam2Added;
 
         private TextView _eventText;
         private TextView _timer;
@@ -255,12 +261,20 @@ namespace FoosLiveAndroid
         public async void ShowEndGameScreen()
         {
             // Start depositing the data to database
+
             var preferences = GetSharedPreferences(GetString(Resource.String.preference_file_key), FileCreationMode.Private);
+
+            //Check if sync is on
+            var syncSwitchDefault = Resources.GetBoolean(Resource.Boolean.saved_sync_enabled_default);
+            var sync = preferences.GetBoolean(GetString(Resource.String.saved_sync_enabled), syncSwitchDefault);
+
             var team1DefaultValue = Resources.GetString(Resource.String.saved_team1_name_default);
             var team2DefaultValue = Resources.GetString(Resource.String.saved_team2_name_default);
             var team1Name = preferences.GetString(GetString(Resource.String.saved_team1_name), team1DefaultValue);
             var team2Name = preferences.GetString(GetString(Resource.String.saved_team2_name), team2DefaultValue);
-            var insertTask = DatabaseManager.InsertGame(team1Name, team2Name);
+            Task<int> insertTask = null;
+            if (sync)
+                insertTask = DatabaseManager.InsertGame(team1Name, team2Name);
 
             _gameEnd = true;
             // Terminate recognition
@@ -313,18 +327,17 @@ namespace FoosLiveAndroid
             FragmentManager.BeginTransaction()
                            .Add(Resource.Id.infoLayout, EndGameFragment.NewInstance())
                            .Commit();
-            
+
             // Send Data to database
-            var gameIdInDatabase = await insertTask;
-            Log.Debug("Game Id In database", gameIdInDatabase.ToString());
-            if (gameIdInDatabase != -1)
+            if (sync)
             {
-                await DatabaseManager.InsertEvent(gameIdInDatabase, "Kazkoks eventas");
-                foreach(var goal in _game.GameController.Goals)
+                var gameIdInDatabase = await insertTask;
+                Log.Debug("Game Id In database", gameIdInDatabase.ToString());
+                if (gameIdInDatabase != -1)
                 {
-                    if (goal.TeamColor == TeamColor.Blue)
+                    for (int i = 0; i < _game.GameController.BlueScore; i++)
                         DatabaseManager.InsertGoal(gameIdInDatabase, team1Name);
-                    if (goal.TeamColor == TeamColor.Red)
+                    for (int i = 0; i < _game.GameController.RedScore; i++)
                         DatabaseManager.InsertGoal(gameIdInDatabase, team2Name);
                 }
             }
@@ -402,11 +415,30 @@ namespace FoosLiveAndroid
             // Todo: exception pops HERE
             _selectedBallColor = _image[positionY, positionX];
             // convert hsv image to rgb image sample
-            var selectedRgb = _image.Convert<Rgb, byte>()[positionY, positionX];
+            double hue = 0, saturation = 0, value = 0;
+            int zonesFromCenter = ColorZoneCount, counter = 0;
+            for (int i = (-1)*zonesFromCenter; i <= zonesFromCenter; i ++)
+            {
+                for (int j = (-1)*zonesFromCenter - 1; j <= zonesFromCenter; j ++)
+                {
+                    if (positionY + i > 0 && positionY + i < _image.Size.Width && positionX + j > 0 && positionX + j < _image.Size.Height)
+                    {
+                        counter++;
+                        hue += _image[positionY + i,positionX + j].Hue;
+                        saturation += _image[positionY + i, positionX + j].Satuation;
+                        value += _image[positionY + i, positionX + j].Value;
+                    }
+                }
+            }
+            _selectedBallColor = new Hsv(hue / (float)counter, saturation / (float)counter, value / (float)counter);
             // image won't be used anymore
             _image.Dispose();
             // Convert emgu rgb to android rgb
-            var selectedColor = Color.Rgb((int)selectedRgb.Red, (int)selectedRgb.Green, (int)selectedRgb.Blue);
+            var selectedColor = Color.HSVToColor(new float[] {
+                ((float)_selectedBallColor.Hue * 2),
+                ((float)_selectedBallColor.Satuation / 180),
+                ((float)_selectedBallColor.Value / 180)
+            });
 
             _gameButton.SetBackgroundColor(selectedColor);
             _gameButton.Text = GetString(Resource.String.start_game);

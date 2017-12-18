@@ -52,10 +52,10 @@ namespace FoosLiveAndroid.Util.Drawing
             // Calculate the table based on the outline
             gameController.SetTable(new[]
             {
-                new PointF(0, topY),
-                new PointF(canvas.Width, topY),
-                new PointF(0, bottomY),
-                new PointF(canvas.Width, bottomY)
+                new PointF(lowerTopLeftX, topY),
+                new PointF(lowerTopRightX, topY),
+                new PointF(bottomLeftX, bottomY),
+                new PointF(bottomRightX, bottomY)
             }, ECaptureMode.Live);
 
             return canvas;

@@ -7,7 +7,7 @@ using FoosLiveAndroid.Model;
 
 namespace FoosLiveAndroid.Util.GameControl
 {
-    class PositionChecker : IPositionChecker
+    public class PositionChecker : IPositionChecker
     {
         // Defines the real height of the table in meters
         private readonly double RealWidth = PropertiesManager.GetDoubleProperty("real_width");
@@ -20,8 +20,8 @@ namespace FoosLiveAndroid.Util.GameControl
         private double _mulX;
         private double _mulY;
 
-        private RectF zoneOne;
-        private RectF zoneTwo;
+        public RectF zoneOne;
+        public RectF zoneTwo;
 
         private bool goalOccured;
         private long timestampStart;

@@ -26,6 +26,9 @@ namespace FoosLiveAndroid.Util
         private readonly string _scoreFormat;
         private int MaxCharLength;
 
+        private string team1name;
+        private string team2name;
+
         // Controlled UI elements
         private Activity _activity;
         private TextView _ballSpeed;
@@ -83,6 +86,11 @@ namespace FoosLiveAndroid.Util
                 };
             }
 
+            team1name = preferences.GetString(activity.GetString(Resource.String.saved_team1_name), activity.GetString(Resource.String.team1));
+            team2name = preferences.GetString(activity.GetString(Resource.String.saved_team2_name), activity.GetString(Resource.String.team2));
+
+            preferences.Dispose();
+
             _scoreFormat = activity.GetString(Resource.String.score_format);
             _activity = activity;
         }
@@ -132,15 +140,18 @@ namespace FoosLiveAndroid.Util
             if (e == CurrentEvent.BlueGoalOccured)
             {
                 SoundAlerts?.Play(EAlert.Team1Goal);
-                TextEffects.SlideText(_activity.ApplicationContext.Resources.GetString(Resource.String.blue_team_goal), _activity, _eventText,MaxCharLength);
+                TextEffects.SlideText(team1name + " scored!", _activity, _eventText,MaxCharLength);
             }
             else if (e == CurrentEvent.RedGoalOccured)
             {
                 SoundAlerts?.Play(EAlert.Team2Goal);
-                TextEffects.SlideText(_activity.ApplicationContext.Resources.GetString(Resource.String.red_team_goal), _activity, _eventText, MaxCharLength);
+                TextEffects.SlideText(team2name + " scored!", _activity, _eventText, MaxCharLength);
             }
             _score.Text = String.Format(_scoreFormat, GameController.BlueScore, GameController.RedScore);
-            //Log.Debug(Tag, $"Score value assigned {_score.Text}");
+            Log.Debug(Tag, $"Score value assigned {_score.Text}");
+
+            // Reset the speed counter
+            _activity.RunOnUiThread(() => _ballSpeed.Text = "0");
         }
     }
 }
