@@ -44,6 +44,7 @@
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/team1Label"
                     tools:text="Bangelė"
+                    android:maxLength="11"
                     android:textAppearance="@android:style/TextAppearance.Material"
                     android:textSize="24sp"
                     android:textColor="#ffffffff" />
@@ -66,6 +67,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/team2Label"
+                    android:maxLength="11"
                     android:layout_alignParentEnd="true"
                     tools:text="Vėjelis"
                     android:textAppearance="@android:style/TextAppearance.Material"

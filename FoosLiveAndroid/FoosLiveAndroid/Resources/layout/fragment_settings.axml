@@ -71,8 +71,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textAllCaps="true"
-                android:maxLength="40"
-                android:text="Vėjelis"
+                android:maxLength="20"
                 android:layout_alignParentEnd="true"
                 android:layout_centerVertical="true"
                 android:checked="true" />
@@ -116,7 +115,7 @@
                 android:layout_height="wrap_content"
                 android:textAllCaps="true"
                 android:text="Bangelė"
-                android:maxLength="40"
+                android:maxLength="20"
                 android:layout_alignParentEnd="true"
                 android:layout_centerVertical="true"
                 android:checked="true" />
