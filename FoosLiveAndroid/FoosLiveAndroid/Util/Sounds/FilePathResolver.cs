@@ -19,29 +19,26 @@ namespace FoosLiveAndroid.Util.Sounds
 
         public static AssetFileDescriptor GetFile(Context context, String argument)
         {
-            System.Console.WriteLine(argument);
-
+            //System.Console.WriteLine(argument);
+            // Todo: make it look better
             if (argument.Equals(DefaultMarioGoal))
             {
                 return context.Assets.OpenFd(MarioGoalSound);
             }
-            else
-                if (argument.Equals(DefaultMarioWin))
+            if (argument.Equals(DefaultMarioWin))
             {
                 return context.Assets.OpenFd(MarioWinSound);
             }
-            else
-                if (argument.Equals(DefaultBingSound))
+            if (argument.Equals(DefaultBingSound))
             {
                 return context.Assets.OpenFd(BingSound);
             }
-            else
-                if (argument.Equals(DefaultCrowdCheerSound))
+            if (argument.Equals(DefaultCrowdCheerSound))
             {
                 return context.Assets.OpenFd(CrowdCheer);
             }
-            else
-                return null;
+
+            return null;
         }
     }
 }

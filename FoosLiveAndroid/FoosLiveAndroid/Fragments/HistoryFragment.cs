@@ -101,8 +101,9 @@ namespace FoosLiveAndroid.Fragments
                 {
                     _loadingStatusLabel.Text = GetString(Resource.String.history_empty);
                     ShowError();
+                    return;
                 }
-                else if (_loadingStatus == LoadingStatus.No_connection)
+                if (_loadingStatus == LoadingStatus.No_connection)
                     ShowError();
             });
 

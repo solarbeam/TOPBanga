@@ -68,10 +68,11 @@ namespace FoosLiveAndroid.Util
                 var team1GoalKey = activity.Resources.GetString(Resource.String.saved_team1_goal);
                 var team2GoalKey = activity.Resources.GetString(Resource.String.saved_team2_goal);
 
-                var team1WinDefaultValue = activity.Resources.GetString(Resource.String.saved_team1_win_default);
-                var team2WinDefaultValue = activity.Resources.GetString(Resource.String.saved_team2_win_default);
-                var team1GoalDefaultValue = activity.Resources.GetString(Resource.String.saved_team1_goal_default);
-                var team2GoalDefaultValue = activity.Resources.GetString(Resource.String.saved_team2_goal_default);
+                // Todo: use string resources instead of enum
+                //var team1WinDefaultValue = activity.Resources.GetString(Resource.String.saved_team1_win_default);
+                //var team2WinDefaultValue = activity.Resources.GetString(Resource.String.saved_team2_win_default);
+                //var team1GoalDefaultValue = activity.Resources.GetString(Resource.String.saved_team1_goal_default);
+                //var team2GoalDefaultValue = activity.Resources.GetString(Resource.String.saved_team2_goal_default);
 
                 SoundAlerts = new SoundAlerts
                 {
@@ -139,7 +140,7 @@ namespace FoosLiveAndroid.Util
                 TextEffects.SlideText(_activity.ApplicationContext.Resources.GetString(Resource.String.red_team_goal), _activity, _eventText, MaxCharLength);
             }
             _score.Text = String.Format(_scoreFormat, GameController.BlueScore, GameController.RedScore);
-            Log.Debug(Tag, $"Score value assigned {_score.Text}");
+            //Log.Debug(Tag, $"Score value assigned {_score.Text}");
         }
     }
 }
