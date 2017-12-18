@@ -41,6 +41,9 @@ namespace FoosLiveAndroid
         private float _upscaleMultiplierX;
         private float _upscaleMultiplierY;
 
+        private int FakeTeam1Added;
+        private int FakeTeam2Added;
+
         private TextView _eventText;
         private TextView _timer;
         private Button _gameButton;
@@ -332,13 +335,10 @@ namespace FoosLiveAndroid
                 Log.Debug("Game Id In database", gameIdInDatabase.ToString());
                 if (gameIdInDatabase != -1)
                 {
-                    foreach (var goal in _game.GameController.Goals)
-                    {
-                        if (goal.TeamColor == TeamColor.Blue)
-                            DatabaseManager.InsertGoal(gameIdInDatabase, team1Name);
-                        if (goal.TeamColor == TeamColor.Red)
-                            DatabaseManager.InsertGoal(gameIdInDatabase, team2Name);
-                    }
+                    for (int i = 0; i < _game.GameController.BlueScore; i++)
+                        DatabaseManager.InsertGoal(gameIdInDatabase, team1Name);
+                    for (int i = 0; i < _game.GameController.RedScore; i++)
+                        DatabaseManager.InsertGoal(gameIdInDatabase, team2Name);
                 }
             }
         }

@@ -148,6 +148,9 @@ namespace FoosLiveAndroid.Util
             }
             _score.Text = String.Format(_scoreFormat, GameController.BlueScore, GameController.RedScore);
             Log.Debug(Tag, $"Score value assigned {_score.Text}");
+
+            // Reset the speed counter
+            _activity.RunOnUiThread(() => _ballSpeed.Text = "0.00");
         }
     }
 }
