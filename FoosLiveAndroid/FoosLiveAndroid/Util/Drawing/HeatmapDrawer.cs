@@ -28,9 +28,9 @@ namespace FoosLiveAndroid.Util.Drawing
 
             // Find the max value
             int max = 0;
-            for (int i = 0; i < zones.height; i ++)
+            for (int i = 0; i < zones.Height; i ++)
             {
-                for (int j = 0; j < zones.width; j ++)
+                for (int j = 0; j < zones.Width; j ++)
                 {
                     if (max < zones.values[i, j])
                         max = zones.values[i, j];
@@ -50,12 +50,12 @@ namespace FoosLiveAndroid.Util.Drawing
 
             // Draw the zones
             Paint paint = new Paint();
-            float zoneWidth = sizeOfBitmap.Width / (float)zones.width;
-            float zoneHeight = sizeOfBitmap.Height / (float)zones.height;
+            float zoneWidth = sizeOfBitmap.Width / (float)zones.Width;
+            float zoneHeight = sizeOfBitmap.Height / (float)zones.Height;
             float toAddX = 0, toAddY = 0;
-            for (int i = 0; i < zones.height; i ++)
+            for (int i = 0; i < zones.Height; i ++)
             {
-                for (int j = 0; j < zones.width; j ++)
+                for (int j = 0; j < zones.Width; j ++)
                 {
                     float multiplier = zones.values[i, j] / (float)max;
 

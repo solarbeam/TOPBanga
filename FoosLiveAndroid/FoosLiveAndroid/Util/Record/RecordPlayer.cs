@@ -1,22 +1,22 @@
 ﻿using Android.Content;
 using Android.Media;
 
-namespace FoosLiveAndroid.Util
+namespace FoosLiveAndroid.Util.Record
 {
-    public class RecordPlayer : MediaPlayer, MediaPlayer.IOnPreparedListener,
+    public sealed class RecordPlayer : MediaPlayer, MediaPlayer.IOnPreparedListener,
     MediaPlayer.IOnCompletionListener
     {
         // false on init, true on creation
-        public bool disposed;
+        public bool Disposed;
 
-        private GameActivity activity;
+        private GameActivity _activity;
 
         public RecordPlayer(Context context)
         {
-            activity = (GameActivity)context;
-            disposed = false;
-            SetDataSource(context, activity.Intent.Data);
-            SetSurface(activity._surfaceManager.Surface);
+            _activity = (GameActivity)context;
+            Disposed = false;
+            SetDataSource(context, _activity.Intent.Data);
+            SetSurface(_activity.SurfaceManager.Surface);
             Prepare();
             SetOnPreparedListener(this);
             SetOnCompletionListener(this);
@@ -25,25 +25,23 @@ namespace FoosLiveAndroid.Util
         /// <summary>
         /// Called whenever the mediaplayer is ready to be started
         /// </summary>
-        /// <param name="mp">The MediaPlayer instance, which called this function</param>
+        /// <param name="mediaPlayer">The MediaPlayer instance, which called this function</param>
         public void OnCompletion(MediaPlayer mediaPlayer)
         {
-            if (!disposed)
+            if (!Disposed)
             {
                 mediaPlayer.Release();
                 mediaPlayer.Dispose();
-                disposed = true;
+                Disposed = true;
             }
-            activity.ShowEndGameScreen();
+            _activity.ShowEndGameScreen();
         }
         public override void Release()
         {
+            if (Disposed) return;
             base.Release();
-            if (!disposed)
-            {
-                Dispose();
-                disposed = true;
-            }
+            Dispose();
+            Disposed = true;
         }
         public void OnPrepared(MediaPlayer mediaPlayer)
         {

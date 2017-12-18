@@ -1,5 +1,4 @@
-﻿using System;
-using Android.Content;
+﻿using Android.Content;
 using Android.Graphics;
 using Android.Graphics.Drawables;
 using Android.Util;
@@ -13,7 +12,7 @@ namespace FoosLiveAndroid.Util.Record
     {
         static readonly string Tag = typeof(SurfaceManager).Name;
         private GameActivity _activity;
-        public ISurfaceHolder SurfaceHolder { get; private set; }
+        public ISurfaceHolder SurfaceHolder { get; }
         public Surface Surface { get; private set; }
         public SurfaceTexture SurfaceTexture { get; private set; }
 
@@ -31,22 +30,17 @@ namespace FoosLiveAndroid.Util.Record
         /// <param name="h">The height of the surface, defined as an integer</param>
         public void OnSurfaceTextureAvailable(SurfaceTexture surface, int w, int h)
         {
-            _activity._gameView.LayoutParameters = new FrameLayout.LayoutParams(w, h);
+            _activity.GameView.LayoutParameters = new FrameLayout.LayoutParams(w, h);
 
             // Set the upscaling constant
             _activity.SetMultipliers(w, h);
-
-            // Create a template alpha bitmap for repeated drawing
-            var tempBitmap = new BitmapDrawable(Bitmap.CreateBitmap(w, h, Bitmap.Config.Argb8888));
-            tempBitmap.SetAlpha(0);
-            _activity._alphaBitmap = tempBitmap.Bitmap;
 
             SurfaceHolder.SetFixedSize(w, h);
 
             SurfaceTexture = surface;
 
             // Check if we use video mode
-            if (_activity._gameMode == ECaptureMode.Recording)
+            if (_activity.GameMode == ECaptureMode.Recording)
             {
                 Surface = new Surface(surface);
                 _activity.SetUpRecordMode(w, h);
@@ -74,7 +68,7 @@ namespace FoosLiveAndroid.Util.Record
         /// <param name="h">The new height, defined as an integer</param>
         public void OnSurfaceTextureSizeChanged(SurfaceTexture surface, int w, int h)
         {
-            Log.Wtf(Tag, "Surface texture size changed");
+            Log.Wtf(Tag, "Surface texture size changed. It shouldn't.");
         }
 
         /// <summary>
@@ -84,20 +78,18 @@ namespace FoosLiveAndroid.Util.Record
         public void OnSurfaceTextureUpdated(SurfaceTexture surface)
         {
             // The table is currently drawn only if an Hsv value is selected
-            if (_activity._ballColorSelected)
+            if (!_activity.BallColorSelected) return;
+
+            var canvas = SurfaceHolder.LockCanvas();
+
+            if (!_activity.DetectBall(canvas))
             {
-                Canvas canvas = SurfaceHolder.LockCanvas();
-
-                if (!_activity.DetectBall(canvas))
-                {
-                    // Remove all drawings
-                    //Todo: test
-                    canvas.DrawColor(Color.Argb(255, 0, 0, 0));
-                }
-
-                SurfaceHolder.UnlockCanvasAndPost(canvas);
-                canvas.Dispose();
+                // Remove all drawings
+                canvas.DrawColor(Color.Transparent, PorterDuff.Mode.Clear);
             }
+
+            SurfaceHolder.UnlockCanvasAndPost(canvas);
+            canvas.Dispose();
         }
     }
 }

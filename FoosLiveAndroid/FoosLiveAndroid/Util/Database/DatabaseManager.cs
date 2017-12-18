@@ -29,24 +29,31 @@ namespace FoosLiveAndroid.Util.Database
         /// <param name="redTeamName">Red team name</param>
         /// <returns>The id of the inserted game, or -1 if error happens.
         /// This id is used to specify which game to add goals and events to.</returns>
-        public static async Task<int> InsertGame(string blueTeamName, string redTeamName) {
-            var request = (HttpWebRequest)WebRequest.Create(ConnectionUrl);
-            request.Method = WebRequestMethods.Http.Post;
-            request.Timeout = Timeout;
+        public static async Task<int> InsertGame(string blueTeamName, string redTeamName, string ownersId) {
+            try
+            {
+                var request = (HttpWebRequest)WebRequest.Create(ConnectionUrl);
+                request.Method = WebRequestMethods.Http.Post;
+                request.Timeout = Timeout;
 
-            var streamWriter = new StreamWriter(request.GetRequestStream());
-            // Prepare query statement
-            streamWriter.Write(string.Format(InsertGameFormat, blueTeamName, redTeamName));
+                var streamWriter = new StreamWriter(request.GetRequestStream());
+                // Prepare query statement
+                streamWriter.Write(InsertGameFormat, blueTeamName, redTeamName, ownersId);
 
-            streamWriter.Flush();
-            var httpWebResponse = (HttpWebResponse)await request.GetResponseAsync();
+                streamWriter.Flush();
+                var httpWebResponse = (HttpWebResponse)request.GetResponse();
 
-            var streamReader = new StreamReader(httpWebResponse.GetResponseStream());
-            string idUnconverted = await streamReader.ReadToEndAsync();
-            if (int.TryParse(idUnconverted, out int id))
-                return id;
-            else
+                var streamReader = new StreamReader(httpWebResponse.GetResponseStream());
+                var idUnconverted = await streamReader.ReadToEndAsync();
+                if (int.TryParse(idUnconverted, out var id))
+                    return id;
                 return -1;
+            }
+            catch(Exception e)
+            {
+                Log.Error("Exception in db", e.ToString());
+            }
+            return -1;
         }
         /// <summary>
         /// Inserts a goal into the remote database.
@@ -64,7 +71,7 @@ namespace FoosLiveAndroid.Util.Database
 
             // Set up request statement
             var streamWriter = new StreamWriter(await request.GetRequestStreamAsync());
-            streamWriter.Write(string.Format(InsertGoalFormat, gameId, teamName));
+            streamWriter.Write(InsertGoalFormat, gameId, teamName);
             streamWriter.Flush();
 
             // Get response
@@ -91,7 +98,7 @@ namespace FoosLiveAndroid.Util.Database
 
             // Set up request statement
             var streamWriter = new StreamWriter(request.GetRequestStream());
-            streamWriter.Write(string.Format(InsertEventFormat, gameId, details));
+            streamWriter.Write(InsertEventFormat, gameId, details);
             streamWriter.Flush();
 
             // Get response
@@ -114,7 +121,7 @@ namespace FoosLiveAndroid.Util.Database
             try
             {
                 // Set up request statement
-                var streamWriter = new StreamWriter(request.GetRequestStream());
+                var streamWriter = new StreamWriter(await request.GetRequestStreamAsync());
                 streamWriter.Write(GetHistoryFormat);
                 streamWriter.Flush();
 

@@ -21,6 +21,7 @@ namespace FoosLiveAndroid
         protected override void OnResume()
         {
             base.OnResume();
+            // Initialize loading
             new Task(LoadResources).Start();
         }
 
@@ -35,8 +36,8 @@ namespace FoosLiveAndroid
             var filtered = tempImage.InRange(new Bgr(100, 0, 0), new Bgr(200, 0, 0));
             filtered.Erode(Iterations).Dispose();
             filtered.Dilate(Iterations).Dispose();
-            CvBlobDetector tempDetector = new CvBlobDetector();
-            CvBlobs blobs = new CvBlobs();
+            var tempDetector = new CvBlobDetector();
+            var blobs = new CvBlobs();
             tempDetector.Detect(filtered, blobs);
 
             tempImage.Dispose();

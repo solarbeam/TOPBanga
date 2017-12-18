@@ -4,5 +4,7 @@
     {
         GoalMario,
         WinMario,
+        BingSound,
+        CrowdCheer
     }
 }

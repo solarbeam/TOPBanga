@@ -7,20 +7,21 @@ namespace FoosLiveAndroid.Util.GameControl
     /// </summary>
     public class ZoneInfo
     {
+        private const int _toAddZone1 = 8;
+        private const int _toAddZone2 = 4;
+        private const int _toAddZone3 = 2;
+
         public int[,] values
         {
             get;
-            private set;
         }
-        public int height
+        public int Height
         {
             get;
-            private set;
         }
-        public int width
+        public int Width
         {
             get;
-            private set;
         }
 
         private float _zoneWidth;
@@ -31,9 +32,10 @@ namespace FoosLiveAndroid.Util.GameControl
         public ZoneInfo(RectF tableInfo, int width, int height)
         {
             values = new int[height, width];
-            PointF topLeftCorner = new PointF(tableInfo.Left, tableInfo.Top);
-            this.width = width;
-            this.height = height;
+            // Todo: redudantant variable
+            var topLeftCorner = new PointF(tableInfo.Left, tableInfo.Top);
+            Width = width;
+            Height = height;
             _zoneHeight = (( tableInfo.Bottom - tableInfo.Top ) / width);
             _zoneWidth = (( tableInfo.Right - tableInfo.Left ) / height);
             _topLeftX = tableInfo.Left;
@@ -45,30 +47,35 @@ namespace FoosLiveAndroid.Util.GameControl
             if (point == null)
                 return;
 
-            float x = point.X - _topLeftX;
-            float y = point.Y - _topLeftY;
+            var x = point.X - _topLeftX;
+            var y = point.Y - _topLeftY;
 
-            int posX = (int)(x / _zoneWidth);
-            int posY = (int)(y / _zoneHeight);
+            var posX = (int)(x / _zoneWidth);
+            var posY = (int)(y / _zoneHeight);
 
-            if (posX >= 0 && posY >= 0  && posX < width && posY < height)
+            if (posX >= 0 && posY >= 0  && posX < Width && posY < Height)
             {
-                values[posY, posX] += 3;
+                values[posY, posX] += 8;
 
-                int toAddY = -1, toAddX = -1;
-                for (int i = 0; i < 2; i ++)
+                for (int i = -2; i < 3; i ++)
                 {
-                    for (int j = 0; j < 2; j ++)
+                    for (int j = -2; j < 3; j ++)
                     {
-                        if ((posX + toAddX < width && posX + toAddX > 0) &&
-                            (posY + toAddY < height && posY + toAddY > 0))
+                        if ((posX + i < Width && posX + i > 0) &&
+                            (posY + j < Height && posY + j > 0))
                         {
-                            values[posX + toAddX, posY + toAddY]++;
+                            // Defines the outermost points from the center
+                            if ((i == -2 || i == 2) && (j == -2 || j == 2))
+                                values[posY + j, posX + i] += _toAddZone3;
+                            else
+                            // Defines the points, which surround the center point
+                                if ((i == -1 || i == 1) && (j == -1 || j == 1))
+                                values[posY + j, posX + i] += _toAddZone2;
+                            else
+                                // Defines the center point
+                                values[posY + j, posX + i] += _toAddZone3;
                         }
-                        toAddX ++;
                     }
-                    toAddX = 0;
-                    toAddY++;
                 }
             }
         }

@@ -6,6 +6,7 @@ using Android.Widget;
 using Emgu.CV;
 using Emgu.CV.Structure;
 using FoosLiveAndroid.Model;
+using FoosLiveAndroid.Util;
 using FoosLiveAndroid.Util.Drawing;
 using System;
 using FoosLiveAndroid.Util.Model;
@@ -41,7 +42,7 @@ namespace FoosLiveAndroid.Fragments
             GetReferencesFromLayout();
             _team1Name.Text = MatchInfo.Team1Name;
             _team2Name.Text = MatchInfo.Team2Name;
-            _teamScore.Text = GetString(Resource.String.score_format_end_game, MatchInfo.Team1Score, MatchInfo.Team2Score);
+            _teamScore.Text = String.Format(GetString(Resource.String.score_format_end_game), MatchInfo.Team1Score, MatchInfo.Team2Score);
             _durationValue.Text = MatchInfo.Duration;
             _avgBallSpeed.Text = MatchInfo.AvgSpeed.ToString(SpeedFormat);
             _maxBallSpeed.Text = MatchInfo.MaxSpeed.ToString(SpeedFormat);
@@ -55,8 +56,7 @@ namespace FoosLiveAndroid.Fragments
                 HeatmapDrawer.DrawZones(canvas, MatchInfo.Zones);
 
                 Image<Bgr, byte> toBlur = new Image<Bgr, byte>(toDraw);
-                toBlur = toBlur.Dilate(7);
-                CvInvoke.GaussianBlur(toBlur, toBlur, new System.Drawing.Size(0,0), 3);
+                CvInvoke.MedianBlur(toBlur, toBlur, PropertiesManager.GetIntProperty("blur_iterations"));
 
                 ballHeatMap.SetImageBitmap(toBlur.Bitmap);
             });

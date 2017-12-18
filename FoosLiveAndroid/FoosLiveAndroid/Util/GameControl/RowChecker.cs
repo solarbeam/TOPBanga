@@ -11,12 +11,12 @@ namespace FoosLiveAndroid.Util.GameControl
         /// <summary>
         /// Defines the rows of foosmen
         /// </summary>
-        public RectF[] rows;
+        public RectF[] Rows;
 
         /// <summary>
         /// Defines the row the ball is currently in
         /// </summary>
-        public Row currentRow;
+        public Row CurrentRow;
 
         private int _RedGoalieZone;
         private int _RedDefenceZone;
@@ -29,42 +29,42 @@ namespace FoosLiveAndroid.Util.GameControl
 
         public void CheckRow(PointF lastBallCoordinates)
         {
-            for (int i = 0; i < rows.Length; i++)
+            for (int i = 0; i < Rows.Length; i++)
             {
-                if (rows[i].Contains(lastBallCoordinates.X, lastBallCoordinates.Y))
+                if (Rows[i].Contains(lastBallCoordinates.X, lastBallCoordinates.Y))
                 {
                     switch (i)
                     {
                         case 0:
-                            currentRow = Row.Team2Goalie;
+                            CurrentRow = Row.Team2Goalie;
                             _RedGoalieZone++;
                             break;
                         case 1:
-                            currentRow = Row.Team2Defence;
+                            CurrentRow = Row.Team2Defence;
                             _RedDefenceZone++;
                             break;
                         case 2:
-                            currentRow = Row.Team1Attack;
+                            CurrentRow = Row.Team1Attack;
                             _BlueAttackZone++;
                             break;
                         case 3:
-                            currentRow = Row.Team2MidField;
+                            CurrentRow = Row.Team2MidField;
                             _RedMidfieldZone++;
                             break;
                         case 4:
-                            currentRow = Row.Team1MidField;
+                            CurrentRow = Row.Team1MidField;
                             _BlueMidfieldZone++;
                             break;
                         case 5:
-                            currentRow = Row.Team2Attack;
+                            CurrentRow = Row.Team2Attack;
                             _RedAttackZone++;
                             break;
                         case 6:
-                            currentRow = Row.Team1Defence;
+                            CurrentRow = Row.Team1Defence;
                             _BlueDefenceZone++;
                             break;
                         case 7:
-                            currentRow = Row.Team1Goalie;
+                            CurrentRow = Row.Team1Goalie;
                             _BlueGoalieZone++;
                             break;
                     }
@@ -77,12 +77,12 @@ namespace FoosLiveAndroid.Util.GameControl
         public void CalculateRows(Rectangle tableZone, ECaptureMode mode)
         {
             // Declare constants
-            float[] multipliers = new float[8];
+            var multipliers = new float[8];
 
             if (mode == ECaptureMode.Recording)
             {
-                float toAssign = PropertiesManager.GetFloatProperty("percentage_video");
-                for (int i = 0; i < multipliers.Length; i ++)
+                var toAssign = PropertiesManager.GetFloatProperty("percentage_video");
+                for (var i = 0; i < multipliers.Length; i ++)
                     multipliers[i] = toAssign;
             }
             else
@@ -97,26 +97,26 @@ namespace FoosLiveAndroid.Util.GameControl
                 multipliers[7] = PropertiesManager.GetFloatProperty("row_eight");
             }
             
-            rows = new RectF[8];
+            Rows = new RectF[8];
 
             // Assign the first row values, because we'll use it in the for cycle
-            rows[0] = new RectF(tableZone.Left, tableZone.Top,
+            Rows[0] = new RectF(tableZone.Left, tableZone.Top,
                                 tableZone.Right, tableZone.Top + (tableZone.Height * multipliers[0]));
 
             // Assign the rows values
-            for (int i = 1; i < rows.Length; i++)
+            for (var i = 1; i < Rows.Length; i++)
             {
                 // We calculate Y values based on the previous rows
                 float toAdd = 0;
 
                 // Here, we add to toAdd the Y values of the previous rows
-                for (int j = i; j != 0; j--)
+                for (var j = i; j != 0; j--)
                 {
-                    toAdd += rows[j - 1].Height();
+                    toAdd += Rows[j - 1].Height();
                 }
 
                 // Finally, we assign the new row values
-                rows[i] = new RectF(tableZone.Left, rows[i - 1].Bottom,
+                Rows[i] = new RectF(tableZone.Left, Rows[i - 1].Bottom,
                                     tableZone.Right, tableZone.Top + toAdd + (tableZone.Height * multipliers[i]));
             }
         }
@@ -132,7 +132,7 @@ namespace FoosLiveAndroid.Util.GameControl
         /// <returns>An array, holding all of the zone counters</returns>
         public int[] GetRowInformation()
         {
-            return new int[]
+            return new[]
             {
                 _RedGoalieZone,
                 _RedDefenceZone,

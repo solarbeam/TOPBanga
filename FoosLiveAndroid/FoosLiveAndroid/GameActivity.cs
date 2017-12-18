@@ -9,22 +9,18 @@ using Camera = Android.Hardware.Camera;
 using Emgu.CV.Structure;
 using Android.Util;
 using FoosLiveAndroid.Util;
-using FoosLiveAndroid.Util.Detection;
 using System;
 using Android.Hardware;
 using FoosLiveAndroid.Util.Drawing;
-using System.Text;
-using System.Threading.Tasks;
 using Android.Content;
-using FoosLiveAndroid.Util.GameControl;
 using FoosLiveAndroid.Util.Sensors;
 using FoosLiveAndroid.Util.Interface;
 using FoosLiveAndroid.Fragments;
 using FoosLiveAndroid.Util.Model;
-using FoosLiveAndroid.Util.Sounds;
 using FoosLiveAndroid.Model;
 using Android.Support.V7.App;
 using FoosLiveAndroid.Util.Record;
+using FoosLiveAndroid.Util.Database;
 
 namespace FoosLiveAndroid
 {
@@ -37,12 +33,7 @@ namespace FoosLiveAndroid
 
         private static readonly int PreviewWidth = PropertiesManager.GetIntProperty("preview_width");
         private static readonly int PreviewHeight = PropertiesManager.GetIntProperty("preview_height");
-        private static readonly int SlidingTextDelay = PropertiesManager.GetIntProperty("sliding_text_delay");
-        private static readonly int TimerFrequency = PropertiesManager.GetIntProperty("timer_frequency");
-        private static readonly float FormatSpeed = PropertiesManager.GetFloatProperty("format_speed");
 
-        private bool _textThreadStarted = false;
-        private bool _waitForSpeed = false;
         // A constant for upscaling the positions
         private float _upscaleMultiplierX;
         private float _upscaleMultiplierY;
@@ -51,14 +42,17 @@ namespace FoosLiveAndroid
         private TextView _timer;
         private Button _gameButton;
         private TextView _score;
-        public TextureView _gameView;
+        public TextureView GameView;
         private SurfaceView _surfaceView;
         private TextView _ballSpeed;
         private TextView _team1Title;
         private TextView _team2Title;
-
+        private Button _addScoreTeam1;
+        private Button _addScoreTeam2;
+        private Button _removeScoreTeam1;
+        private Button _removeScoreTeam2;
+            
         private string _scoreFormat;
-        private string _timerFormat;
 
         // Guideline UI elements
         private ImageView _arrowTop;
@@ -69,29 +63,24 @@ namespace FoosLiveAndroid
         private FrameLayout _infoLayout;
         private RelativeLayout _topBar;
 
-        public Bitmap _alphaBitmap;
+        private Game _game;
 
-        private SoundAlerts _soundAlerts;
-
-        private IColorDetector _colorDetector;
-        private IObjectDetector _objectDetector;
-        private GameController _gameController;
-        private GameTimer _gameTimer;
-
-        public ECaptureMode _gameMode;
+        public ECaptureMode GameMode;
         private bool _gameEnd;
 
         // Todo: change Camera to Camera2
         private Camera _camera;
 
-        internal SurfaceManager _surfaceManager;
+        internal SurfaceManager SurfaceManager;
 
         private Hsv _selectedBallColor;
-        internal bool _ballColorSelected;
+        internal bool BallColorSelected;
         private Image<Hsv, byte> _image;
 
         private IPositionManager _positionManager;
-        internal RecordPlayer _recordPlayer;
+        internal RecordPlayer recordPlayer;
+
+        private int _maxEventSliderLength;
 
         /// <summary>
         /// Called whenever the view is created
@@ -103,14 +92,14 @@ namespace FoosLiveAndroid
             // Identify game capture mode
             if (Intent.Data != null)
             {
-                _gameMode = ECaptureMode.Recording;
+                GameMode = ECaptureMode.Recording;
             }
             else
             {
-                _gameMode = ECaptureMode.Live;
+                GameMode = ECaptureMode.Live;
                 // Set up sensors & vibration
                 var sensorManager = (SensorManager)GetSystemService(SensorService);
-                var vibration = new Vibration((Vibrator)GetSystemService(VibratorService));
+                IVibration vibration = new Vibration((Vibrator)GetSystemService(VibratorService));
                 _positionManager = new PositionManager(this, sensorManager, vibration);
             }
 
@@ -122,19 +111,43 @@ namespace FoosLiveAndroid
             Window.SetFlags(WindowManagerFlags.KeepScreenOn, WindowManagerFlags.KeepScreenOn);
             GetReferencesFromLayout();
 
-            _colorDetector = new ColorDetector();
-            _gameController = new GameController();
-            _gameTimer = new GameTimer(TimerFrequency);
-            _surfaceManager = new SurfaceManager(this, _surfaceView.Holder);
-            _gameController.GoalEvent += GameControllerGoalEvent;
-            _gameController.PositionEvent += GameControllerPositionEvent;
-
-
+            SurfaceManager = new SurfaceManager(this, _surfaceView.Holder);
+            
             _surfaceView.SetZOrderOnTop(true);
             _surfaceView.Holder.SetFormat(Format.Transparent);
 
             _gameButton.Click += GameButtonClicked;
 
+            _addScoreTeam1.Click += (o, e) =>
+            {
+                _game.GameController.BlueScore++;
+                _score.Text = String.Format(_scoreFormat, _game.GameController.BlueScore, _game.GameController.RedScore);
+            };
+            _addScoreTeam2.Click += (o, e) =>
+            {
+                _game.GameController.RedScore++;
+                _score.Text = String.Format(_scoreFormat, _game.GameController.BlueScore, _game.GameController.RedScore);
+            };
+            _removeScoreTeam1.Click += (o, e) =>
+            {
+                if (_game.GameController.BlueScore == 0)
+                    return;
+                else
+                {
+                    _game.GameController.BlueScore--;
+                    _score.Text = String.Format(_scoreFormat, _game.GameController.BlueScore, _game.GameController.RedScore);
+                }
+            };
+            _removeScoreTeam2.Click += (o, e) =>
+            {
+                if (_game.GameController.RedScore == 0)
+                    return;
+                else
+                {
+                    _game.GameController.RedScore--;
+                    _score.Text = String.Format(_scoreFormat, _game.GameController.BlueScore, _game.GameController.RedScore);
+                }
+            };
 
             // Assign the sound file paths
             var preferences = GetSharedPreferences(GetString(Resource.String.preference_file_key), FileCreationMode.Private);
@@ -145,49 +158,24 @@ namespace FoosLiveAndroid
             var team2DefaultValue = Resources.GetString(Resource.String.saved_team2_name_default);
             _team2Title.Text = preferences.GetString(GetString(Resource.String.saved_team2_name), team2DefaultValue);
 
-            var defaultSoundEnabledValue = Resources.GetBoolean(Resource.Boolean.saved_sound_enabled_default);
-            if (preferences.GetBoolean(GetString(Resource.String.saved_sound_enabled), defaultSoundEnabledValue))
-            {
-                var team1WinKey = Resources.GetString(Resource.String.saved_team1_win);
-                var team2WinKey = Resources.GetString(Resource.String.saved_team2_win);
-                var team1GoalKey = Resources.GetString(Resource.String.saved_team1_goal);
-                var team2GoalKey = Resources.GetString(Resource.String.saved_team2_goal);
-
-                var team1WinDefaultValue = Resources.GetString(Resource.String.saved_team1_win_default);
-                var team2WinDefaultValue = Resources.GetString(Resource.String.saved_team2_win_default);
-                var team1GoalDefaultValue = Resources.GetString(Resource.String.saved_team1_goal_default);
-                var team2GoalDefaultValue = Resources.GetString(Resource.String.saved_team2_goal_default);
-
-                _soundAlerts = new SoundAlerts
-                {
-                    Team1Win = new PlayerOGG(FilePathResolver.GetFile(this, preferences.GetString(team1WinKey, team1WinDefaultValue))),
-                    Team1Goal = new PlayerOGG(FilePathResolver.GetFile(this, preferences.GetString(team1GoalKey, team1GoalDefaultValue))),
-                    Team2Win = new PlayerOGG(FilePathResolver.GetFile(this, preferences.GetString(team2WinKey, team2WinDefaultValue))),
-                    Team2Goal = new PlayerOGG(FilePathResolver.GetFile(this, preferences.GetString(team2GoalKey, team2GoalDefaultValue)))
-                };
-            }
-
             preferences.Dispose();
 
             _scoreFormat = GetString(Resource.String.score_format);
-            _timerFormat = GetString(Resource.String.timer_format);
+            //_timerFormat = GetString(Resource.String.timer_format);
 
             // Open the camera
-            _gameView.SurfaceTextureListener = _surfaceManager;
-            _gameView.SetOnTouchListener(this);
+            GameView.SurfaceTextureListener = SurfaceManager;
+            GameView.SetOnTouchListener(this);
             CvInvoke.UseOptimized = true;
-
-            // Add a timer event
-            _gameTimer.OnUpdated += UpdateTimer;
         }
 
         internal void ReleaseResources()
         {
             // Check if we use a video file for getting frames or the camera
-            if (_gameMode == ECaptureMode.Recording)
+            if (GameMode == ECaptureMode.Recording)
             {
                 // We use a video file, so release it's resources
-                _recordPlayer.Release();
+                recordPlayer.Release();
             }
             else
             {
@@ -205,15 +193,15 @@ namespace FoosLiveAndroid
             _upscaleMultiplierY = screenHeight / PreviewHeight;
             _upscaleMultiplierX = screenWidth / PreviewWidth;
 
-            // Create the ObjectDetector class for the GameActivity
-            _objectDetector = new ObjectDetector(_upscaleMultiplierX, _upscaleMultiplierY, _colorDetector, _gameController);
+            // Create the Game class instance
+            _game = new Game(_upscaleMultiplierX, _upscaleMultiplierY, this, _ballSpeed, _score, _eventText, _timer);
         }
 
         internal void SetUpCameraMode()
         {
             // Draw the align zones
-            Canvas canvas = AlignZones.DrawZones(_surfaceManager.SurfaceHolder.LockCanvas(), _gameController);
-            _surfaceManager.SurfaceHolder.UnlockCanvasAndPost(canvas);
+            var canvas = AlignZones.DrawZones(SurfaceManager.SurfaceHolder.LockCanvas(), _game.GameController);
+            SurfaceManager.SurfaceHolder.UnlockCanvasAndPost(canvas);
 
             _camera = Camera.Open();
 
@@ -241,7 +229,7 @@ namespace FoosLiveAndroid
                  * Set the surface on which frames are drawn
                  * In this case, it's the surface, which was created for _gameview
                  */
-                _camera.SetPreviewTexture(_surfaceManager.SurfaceTexture);
+                _camera.SetPreviewTexture(SurfaceManager.SurfaceTexture);
                 _camera.StartPreview();
             }
             catch (Java.IO.IOException e)
@@ -254,52 +242,92 @@ namespace FoosLiveAndroid
         internal void SetUpRecordMode(float screenWidth, float screenHeight)
         {
             // We do, so set the table according to display size
-            _gameController.SetTable(new PointF[]
+            _game.GameController.SetTable(new PointF[]
             {
                     new PointF(0, 0),
                     new PointF(screenWidth, 0),
                     new PointF(0, screenHeight),
                     new PointF(screenWidth, screenHeight)
-            }, _gameMode);
-            _recordPlayer = new RecordPlayer(this);
-            return;
+            }, GameMode);
+            recordPlayer = new RecordPlayer(this);
         }
 
-        public void ShowEndGameScreen()
+        public async void ShowEndGameScreen()
         {
+            // Start depositing the data to database
+            var preferences = GetSharedPreferences(GetString(Resource.String.preference_file_key), FileCreationMode.Private);
+            var team1DefaultValue = Resources.GetString(Resource.String.saved_team1_name_default);
+            var team2DefaultValue = Resources.GetString(Resource.String.saved_team2_name_default);
+            var team1Name = preferences.GetString(GetString(Resource.String.saved_team1_name), team1DefaultValue);
+            var team2Name = preferences.GetString(GetString(Resource.String.saved_team2_name), team2DefaultValue);
+            var insertTask = DatabaseManager.InsertGame(team1Name, team2Name, "Kazkieno kazkoks ID");
+
             _gameEnd = true;
             // Terminate recognition
-            _ballColorSelected = false;
+            BallColorSelected = false;
+
+            //Hide score management buttons
+            _addScoreTeam1.Visibility = ViewStates.Gone;
+            _addScoreTeam2.Visibility = ViewStates.Gone;
+            _removeScoreTeam1.Visibility = ViewStates.Gone;
+            _removeScoreTeam2.Visibility = ViewStates.Gone;
 
             // Hide guideline arrows
             _arrowBot.Visibility = ViewStates.Gone;
             _arrowTop.Visibility = ViewStates.Gone;
             _arrowRight.Visibility = ViewStates.Gone;
             _arrowLeft.Visibility = ViewStates.Gone;
-            //_videoPlayer
             // Hide top bar
             _topBar.Visibility = ViewStates.Gone;
             // Hide game button
             _gameButton.Visibility = ViewStates.Gone;
-            // Hide all EmguCV drawables
+            // Hide all EmguCV drawables    
             _surfaceView.Visibility = ViewStates.Invisible;
 
             // Disable sensors
-            if (_gameMode == ECaptureMode.Live)
+            if (GameMode == ECaptureMode.Live)
                 _positionManager.StopListening();
-
+            else if (!recordPlayer.Disposed)
+            {
+                recordPlayer.Stop();
+                recordPlayer.Reset();
+                recordPlayer.Release();
+            }
+                
             //Collect data from GameController
-            MatchInfo.SetUp(_team1Title.Text, _gameController.BlueScore,
-                            _team2Title.Text, _gameController.RedScore,
-                            _gameController.MaxSpeed,
-                            _gameController.AverageSpeed,
-                            _gameController.heatmapZones, TimeSpan.FromMilliseconds(GameTimer.Time).TotalSeconds.ToString(_timerFormat),
-                            _gameController.Goals);
+            MatchInfo.SetUp(_team1Title.Text, _game.GameController.BlueScore,
+                            _team2Title.Text, _game.GameController.RedScore,
+                            _game.GameController.MaxSpeed,
+                            _game.GameController.AverageSpeed,
+                            _game.GameController.HeatmapZones, _game.GameTimer.GetFormattedTime(),
+                            _game.GameController.Goals);
+
+            // Play the game end sound
+            if (MatchInfo.Team1Score > MatchInfo.Team2Score)
+                _game.SoundAlerts?.Play(Util.Sounds.EAlert.Team1Win);
+            else
+                if (MatchInfo.Team2Score > MatchInfo.Team1Score)
+                _game.SoundAlerts?.Play(Util.Sounds.EAlert.Team2Win);
 
             // Show pop-up fragment, holding all of the match's info
             FragmentManager.BeginTransaction()
                            .Add(Resource.Id.infoLayout, EndGameFragment.NewInstance())
                            .Commit();
+            
+            // Send Data to database
+            var gameIdInDatabase = await insertTask;
+            Log.Debug("Game Id In database", gameIdInDatabase.ToString());
+            if (gameIdInDatabase != -1)
+            {
+                await DatabaseManager.InsertEvent(gameIdInDatabase, "Kazkoks eventas");
+                foreach(var goal in _game.GameController.Goals)
+                {
+                    if (goal.TeamColor == TeamColor.Blue)
+                        DatabaseManager.InsertGoal(gameIdInDatabase, team1Name);
+                    if (goal.TeamColor == TeamColor.Red)
+                        DatabaseManager.InsertGoal(gameIdInDatabase, team2Name);
+                }
+            }
         }
 
         /// <summary>
@@ -310,7 +338,7 @@ namespace FoosLiveAndroid
             _topBar = FindViewById<RelativeLayout>(Resource.Id.fullscreen_content_top_status_bar);
             _infoLayout = FindViewById<FrameLayout>(Resource.Id.infoLayout);
             _gameButton = FindViewById<Button>(Resource.Id.gameButton);
-            _gameView = FindViewById<TextureView>(Resource.Id.game_content);
+            GameView = FindViewById<TextureView>(Resource.Id.game_content);
             _score = FindViewById<TextView>(Resource.Id.score);
             _surfaceView = FindViewById<SurfaceView>(Resource.Id.surfaceView);
             _arrowTop = FindViewById<ImageView>(Resource.Id.arrowTop);
@@ -322,105 +350,23 @@ namespace FoosLiveAndroid
             _timer = FindViewById<TextView>(Resource.Id.timer);
             _team1Title = FindViewById<TextView>(Resource.Id.team1Label);
             _team2Title = FindViewById<TextView>(Resource.Id.team2Label);
+            _addScoreTeam1 = FindViewById<Button>(Resource.Id.addScoreTeam1);
+            _addScoreTeam2 = FindViewById<Button>(Resource.Id.addScoreTeam2);
+            _removeScoreTeam1 = FindViewById<Button>(Resource.Id.removeScoreTeam1);
+            _removeScoreTeam2 = FindViewById<Button>(Resource.Id.removeScoreTeam2);
         }
 
         private void UpdateTimer(object sender, EventArgs e)
         {
             RunOnUiThread(() =>
             {
-                _timer.Text = Math.Round(GameTimer.Time / Units.MiliSecondsInSecond).ToString(_timerFormat);
-            });
-        }
-
-        /// <summary>
-        /// Defines a sliding text effect for a given string of text
-        /// </summary>
-        /// <param name="text">The text, to which the effect will be applied</param>
-        private void SlideText(string text)
-        {
-            if (_textThreadStarted)
-                return;
-
-            _textThreadStarted = true;
-
-            RunOnUiThread(async () =>
-            {
-                var temp = text;
-                var tempView = new StringBuilder(temp.Length);
-
-                for (var i = 0; i < _eventText.Length(); i++)
-                {
-                    tempView.Append(' ');
-                }
-                _eventText.Text = tempView.ToString();
-
-                for (var i = 0; i < tempView.Length * 3; i++)
-                {
-                    tempView.Remove(0, 1);
-                    tempView.Append(i < temp.Length ? temp[i] : ' ');
-
-                    _eventText.Text = tempView.ToString();
-                    await Task.Delay(SlidingTextDelay);
-                }
-
-                _textThreadStarted = false;
+                _timer.Text = _game.GameTimer.GetFormattedTime();
             });
         }
 
         public bool DetectBall(Canvas canvas) {
-            return _objectDetector.Detect(canvas, _selectedBallColor,
-                                            _gameView.GetBitmap(PreviewWidth, PreviewHeight),
-                                          _alphaBitmap);
-        }
-
-        /// <summary>
-        /// Called whenever a goal event occurs
-        /// </summary>
-        /// <param name="sender">The class, which called this function</param>
-        /// <param name="e">Arguments, which are passed to this function</param>
-        private void GameControllerGoalEvent(object sender, CurrentEvent e)
-        {
-            // Check which event occured
-            if (e == CurrentEvent.BlueGoalOccured)
-            {
-                _soundAlerts?.Play(EAlert.Team1Goal);
-                SlideText(ApplicationContext.Resources.GetString(Resource.String.blue_team_goal));
-            }
-            else if (e == CurrentEvent.RedGoalOccured)
-            {
-                _soundAlerts?.Play(EAlert.Team2Goal);
-                SlideText(ApplicationContext.Resources.GetString(Resource.String.red_team_goal));
-            }
-            _score.Text = $"{_gameController.BlueScore} : {_gameController.RedScore}";
-            Log.Debug(Tag, $"Score value assigned {_score.Text}");
-        }
-
-        /// <summary>
-        /// Fired whenever the ball's position changes
-        /// </summary>
-        /// <param name="sender">The class, which called this function</param>
-        /// <param name="e">Arguments, which are passed to this function</param>
-        private void GameControllerPositionEvent(object sender, EventArgs e)
-        {
-            // Check if sliding text is active or the delay is still on
-            if (!_textThreadStarted && !_waitForSpeed)
-            {
-                if (_gameController.CurrentSpeed >= FormatSpeed)
-                {
-                    _ballSpeed.Text = Math.Round(_gameController.CurrentSpeed, 1).ToString();
-                }
-                else
-                    _ballSpeed.Text = Math.Round(_gameController.CurrentSpeed, 2).ToString();
-
-                _waitForSpeed = true;
-
-                // Delay the new speed information
-                RunOnUiThread(async () =>
-                {
-                    await Task.Delay(80);
-                    _waitForSpeed = false;
-                });
-            }
+            return _game.ObjectDetector.Detect(canvas, _selectedBallColor,
+                                            GameView.GetBitmap(PreviewWidth, PreviewHeight));
         }
 
         /// <summary>
@@ -434,9 +380,9 @@ namespace FoosLiveAndroid
             // If game has ended, ignore touch
             if (_gameEnd) return false;
             // If game is not started, take sample image
-            if (_gameButton.Visibility != ViewStates.Gone && _ballColorSelected != true)
+            if (_gameButton.Visibility != ViewStates.Gone && !BallColorSelected)
             {
-                _image = new Image<Hsv, byte>(_gameView.GetBitmap(PreviewWidth, PreviewHeight));
+                _image = new Image<Hsv, byte>(GameView.GetBitmap(PreviewWidth, PreviewHeight));
                 UpdateButton(e);
             }
             return true;
@@ -449,8 +395,8 @@ namespace FoosLiveAndroid
         private void UpdateButton(MotionEvent e)
         {
             // Calculate the position
-            var positionX = (int)(e.GetX() / _upscaleMultiplierX) - 1;
-            var positionY = (int)(e.GetY() / _upscaleMultiplierY) - 1;
+            var positionX = (int)(e.GetX() / _upscaleMultiplierX);
+            var positionY = (int)(e.GetY() / _upscaleMultiplierY);
 
             // Get the Hsv value from the image
             // Todo: exception pops HERE
@@ -473,36 +419,39 @@ namespace FoosLiveAndroid
         {
             if (_gameButton.Text == GetString(Resource.String.end_game))
             {
-                _gameTimer.Stop();
+                _game.GameTimer.Stop();
                 ShowEndGameScreen();
                 return;
             }
 
             if (_image == null) return;
 
-            _ballColorSelected = true;
+            BallColorSelected = true;
+
+            // Set the ball trace color
+            _game.ObjectDetector.SetColor(_selectedBallColor);
 
             // Cleanup
             _image.Dispose();
 
             // If it's a video, start it again
-            _recordPlayer?.Start();
+            recordPlayer?.Start();
 
             // Change button function to stop the game
             _gameButton.Text = GetString(Resource.String.end_game);
             _gameButton.SetBackgroundResource(Resource.Drawable.game_button_selector);
 
             // If game is live, capture aligned position to show guidelines accordingly
-            if (_gameMode == ECaptureMode.Live)
+            if (GameMode == ECaptureMode.Live)
                 _positionManager.CapturePosition();
 
-            _gameTimer.Start();
+            _game.GameTimer.Start();
         }
 
         protected override void OnPause()
         {
             base.OnPause();
-            if (_gameMode == ECaptureMode.Live)
+            if (GameMode == ECaptureMode.Live)
                 _positionManager.StopListening();
 
         }
@@ -510,13 +459,13 @@ namespace FoosLiveAndroid
         protected override void OnStop()
         {
             base.OnStop();
-            _gameTimer.Stop();
+            _game.GameTimer.Stop();
         }
 
         protected override void OnResume()
         {
             base.OnResume();
-            if (_gameMode == ECaptureMode.Live)
+            if (GameMode == ECaptureMode.Live)
                 _positionManager.StartListening();
         }
 

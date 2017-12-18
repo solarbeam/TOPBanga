@@ -90,16 +90,15 @@
                 android:text="@string/speed_unit" />
             <TextView
                 android:id="@+id/eventSlider"
-                android:layout_marginStart="10dp"
+                android:layout_marginStart="11dp"
                 android:layout_marginEnd="10dp"
-                android:textColor="@color/status_text"
                 android:maxLength="@integer/max_chars"
-                android:layout_below="@id/score"
-                android:paddingTop="3dp"
+                android:textColor="@color/status_text"
+                android:paddingTop="19dp"
                 android:layout_width="wrap_content"
                 android:layout_centerInParent="true"
                 android:layout_height="wrap_content"
-                android:text="" />
+                tools:text="Fast g0al" />
             <ImageView
                 android:id="@+id/timerIcon"
                 android:layout_width="wrap_content"
@@ -118,7 +117,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:paddingTop="3dp"
-                android:text="@string/timer_format" />
+                android:text="00:00" />
         </RelativeLayout>
         <ImageView
             android:id="@+id/arrowTop"
@@ -172,23 +171,67 @@
             android:layout_gravity="bottom|center_horizontal"
             android:src="@drawable/arrow_downward"
             android:adjustViewBounds="true" />
-        <LinearLayout
+        <RelativeLayout
             android:id="@+id/bottomControls"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="bottom|center_horizontal"
+            android:layout_gravity="bottom"
             android:layout_marginBottom="@dimen/buttons_distance"
             android:orientation="horizontal">
+            <Button
+                android:id="@+id/addScoreTeam1"
+                android:layout_width="51.0dp"
+                android:layout_marginStart="5dp"
+                android:layout_height="40.0dp"
+                android:layout_alignParentStart="true"
+                android:layout_above="@+id/removeScoreTeam1"
+                android:background="@drawable/game_button_selector"
+                android:text="@string/add_point"
+                android:textColor="#ffffffff" />
+            <Button
+                android:id="@+id/removeScoreTeam1"
+                android:layout_marginTop="3dp"
+                android:layout_marginStart="5dp"
+                android:layout_width="51.0dp"
+                android:layout_height="40.0dp"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentBottom="true"
+                android:background="@drawable/game_button_selector"
+                android:text="@string/remove_point"
+                android:textColor="#ffffffff" />
             <Button
                 android:id="@+id/gameButton"
                 android:background="@drawable/game_button_selector"
                 android:layout_width="wrap_content"
                 android:layout_height="35.5dp"
                 android:paddingStart="10dp"
+                android:layout_alignParentBottom="true"
+                android:layout_centerHorizontal="true"
                 android:paddingEnd="10dp"
                 android:textColor="@color/game_button_text"
                 android:stateListAnimator="@null"
                 android:text="@string/select_ball_color" />
-        </LinearLayout>
+            <Button
+                android:id="@+id/addScoreTeam2"
+                android:layout_width="51.0dp"
+                android:layout_height="40.0dp"
+                android:layout_alignParentEnd="true"
+                android:layout_above="@+id/removeScoreTeam2"
+                android:background="@drawable/game_button_selector"
+                android:layout_marginEnd="5dp"
+                android:text="@string/add_point"
+                android:textColor="#ffffffff" />
+            <Button
+                android:id="@+id/removeScoreTeam2"
+                android:layout_marginTop="3dp"
+                android:layout_width="51.0dp"
+                android:layout_marginEnd="5dp"
+                android:layout_height="40.0dp"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentBottom="true"
+                android:background="@drawable/game_button_selector"
+                android:text="@string/remove_point"
+                android:textColor="#ffffffff" />
+        </RelativeLayout>
     </FrameLayout>
 </FrameLayout>
