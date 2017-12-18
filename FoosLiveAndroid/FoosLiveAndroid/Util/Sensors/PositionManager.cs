@@ -86,7 +86,6 @@ namespace FoosLiveAndroid.Util.Sensors
             _roll = orientation[2] * -57;
 
             ProcessPosition();
-            //Log.Debug("ROTATION", $"Pitch: {_pitch}, roll: {_roll}");
         }
 
         /// <summary>

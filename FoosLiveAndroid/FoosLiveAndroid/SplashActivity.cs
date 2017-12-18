@@ -11,12 +11,10 @@ using Emgu.CV.Cvb;
 namespace FoosLiveAndroid
 {
     [Activity(Theme = "@style/FoosbalTheme.Splash", MainLauncher = true,
-              NoHistory = true, Label = "Fooslive", Icon = "@mipmap/icon_round",
-              ScreenOrientation = ScreenOrientation.Portrait)]
+              NoHistory = true, ScreenOrientation = ScreenOrientation.Portrait)]
     public class SplashActivity : AppCompatActivity
     {
         static readonly string TAG = typeof(SplashActivity).Name;
-
         private static int Iterations = 1;
 
         /// Launches the startup task
@@ -28,7 +26,7 @@ namespace FoosLiveAndroid
         }
 
         /// Background work behind the splash screen
-        async void LoadResources()
+        private void LoadResources()
         {
             // Initialize config file manager
             PropertiesManager.Initialise(this);
@@ -48,7 +46,7 @@ namespace FoosLiveAndroid
             tempDetector.Dispose();
 
             // Start application
-            StartActivity(new Intent(Application.Context, typeof(MenuActivity)));
+            StartActivity(new Intent(Application.Context, typeof(LoginActivity)));
         }
     }
 }

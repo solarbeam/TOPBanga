@@ -69,9 +69,14 @@
     <string name="saved_team1_name_default">Team 1</string>
     <string name="saved_team2_name">TEAM2_NAME</string>
     <string name="saved_team2_name_default">Team 2</string>
+    <string name="saved_auto_login">AUTO_LOGIN</string>
     <string name="mario_goal_sound">Mario Goal Sound</string>
     <string name="mario_win_sound">Mario Win Sound</string>
     <!--Login-->
     <string name="facebook_app_id">306442999863629</string>
     <string name="fb_login_protocol_scheme">fb306442999863629</string>
+    <string name="google_oauth_client_id">331011237467-r23bv65mqdddrr8tags99ocd56dirar1.apps.googleusercontent.com</string>
+    <string name="google_user_data_key">USER_DATA</string>
+    <string name="google_id_key">ID</string>
+    <string name="google_id_name">NAME</string>
 </resources>

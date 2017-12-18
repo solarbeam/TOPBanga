@@ -8,11 +8,11 @@ using FoosLiveAndroid.Fragments;
 using Android.Content.PM;
 using FoosLiveAndroid.Fragments.MainMenu;
 using FoosLiveAndroid.Fragments.Interface;
+using FoosLiveAndroid.Util.Login;
 
 namespace FoosLiveAndroid
 {
-    [Activity(Label = "Fooslive", Icon = "@mipmap/icon_round",
-              ScreenOrientation = ScreenOrientation.Portrait)]
+    [Activity(ScreenOrientation = ScreenOrientation.Portrait)]
     public class MenuActivity : AppCompatActivity, IOnFragmentInteractionListener
     {
         static readonly string Tag = typeof(MenuActivity).Name;
@@ -31,6 +31,7 @@ namespace FoosLiveAndroid
         protected override void OnCreate(Bundle savedInstanceState)
         {
             base.OnCreate(savedInstanceState);
+            var lm = LoginManager.GetInstance(this);
             SetContentView(Resource.Layout.activity_menu);
             GetReferencesFromLayout();
             SetSupportActionBar(_toolbar);
@@ -40,6 +41,14 @@ namespace FoosLiveAndroid
             FragmentManager.BeginTransaction()
                            .Replace(Resource.Id.menu_content, _fragment = MainMenuFragment.NewInstance())
                            .Commit();
+
+
+            var userData = Intent.GetBundleExtra(GetString(Resource.String.google_user_data_key));
+            //Todo: hook data to the new DB
+            var userId = userData.GetString(GetString(Resource.String.google_id_key));
+            var userName = userData.GetString(GetString(Resource.String.google_id_name));
+
+            Toast.MakeText(this, userId, ToastLength.Long).Show();
         }
 
         /// <summary>
@@ -61,8 +70,8 @@ namespace FoosLiveAndroid
                 _fragment = _previousFragment;
                 FragmentManager.PopBackStack();
             }
-            else if (_fragment is MainMenuFragment && 
-                     _fragment.ChildFragmentManager.BackStackEntryCount > 0) 
+            else if (_fragment is MainMenuFragment &&
+                     _fragment.ChildFragmentManager.BackStackEntryCount > 0)
             {
                 _fragment.ChildFragmentManager.PopBackStack();
             }
