@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -13,232 +13,246 @@
     android:orientation="vertical">
     <RelativeLayout
         android:layout_width="match_parent"
-        android:id="@+id/teamsContainer"
-        android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_marginStart="10dp"
-        android:layout_marginEnd="10dp"
-        android:layout_alignParentStart="true"
-        android:orientation="horizontal">
-        <RelativeLayout
-            android:layout_width="wrap_content"
-            android:id="@+id/team1Container"
-            android:layout_height="wrap_content"
-            android:layout_alignParentStart="true"
-            android:orientation="vertical">
-            <TextView
-                android:id="@+id/team1Label"
-                android:layout_alignParentStart="true"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="TEAM 1"
-                android:textColor="#ffffffff" />
-            <TextView
-                android:id="@+id/team1Name"
-                android:layout_alignParentStart="true"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/team1Label"
-                tools:text="Bangelė"
-                android:textAppearance="@android:style/TextAppearance.Material"
-                android:textSize="24sp"
-                android:textColor="#ffffffff" />
-        </RelativeLayout>
-        <RelativeLayout
-            android:layout_width="wrap_content"
-            android:id="@+id/team2Container"
-            android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
-            android:orientation="vertical">
-            <TextView
-                android:id="@+id/team2Label"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentEnd="true"
-                android:text="TEAM 2"
-                android:textColor="#ffffffff" />
-            <TextView
-                android:id="@+id/team2Name"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/team2Label"
-                android:layout_alignParentEnd="true"
-                tools:text="Vėjelis"
-                android:textAppearance="@android:style/TextAppearance.Material"
-                android:textSize="24sp"
-                android:textColor="#ffffffff" />
-        </RelativeLayout>
-    </RelativeLayout>
-    <TextView
-        android:id="@+id/teamScore"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/teamsContainer"
-        android:layout_centerHorizontal="true"
-        android:text="3  :  5"
-        android:textAppearance="@android:style/TextAppearance.Material"
-        android:textColor="#ffffffff"
-        android:textSize="45sp" />
-    <RelativeLayout
-        android:layout_below="@+id/teamScore"
-        android:layout_centerHorizontal="true"
-        android:id="@+id/durationContainer"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:orientation="vertical">
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:id="@+id/teamsContainer"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_marginStart="10dp"
+            android:layout_marginEnd="10dp"
+            android:layout_alignParentStart="true"
+            android:orientation="horizontal">
+            <RelativeLayout
+                android:layout_width="wrap_content"
+                android:id="@+id/team1Container"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:orientation="vertical">
+                <TextView
+                    android:id="@+id/team1Label"
+                    android:layout_alignParentStart="true"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="TEAM 1"
+                    android:textColor="#ffffffff" />
+                <TextView
+                    android:id="@+id/team1Name"
+                    android:layout_alignParentStart="true"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/team1Label"
+                    tools:text="Bangelė"
+                    android:textAppearance="@android:style/TextAppearance.Material"
+                    android:textSize="24sp"
+                    android:textColor="#ffffffff" />
+            </RelativeLayout>
+            <RelativeLayout
+                android:layout_width="wrap_content"
+                android:id="@+id/team2Container"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:orientation="vertical">
+                <TextView
+                    android:id="@+id/team2Label"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:text="TEAM 2"
+                    android:textColor="#ffffffff" />
+                <TextView
+                    android:id="@+id/team2Name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/team2Label"
+                    android:layout_alignParentEnd="true"
+                    tools:text="Vėjelis"
+                    android:textAppearance="@android:style/TextAppearance.Material"
+                    android:textSize="24sp"
+                    android:textColor="#ffffffff" />
+            </RelativeLayout>
+        </RelativeLayout>
         <TextView
-            android:id="@+id/durationLabel"
+            android:id="@+id/teamScore"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_below="@+id/teamsContainer"
+            android:layout_centerHorizontal="true"
+            android:text="3  :  5"
+            android:textAppearance="@android:style/TextAppearance.Material"
+            android:textColor="#ffffffff"
+            android:textSize="45sp" />
+        <RelativeLayout
             android:layout_below="@+id/teamScore"
             android:layout_centerHorizontal="true"
-            android:text="Duration"
-            android:textColor="#ffffffff"
-            android:textSize="12sp" />
-        <TextView
-            android:id="@+id/durationValue"
+            android:id="@+id/durationContainer"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/durationLabel"
-            android:layout_centerHorizontal="true"
-            android:textColor="@android:color/white"
-            android:textSize="30sp"
-            tools:text="05:32" />
-    </RelativeLayout>
-    <TextView
-        android:layout_marginTop="5dp"
-        android:layout_marginBottom="10dp"
-        android:id="@+id/activityZonesLabel"
-        android:layout_width="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/durationContainer"
-        android:text="Table activity zones"
-        android:textColor="#ffffffff" />
-    <ImageView
-        android:id="@+id/ballHeatMap"
-        android:layout_width="160dp"
-        android:layout_height="245dp"
-        android:layout_centerHorizontal="true"
-        android:layout_below="@+id/activityZonesLabel" />
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_centerInParent="true"
-        android:orientation="horizontal"
-        android:gravity="center"
-        android:weightSum="3"
-        android:id="@+id/nerdStatsContainer">
-        <RelativeLayout
-            android:layout_weight="1"
-            android:layout_marginStart="5dp"
-            android:id="@+id/avgBallSpeed"
-            android:paddingTop="5dp"
-            android:paddingBottom="5dp"
-            android:layout_height="wrap_content"
-            android:layout_width="0dp"
-            android:background="#80000000"
             android:orientation="vertical">
-            <RelativeLayout
-                android:layout_width="wrap_content"
-                android:id="@+id/avgBallSpeedValueContainer"
-                android:layout_centerHorizontal="true"
-                android:layout_height="wrap_content">
-                <TextView
-                    android:id="@+id/avgBallSpeedValue"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textColor="@android:color/white"
-                    android:textSize="20sp"
-                    android:text="55" />
-                <TextView
-                    android:layout_height="wrap_content"
-                    android:layout_width="wrap_content"
-                    android:layout_toEndOf="@id/avgBallSpeedValue"
-                    android:paddingTop="3dp"
-                    android:text="cm/s"
-                    android:textColor="@android:color/white"
-                    android:textSize="10dp" />
-            </RelativeLayout>
             <TextView
-                android:id="@+id/avgBallSpeedLabel"
+                android:id="@+id/durationLabel"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="AVG ball speed"
-                android:layout_below="@id/avgBallSpeedValueContainer"
+                android:layout_below="@+id/teamScore"
                 android:layout_centerHorizontal="true"
+                android:text="Duration"
                 android:textColor="#ffffffff"
                 android:textSize="12sp" />
-        </RelativeLayout>
-        <RelativeLayout
-            android:layout_weight="1"
-            android:layout_marginStart="5dp"
-            android:id="@+id/maxBallSpeedContainer"
-            android:layout_height="wrap_content"
-            android:layout_width="0dp"
-            android:paddingTop="5dp"
-            android:paddingBottom="5dp"
-            android:background="#80000000"
-            android:orientation="vertical">
-            <RelativeLayout
-                android:layout_width="wrap_content"
-                android:id="@+id/maxBallSpeedValueContainer"
-                android:layout_centerHorizontal="true"
-                android:layout_height="wrap_content">
-                <TextView
-                    android:id="@+id/maxBallSpeedValue"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textColor="@android:color/white"
-                    android:textSize="20sp"
-                    android:text="55" />
-                <TextView
-                    android:id="@+id/maxSpeedUnit"
-                    android:layout_height="wrap_content"
-                    android:layout_width="wrap_content"
-                    android:layout_toEndOf="@id/maxBallSpeedValue"
-                    android:paddingTop="3dp"
-                    android:text="cm/s"
-                    android:textColor="@android:color/white"
-                    android:textSize="10dp" />
-            </RelativeLayout>
             <TextView
-                android:id="@+id/maxBallSpeedLabel"
+                android:id="@+id/durationValue"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_below="@+id/durationLabel"
                 android:layout_centerHorizontal="true"
-                android:layout_below="@+id/maxBallSpeedValueContainer"
-                android:text="MAX speed"
-                android:textColor="#ffffffff"
-                android:textSize="12sp" />
-        </RelativeLayout>
-        <LinearLayout
-            android:layout_weight="1"
-            android:gravity="center"
-            android:layout_marginStart="5dp"
-            android:layout_marginEnd="5dp"
-            android:id="@+id/fastestGoal"
-            android:layout_height="wrap_content"
-            android:layout_width="0dp"
-            android:paddingTop="5dp"
-            android:paddingBottom="5dp"
-            android:background="#80000000"
-            android:orientation="vertical">
-            <TextView
-                android:id="@+id/fastestGoalValue"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
                 android:textColor="@android:color/white"
-                android:textSize="20sp"
-                tools:text="00:32" />
-            <TextView
-                android:id="@+id/fastestGoalLabel"
-                android:layout_width="wrap_content"
+                android:textSize="30sp"
+                tools:text="05:32" />
+        </RelativeLayout>
+        <TextView
+            android:layout_marginTop="5dp"
+            android:layout_marginBottom="10dp"
+            android:id="@+id/activityZonesLabel"
+            android:layout_width="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/durationContainer"
+            android:text="Table activity zones"
+            android:textColor="#ffffffff" />
+        <ImageView
+            android:id="@+id/ballHeatMap"
+            android:layout_width="160dp"
+            android:layout_height="245dp"
+            android:layout_centerHorizontal="true"
+            android:layout_below="@+id/activityZonesLabel" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_centerInParent="true"
+            android:orientation="horizontal"
+            android:gravity="center"
+            android:weightSum="3"
+            android:id="@+id/nerdStatsContainer">
+            <RelativeLayout
+                android:layout_weight="1"
+                android:layout_marginStart="5dp"
+                android:id="@+id/avgBallSpeed"
+                android:paddingTop="5dp"
+                android:paddingBottom="5dp"
                 android:layout_height="wrap_content"
-                android:text="Fastest goal"
-                android:textColor="#ffffffff"
-                android:textSize="12sp" />
+                android:layout_width="0dp"
+                android:background="#80000000"
+                android:orientation="vertical">
+                <RelativeLayout
+                    android:layout_width="wrap_content"
+                    android:id="@+id/avgBallSpeedValueContainer"
+                    android:layout_centerHorizontal="true"
+                    android:layout_height="wrap_content">
+                    <TextView
+                        android:id="@+id/avgBallSpeedValue"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textColor="@android:color/white"
+                        android:textSize="20sp"
+                        android:text="55" />
+                    <TextView
+                        android:layout_height="wrap_content"
+                        android:layout_width="wrap_content"
+                        android:layout_toEndOf="@id/avgBallSpeedValue"
+                        android:paddingTop="3dp"
+                        android:text="cm/s"
+                        android:textColor="@android:color/white"
+                        android:textSize="10dp" />
+                </RelativeLayout>
+                <TextView
+                    android:id="@+id/avgBallSpeedLabel"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="AVG ball speed"
+                    android:layout_below="@id/avgBallSpeedValueContainer"
+                    android:layout_centerHorizontal="true"
+                    android:textColor="#ffffffff"
+                    android:textSize="12sp" />
+            </RelativeLayout>
+            <RelativeLayout
+                android:layout_weight="1"
+                android:layout_marginStart="5dp"
+                android:id="@+id/maxBallSpeedContainer"
+                android:layout_height="wrap_content"
+                android:layout_width="0dp"
+                android:paddingTop="5dp"
+                android:paddingBottom="5dp"
+                android:background="#80000000"
+                android:orientation="vertical">
+                <RelativeLayout
+                    android:layout_width="wrap_content"
+                    android:id="@+id/maxBallSpeedValueContainer"
+                    android:layout_centerHorizontal="true"
+                    android:layout_height="wrap_content">
+                    <TextView
+                        android:id="@+id/maxBallSpeedValue"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textColor="@android:color/white"
+                        android:textSize="20sp"
+                        android:text="55" />
+                    <TextView
+                        android:id="@+id/maxSpeedUnit"
+                        android:layout_height="wrap_content"
+                        android:layout_width="wrap_content"
+                        android:layout_toEndOf="@id/maxBallSpeedValue"
+                        android:paddingTop="3dp"
+                        android:text="cm/s"
+                        android:textColor="@android:color/white"
+                        android:textSize="10dp" />
+                </RelativeLayout>
+                <TextView
+                    android:id="@+id/maxBallSpeedLabel"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerHorizontal="true"
+                    android:layout_below="@+id/maxBallSpeedValueContainer"
+                    android:text="MAX speed"
+                    android:textColor="#ffffffff"
+                    android:textSize="12sp" />
+            </RelativeLayout>
+            <LinearLayout
+                android:layout_weight="1"
+                android:gravity="center"
+                android:layout_marginStart="5dp"
+                android:layout_marginEnd="5dp"
+                android:id="@+id/fastestGoal"
+                android:layout_height="wrap_content"
+                android:layout_width="0dp"
+                android:paddingTop="5dp"
+                android:paddingBottom="5dp"
+                android:background="#80000000"
+                android:orientation="vertical">
+                <TextView
+                    android:id="@+id/fastestGoalValue"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@android:color/white"
+                    android:textSize="20sp"
+                    tools:text="00:32" />
+                <TextView
+                    android:id="@+id/fastestGoalLabel"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Fastest goal"
+                    android:textColor="#ffffffff"
+                    android:textSize="12sp" />
+            </LinearLayout>
         </LinearLayout>
-    </LinearLayout>
-</RelativeLayout>
+    </RelativeLayout>
+    <ProgressBar
+        android:id="@+id/loadingBarHeatMap"
+        android:layout_marginTop="40dp"
+        android:gravity="center"
+        android:layout_gravity="center"
+        android:indeterminate="true"
+        android:visibility="gone"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+</FrameLayout>

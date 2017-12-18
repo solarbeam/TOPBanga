@@ -16,4 +16,5 @@
     <color name="end_game_status">#80000000</color>
 	<color name="arrow">#60FFFFFF</color>
 	<color name="splash_background">#E7F1CD</color>
+    <color name="black">#000000</color>
 </resources>

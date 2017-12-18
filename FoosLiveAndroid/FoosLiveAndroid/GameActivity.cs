@@ -261,7 +261,6 @@ namespace FoosLiveAndroid
         public async void ShowEndGameScreen()
         {
             // Start depositing the data to database
-
             var preferences = GetSharedPreferences(GetString(Resource.String.preference_file_key), FileCreationMode.Private);
 
             //Check if sync is on
@@ -272,9 +271,6 @@ namespace FoosLiveAndroid
             var team2DefaultValue = Resources.GetString(Resource.String.saved_team2_name_default);
             var team1Name = preferences.GetString(GetString(Resource.String.saved_team1_name), team1DefaultValue);
             var team2Name = preferences.GetString(GetString(Resource.String.saved_team2_name), team2DefaultValue);
-            Task<int> insertTask = null;
-            if (sync)
-                insertTask = DatabaseManager.InsertGame(team1Name, team2Name);
 
             _gameEnd = true;
             // Terminate recognition
@@ -331,15 +327,8 @@ namespace FoosLiveAndroid
             // Send Data to database
             if (sync)
             {
-                var gameIdInDatabase = await insertTask;
-                Log.Debug("Game Id In database", gameIdInDatabase.ToString());
-                if (gameIdInDatabase != -1)
-                {
-                    for (int i = 0; i < _game.GameController.BlueScore; i++)
-                        DatabaseManager.InsertGoal(gameIdInDatabase, team1Name);
-                    for (int i = 0; i < _game.GameController.RedScore; i++)
-                        DatabaseManager.InsertGoal(gameIdInDatabase, team2Name);
-                }
+                Task.Factory.StartNew(() => DatabaseManager.InsertAll(team1Name, team2Name, 
+                _game.GameController.BlueScore, _game.GameController.RedScore), TaskCreationOptions.LongRunning);
             }
         }
 

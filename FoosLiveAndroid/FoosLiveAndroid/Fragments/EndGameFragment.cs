@@ -9,7 +9,6 @@ using FoosLiveAndroid.Model;
 using FoosLiveAndroid.Util;
 using FoosLiveAndroid.Util.Drawing;
 using System;
-using FoosLiveAndroid.Util.Model;
 using System.Threading.Tasks;
 
 namespace FoosLiveAndroid.Fragments
@@ -28,6 +27,7 @@ namespace FoosLiveAndroid.Fragments
         private TextView _maxBallSpeed;
         private TextView _fastestGoal;
         public ImageView ballHeatMap;
+        private ProgressBar _loadingBarHeatMap;
 
         public static Fragment NewInstance()
         {
@@ -47,21 +47,26 @@ namespace FoosLiveAndroid.Fragments
             _durationValue.Text = MatchInfo.Duration;
             _avgBallSpeed.Text = MatchInfo.AvgSpeed.ToString(SpeedFormat);
             _maxBallSpeed.Text = MatchInfo.MaxSpeed.ToString(SpeedFormat);
-
+            _loadingBarHeatMap.Visibility = ViewStates.Visible;
             ballHeatMap.Post(() =>
             {
                 Task.Run(() =>
                 {
-                    Bitmap toDraw = Bitmap.CreateBitmap(ballHeatMap.Width, ballHeatMap.Height, Bitmap.Config.Argb8888);
-                    Canvas canvas = new Canvas();
+                Bitmap toDraw = Bitmap.CreateBitmap(ballHeatMap.Width, ballHeatMap.Height, Bitmap.Config.Argb8888);
+                Canvas canvas = new Canvas();
 
-                    canvas.SetBitmap(toDraw);
-                    HeatmapDrawer.DrawZones(canvas, MatchInfo.Zones);
+                canvas.SetBitmap(toDraw);
+                HeatmapDrawer.DrawZones(canvas, MatchInfo.Zones);
 
-                    Image<Bgr, byte> toBlur = new Image<Bgr, byte>(toDraw);
-                    CvInvoke.MedianBlur(toBlur, toBlur, PropertiesManager.GetIntProperty("blur_iterations"));
+                Image<Bgr, byte> toBlur = new Image<Bgr, byte>(toDraw);
+                CvInvoke.MedianBlur(toBlur, toBlur, PropertiesManager.GetIntProperty("blur_iterations"));
 
-                    Activity.RunOnUiThread(() => ballHeatMap.SetImageBitmap(toBlur.Bitmap));
+                Activity.RunOnUiThread(() =>
+                {
+                    ballHeatMap.SetImageBitmap(toBlur.Bitmap);
+                    _loadingBarHeatMap.Visibility = ViewStates.Gone;
+                });
+
                 });
             });
 
@@ -92,6 +97,7 @@ namespace FoosLiveAndroid.Fragments
             _maxBallSpeed = _view.FindViewById<TextView>(Resource.Id.maxBallSpeedValue);
             _fastestGoal = _view.FindViewById<TextView>(Resource.Id.fastestGoalValue);
             ballHeatMap = _view.FindViewById<ImageView>(Resource.Id.ballHeatMap);
+            _loadingBarHeatMap = _view.FindViewById<ProgressBar>(Resource.Id.loadingBarHeatMap);
         }
     }
 }

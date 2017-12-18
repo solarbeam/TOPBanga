@@ -9,9 +9,16 @@
     <item name="android:windowBackground">@color/window_background</item>
     <item name="windowActionModeOverlay">true</item>
 	<item name="android:windowActivityTransitions">true</item>
+    <item name="android:textAppearanceButton">@style/TextAppearance.AppCompat.Button.Custom</item>
   </style>
+    
   <style name="FoosbalTheme.Splash" parent ="FoosbalTheme">
     <item name="android:windowFullscreen">true</item>
 	<item name="android:windowBackground">@drawable/splash_screen</item>
   </style>
+
+<style name="TextAppearance.AppCompat.Button.Custom">
+    <item name="android:textColor">@color/black</item>
+</style>
+    
 </resources>

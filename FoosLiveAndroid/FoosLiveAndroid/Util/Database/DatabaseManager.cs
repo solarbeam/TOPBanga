@@ -11,6 +11,7 @@ namespace FoosLiveAndroid.Util.Database
 {
     public static class DatabaseManager
     {
+        static readonly string Tag = typeof(DatabaseManager).Name;
         // Request properties
         private static readonly string ConnectionUrl = PropertiesManager.GetProperty("connection_url");
         private static readonly string OperationSuccess = PropertiesManager.GetProperty("operation_success");
@@ -23,6 +24,17 @@ namespace FoosLiveAndroid.Util.Database
         private static readonly string GetHistoryFormat = PropertiesManager.GetProperty("get_history_format");
 
         public static string User = "DefaultUser";
+
+        public static async Task InsertAll(string blueTeamName, string redTeamName, int blueScore, int redScore)
+        {
+            var gameId = await InsertGame(blueTeamName, redTeamName);
+            if (gameId == -1) return;
+            for (int i = 0; i < blueScore; i++)
+                await InsertGoal(gameId, blueTeamName);
+            for (int i = 0; i < redScore; i++)
+                await InsertGoal(gameId, redTeamName);
+            Log.Debug(Tag, $"Game was saved. id: {gameId}, score: {blueScore}-{redScore}");
+        }
 
         /// <summary>
         /// Inserts a game into the remote database. 

@@ -64,8 +64,7 @@ namespace FoosLiveAndroid.Fragments
 
             // If there are no records, display message and ignore list initialisation
             if (_historyList.Count == 0)
-            {
-                
+            {   
                 _loadingStatus = LoadingStatus.Empty_list;
                 return;
             }
