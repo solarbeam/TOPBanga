@@ -59,7 +59,7 @@
                 android:textAppearance="?android:attr/textAppearanceMedium" />
             <TextView
                 android:id="@+id/team1SettingsDescription"
-                android:text="Title to distinguish team"
+                android:text="Team on the left from phone perspective"
                 android:paddingStart="2dp"
                 android:textAppearance="@android:style/TextAppearance.Material.Caption"
                 android:layout_width="wrap_content"
@@ -103,7 +103,7 @@
                 android:textAppearance="?android:attr/textAppearanceMedium" />
             <TextView
                 android:id="@+id/team1SettingsDescription"
-                android:text="Title to distinguish team"
+                android:text="Team on the right from phone perspective"
                 android:paddingStart="2dp"
                 android:textAppearance="@android:style/TextAppearance.Material.Caption"
                 android:layout_width="wrap_content"
@@ -226,7 +226,7 @@
                 android:layout_alignParentStart="true" />
             <TextView
                 android:id="@+id/team1WinSoundValue"
-                android:text="Mario-coin"
+                tools:text="Sound"
                 android:paddingStart="2dp"
                 android:layout_centerVertical="true"
                 android:textAppearance="@android:style/TextAppearance.Material.Caption"
@@ -267,7 +267,7 @@
                 android:layout_alignParentStart="true" />
             <TextView
                 android:id="@+id/team2WinSoundValue"
-                android:text="Mario-coin"
+                tools:text="Sound"
                 android:paddingStart="2dp"
                 android:layout_centerVertical="true"
                 android:textAppearance="@android:style/TextAppearance.Material.Caption"
@@ -309,7 +309,7 @@
                 android:layout_alignParentStart="true" />
             <TextView
                 android:id="@+id/team1ScoreSoundValue"
-                android:text="Mario-coin"
+                tools:text="Sound"
                 android:paddingStart="2dp"
                 android:layout_centerVertical="true"
                 android:textAppearance="@android:style/TextAppearance.Material.Caption"
@@ -351,7 +351,7 @@
                 android:layout_alignParentStart="true" />
             <TextView
                 android:id="@+id/team2ScoreSoundValue"
-                android:text="Mario-coin"
+                tools:text="Sound"
                 android:paddingStart="2dp"
                 android:layout_centerVertical="true"
                 android:textAppearance="@android:style/TextAppearance.Material.Caption"

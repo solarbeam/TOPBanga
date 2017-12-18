@@ -40,7 +40,7 @@
                 android:layout_alignBottom="@id/score"
                 android:layout_alignParentStart="true" />
             <TextView
-                android:id="@id/score"
+                android:id="@+id/score"
                 android:gravity="center"
                 android:layout_width="wrap_content"
                 android:textColor="@color/status_text"
@@ -94,11 +94,12 @@
                 android:layout_marginEnd="10dp"
                 android:maxLength="@integer/max_chars"
                 android:textColor="@color/status_text"
-                android:paddingTop="19dp"
+                android:paddingTop="4dp"
+                android:layout_below="@+id/team2Label"
                 android:layout_width="wrap_content"
                 android:layout_centerInParent="true"
                 android:layout_height="wrap_content"
-                tools:text="Fast g0al" />
+                tools:text="@string/blue_team_goal" />
             <ImageView
                 android:id="@+id/timerIcon"
                 android:layout_width="wrap_content"
