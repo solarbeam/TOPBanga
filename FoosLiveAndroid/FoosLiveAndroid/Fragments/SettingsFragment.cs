@@ -83,22 +83,30 @@ namespace FoosLiveAndroid.Fragments
 
             _team1ScoreSoundItem.Click += delegate
             {
-                OpenSoundPicker(GetString(Resource.String.team1_score_sound_label), scoreSoundsAdapter, _team1GoalSoundValue);
+                OpenSoundPicker(GetString(Resource.String.team1_score_sound_label), 
+                                scoreSoundsAdapter, _team1GoalSoundValue, 
+                                GetString(Resource.String.saved_team1_goal));
             };
 
             _team1WinSoundItem.Click += delegate
             {
-                OpenSoundPicker(GetString(Resource.String.team1_win_sound_label), winSoundsAdapter, _team1WinSoundValue);
+                OpenSoundPicker(GetString(Resource.String.team1_win_sound_label),
+                                winSoundsAdapter, _team1WinSoundValue,
+                                GetString(Resource.String.saved_team1_win));
             };
 
             _team2ScoreSoundItem.Click += delegate
             {
-                OpenSoundPicker(GetString(Resource.String.team2_score_sound_label), scoreSoundsAdapter, _team2GoalSoundValue);
+                OpenSoundPicker(GetString(Resource.String.team2_score_sound_label),
+                                scoreSoundsAdapter, _team2GoalSoundValue,
+                                GetString(Resource.String.saved_team1_goal));
             };
 
             _team2WinSoundItem.Click += delegate
             {
-                OpenSoundPicker(GetString(Resource.String.team2_win_sound_label), winSoundsAdapter, _team2WinSoundValue);
+                OpenSoundPicker(GetString(Resource.String.team2_win_sound_label),
+                                winSoundsAdapter, _team2WinSoundValue,
+                                GetString(Resource.String.saved_team2_win));
             };
 
             UpdateSelection();
@@ -174,7 +182,7 @@ namespace FoosLiveAndroid.Fragments
             _logoutButton = _view.FindViewById<Button>(Resource.Id.logoutButton);
         }
 
-        private void OpenSoundPicker(string soundItem, ArrayAdapter<string> adapter, TextView soundTitle)
+        private void OpenSoundPicker(string soundItem, ArrayAdapter<string> adapter, TextView soundTitle, string sharedPrefKey)
         {
             if (adapter == null)
                 throw new ArgumentNullException(nameof(adapter));
@@ -192,30 +200,29 @@ namespace FoosLiveAndroid.Fragments
                         {
                             //var goalSoundName = GetString(Resource.String.mario_goal_sound);
                             previewPlayer = new PlayerOgg(FilePathResolver.GetFile(Context, SoundAsset.GoalMario.ToString()));
-                            prefsEditor.PutString(soundItem, SoundAsset.GoalMario.ToString()).Apply();
+                            prefsEditor.PutString(sharedPrefKey, SoundAsset.GoalMario.ToString()).Apply();
                             soundTitle.Text = SoundAsset.GoalMario.ToString();
-                            _team1GoalSoundValue.Text = "AA;";
                             break;
                         }
                     case (int)SoundAsset.WinMario:
                         {
                             //var winSoundName = GetString(Resource.String.mario_win_sound);
                             previewPlayer = new PlayerOgg(FilePathResolver.GetFile(Context, SoundAsset.WinMario.ToString()));
-                            prefsEditor.PutString(soundItem, SoundAsset.WinMario.ToString()).Apply();
+                            prefsEditor.PutString(sharedPrefKey, SoundAsset.WinMario.ToString()).Apply();
                             soundTitle.Text = SoundAsset.WinMario.ToString();
                             break;
                         }
                     case (int)SoundAsset.BingSound:
                         {
                             previewPlayer = new PlayerOgg(FilePathResolver.GetFile(Context, SoundAsset.BingSound.ToString()));
-                            prefsEditor.PutString(soundItem, SoundAsset.BingSound.ToString());
+                            prefsEditor.PutString(sharedPrefKey, SoundAsset.BingSound.ToString());
                             soundTitle.Text = SoundAsset.BingSound.ToString();
                             break;
                         }
                     case (int)SoundAsset.CrowdCheer:
                         {
                             previewPlayer = new PlayerOgg(FilePathResolver.GetFile(Context, SoundAsset.CrowdCheer.ToString()));
-                            prefsEditor.PutString(soundItem, SoundAsset.CrowdCheer.ToString());
+                            prefsEditor.PutString(sharedPrefKey, SoundAsset.CrowdCheer.ToString());
                             soundTitle.Text = SoundAsset.CrowdCheer.ToString();
                             break;
                         }
