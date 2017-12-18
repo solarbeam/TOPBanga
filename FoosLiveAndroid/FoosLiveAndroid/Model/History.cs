@@ -10,7 +10,8 @@ namespace FoosLiveAndroid.Model
         public string RedTeamName { get; set; }
         public int BlueTeamPoints { get; set; }
         public int RedTeamPoints { get; set; }
-        public DateTime DateTime { get; set; } 
+        public DateTime DateTime { get; set; }
+        public string DurationString { get; set; }
 
         public History(string[] input)
         {
@@ -19,6 +20,8 @@ namespace FoosLiveAndroid.Model
             BlueTeamPoints = int.Parse(input[2]);
             RedTeamPoints = int.Parse(input[3]);
             DateTime = DateTime.ParseExact(input[4], "yyyy-MM-dd HH:mm:ss", null);
+            DurationString = input[5];
+            Log.Debug("Duration", DurationString);
         }
     }
 }

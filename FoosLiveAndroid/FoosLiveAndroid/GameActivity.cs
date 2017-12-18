@@ -328,7 +328,7 @@ namespace FoosLiveAndroid
             if (sync)
             {
                 Task.Factory.StartNew(() => DatabaseManager.InsertAll(team1Name, team2Name, 
-                _game.GameController.BlueScore, _game.GameController.RedScore), TaskCreationOptions.LongRunning);
+                _game.GameController.BlueScore, _game.GameController.RedScore, MatchInfo.Duration), TaskCreationOptions.LongRunning);
             }
         }
 

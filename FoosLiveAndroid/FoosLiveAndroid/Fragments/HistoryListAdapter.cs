@@ -53,6 +53,8 @@ namespace FoosLiveAndroid.Fragments
             viewHolder.Team1Name.Text = item.BlueTeamName;
             viewHolder.Score.Text = $"{item.BlueTeamPoints}  :  {item.RedTeamPoints}";
             viewHolder.Team2Name.Text = item.RedTeamName;
+            viewHolder.Duration.Text = item.DurationString;
+            viewHolder.Date.Text = item.DateTime.ToLongDateString();
         }
 
         public override int ItemCount => _historyList.Count;

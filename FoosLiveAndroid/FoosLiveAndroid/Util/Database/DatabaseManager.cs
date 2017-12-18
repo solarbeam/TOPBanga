@@ -25,9 +25,9 @@ namespace FoosLiveAndroid.Util.Database
 
         public static string User = "DefaultUser";
 
-        public static async Task InsertAll(string blueTeamName, string redTeamName, int blueScore, int redScore)
+        public static async Task InsertAll(string blueTeamName, string redTeamName, int blueScore, int redScore, string duration)
         {
-            var gameId = await InsertGame(blueTeamName, redTeamName);
+            var gameId = await InsertGame(blueTeamName, redTeamName, duration);
             if (gameId == -1) return;
             for (int i = 0; i < blueScore; i++)
                 await InsertGoal(gameId, blueTeamName);
@@ -43,7 +43,7 @@ namespace FoosLiveAndroid.Util.Database
         /// <param name="redTeamName">Red team name</param>
         /// <returns>The id of the inserted game, or -1 if error happens.
         /// This id is used to specify which game to add goals and events to.</returns>
-        public static async Task<int> InsertGame(string blueTeamName, string redTeamName) {
+        public static async Task<int> InsertGame(string blueTeamName, string redTeamName, string duration) {
             try
             {
                 var request = (HttpWebRequest)WebRequest.Create(ConnectionUrl);
@@ -52,7 +52,7 @@ namespace FoosLiveAndroid.Util.Database
 
                 var streamWriter = new StreamWriter(request.GetRequestStream());
                 // Prepare query statement
-                streamWriter.Write(InsertGameFormat, blueTeamName, redTeamName, User);
+                streamWriter.Write(InsertGameFormat, blueTeamName, redTeamName, User, duration);
 
                 streamWriter.Flush();
                 var httpWebResponse = (HttpWebResponse)request.GetResponse();

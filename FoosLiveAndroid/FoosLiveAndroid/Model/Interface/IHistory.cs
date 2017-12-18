@@ -8,5 +8,6 @@ namespace FoosLiveAndroid.Model.Interface
         int BlueTeamPoints { get; set; }
         int RedTeamPoints { get; set; }
         DateTime DateTime { get; set; }
+        string DurationString { get; set; }
     }
 }
