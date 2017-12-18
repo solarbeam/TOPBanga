@@ -10,6 +10,7 @@ using FoosLiveAndroid.Util;
 using FoosLiveAndroid.Util.Drawing;
 using System;
 using FoosLiveAndroid.Util.Model;
+using System.Threading.Tasks;
 
 namespace FoosLiveAndroid.Fragments
 {
@@ -49,16 +50,19 @@ namespace FoosLiveAndroid.Fragments
 
             ballHeatMap.Post(() =>
             {
-                Bitmap toDraw = Bitmap.CreateBitmap(ballHeatMap.Width, ballHeatMap.Height, Bitmap.Config.Argb8888);
-                Canvas canvas = new Canvas();
+                Task.Run(() =>
+                {
+                    Bitmap toDraw = Bitmap.CreateBitmap(ballHeatMap.Width, ballHeatMap.Height, Bitmap.Config.Argb8888);
+                    Canvas canvas = new Canvas();
 
-                canvas.SetBitmap(toDraw);
-                HeatmapDrawer.DrawZones(canvas, MatchInfo.Zones);
+                    canvas.SetBitmap(toDraw);
+                    HeatmapDrawer.DrawZones(canvas, MatchInfo.Zones);
 
-                Image<Bgr, byte> toBlur = new Image<Bgr, byte>(toDraw);
-                CvInvoke.MedianBlur(toBlur, toBlur, PropertiesManager.GetIntProperty("blur_iterations"));
+                    Image<Bgr, byte> toBlur = new Image<Bgr, byte>(toDraw);
+                    CvInvoke.MedianBlur(toBlur, toBlur, PropertiesManager.GetIntProperty("blur_iterations"));
 
-                ballHeatMap.SetImageBitmap(toBlur.Bitmap);
+                    Activity.RunOnUiThread(() => ballHeatMap.SetImageBitmap(toBlur.Bitmap));
+                });
             });
 
             // Find the fastest goal
