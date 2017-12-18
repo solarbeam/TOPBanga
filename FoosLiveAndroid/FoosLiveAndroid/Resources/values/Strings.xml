@@ -2,7 +2,7 @@
 <resources>
 	<!--Global-->
 	<string name="app_name">fooslive</string>
-	<string name="app_version">Version: 0.1</string>
+	<string name="app_version">Version:  1.0</string>
 	<string name="ok">OK</string>
     <string name="cancel">Cancel</string>
     <!--Menu-->
@@ -44,8 +44,9 @@
     
     <string name="speed_format">0.00</string>
 	<!--Info-->
-	<string name="app_description">This is the description of foosbal live application. </string>
-	<string name="credits">Developed by TOPBanga team</string>
+	<string name="app_description">This app allows for tracking and assigning points for a given foosball match.
+    Currently, the app tracks the ball using color, so the ball must stand out of it\'s enviroment.</string>
+	<string name="credits">Developed by "Gargdžų Banga" team</string>
     <!--Camera request-->
 	<string name="camera_request_explanation_title">Camera access request</string>
 	<string name="camera_request_explanation_content">Camera access is required to record and analyse live game.</string>
