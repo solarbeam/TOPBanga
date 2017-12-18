@@ -56,13 +56,13 @@
     <!--SharedPref-->
     <string name="preference_file_key">fooslive_pref</string> 
     <string name="saved_team1_goal">TEAM1_SCORE</string>
-    <string name="saved_team1_goal_default">defaultMarioGoal</string>
+    <!--<string name="saved_team1_goal_default">defaultMarioGoal</string>-->
     <string name="saved_team2_goal">TEAM2_SCORE</string>
-    <string name="saved_team2_goal_default">defaultMarioGoal</string>
+<!--    <string name="saved_team2_goal_default">defaultMarioGoal</string>-->
     <string name="saved_team1_win">TEAM1_WIN</string>
-    <string name="saved_team1_win_default">defaultMarioGoal</string>
+<!--    <string name="saved_team1_win_default">defaultMarioGoal</string>-->
     <string name="saved_team2_win">TEAM2_WIN</string>
-    <string name="saved_team2_win_default">defaultMarioGoal</string>
+<!--    <string name="saved_team2_win_default">defaultMarioGoal</string>-->
     <string name="saved_sound_enabled">SOUND_ENABLED</string>
     <string name="saved_sync_enabled">SYNC_ENABLED</string>
     <string name="saved_team1_name">TEAM1_NAME</string>

@@ -3952,26 +3952,26 @@ namespace FoosLiveAndroid
 			// aapt resource value: 0x7f080052
 			public const int error_loading = 2131230802;
 			
-			// aapt resource value: 0x7f08007a
-			public const int facebook_app_id = 2131230842;
+			// aapt resource value: 0x7f080076
+			public const int facebook_app_id = 2131230838;
 			
-			// aapt resource value: 0x7f08007b
-			public const int fb_login_protocol_scheme = 2131230843;
+			// aapt resource value: 0x7f080077
+			public const int fb_login_protocol_scheme = 2131230839;
 			
 			// aapt resource value: 0x7f080048
 			public const int from_file = 2131230792;
 			
-			// aapt resource value: 0x7f08007e
-			public const int google_id_key = 2131230846;
+			// aapt resource value: 0x7f08007a
+			public const int google_id_key = 2131230842;
 			
-			// aapt resource value: 0x7f08007f
-			public const int google_id_name = 2131230847;
+			// aapt resource value: 0x7f08007b
+			public const int google_id_name = 2131230843;
 			
-			// aapt resource value: 0x7f08007c
-			public const int google_oauth_client_id = 2131230844;
+			// aapt resource value: 0x7f080078
+			public const int google_oauth_client_id = 2131230840;
 			
-			// aapt resource value: 0x7f08007d
-			public const int google_user_data_key = 2131230845;
+			// aapt resource value: 0x7f080079
+			public const int google_user_data_key = 2131230841;
 			
 			// aapt resource value: 0x7f080044
 			public const int history = 2131230788;
@@ -3991,11 +3991,11 @@ namespace FoosLiveAndroid
 			// aapt resource value: 0x7f080049
 			public const int main_menu_title = 2131230793;
 			
-			// aapt resource value: 0x7f080078
-			public const int mario_goal_sound = 2131230840;
+			// aapt resource value: 0x7f080074
+			public const int mario_goal_sound = 2131230836;
 			
-			// aapt resource value: 0x7f080079
-			public const int mario_win_sound = 2131230841;
+			// aapt resource value: 0x7f080075
+			public const int mario_win_sound = 2131230837;
 			
 			// aapt resource value: 0x7f08003f
 			public const int ok = 2131230783;
@@ -4027,50 +4027,38 @@ namespace FoosLiveAndroid
 			// aapt resource value: 0x7f080067
 			public const int sample_score = 2131230823;
 			
-			// aapt resource value: 0x7f080077
-			public const int saved_auto_login = 2131230839;
+			// aapt resource value: 0x7f080073
+			public const int saved_auto_login = 2131230835;
 			
-			// aapt resource value: 0x7f080071
-			public const int saved_sound_enabled = 2131230833;
+			// aapt resource value: 0x7f08006d
+			public const int saved_sound_enabled = 2131230829;
 			
-			// aapt resource value: 0x7f080072
-			public const int saved_sync_enabled = 2131230834;
+			// aapt resource value: 0x7f08006e
+			public const int saved_sync_enabled = 2131230830;
 			
 			// aapt resource value: 0x7f080069
 			public const int saved_team1_goal = 2131230825;
 			
-			// aapt resource value: 0x7f08006a
-			public const int saved_team1_goal_default = 2131230826;
-			
-			// aapt resource value: 0x7f080073
-			public const int saved_team1_name = 2131230835;
-			
-			// aapt resource value: 0x7f080074
-			public const int saved_team1_name_default = 2131230836;
-			
-			// aapt resource value: 0x7f08006d
-			public const int saved_team1_win = 2131230829;
-			
-			// aapt resource value: 0x7f08006e
-			public const int saved_team1_win_default = 2131230830;
-			
-			// aapt resource value: 0x7f08006b
-			public const int saved_team2_goal = 2131230827;
-			
-			// aapt resource value: 0x7f08006c
-			public const int saved_team2_goal_default = 2131230828;
-			
-			// aapt resource value: 0x7f080075
-			public const int saved_team2_name = 2131230837;
-			
-			// aapt resource value: 0x7f080076
-			public const int saved_team2_name_default = 2131230838;
-			
 			// aapt resource value: 0x7f08006f
-			public const int saved_team2_win = 2131230831;
+			public const int saved_team1_name = 2131230831;
 			
 			// aapt resource value: 0x7f080070
-			public const int saved_team2_win_default = 2131230832;
+			public const int saved_team1_name_default = 2131230832;
+			
+			// aapt resource value: 0x7f08006b
+			public const int saved_team1_win = 2131230827;
+			
+			// aapt resource value: 0x7f08006a
+			public const int saved_team2_goal = 2131230826;
+			
+			// aapt resource value: 0x7f080071
+			public const int saved_team2_name = 2131230833;
+			
+			// aapt resource value: 0x7f080072
+			public const int saved_team2_name_default = 2131230834;
+			
+			// aapt resource value: 0x7f08006c
+			public const int saved_team2_win = 2131230828;
 			
 			// aapt resource value: 0x7f08005b
 			public const int score_format = 2131230811;

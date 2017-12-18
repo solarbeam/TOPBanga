@@ -5,6 +5,7 @@ using Android.Gms.Common;
 using Android.Gms.Common.Apis;
 using Android.OS;
 using Android.Util;
+using Android.Widget;
 
 namespace FoosLiveAndroid.Util.Login
 {
@@ -65,6 +66,8 @@ namespace FoosLiveAndroid.Util.Login
 
                 ((LoginActivity)_context).LoadMainMenu(userData);
             }
+            else
+                Toast.MakeText(_context, "Connection failed.", ToastLength.Long).Show();
         }
     }
 }
