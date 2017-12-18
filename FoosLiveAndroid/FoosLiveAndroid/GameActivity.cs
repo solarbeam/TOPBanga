@@ -21,6 +21,7 @@ using FoosLiveAndroid.Model;
 using Android.Support.V7.App;
 using FoosLiveAndroid.Util.Record;
 using FoosLiveAndroid.Util.Database;
+using System.Threading.Tasks;
 
 namespace FoosLiveAndroid
 {
@@ -255,12 +256,20 @@ namespace FoosLiveAndroid
         public async void ShowEndGameScreen()
         {
             // Start depositing the data to database
+
             var preferences = GetSharedPreferences(GetString(Resource.String.preference_file_key), FileCreationMode.Private);
+
+            //Check if sync is on
+            var syncSwitchDefault = Resources.GetBoolean(Resource.Boolean.saved_sync_enabled_default);
+            var sync = preferences.GetBoolean(GetString(Resource.String.saved_sync_enabled), syncSwitchDefault);
+
             var team1DefaultValue = Resources.GetString(Resource.String.saved_team1_name_default);
             var team2DefaultValue = Resources.GetString(Resource.String.saved_team2_name_default);
             var team1Name = preferences.GetString(GetString(Resource.String.saved_team1_name), team1DefaultValue);
             var team2Name = preferences.GetString(GetString(Resource.String.saved_team2_name), team2DefaultValue);
-            var insertTask = DatabaseManager.InsertGame(team1Name, team2Name);
+            Task<int> insertTask = null;
+            if (sync)
+                insertTask = DatabaseManager.InsertGame(team1Name, team2Name);
 
             _gameEnd = true;
             // Terminate recognition
@@ -313,19 +322,21 @@ namespace FoosLiveAndroid
             FragmentManager.BeginTransaction()
                            .Add(Resource.Id.infoLayout, EndGameFragment.NewInstance())
                            .Commit();
-            
+
             // Send Data to database
-            var gameIdInDatabase = await insertTask;
-            Log.Debug("Game Id In database", gameIdInDatabase.ToString());
-            if (gameIdInDatabase != -1)
+            if (sync)
             {
-                await DatabaseManager.InsertEvent(gameIdInDatabase, "Kazkoks eventas");
-                foreach(var goal in _game.GameController.Goals)
+                var gameIdInDatabase = await insertTask;
+                Log.Debug("Game Id In database", gameIdInDatabase.ToString());
+                if (gameIdInDatabase != -1)
                 {
-                    if (goal.TeamColor == TeamColor.Blue)
-                        DatabaseManager.InsertGoal(gameIdInDatabase, team1Name);
-                    if (goal.TeamColor == TeamColor.Red)
-                        DatabaseManager.InsertGoal(gameIdInDatabase, team2Name);
+                    foreach (var goal in _game.GameController.Goals)
+                    {
+                        if (goal.TeamColor == TeamColor.Blue)
+                            DatabaseManager.InsertGoal(gameIdInDatabase, team1Name);
+                        if (goal.TeamColor == TeamColor.Red)
+                            DatabaseManager.InsertGoal(gameIdInDatabase, team2Name);
+                    }
                 }
             }
         }
