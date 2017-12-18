@@ -22,6 +22,8 @@ namespace FoosLiveAndroid.Util.Database
         private static readonly string InsertEventFormat = PropertiesManager.GetProperty("insert_event_format");
         private static readonly string GetHistoryFormat = PropertiesManager.GetProperty("get_history_format");
 
+        public static string User = "DefaultUser";
+
         /// <summary>
         /// Inserts a game into the remote database. 
         /// </summary>
@@ -29,7 +31,7 @@ namespace FoosLiveAndroid.Util.Database
         /// <param name="redTeamName">Red team name</param>
         /// <returns>The id of the inserted game, or -1 if error happens.
         /// This id is used to specify which game to add goals and events to.</returns>
-        public static async Task<int> InsertGame(string blueTeamName, string redTeamName, string ownersId) {
+        public static async Task<int> InsertGame(string blueTeamName, string redTeamName) {
             try
             {
                 var request = (HttpWebRequest)WebRequest.Create(ConnectionUrl);
@@ -38,7 +40,7 @@ namespace FoosLiveAndroid.Util.Database
 
                 var streamWriter = new StreamWriter(request.GetRequestStream());
                 // Prepare query statement
-                streamWriter.Write(InsertGameFormat, blueTeamName, redTeamName, ownersId);
+                streamWriter.Write(InsertGameFormat, blueTeamName, redTeamName, User);
 
                 streamWriter.Flush();
                 var httpWebResponse = (HttpWebResponse)request.GetResponse();

@@ -260,7 +260,7 @@ namespace FoosLiveAndroid
             var team2DefaultValue = Resources.GetString(Resource.String.saved_team2_name_default);
             var team1Name = preferences.GetString(GetString(Resource.String.saved_team1_name), team1DefaultValue);
             var team2Name = preferences.GetString(GetString(Resource.String.saved_team2_name), team2DefaultValue);
-            var insertTask = DatabaseManager.InsertGame(team1Name, team2Name, "Kazkieno kazkoks ID");
+            var insertTask = DatabaseManager.InsertGame(team1Name, team2Name);
 
             _gameEnd = true;
             // Terminate recognition

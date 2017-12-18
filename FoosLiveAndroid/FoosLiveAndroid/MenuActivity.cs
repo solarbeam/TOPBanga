@@ -9,6 +9,7 @@ using Android.Content.PM;
 using FoosLiveAndroid.Fragments.MainMenu;
 using FoosLiveAndroid.Fragments.Interface;
 using FoosLiveAndroid.Util.Login;
+using FoosLiveAndroid.Util.Database;
 
 namespace FoosLiveAndroid
 {
@@ -47,6 +48,7 @@ namespace FoosLiveAndroid
             //Todo: hook data to the new DB
             var userId = userData.GetString(GetString(Resource.String.google_id_key));
             var userName = userData.GetString(GetString(Resource.String.google_id_name));
+            DatabaseManager.User = userId;
 
             Toast.MakeText(this, userId, ToastLength.Long).Show();
         }
