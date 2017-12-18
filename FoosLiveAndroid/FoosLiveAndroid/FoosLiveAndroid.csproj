@@ -269,6 +269,7 @@
     <AndroidResource Include="Resources\drawable\ic_logout.xml" />
     <AndroidResource Include="Resources\drawable\ic_sync_on.xml" />
     <AndroidResource Include="Resources\drawable\ic_sync_off.xml" />
+    <AndroidResource Include="Resources\drawable\ic_calendar.xml" />
   </ItemGroup>
   <ItemGroup>
     <AndroidResource Include="Resources\mipmap-hdpi\Icon.png" />
