@@ -124,7 +124,7 @@ namespace FoosLiveAndroid.Util.Database
             {
                 // Set up request statement
                 var streamWriter = new StreamWriter(await request.GetRequestStreamAsync());
-                streamWriter.Write(GetHistoryFormat);
+                streamWriter.Write(GetHistoryFormat, User);
                 streamWriter.Flush();
 
                 // Get response
