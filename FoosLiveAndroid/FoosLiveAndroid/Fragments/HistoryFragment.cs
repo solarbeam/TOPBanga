@@ -84,6 +84,7 @@ namespace FoosLiveAndroid.Fragments
         {
             if(historyTask == null)
                 historyTask = DatabaseManager.GetHistory();
+
             _interactionListener.UpdateTitle(GetString(Resource.String.history));
             _view = inflater.Inflate(Resource.Layout.fragment_history, container, false);
             GetReferencesFromLayout();
@@ -91,8 +92,10 @@ namespace FoosLiveAndroid.Fragments
             var layoutManager = new LinearLayoutManager(Activity);
             _historyRecyclerView.SetLayoutManager(layoutManager);
 
-            _view.Post(() =>
+            _view.Post(async () =>
             {
+                await historyTask;
+
                 if (_loadingStatus == LoadingStatus.Success) return;
 
                 if (_loadingStatus == LoadingStatus.Empty_list)
