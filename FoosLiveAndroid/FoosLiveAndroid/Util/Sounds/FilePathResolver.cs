@@ -1,5 +1,4 @@
-﻿using System;
-using Android.Content;
+﻿using Android.Content;
 using Android.Content.Res;
 using FoosLiveAndroid.Model;
 
@@ -17,9 +16,8 @@ namespace FoosLiveAndroid.Util.Sounds
         private const string BingSound = "SFX/ping-bing.wav";
         private const string CrowdCheer = "SFX/sound.ogg";
 
-        public static AssetFileDescriptor GetFile(Context context, String argument)
+        public static AssetFileDescriptor GetFile(Context context, string argument)
         {
-            //System.Console.WriteLine(argument);
             // Todo: make it look better
             if (argument.Equals(DefaultMarioGoal))
             {

@@ -9,7 +9,7 @@ namespace FoosLiveAndroid.Util.Record
         // false on init, true on creation
         public bool Disposed;
 
-        private GameActivity _activity;
+        private readonly GameActivity _activity;
 
         public RecordPlayer(Context context)
         {

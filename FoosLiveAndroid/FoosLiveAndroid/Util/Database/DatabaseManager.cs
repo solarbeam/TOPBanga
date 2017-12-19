@@ -1,4 +1,4 @@
-﻿using System.Net;
+﻿ using System.Net;
 using System.IO;
 using System.Collections.Generic;
 using FoosLiveAndroid.Model.Interface;
@@ -29,9 +29,9 @@ namespace FoosLiveAndroid.Util.Database
         {
             var gameId = await InsertGame(blueTeamName, redTeamName, duration);
             if (gameId == -1) return;
-            for (int i = 0; i < blueScore; i++)
+            for (var i = 0; i < blueScore; i++)
                 await InsertGoal(gameId, blueTeamName);
-            for (int i = 0; i < redScore; i++)
+            for (var i = 0; i < redScore; i++)
                 await InsertGoal(gameId, redTeamName);
             Log.Debug(Tag, $"Game was saved. id: {gameId}, score: {blueScore}-{redScore}");
         }
@@ -91,7 +91,7 @@ namespace FoosLiveAndroid.Util.Database
             // Get response
             var httpWebResponse = (HttpWebResponse)await request.GetResponseAsync();
             var streamReader = new StreamReader(httpWebResponse.GetResponseStream());
-            string response = await streamReader.ReadToEndAsync();
+            var response = await streamReader.ReadToEndAsync();
 
             return response.Equals(OperationSuccess);
         }
@@ -118,7 +118,7 @@ namespace FoosLiveAndroid.Util.Database
             // Get response
             var httpWebResponse = (HttpWebResponse)await request.GetResponseAsync();
             var streamReader = new StreamReader(httpWebResponse.GetResponseStream());
-            string response = await streamReader.ReadToEndAsync();
+            var response = await streamReader.ReadToEndAsync();
 
             return response.Equals(OperationSuccess);
         }
@@ -141,6 +141,7 @@ namespace FoosLiveAndroid.Util.Database
 
                 // Get response
                 var httpWebResponse = (HttpWebResponse)await request.GetResponseAsync();
+                // Todo: handle null case
                 var streamReader = new StreamReader(httpWebResponse.GetResponseStream());
                 // Parse response
                 string response;
@@ -151,8 +152,8 @@ namespace FoosLiveAndroid.Util.Database
                 }
                 return historyData;
             }
-            catch (Exception we) {
-                Log.Error("Exception", we.ToString()); 
+            catch (Exception e) {
+                Log.Error(Tag, e.ToString()); 
             }
             return null;
         }

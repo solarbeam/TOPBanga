@@ -21,7 +21,7 @@ namespace FoosLiveAndroid
             base.OnCreate(savedInstanceState);
             SetContentView(Resource.Layout.activity_login);
 
-            SignInButton signInButton = FindViewById<SignInButton>(Resource.Id.sign_in_button);
+            var signInButton = FindViewById<SignInButton>(Resource.Id.sign_in_button);
             signInButton.Click += delegate {
                 StartActivityForResult(_loginManager.SignInIntent, (int)RequestId.SignIn);
             };
@@ -40,12 +40,9 @@ namespace FoosLiveAndroid
             base.OnActivityResult(requestCode, resultCode, data);
 
             // Result returned from launching the Intent from GoogleSignInApi.getSignInIntent(...);
-            if (requestCode == (int)RequestId.SignIn)
-            {
-                var result = Auth.GoogleSignInApi.GetSignInResultFromIntent(data);
-                _loginManager.HandleSignInResult(result);
-
-            }
+            if (requestCode != (int) RequestId.SignIn) return;
+            var result = Auth.GoogleSignInApi.GetSignInResultFromIntent(data);
+            _loginManager.HandleSignInResult(result);
         }
 
         internal void LoadMainMenu(Bundle userData)

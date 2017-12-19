@@ -11,7 +11,6 @@ using FoosLiveAndroid.Util.Model;
 using FoosLiveAndroid.Util.Drawing;
 using Android.Util;
 using FoosLiveAndroid.Model;
-using Emgu.CV.Structure;
 
 namespace FoosLiveAndroid.Util
 {
@@ -24,7 +23,7 @@ namespace FoosLiveAndroid.Util
         private readonly bool _textThreadStarted = false;
         private bool _waitForSpeed = false;
         private readonly string _scoreFormat;
-        private int MaxCharLength;
+        private readonly int MaxCharLength;
 
         private string team1name;
         private string team2name;
@@ -47,7 +46,7 @@ namespace FoosLiveAndroid.Util
         {
             ColorDetector = new ColorDetector();
             GameController = new GameController();
-            GameTimer = new GameTimer(TimerFrequency, activity.Resources);
+            GameTimer = new GameTimer(TimerFrequency);
             ObjectDetector = new ObjectDetector(mulX, mulY, ColorDetector, GameController);
             GameController.GoalEvent += GameControllerGoalEvent;
             GameController.PositionEvent += GameControllerPositionEvent;
@@ -72,10 +71,6 @@ namespace FoosLiveAndroid.Util
                 var team2GoalKey = activity.Resources.GetString(Resource.String.saved_team2_goal);
 
                 // Todo: use string resources instead of enum
-                //var team1WinDefaultValue = activity.Resources.GetString(Resource.String.saved_team1_win_default);
-                //var team2WinDefaultValue = activity.Resources.GetString(Resource.String.saved_team2_win_default);
-                //var team1GoalDefaultValue = activity.Resources.GetString(Resource.String.saved_team1_goal_default);
-                //var team2GoalDefaultValue = activity.Resources.GetString(Resource.String.saved_team2_goal_default);
 
                 SoundAlerts = new SoundAlerts
                 {
@@ -147,7 +142,7 @@ namespace FoosLiveAndroid.Util
                 SoundAlerts?.Play(EAlert.Team2Goal);
                 TextEffects.SlideText(team2name + " scored!", _activity, _eventText, MaxCharLength);
             }
-            _score.Text = String.Format(_scoreFormat, GameController.BlueScore, GameController.RedScore);
+            _score.Text = string.Format(_scoreFormat, GameController.BlueScore, GameController.RedScore);
             Log.Debug(Tag, $"Score value assigned {_score.Text}");
 
             // Reset the speed counter

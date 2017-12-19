@@ -43,8 +43,6 @@ namespace FoosLiveAndroid.Fragments
             return _view;
         }
 
-        private void GetReferencesFromLayout()
-        {
-        }
+        private void GetReferencesFromLayout() {}
     }
 }

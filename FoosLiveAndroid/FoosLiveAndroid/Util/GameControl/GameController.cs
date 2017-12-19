@@ -19,7 +19,7 @@ namespace FoosLiveAndroid.Util.GameControl
         public event EventHandler<CurrentEvent> GoalEvent;
         public event EventHandler<EventArgs> PositionEvent;
 
-        //Todo: for future
+        //Todo: handle redundant attribute
         //public int[] Zones => _rowChecker.GetRowInformation();
 
         public ZoneInfo HeatmapZones { get; private set; }

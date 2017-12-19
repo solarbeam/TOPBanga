@@ -5,7 +5,7 @@ using FoosLiveAndroid.Util.Interface;
 
 namespace FoosLiveAndroid.Util.Detection
 {
-    // Todo: class is redundant
+    //Todo: handle redundant variable
     class ColorContainer : IColorContainer
     {
         public List<Hsv> List { get; }

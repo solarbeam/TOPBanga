@@ -25,8 +25,8 @@
     <string name="sound_active_title">Sounds</string>
     <string name="sound_active_description">Enable or disable game sounds</string>
 	<!--History-->
-	<string name="error_loading">Oops! Something went wrong.</string>
-    <string name="history_empty">No records found.</string>
+	<string name="error_loading">Oops! Something went wrong :(</string>
+    <string name="history_empty">No records found. Record some games!</string>
     <!--Game-->
     <string name="start_game">Start game</string>
     <string name="red_team_goal">Red team scored!</string>

@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using Android.Graphics;
-using FoosLiveAndroid.Util.Model;
 using FoosLiveAndroid.Model;
 
 namespace FoosLiveAndroid.Util.GameControl
@@ -38,18 +37,18 @@ namespace FoosLiveAndroid.Util.GameControl
             timestampStart = start;
             timestampEnd = end;
             TeamColor = team;
-
-            Duration = (long) Math.Round((timestampEnd - timestampStart) / Units.MiliSecondsInSecond);
+            
+            Duration = TimeSpan.FromMilliseconds(timestampEnd - timestampStart).Seconds;
 
             // Fill the points array with positions
-            int i = 0;
+            var i = 0;
             foreach (var point in positions)
             {
                 _points[i] = point;
             }
 
-            double mulX = RealWidth / (tablePoints.Right - tablePoints.Left);
-            double mulY = RealHeight / (tablePoints.Bottom - tablePoints.Top);
+            var mulX = RealWidth / (tablePoints.Right - tablePoints.Left);
+            var mulY = RealHeight / (tablePoints.Bottom - tablePoints.Top);
 
             // Convert meters into centimeters
             mulX *= CentimetersInMeter;
@@ -76,7 +75,7 @@ namespace FoosLiveAndroid.Util.GameControl
                 
                 Speeds[i] = Math.Sqrt( (point.X * mulX - lastPoint.X * mulX) * (point.X * mulX - lastPoint.X * mulX) + 
                                         (point.Y * mulY - lastPoint.Y * mulY) * (point.Y * mulY - lastPoint.Y * mulY) );
-                Speeds[i] /= (lostFrameCounter + 1.0f);
+                Speeds[i] /= lostFrameCounter + 1.0f;
 
                 if (MaxSpeed < Speeds[i])
                     MaxSpeed = Speeds[i];

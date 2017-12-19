@@ -1,13 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Text;
 
 using Android.App;
-using Android.Content;
-using Android.OS;
-using Android.Runtime;
-using Android.Views;
 using Android.Widget;
 using System.Threading.Tasks;
 
@@ -18,10 +11,14 @@ namespace FoosLiveAndroid.Util.Drawing
         private static readonly int SlidingTextDelay = PropertiesManager.GetIntProperty("sliding_text_delay");
 
         private static bool _textThreadStarted;
+
         /// <summary>
         /// Defines a sliding text effect for a given string of text
         /// </summary>
         /// <param name="text">The text, to which the effect will be applied</param>
+        /// <param name="activity"></param>
+        /// <param name="textView"></param>
+        /// <param name="maxLength"></param>
         public static void SlideText(string text, Activity activity, TextView textView, int maxLength)
         {
             if (_textThreadStarted)

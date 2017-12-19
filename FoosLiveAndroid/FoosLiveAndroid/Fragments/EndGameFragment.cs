@@ -8,7 +8,6 @@ using Emgu.CV.Structure;
 using FoosLiveAndroid.Model;
 using FoosLiveAndroid.Util;
 using FoosLiveAndroid.Util.Drawing;
-using System;
 using System.Threading.Tasks;
 
 namespace FoosLiveAndroid.Fragments
@@ -43,7 +42,7 @@ namespace FoosLiveAndroid.Fragments
             GetReferencesFromLayout();
             _team1Name.Text = MatchInfo.Team1Name;
             _team2Name.Text = MatchInfo.Team2Name;
-            _teamScore.Text = String.Format(GetString(Resource.String.score_format_end_game), MatchInfo.Team1Score, MatchInfo.Team2Score);
+            _teamScore.Text = string.Format(GetString(Resource.String.score_format_end_game), MatchInfo.Team1Score, MatchInfo.Team2Score);
             _durationValue.Text = MatchInfo.Duration;
             _avgBallSpeed.Text = MatchInfo.AvgSpeed.ToString(SpeedFormat);
             _maxBallSpeed.Text = MatchInfo.MaxSpeed.ToString(SpeedFormat);
@@ -52,13 +51,13 @@ namespace FoosLiveAndroid.Fragments
             {
                 Task.Run(() =>
                 {
-                Bitmap toDraw = Bitmap.CreateBitmap(ballHeatMap.Width, ballHeatMap.Height, Bitmap.Config.Argb8888);
-                Canvas canvas = new Canvas();
+                var toDraw = Bitmap.CreateBitmap(ballHeatMap.Width, ballHeatMap.Height, Bitmap.Config.Argb8888);
+                var canvas = new Canvas();
 
                 canvas.SetBitmap(toDraw);
                 HeatmapDrawer.DrawZones(canvas, MatchInfo.Zones);
 
-                Image<Bgr, byte> toBlur = new Image<Bgr, byte>(toDraw);
+                var toBlur = new Image<Bgr, byte>(toDraw);
                 CvInvoke.MedianBlur(toBlur, toBlur, PropertiesManager.GetIntProperty("blur_iterations"));
 
                 Activity.RunOnUiThread(() =>
@@ -74,7 +73,7 @@ namespace FoosLiveAndroid.Fragments
             _fastestGoal.Post(() =>
             {
                 // if there are no goals, assign 0 to minDuration
-                long minDuration = (MatchInfo.Goals.Count > 0) ? MatchInfo.Goals.Dequeue().Duration : 0;
+                var minDuration = MatchInfo.Goals.Count > 0 ? MatchInfo.Goals.Dequeue().Duration : 0;
                 
                 foreach (var goal in MatchInfo.Goals)
                 {
