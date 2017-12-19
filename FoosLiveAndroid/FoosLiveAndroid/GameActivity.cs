@@ -450,6 +450,7 @@ namespace FoosLiveAndroid
             if (GameMode == ECaptureMode.Live)
                 _positionManager.StopListening();
 
+            Finish();
         }
 
         protected override void OnStop()
