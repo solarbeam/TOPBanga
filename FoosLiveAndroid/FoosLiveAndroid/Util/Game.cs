@@ -11,7 +11,6 @@ using FoosLiveAndroid.Util.Model;
 using FoosLiveAndroid.Util.Drawing;
 using Android.Util;
 using FoosLiveAndroid.Model;
-using Emgu.CV.Structure;
 
 namespace FoosLiveAndroid.Util
 {
@@ -24,7 +23,10 @@ namespace FoosLiveAndroid.Util
         private readonly bool _textThreadStarted = false;
         private bool _waitForSpeed = false;
         private readonly string _scoreFormat;
-        private int MaxCharLength;
+        private readonly int MaxCharLength;
+
+        private string team1name;
+        private string team2name;
 
         // Controlled UI elements
         private Activity _activity;
@@ -44,7 +46,7 @@ namespace FoosLiveAndroid.Util
         {
             ColorDetector = new ColorDetector();
             GameController = new GameController();
-            GameTimer = new GameTimer(TimerFrequency, activity.Resources);
+            GameTimer = new GameTimer(TimerFrequency);
             ObjectDetector = new ObjectDetector(mulX, mulY, ColorDetector, GameController);
             GameController.GoalEvent += GameControllerGoalEvent;
             GameController.PositionEvent += GameControllerPositionEvent;
@@ -68,10 +70,7 @@ namespace FoosLiveAndroid.Util
                 var team1GoalKey = activity.Resources.GetString(Resource.String.saved_team1_goal);
                 var team2GoalKey = activity.Resources.GetString(Resource.String.saved_team2_goal);
 
-                var team1WinDefaultValue = activity.Resources.GetString(Resource.String.saved_team1_win_default);
-                var team2WinDefaultValue = activity.Resources.GetString(Resource.String.saved_team2_win_default);
-                var team1GoalDefaultValue = activity.Resources.GetString(Resource.String.saved_team1_goal_default);
-                var team2GoalDefaultValue = activity.Resources.GetString(Resource.String.saved_team2_goal_default);
+                // Todo: use string resources instead of enum
 
                 SoundAlerts = new SoundAlerts
                 {
@@ -81,6 +80,11 @@ namespace FoosLiveAndroid.Util
                     Team2Goal = new PlayerOgg(FilePathResolver.GetFile(activity, preferences.GetString(team2GoalKey, SoundAsset.GoalMario.ToString())))
                 };
             }
+
+            team1name = preferences.GetString(activity.GetString(Resource.String.saved_team1_name), activity.GetString(Resource.String.team1));
+            team2name = preferences.GetString(activity.GetString(Resource.String.saved_team2_name), activity.GetString(Resource.String.team2));
+
+            preferences.Dispose();
 
             _scoreFormat = activity.GetString(Resource.String.score_format);
             _activity = activity;
@@ -131,15 +135,18 @@ namespace FoosLiveAndroid.Util
             if (e == CurrentEvent.BlueGoalOccured)
             {
                 SoundAlerts?.Play(EAlert.Team1Goal);
-                TextEffects.SlideText(_activity.ApplicationContext.Resources.GetString(Resource.String.blue_team_goal), _activity, _eventText,MaxCharLength);
+                TextEffects.SlideText(team1name + " scored!", _activity, _eventText,MaxCharLength);
             }
             else if (e == CurrentEvent.RedGoalOccured)
             {
                 SoundAlerts?.Play(EAlert.Team2Goal);
-                TextEffects.SlideText(_activity.ApplicationContext.Resources.GetString(Resource.String.red_team_goal), _activity, _eventText, MaxCharLength);
+                TextEffects.SlideText(team2name + " scored!", _activity, _eventText, MaxCharLength);
             }
-            _score.Text = String.Format(_scoreFormat, GameController.BlueScore, GameController.RedScore);
+            _score.Text = string.Format(_scoreFormat, GameController.BlueScore, GameController.RedScore);
             Log.Debug(Tag, $"Score value assigned {_score.Text}");
+
+            // Reset the speed counter
+            _activity.RunOnUiThread(() => _ballSpeed.Text = "0");
         }
     }
 }

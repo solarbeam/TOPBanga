@@ -22,12 +22,16 @@ namespace FoosLiveAndroid.Fragments
             internal readonly TextView Team1Name;
             internal readonly TextView Score;
             internal readonly TextView Team2Name;
+            internal readonly TextView Duration;
+            internal readonly TextView Date;
 
             public HistoryListViewHolder(View v) : base(v)
             {
                 Team1Name = v.FindViewById<TextView>(Resource.Id.history_team1Name);
                 Score = v.FindViewById<TextView>(Resource.Id.history_score);
                 Team2Name = v.FindViewById<TextView>(Resource.Id.history_team2Name);
+                Duration = v.FindViewById<TextView>(Resource.Id.history_duration);
+                Date = v.FindViewById<TextView>(Resource.Id.history_date);
             }
         }
 
@@ -49,6 +53,8 @@ namespace FoosLiveAndroid.Fragments
             viewHolder.Team1Name.Text = item.BlueTeamName;
             viewHolder.Score.Text = $"{item.BlueTeamPoints}  :  {item.RedTeamPoints}";
             viewHolder.Team2Name.Text = item.RedTeamName;
+            viewHolder.Duration.Text = item.DurationString;
+            viewHolder.Date.Text = item.DateTime.ToShortDateString();
         }
 
         public override int ItemCount => _historyList.Count;

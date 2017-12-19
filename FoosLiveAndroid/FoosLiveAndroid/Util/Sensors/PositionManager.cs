@@ -81,7 +81,6 @@ namespace FoosLiveAndroid.Util.Sensors
             var orientation = new float[3];
             SensorManager.GetOrientation(adjustedRotationMatrix, orientation);
 
-            //Todo: find out what the hell is -57
             _pitch = orientation[1] * -57;
             _roll = orientation[2] * -57;
 

@@ -29,7 +29,7 @@ namespace FoosLiveAndroid.Util.GameControl
 
         public void CheckRow(PointF lastBallCoordinates)
         {
-            for (int i = 0; i < Rows.Length; i++)
+            for (var i = 0; i < Rows.Length; i++)
             {
                 if (Rows[i].Contains(lastBallCoordinates.X, lastBallCoordinates.Y))
                 {
@@ -120,12 +120,7 @@ namespace FoosLiveAndroid.Util.GameControl
                                     tableZone.Right, tableZone.Top + toAdd + (tableZone.Height * multipliers[i]));
             }
         }
-
-        public void CalculateZones(Rectangle tableInfo)
-        {
-
-        }
-
+        // Todo: handle redundant method
         /// <summary>
         /// Returns all of the zone counters in an array
         /// </summary>

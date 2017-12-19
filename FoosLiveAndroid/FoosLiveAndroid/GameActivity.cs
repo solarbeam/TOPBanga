@@ -21,6 +21,7 @@ using FoosLiveAndroid.Model;
 using Android.Support.V7.App;
 using FoosLiveAndroid.Util.Record;
 using FoosLiveAndroid.Util.Database;
+using System.Threading.Tasks;
 
 namespace FoosLiveAndroid
 {
@@ -33,6 +34,8 @@ namespace FoosLiveAndroid
 
         private static readonly int PreviewWidth = PropertiesManager.GetIntProperty("preview_width");
         private static readonly int PreviewHeight = PropertiesManager.GetIntProperty("preview_height");
+
+        private static readonly int ColorZoneCount = PropertiesManager.GetIntProperty("color_zone_count");
 
         // A constant for upscaling the positions
         private float _upscaleMultiplierX;
@@ -78,9 +81,7 @@ namespace FoosLiveAndroid
         private Image<Hsv, byte> _image;
 
         private IPositionManager _positionManager;
-        internal RecordPlayer recordPlayer;
-
-        private int _maxEventSliderLength;
+        private RecordPlayer _recordPlayer;
 
         /// <summary>
         /// Called whenever the view is created
@@ -121,32 +122,26 @@ namespace FoosLiveAndroid
             _addScoreTeam1.Click += (o, e) =>
             {
                 _game.GameController.BlueScore++;
-                _score.Text = String.Format(_scoreFormat, _game.GameController.BlueScore, _game.GameController.RedScore);
+                _score.Text = string.Format(_scoreFormat, _game.GameController.BlueScore, _game.GameController.RedScore);
             };
             _addScoreTeam2.Click += (o, e) =>
             {
                 _game.GameController.RedScore++;
-                _score.Text = String.Format(_scoreFormat, _game.GameController.BlueScore, _game.GameController.RedScore);
+                _score.Text = string.Format(_scoreFormat, _game.GameController.BlueScore, _game.GameController.RedScore);
             };
             _removeScoreTeam1.Click += (o, e) =>
             {
                 if (_game.GameController.BlueScore == 0)
                     return;
-                else
-                {
-                    _game.GameController.BlueScore--;
-                    _score.Text = String.Format(_scoreFormat, _game.GameController.BlueScore, _game.GameController.RedScore);
-                }
+                _game.GameController.BlueScore--;
+                _score.Text = string.Format(_scoreFormat, _game.GameController.BlueScore, _game.GameController.RedScore);
             };
             _removeScoreTeam2.Click += (o, e) =>
             {
                 if (_game.GameController.RedScore == 0)
                     return;
-                else
-                {
-                    _game.GameController.RedScore--;
-                    _score.Text = String.Format(_scoreFormat, _game.GameController.BlueScore, _game.GameController.RedScore);
-                }
+                _game.GameController.RedScore--;
+                _score.Text = string.Format(_scoreFormat, _game.GameController.BlueScore, _game.GameController.RedScore);
             };
 
             // Assign the sound file paths
@@ -175,7 +170,7 @@ namespace FoosLiveAndroid
             if (GameMode == ECaptureMode.Recording)
             {
                 // We use a video file, so release it's resources
-                recordPlayer.Release();
+                _recordPlayer.Release();
             }
             else
             {
@@ -212,12 +207,10 @@ namespace FoosLiveAndroid
             // Go through all of the sizes until we find an appropriate one
             foreach (var size in list)
             {
-                if (size.Width <= CameraWidth && size.Height <= CameraHeight)
-                {
-                    // The size matches or is lower than that of the constants camera_width, camera_height 
-                    parameters.SetPreviewSize(size.Width, size.Height);
-                    break;
-                }
+                if (size.Width > CameraWidth || size.Height > CameraHeight) continue;
+                // The size matches or is lower than that of the constants camera_width, camera_height 
+                parameters.SetPreviewSize(size.Width, size.Height);
+                break;
             }
 
             _camera.SetParameters(parameters);
@@ -242,25 +235,29 @@ namespace FoosLiveAndroid
         internal void SetUpRecordMode(float screenWidth, float screenHeight)
         {
             // We do, so set the table according to display size
-            _game.GameController.SetTable(new PointF[]
+            _game.GameController.SetTable(new[]
             {
                     new PointF(0, 0),
                     new PointF(screenWidth, 0),
                     new PointF(0, screenHeight),
                     new PointF(screenWidth, screenHeight)
             }, GameMode);
-            recordPlayer = new RecordPlayer(this);
+            _recordPlayer = new RecordPlayer(this);
         }
 
-        public async void ShowEndGameScreen()
+        public void ShowEndGameScreen()
         {
             // Start depositing the data to database
             var preferences = GetSharedPreferences(GetString(Resource.String.preference_file_key), FileCreationMode.Private);
+
+            //Check if sync is on
+            var syncSwitchDefault = Resources.GetBoolean(Resource.Boolean.saved_sync_enabled_default);
+            var syncOn = preferences.GetBoolean(GetString(Resource.String.saved_sync_enabled), syncSwitchDefault);
+
             var team1DefaultValue = Resources.GetString(Resource.String.saved_team1_name_default);
             var team2DefaultValue = Resources.GetString(Resource.String.saved_team2_name_default);
             var team1Name = preferences.GetString(GetString(Resource.String.saved_team1_name), team1DefaultValue);
             var team2Name = preferences.GetString(GetString(Resource.String.saved_team2_name), team2DefaultValue);
-            var insertTask = DatabaseManager.InsertGame(team1Name, team2Name, "Kazkieno kazkoks ID");
 
             _gameEnd = true;
             // Terminate recognition
@@ -287,11 +284,11 @@ namespace FoosLiveAndroid
             // Disable sensors
             if (GameMode == ECaptureMode.Live)
                 _positionManager.StopListening();
-            else if (!recordPlayer.Disposed)
+            else if (!_recordPlayer.Disposed)
             {
-                recordPlayer.Stop();
-                recordPlayer.Reset();
-                recordPlayer.Release();
+                _recordPlayer.Stop();
+                _recordPlayer.Reset();
+                _recordPlayer.Release();
             }
                 
             //Collect data from GameController
@@ -304,29 +301,21 @@ namespace FoosLiveAndroid
 
             // Play the game end sound
             if (MatchInfo.Team1Score > MatchInfo.Team2Score)
-                _game.SoundAlerts?.Play(Util.Sounds.EAlert.Team1Win);
+                _game.SoundAlerts?.Play(EAlert.Team1Win);
             else
                 if (MatchInfo.Team2Score > MatchInfo.Team1Score)
-                _game.SoundAlerts?.Play(Util.Sounds.EAlert.Team2Win);
+                _game.SoundAlerts?.Play(EAlert.Team2Win);
 
             // Show pop-up fragment, holding all of the match's info
             FragmentManager.BeginTransaction()
                            .Add(Resource.Id.infoLayout, EndGameFragment.NewInstance())
                            .Commit();
-            
+
             // Send Data to database
-            var gameIdInDatabase = await insertTask;
-            Log.Debug("Game Id In database", gameIdInDatabase.ToString());
-            if (gameIdInDatabase != -1)
+            if (syncOn)
             {
-                await DatabaseManager.InsertEvent(gameIdInDatabase, "Kazkoks eventas");
-                foreach(var goal in _game.GameController.Goals)
-                {
-                    if (goal.TeamColor == TeamColor.Blue)
-                        DatabaseManager.InsertGoal(gameIdInDatabase, team1Name);
-                    if (goal.TeamColor == TeamColor.Red)
-                        DatabaseManager.InsertGoal(gameIdInDatabase, team2Name);
-                }
+                Task.Factory.StartNew(() => DatabaseManager.InsertAll(team1Name, team2Name, 
+                _game.GameController.BlueScore, _game.GameController.RedScore, MatchInfo.Duration), TaskCreationOptions.LongRunning);
             }
         }
 
@@ -356,14 +345,6 @@ namespace FoosLiveAndroid
             _removeScoreTeam2 = FindViewById<Button>(Resource.Id.removeScoreTeam2);
         }
 
-        private void UpdateTimer(object sender, EventArgs e)
-        {
-            RunOnUiThread(() =>
-            {
-                _timer.Text = _game.GameTimer.GetFormattedTime();
-            });
-        }
-
         public bool DetectBall(Canvas canvas) {
             return _game.ObjectDetector.Detect(canvas, _selectedBallColor,
                                             GameView.GetBitmap(PreviewWidth, PreviewHeight));
@@ -378,13 +359,10 @@ namespace FoosLiveAndroid
         public bool OnTouch(View v, MotionEvent e)
         {
             // If game has ended, ignore touch
-            if (_gameEnd) return false;
+            if (_gameEnd || BallColorSelected) return false;
             // If game is not started, take sample image
-            if (_gameButton.Visibility != ViewStates.Gone && !BallColorSelected)
-            {
-                _image = new Image<Hsv, byte>(GameView.GetBitmap(PreviewWidth, PreviewHeight));
-                UpdateButton(e);
-            }
+            _image = new Image<Hsv, byte>(GameView.GetBitmap(PreviewWidth, PreviewHeight));
+            UpdateButton(e);
             return true;
         }
 
@@ -402,11 +380,29 @@ namespace FoosLiveAndroid
             // Todo: exception pops HERE
             _selectedBallColor = _image[positionY, positionX];
             // convert hsv image to rgb image sample
-            var selectedRgb = _image.Convert<Rgb, byte>()[positionY, positionX];
+            double hue = 0, saturation = 0, value = 0;
+            int zonesFromCenter = ColorZoneCount, counter = 0;
+            for (var i = -1 * zonesFromCenter; i <= zonesFromCenter; i ++)
+            {
+                for (var j = -1 * zonesFromCenter - 1; j <= zonesFromCenter; j ++)
+                {
+                    if (positionY + i <= 0 || positionY + i >= _image.Size.Width || positionX + j <= 0 ||
+                        positionX + j >= _image.Size.Height) continue;
+                    counter++;
+                    hue += _image[positionY + i,positionX + j].Hue;
+                    saturation += _image[positionY + i, positionX + j].Satuation;
+                    value += _image[positionY + i, positionX + j].Value;
+                }
+            }
+            _selectedBallColor = new Hsv(hue / counter, saturation / counter, value / counter);
             // image won't be used anymore
             _image.Dispose();
             // Convert emgu rgb to android rgb
-            var selectedColor = Color.Rgb((int)selectedRgb.Red, (int)selectedRgb.Green, (int)selectedRgb.Blue);
+            var selectedColor = Color.HSVToColor(new[] {
+                ((float)_selectedBallColor.Hue * 2),
+                ((float)_selectedBallColor.Satuation / 180),
+                ((float)_selectedBallColor.Value / 180)
+            });
 
             _gameButton.SetBackgroundColor(selectedColor);
             _gameButton.Text = GetString(Resource.String.start_game);
@@ -435,7 +431,7 @@ namespace FoosLiveAndroid
             _image.Dispose();
 
             // If it's a video, start it again
-            recordPlayer?.Start();
+            _recordPlayer?.Start();
 
             // Change button function to stop the game
             _gameButton.Text = GetString(Resource.String.end_game);
@@ -454,6 +450,7 @@ namespace FoosLiveAndroid
             if (GameMode == ECaptureMode.Live)
                 _positionManager.StopListening();
 
+            Finish();
         }
 
         protected override void OnStop()
@@ -472,8 +469,8 @@ namespace FoosLiveAndroid
         public void UpdateGuideline(bool[] exceedsPitch,
                                     bool?[] exceedsRoll = null)
         {
-            _arrowBot.Visibility = (exceedsPitch[0]) ? ViewStates.Visible : ViewStates.Gone;
-            _arrowTop.Visibility = (exceedsPitch[1]) ? ViewStates.Visible : ViewStates.Gone;
+            _arrowBot.Visibility = exceedsPitch[0] ? ViewStates.Visible : ViewStates.Gone;
+            _arrowTop.Visibility = exceedsPitch[1] ? ViewStates.Visible : ViewStates.Gone;
 
             // If game is not started, roll guidelines are ignored
             if (exceedsRoll == null) return;

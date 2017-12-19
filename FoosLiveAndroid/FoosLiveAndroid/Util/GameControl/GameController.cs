@@ -19,7 +19,7 @@ namespace FoosLiveAndroid.Util.GameControl
         public event EventHandler<CurrentEvent> GoalEvent;
         public event EventHandler<EventArgs> PositionEvent;
 
-        //Todo: for future
+        //Todo: handle redundant attribute
         //public int[] Zones => _rowChecker.GetRowInformation();
 
         public ZoneInfo HeatmapZones { get; private set; }
@@ -41,7 +41,7 @@ namespace FoosLiveAndroid.Util.GameControl
         private readonly int HeatmapZonesWidth = PropertiesManager.GetIntProperty("zones_width");
         private readonly int HeatmapZonesHeight = PropertiesManager.GetIntProperty("zones_height");
 
-        private PositionChecker _posChecker;
+        public PositionChecker _posChecker;
         private RowChecker _rowChecker;
 
         /// <summary>
@@ -154,7 +154,7 @@ namespace FoosLiveAndroid.Util.GameControl
             _posChecker.ZoneOne = new RectF(points[0].X,
                                             points[0].Y,
                                             points[1].X,
-                                            (points[2].Y - points[0].Y) * percentageOfSide);
+                                            points[1].Y + (points[2].Y - points[0].Y) * percentageOfSide);
 
             _posChecker.ZoneTwo = new RectF(points[0].X, _posChecker.ZoneOne.Bottom + (1.0f - percentageOfSide * 2) * (points[2].Y - points[0].Y),
                                         points[3].X,

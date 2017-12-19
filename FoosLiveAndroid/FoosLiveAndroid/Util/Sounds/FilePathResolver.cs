@@ -1,5 +1,4 @@
-﻿using System;
-using Android.Content;
+﻿using Android.Content;
 using Android.Content.Res;
 using FoosLiveAndroid.Model;
 
@@ -17,31 +16,27 @@ namespace FoosLiveAndroid.Util.Sounds
         private const string BingSound = "SFX/ping-bing.wav";
         private const string CrowdCheer = "SFX/sound.ogg";
 
-        public static AssetFileDescriptor GetFile(Context context, String argument)
+        public static AssetFileDescriptor GetFile(Context context, string argument)
         {
-            System.Console.WriteLine(argument);
-
+            // Todo: make it look better
             if (argument.Equals(DefaultMarioGoal))
             {
                 return context.Assets.OpenFd(MarioGoalSound);
             }
-            else
-                if (argument.Equals(DefaultMarioWin))
+            if (argument.Equals(DefaultMarioWin))
             {
                 return context.Assets.OpenFd(MarioWinSound);
             }
-            else
-                if (argument.Equals(DefaultBingSound))
+            if (argument.Equals(DefaultBingSound))
             {
                 return context.Assets.OpenFd(BingSound);
             }
-            else
-                if (argument.Equals(DefaultCrowdCheerSound))
+            if (argument.Equals(DefaultCrowdCheerSound))
             {
                 return context.Assets.OpenFd(CrowdCheer);
             }
-            else
-                return null;
+
+            return null;
         }
     }
 }

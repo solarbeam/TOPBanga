@@ -32,7 +32,7 @@ namespace FoosLiveAndroid.Util
         /// </summary>
         /// <returns>The configuration value OR null if value not found or manager not initialised</returns>
         /// <param name="key">Configuration value key</param>
-        public static string GetProperty(String key)
+        public static string GetProperty(string key)
         {
             if (_properties == null)
                 throw new Exception("PropertiesManager called before initialisation");
@@ -50,17 +50,17 @@ namespace FoosLiveAndroid.Util
         /// </summary>
         /// <returns>Int property</returns>
         /// <param name="key">Configuration value key</param>
-        public static int GetIntProperty(String key)
+        public static int GetIntProperty(string key)
         {
             var property = _properties.GetProperty(key);
-            return Int32.Parse(property);
+            return int.Parse(property);
         } 
         /// <summary>
         /// Searches value using a key from config file and parses it to float
         /// </summary>
         /// <returns>Float property</returns>
         /// <param name="key">Configuration value key</param>
-        public static float GetFloatProperty(String key)
+        public static float GetFloatProperty(string key)
         {
             var property = _properties.GetProperty(key);
             return float.Parse(property);
@@ -71,7 +71,7 @@ namespace FoosLiveAndroid.Util
         /// </summary>
         /// <returns>Double property</returns>
         /// <param name="key">Configuration value key</param>
-        public static double GetDoubleProperty(String key)
+        public static double GetDoubleProperty(string key)
         {
             var property = _properties.GetProperty(key);
             return double.Parse(property);

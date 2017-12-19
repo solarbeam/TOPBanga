@@ -8,7 +8,6 @@ using Android.Views.InputMethods;
 using Android.Widget;
 using FoosLiveAndroid.Fragments.Interface;
 using FoosLiveAndroid.Model;
-using FoosLiveAndroid.Util.Login;
 using FoosLiveAndroid.Util.Sounds;
 
 namespace FoosLiveAndroid.Fragments
@@ -67,13 +66,12 @@ namespace FoosLiveAndroid.Fragments
             _interactionListener.UpdateTitle(GetString(Resource.String.settings));
             _view = inflater.Inflate(Resource.Layout.fragment_settings, container, false);
             GetReferencesFromLayout();
-            LoginManager loginManager = LoginManager.GetInstance(Context);
-            //Todo: set up sound adapter from model
-            var scoreSoundsAdapter = new ArrayAdapter<string>(
-                Context, Android.Resource.Layout.SimpleListItem1, new string[] { "Mario Goal Sound", "Mario Win Sound", "Bing Sound", "Crowd Cheer" });
-
-            var winSoundsAdapter = new ArrayAdapter<string>(
-                Context, Android.Resource.Layout.SimpleListItem1, new string[] { "Mario Goal Sound", "Mario Win Sound", "Bing Sound", "Crowd Cheer" });
+      
+            // Todo: use string resources instead
+            var soundsAdapter = new ArrayAdapter<string>(
+                Context, Android.Resource.Layout.SimpleListItem1, 
+                new[] { SoundAsset.GoalMario.ToString(), SoundAsset.WinMario.ToString(),
+                SoundAsset.BingSound.ToString(), SoundAsset.CrowdCheer.ToString() });
 
             _logoutButton.Click += delegate {
                 var intent = new Intent(Application.Context, typeof(LoginActivity));
@@ -83,22 +81,30 @@ namespace FoosLiveAndroid.Fragments
 
             _team1ScoreSoundItem.Click += delegate
             {
-                OpenSoundPicker(GetString(Resource.String.team1_score_sound_label), scoreSoundsAdapter, _team1GoalSoundValue);
+                OpenSoundPicker(GetString(Resource.String.team1_score_sound_label), 
+                                soundsAdapter, _team1GoalSoundValue, 
+                                GetString(Resource.String.saved_team1_goal));
             };
 
             _team1WinSoundItem.Click += delegate
             {
-                OpenSoundPicker(GetString(Resource.String.team1_win_sound_label), winSoundsAdapter, _team1WinSoundValue);
+                OpenSoundPicker(GetString(Resource.String.team1_win_sound_label),
+                                soundsAdapter, _team1WinSoundValue,
+                                GetString(Resource.String.saved_team1_win));
             };
 
             _team2ScoreSoundItem.Click += delegate
             {
-                OpenSoundPicker(GetString(Resource.String.team2_score_sound_label), scoreSoundsAdapter, _team2GoalSoundValue);
+                OpenSoundPicker(GetString(Resource.String.team2_score_sound_label),
+                                soundsAdapter, _team2GoalSoundValue,
+                                GetString(Resource.String.saved_team1_goal));
             };
 
             _team2WinSoundItem.Click += delegate
             {
-                OpenSoundPicker(GetString(Resource.String.team2_win_sound_label), winSoundsAdapter, _team2WinSoundValue);
+                OpenSoundPicker(GetString(Resource.String.team2_win_sound_label),
+                                soundsAdapter, _team2WinSoundValue,
+                                GetString(Resource.String.saved_team2_win));
             };
 
             UpdateSelection();
@@ -127,10 +133,8 @@ namespace FoosLiveAndroid.Fragments
         private void UpdateSelection()
         {
             //Extract default values from resources
-            var team1GoalSoundDefault = GetString(Resource.String.saved_team1_goal_default);
-            var team2GoalSoundDefault = GetString(Resource.String.saved_team2_goal_default);
-            var team1WinSoundDefault = GetString(Resource.String.saved_team1_win_default);
-            var team2WinSoundDefault = GetString(Resource.String.saved_team2_win_default);
+
+            //Todo: use string resources instead of enum
             var soundSwitchDefault = Resources.GetBoolean(Resource.Boolean.saved_sound_enabled_default);
             var syncSwitchDefault = Resources.GetBoolean(Resource.Boolean.saved_sync_enabled_default);
             var team1NameDefault = GetString(Resource.String.saved_team1_name_default);
@@ -139,10 +143,10 @@ namespace FoosLiveAndroid.Fragments
             // Extract and assign values from sharedPreferences
             var preferences = Context.GetSharedPreferences(GetString(Resource.String.preference_file_key), FileCreationMode.Private);
 
-            _team1GoalSoundValue.Text = preferences.GetString(GetString(Resource.String.saved_team1_goal), team1GoalSoundDefault);
-            _team1WinSoundValue.Text = preferences.GetString(GetString(Resource.String.saved_team1_win), team1WinSoundDefault);
-            _team2GoalSoundValue.Text = preferences.GetString(GetString(Resource.String.saved_team2_goal), team2GoalSoundDefault);
-            _team2WinSoundValue.Text = preferences.GetString(GetString(Resource.String.saved_team2_win), team2WinSoundDefault);
+            _team1GoalSoundValue.Text = preferences.GetString(GetString(Resource.String.saved_team1_goal), SoundAsset.GoalMario.ToString());
+            _team1WinSoundValue.Text = preferences.GetString(GetString(Resource.String.saved_team1_win), SoundAsset.WinMario.ToString());
+            _team2GoalSoundValue.Text = preferences.GetString(GetString(Resource.String.saved_team2_goal), SoundAsset.GoalMario.ToString());
+            _team2WinSoundValue.Text = preferences.GetString(GetString(Resource.String.saved_team2_win), SoundAsset.WinMario.ToString());
             _soundSwitch.Checked = preferences.GetBoolean(GetString(Resource.String.saved_sound_enabled), soundSwitchDefault);
             _syncSwitch.Checked = preferences.GetBoolean(GetString(Resource.String.saved_sync_enabled), syncSwitchDefault);
             _team1Title.Text = preferences.GetString(GetString(Resource.String.saved_team1_name), team1NameDefault);
@@ -172,7 +176,7 @@ namespace FoosLiveAndroid.Fragments
             _logoutButton = _view.FindViewById<Button>(Resource.Id.logoutButton);
         }
 
-        private void OpenSoundPicker(string soundItem, ArrayAdapter<string> adapter, TextView soundTitle)
+        private void OpenSoundPicker(string soundItem, ArrayAdapter<string> adapter, TextView soundTitle, string sharedPrefKey)
         {
             if (adapter == null)
                 throw new ArgumentNullException(nameof(adapter));
@@ -188,31 +192,29 @@ namespace FoosLiveAndroid.Fragments
                 {
                     case (int)SoundAsset.GoalMario:
                         {
-                            var goalSoundName = GetString(Resource.String.mario_goal_sound);
                             previewPlayer = new PlayerOgg(FilePathResolver.GetFile(Context, SoundAsset.GoalMario.ToString()));
-                            prefsEditor.PutString(soundItem, SoundAsset.GoalMario.ToString()).Apply();
-                            soundTitle.Text = goalSoundName;
+                            prefsEditor.PutString(sharedPrefKey, SoundAsset.GoalMario.ToString()).Apply();
+                            soundTitle.Text = SoundAsset.GoalMario.ToString();
                             break;
                         }
                     case (int)SoundAsset.WinMario:
                         {
-                            var winSoundName = GetString(Resource.String.mario_win_sound);
                             previewPlayer = new PlayerOgg(FilePathResolver.GetFile(Context, SoundAsset.WinMario.ToString()));
-                            prefsEditor.PutString(soundItem, SoundAsset.WinMario.ToString()).Apply();
-                            soundTitle.Text = winSoundName;
+                            prefsEditor.PutString(sharedPrefKey, SoundAsset.WinMario.ToString()).Apply();
+                            soundTitle.Text = SoundAsset.WinMario.ToString();
                             break;
                         }
                     case (int)SoundAsset.BingSound:
                         {
                             previewPlayer = new PlayerOgg(FilePathResolver.GetFile(Context, SoundAsset.BingSound.ToString()));
-                            prefsEditor.PutString(soundItem, SoundAsset.BingSound.ToString());
+                            prefsEditor.PutString(sharedPrefKey, SoundAsset.BingSound.ToString());
                             soundTitle.Text = SoundAsset.BingSound.ToString();
                             break;
                         }
                     case (int)SoundAsset.CrowdCheer:
                         {
                             previewPlayer = new PlayerOgg(FilePathResolver.GetFile(Context, SoundAsset.CrowdCheer.ToString()));
-                            prefsEditor.PutString(soundItem, SoundAsset.CrowdCheer.ToString());
+                            prefsEditor.PutString(sharedPrefKey, SoundAsset.CrowdCheer.ToString());
                             soundTitle.Text = SoundAsset.CrowdCheer.ToString();
                             break;
                         }
@@ -248,11 +250,10 @@ namespace FoosLiveAndroid.Fragments
         private void RequestTitle(TextView teamTitle)
         {
             var inputDialog = new AlertDialog.Builder(Activity);
-            EditText userInput = new EditText(Activity);
+            var userInput = new EditText(Activity);
 
-            string selectedInput = string.Empty;
+            var selectedInput = string.Empty;
             userInput.Text = teamTitle.Text;
-            //SetEditTextStylings(userInput);
             userInput.InputType = Android.Text.InputTypes.TextVariationPersonName;
             inputDialog.SetTitle(selectedInput);
             inputDialog.SetView(userInput);
@@ -269,7 +270,7 @@ namespace FoosLiveAndroid.Fragments
                             key = GetString(Resource.String.saved_team1_name);
                         else
                             key = GetString(Resource.String.saved_team2_name);
-                        SaveValue<string>(key,userInput.Text);
+                        SaveValue(key,userInput.Text);
                     }
                     HideKeyboard(userInput);
                 });
@@ -287,7 +288,7 @@ namespace FoosLiveAndroid.Fragments
             else
                 switchPrefKey = GetString(Resource.String.saved_sync_enabled);
             
-            SaveValue<bool>(switchPrefKey, settingsSwitch.Checked);
+            SaveValue(switchPrefKey, settingsSwitch.Checked);
         }
 
         private void SaveValue<T>(string prefKey, T input)

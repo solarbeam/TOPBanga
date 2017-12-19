@@ -9,6 +9,7 @@ using Android.Content.PM;
 using FoosLiveAndroid.Fragments.MainMenu;
 using FoosLiveAndroid.Fragments.Interface;
 using FoosLiveAndroid.Util.Login;
+using FoosLiveAndroid.Util.Database;
 
 namespace FoosLiveAndroid
 {
@@ -42,13 +43,11 @@ namespace FoosLiveAndroid
                            .Replace(Resource.Id.menu_content, _fragment = MainMenuFragment.NewInstance())
                            .Commit();
 
-
+            // Extract user data from login
             var userData = Intent.GetBundleExtra(GetString(Resource.String.google_user_data_key));
-            //Todo: hook data to the new DB
             var userId = userData.GetString(GetString(Resource.String.google_id_key));
             var userName = userData.GetString(GetString(Resource.String.google_id_name));
-
-            Toast.MakeText(this, userId, ToastLength.Long).Show();
+            DatabaseManager.User = userId;
         }
 
         /// <summary>

@@ -1,14 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-using Android.App;
-using Android.Content;
-using Android.OS;
-using Android.Runtime;
-using Android.Views;
-using Android.Widget;
 using Android.Graphics;
 using FoosLiveAndroid.Util.GameControl;
 
@@ -17,20 +7,23 @@ namespace FoosLiveAndroid.Util.Drawing
     class HeatmapDrawer
     {
         private static readonly int MaxAlphaValue = PropertiesManager.GetIntProperty("trail_alpha_max");
+        //Todo: handle redundant configuration values
         private static readonly int MaxHue = PropertiesManager.GetIntProperty("max_hue");
         private static readonly int MaxSaturation = PropertiesManager.GetIntProperty("max_saturation");
         private static readonly int MaxValue = PropertiesManager.GetIntProperty("max_value");
 
+        
+        //Todo: handle redundant return value
         public static Canvas DrawZones(Canvas canvas, ZoneInfo zones)
         {
-            System.Drawing.Size sizeOfBitmap = new System.Drawing.Size(canvas.Width, canvas.Height);
-            PointF topLeftCorner = new PointF(0,0);
+            var sizeOfBitmap = new System.Drawing.Size(canvas.Width, canvas.Height);
+            var topLeftCorner = new PointF(0,0);
 
             // Find the max value
-            int max = 0;
-            for (int i = 0; i < zones.Height; i ++)
+            var max = 0;
+            for (var i = 0; i < zones.Height; i ++)
             {
-                for (int j = 0; j < zones.Width; j ++)
+                for (var j = 0; j < zones.Width; j ++)
                 {
                     if (max < zones.values[i, j])
                         max = zones.values[i, j];
@@ -49,15 +42,16 @@ namespace FoosLiveAndroid.Util.Drawing
             };
 
             // Draw the zones
-            Paint paint = new Paint();
-            float zoneWidth = sizeOfBitmap.Width / (float)zones.Width;
-            float zoneHeight = sizeOfBitmap.Height / (float)zones.Height;
+            var paint = new Paint();
+            var zoneWidth = sizeOfBitmap.Width / (float)zones.Width;
+            var zoneHeight = sizeOfBitmap.Height / (float)zones.Height;
             float toAddX = 0, toAddY = 0;
-            for (int i = 0; i < zones.Height; i ++)
+            for (var i = 0; i < zones.Height; i ++)
             {
-                for (int j = 0; j < zones.Width; j ++)
+                for (var j = 0; j < zones.Width; j ++)
                 {
-                    float multiplier = zones.values[i, j] / (float)max;
+                    //Todo: handle redundant variable
+                    var multiplier = zones.values[i, j] / (float)max;
 
                     paint.Color = CalculateColor(zones.values[i, j], max, colours);
 
@@ -77,23 +71,23 @@ namespace FoosLiveAndroid.Util.Drawing
 
         private static Color CalculateColor(int value, int maxValue, Color[] colours)
         {
-            double percentage = value / (double)(maxValue + 1);
-            double colorPercentage = 1d / (colours.Length - 1);
-            double colorBlock = percentage / colorPercentage;
-            int which = (int)Math.Truncate(colorBlock);
-            double residue = percentage - (which * colorPercentage);
-            double percOfColor = residue / colorPercentage;
+            var percentage = value / (double)(maxValue + 1);
+            var colorPercentage = 1d / (colours.Length - 1);
+            var colorBlock = percentage / colorPercentage;
+            var which = (int)Math.Truncate(colorBlock);
+            var residue = percentage - which * colorPercentage;
+            var percOfColor = residue / colorPercentage;
 
-            Color target = colours[which];
-            Color next = colours[which + 1];
+            var targetColor = colours[which];
+            var nextColor = colours[which + 1];
 
-            int redDelta = next.R - target.R;
-            int greenDelta = next.G - target.G;
-            int blueDelta = next.B - target.B;
+            var redDelta = nextColor.R - targetColor.R;
+            var greenDelta = nextColor.G - targetColor.G;
+            var blueDelta = nextColor.B - targetColor.B;
 
-            double red = target.R + (redDelta * percOfColor);
-            double green = target.G + (greenDelta * percOfColor);
-            double blue = target.B + (blueDelta * percOfColor);
+            var red = targetColor.R + redDelta * percOfColor;
+            var green = targetColor.G + greenDelta * percOfColor;
+            var blue = targetColor.B + blueDelta * percOfColor;
 
             return Color.Argb(MaxAlphaValue, (byte)red, (byte)green, (byte)blue);
         }

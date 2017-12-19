@@ -1,4 +1,4 @@
-﻿namespace FoosLiveAndroid.Util.Sounds
+﻿namespace FoosLiveAndroid.Util.Model
 {
     public enum EAlert
     {

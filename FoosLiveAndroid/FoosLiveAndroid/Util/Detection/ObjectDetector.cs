@@ -20,6 +20,7 @@ namespace FoosLiveAndroid.Util.Detection
         private float _mulX;
         private float _mulY;
         private Paint _paintBall;
+        //Todo: handle redundant variable
         private static readonly float BallStrokeWidth = PropertiesManager.GetFloatProperty("ball_stroke_width");
         private static readonly float RectStrokeWidth = PropertiesManager.GetFloatProperty("rect_stroke_width");
 
@@ -55,7 +56,7 @@ namespace FoosLiveAndroid.Util.Detection
                  * The multiplication and division is just a conversion taking place between
                  * the different frameworks
                  */
-                Color = Color.HSVToColor(new float[]
+                Color = Color.HSVToColor(new[]
                 {
                     (float)(color.Hue * 2),
                     (float)(color.Satuation / 180),
@@ -102,10 +103,10 @@ namespace FoosLiveAndroid.Util.Detection
             // Paint the trail
             var path = new Path();
 
-            PointF[] points = _controller.BallCoordinates.ToArray();
-            int toPaint = 10;
-            bool startSet = false;
-            for (int i = points.Length - 1; i > 0; i--)
+            var points = _controller.BallCoordinates.ToArray();
+            var toPaint = 10;
+            var startSet = false;
+            for (var i = points.Length - 1; i > 0; i--)
             {
                 if (points[i] == null)
                 {
@@ -113,8 +114,7 @@ namespace FoosLiveAndroid.Util.Detection
 
                     if (toPaint == 0)
                         break;
-                    else
-                        continue;
+                    continue;
                 }
 
                 if (startSet)

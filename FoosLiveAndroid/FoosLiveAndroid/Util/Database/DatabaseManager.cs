@@ -1,4 +1,4 @@
-﻿using System.Net;
+﻿ using System.Net;
 using System.IO;
 using System.Collections.Generic;
 using FoosLiveAndroid.Model.Interface;
@@ -11,6 +11,7 @@ namespace FoosLiveAndroid.Util.Database
 {
     public static class DatabaseManager
     {
+        static readonly string Tag = typeof(DatabaseManager).Name;
         // Request properties
         private static readonly string ConnectionUrl = PropertiesManager.GetProperty("connection_url");
         private static readonly string OperationSuccess = PropertiesManager.GetProperty("operation_success");
@@ -22,6 +23,19 @@ namespace FoosLiveAndroid.Util.Database
         private static readonly string InsertEventFormat = PropertiesManager.GetProperty("insert_event_format");
         private static readonly string GetHistoryFormat = PropertiesManager.GetProperty("get_history_format");
 
+        public static string User = "DefaultUser";
+
+        public static async Task InsertAll(string blueTeamName, string redTeamName, int blueScore, int redScore, string duration)
+        {
+            var gameId = await InsertGame(blueTeamName, redTeamName, duration);
+            if (gameId == -1) return;
+            for (var i = 0; i < blueScore; i++)
+                await InsertGoal(gameId, blueTeamName);
+            for (var i = 0; i < redScore; i++)
+                await InsertGoal(gameId, redTeamName);
+            Log.Debug(Tag, $"Game was saved. id: {gameId}, score: {blueScore}-{redScore}");
+        }
+
         /// <summary>
         /// Inserts a game into the remote database. 
         /// </summary>
@@ -29,7 +43,7 @@ namespace FoosLiveAndroid.Util.Database
         /// <param name="redTeamName">Red team name</param>
         /// <returns>The id of the inserted game, or -1 if error happens.
         /// This id is used to specify which game to add goals and events to.</returns>
-        public static async Task<int> InsertGame(string blueTeamName, string redTeamName, string ownersId) {
+        public static async Task<int> InsertGame(string blueTeamName, string redTeamName, string duration) {
             try
             {
                 var request = (HttpWebRequest)WebRequest.Create(ConnectionUrl);
@@ -38,7 +52,7 @@ namespace FoosLiveAndroid.Util.Database
 
                 var streamWriter = new StreamWriter(request.GetRequestStream());
                 // Prepare query statement
-                streamWriter.Write(InsertGameFormat, blueTeamName, redTeamName, ownersId);
+                streamWriter.Write(InsertGameFormat, blueTeamName, redTeamName, User, duration);
 
                 streamWriter.Flush();
                 var httpWebResponse = (HttpWebResponse)request.GetResponse();
@@ -77,7 +91,7 @@ namespace FoosLiveAndroid.Util.Database
             // Get response
             var httpWebResponse = (HttpWebResponse)await request.GetResponseAsync();
             var streamReader = new StreamReader(httpWebResponse.GetResponseStream());
-            string response = await streamReader.ReadToEndAsync();
+            var response = await streamReader.ReadToEndAsync();
 
             return response.Equals(OperationSuccess);
         }
@@ -104,7 +118,7 @@ namespace FoosLiveAndroid.Util.Database
             // Get response
             var httpWebResponse = (HttpWebResponse)await request.GetResponseAsync();
             var streamReader = new StreamReader(httpWebResponse.GetResponseStream());
-            string response = await streamReader.ReadToEndAsync();
+            var response = await streamReader.ReadToEndAsync();
 
             return response.Equals(OperationSuccess);
         }
@@ -122,11 +136,12 @@ namespace FoosLiveAndroid.Util.Database
             {
                 // Set up request statement
                 var streamWriter = new StreamWriter(await request.GetRequestStreamAsync());
-                streamWriter.Write(GetHistoryFormat);
+                streamWriter.Write(GetHistoryFormat, User);
                 streamWriter.Flush();
 
                 // Get response
                 var httpWebResponse = (HttpWebResponse)await request.GetResponseAsync();
+                // Todo: handle null case
                 var streamReader = new StreamReader(httpWebResponse.GetResponseStream());
                 // Parse response
                 string response;
@@ -137,8 +152,8 @@ namespace FoosLiveAndroid.Util.Database
                 }
                 return historyData;
             }
-            catch (Exception we) {
-                Log.Error("Exception", we.ToString()); 
+            catch (Exception e) {
+                Log.Error(Tag, e.ToString()); 
             }
             return null;
         }
